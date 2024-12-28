@@ -32,17 +32,18 @@ const Header: React.FC = ({
   openMessage,
   setOpenMessage,
 }: any) => {
-  const myRank = "https://thumbs.dreamstime.com/b/award-ribbons-white-background-st-rank-55140260.jpg"
+  const myRank =
+    "https://thumbs.dreamstime.com/b/award-ribbons-white-background-st-rank-55140260.jpg";
 
   return (
     <header className="flex z-50 fixed w-full bg-primary px-4 py-4">
-      <MuiAppBar className="" >
+      <MuiAppBar className="">
         <Toolbar
           sx={{
             display: "flex",
             justifyContent: "space-between",
             bgcolor: "white",
-            zIndex: "0  "
+            zIndex: "0  ",
           }}
         >
           <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
@@ -56,9 +57,11 @@ const Header: React.FC = ({
                 Watch
               </span>
             </Link>
-            <span className="mx-10 font-bold text-2xl text-green-dark">
-              Store
-            </span>
+            <Link to={"/store"}>
+              <span className="mx-10 font-bold text-2xl text-green-dark">
+                Store
+              </span>
+            </Link>
             <span className="mx-10 font-bold text-2xl text-green-dark">
               Live
             </span>
@@ -80,7 +83,12 @@ const Header: React.FC = ({
               <MailIcon />
             </IconButton>
             <IconButton className=" text-green-dark">
-              <img className="rounded-full w-14" width={30} height={10} src={myRank} />
+              <img
+                className="rounded-full w-14"
+                width={30}
+                height={10}
+                src={myRank}
+              />
             </IconButton>
             <IconButton className="fixed top-10 right-0 bg-white text-green-dark">
               <span className=" bg-white  p-1 border rounded-full">
