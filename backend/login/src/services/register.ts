@@ -37,7 +37,3 @@ export class UserService {
     return await bcrypt.compare(candidatePassword, hashedPassword);
   }
 }
-
-const userService = new UserService();
-
-export default userService;

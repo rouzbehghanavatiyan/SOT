@@ -4,15 +4,14 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL") // Ensure this variable is set in your .env file
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id        String   @id @default(cuid())
-  userName  String   @db.VarChar(25) // Defined as a string
-  email     String   @unique @db.VarChar(255) // Email must be unique
-  password  String   @db.VarChar(255) // Password field
-  createdAt DateTime @default(now()) // Optional: Track when the user was created
-  updatedAt DateTime @updatedAt // Optional: Track when the user was last updated
-  // Add any additional constraints or indexes as necessary
+  userName  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

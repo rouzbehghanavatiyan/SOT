@@ -12,7 +12,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
@@ -21,8 +21,10 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "*": ["*"] 
+    }
   },
-  // "exclude": ["src/**/*"],
   "include": ["node_modules", "./src/**/*.ts"]
 }

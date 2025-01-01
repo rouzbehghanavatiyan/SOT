@@ -26,7 +26,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="">
         <SidebarLinks toggleMenu={toggleMenu} open={open} />
         <Header
           open={open}
