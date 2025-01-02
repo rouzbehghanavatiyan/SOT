@@ -5,6 +5,9 @@ import Input from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import SendIcon from "@mui/icons-material/Send";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
+
 const Chat: React.FC = () => {
   const socket = io("http://localhost:4000"); // آدرس سرور Socket.IO
 
@@ -72,29 +75,19 @@ const Chat: React.FC = () => {
           </div>
         ))}
       </div>
-      {/* <div className="absolute bottom-0">
-        <Input
-          // value={room}
-          onChange={() => {}}
-          placeholder="Type a room..."
-        />
-        <Button
-          label="Join Room"
-          variant="default"
-          className="text-gray-800 my-2"
-          onClick={joinRoom}
-        />
-      </div> */}
+
       <div className="absolute w-96 flex  bottom-0">
+        <SentimentSatisfiedAltIcon className="text-gray-800 me-5 mt-3 cursor-pointer" />
         <Input
           className="min-w-72"
           value={title}
           onChange={(e: any) => setTitle(e.target.value)}
           placeholder="Type a room..."
         />
-        <SentimentSatisfiedAltIcon className="text-gray-800 ms-5 mt-3 cursor-pointer" />
+        <KeyboardVoiceIcon className="text-gray-800 ms-5 mt-3 cursor-pointer" />
+        <AttachFileIcon className="text-gray-800 ms-5 mt-3 cursor-pointer" />
         <SendIcon
-          className="text-gray-800 ms-5 mt-3 cursor-pointer"
+          className="text-gray-800 mx-5 mt-3 cursor-pointer"
           onClick={sendMessage}
         />
       </div>
