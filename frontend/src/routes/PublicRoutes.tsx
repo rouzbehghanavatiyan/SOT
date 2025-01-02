@@ -25,7 +25,6 @@ const PublicRoutes = () => {
           <Route path="/live" element={<Live />} />
           <Route path="/robot" element={<Robot />} />
           <Route path="/store" element={<Store />} />
-
         </Routes>
       </Sidebar>
     </>

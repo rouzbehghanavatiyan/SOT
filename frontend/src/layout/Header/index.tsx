@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
+import myRank from "../../assets/img/gold1.jpg";
 
 const Header: React.FC = ({
   open,
@@ -32,9 +33,6 @@ const Header: React.FC = ({
   openMessage,
   setOpenMessage,
 }: any) => {
-  const myRank =
-    "https://thumbs.dreamstime.com/b/award-ribbons-white-background-st-rank-55140260.jpg";
-
   return (
     <header className="flex z-50 fixed w-full bg-primary px-4 py-4">
       <MuiAppBar className="">
@@ -85,15 +83,18 @@ const Header: React.FC = ({
               <MailIcon />
             </IconButton>
             <IconButton className=" text-green-dark">
-              <img
-                className="rounded-full w-14"
-                width={30}
-                height={10}
-                src={myRank}
-              />
+              <div className="halo">
+                <img
+                  className="rounded-full w-14"
+                  width={20}
+                  height={20}
+                  src={myRank}
+                  alt="My Rank"
+                />
+              </div>
             </IconButton>
             <IconButton className="fixed top-10 right-0 bg-white text-green-dark">
-              <span className=" bg-white  p-1 border rounded-full">
+              <span className=" bg-white  p-1 border-2 border-green rounded-full">
                 <img className="rounded-full w-14" src={userProfile} />
               </span>
             </IconButton>
