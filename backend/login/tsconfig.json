@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["DOM", "ES6", "ES2017", "ESNext.AsyncIterable"],
-    "target": "es2017",
+    "target": "ES6",
     "module": "commonjs",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -24,5 +24,7 @@
     "esModuleInterop": true
   },
   // "exclude": ["src/**/*"],
-  "include": ["node_modules", "./src/**/*.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  // "include": ["node_modules", "./src/**/*.ts"]
+  "include": ["src/**/*"]
 }

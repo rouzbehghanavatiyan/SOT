@@ -6,7 +6,7 @@ import asyncWrapper from "../../middleware/asyncWrapper";
 import { CustomErrorApi } from "../../error/customError";
 import UnAthenticated from "../../error/UnAthenticated";
 import StatusCodes from "http-status-codes";
-import userService from "src/services/register";
+import userService from "../../services/register";
 require("dotenv").config();
 const id = uuid.v4();
 const User = require("../model/userModel");
