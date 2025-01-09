@@ -8,6 +8,7 @@ import Cup from "../pages/Cup";
 import Friendly from "../pages/Friendly";
 import Live from "../pages/Live";
 import Robot from "../pages/Robot";
+import Store from "../pages/Store";
 
 
 const PublicRoutes = () => {
@@ -23,7 +24,7 @@ const PublicRoutes = () => {
           <Route path="/watch" element={<Watch />} />
           <Route path="/live" element={<Live />} />
           <Route path="/robot" element={<Robot />} />
-
+          <Route path="/store" element={<Store />} />
         </Routes>
       </Sidebar>
     </>

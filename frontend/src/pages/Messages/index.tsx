@@ -38,36 +38,30 @@ const Messages: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
     }),
   }));
 
-  // تابع برای محاسبه ارتفاع کشویی
-  const drawerHeight = window.innerHeight * 0.96; // 50% از ارتفاع ویندوز
+  const drawerHeight = window.innerHeight * 0.96;
 
   return (
-    <Box sx={{ height: "100vh", width: "100vw" }}>
-      <Root>
-        <SwipeableDrawer
-          anchor="right" // کشو از سمت راست باز می‌شود
-          open={openMessage}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            "& .MuiDrawer-paper": {
-              width: "25%", // تنظیم عرض کشویی به 25% از عرض ویندوز
-              height: drawerHeight, // تنظیم ارتفاع کشویی به 50% از ارتفاع ویندوز
-              top: 0, // کشو پایین‌تر از هدر قرار می‌گیرد
-              transition: "transform 0.3s ease", // انیمیشن باز شدن کشو
-              borderBottomLeftRadius: 15,
-              //   borderBottomRightRadius: 10,
-            },
-          }}
-        >
-          <Puller />
-          <Chat />
-        </SwipeableDrawer>
-      </Root>
-    </Box>
+      <SwipeableDrawer
+        anchor="right"
+        open={openMessage}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "25%",
+            height: drawerHeight,
+            top: 0,
+            transition: "transform 0.3s ease",
+            borderBottomLeftRadius: 15,
+          },
+        }}
+      >
+        <Puller />
+        <Chat />
+      </SwipeableDrawer>
   );
 };
 

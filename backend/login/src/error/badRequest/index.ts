@@ -1,4 +1,4 @@
-import { CustomErrorApi } from "../customError";
+import { CustomErrorApi } from "../CustomError";
 import StatusCode from "http-status-codes";
 
 export default class BadRequest extends CustomErrorApi {

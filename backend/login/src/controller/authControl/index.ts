@@ -3,10 +3,10 @@ import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import uuid from "uuid";
 import asyncWrapper from "../../middleware/asyncWrapper";
-import { CustomErrorApi } from "../../error/customError";
+import { CustomErrorApi } from "../../error/CustomError";
 import UnAthenticated from "../../error/UnAthenticated";
 import StatusCodes from "http-status-codes";
-import userService from "../../services/register";
+import { UserService } from "../../services/register";
 require("dotenv").config();
 const id = uuid.v4();
 const User = require("../model/userModel");
@@ -22,6 +22,8 @@ declare global {
   }
 }
 
+const userService = new UserService();
+
 export const register = asyncWrapper(async (req: Request, res: Response) => {
   const { userName, email, password, confirmPassword } = req.body;
 
@@ -29,12 +31,11 @@ export const register = asyncWrapper(async (req: Request, res: Response) => {
     throw new CustomErrorApi("Please provide all the required fields", 400);
   }
 
-  // Optionally: check if passwords match (if you're using confirmPassword)
   if (password !== confirmPassword) {
     throw new CustomErrorApi("Passwords do not match", 400);
   }
 
-  const registerUser = await userService.createUser(userName, email, password);
+  const registerUser = await userService.createUser(userName, email, password); // استفاده از نمونه
   const token = await userService.createJWT(
     registerUser.id,
     registerUser.userName

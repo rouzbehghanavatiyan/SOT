@@ -12,6 +12,7 @@ body * {
 p {
   color: #272343;
 }
+
 /* 
 @media (min-width: 600px) {
   .css-ju88wr-MuiToolbar-root {
@@ -98,9 +99,11 @@ br {
 .CollapsibleContent {
   overflow: hidden;
 }
+
 .CollapsibleContent[data-state="open"] {
   animation: slideDown 300ms ease-out;
 }
+
 .CollapsibleContent[data-state="closed"] {
   animation: slideUp 300ms ease-out;
 }
@@ -109,6 +112,7 @@ br {
   from {
     height: 0;
   }
+
   to {
     height: var(--radix-collapsible-content-height);
   }
@@ -118,6 +122,7 @@ br {
   from {
     height: var(--radix-collapsible-content-height);
   }
+
   to {
     height: 0;
   }
@@ -131,37 +136,39 @@ br {
   .input-label {
     @apply mb-1 block text-left font-vazir text-mainBlack;
   }
+
   .input-label-required {
     @apply pr-1 text-red;
   }
+
   .input-container {
     @apply relative;
   }
+
   .input {
     @apply block w-full rounded-xl border border-solid border-gray-200 placeholder-gray-200 outline-none;
   }
-  .input-success {
-    @apply !rounded-xl !border-[#4CC19E] shadow-[0_0_0_4px_rgba(238,346,246)];
-  }
-  .input-failed {
-    @apply !rounded-xl !border-[#F04438] shadow-[0_0_0_4px_rgba(255,237,236)];
-  }
+
   .input-icon {
     @apply pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3;
   }
 
   .input-icon-error {
-    @apply pointer-events-none absolute inset-y-0 end-0 flex items-center  pe-3;
+    @apply pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3;
   }
+
   .input-message-error {
     @apply absolute !text-xs text-red;
   }
+
   .input-message-guid {
     @apply pt-1 !text-xs text-gray-800;
   }
+
   .input-label-base {
     @apply !text-base;
   }
+
   .input-base {
     @apply h-11 py-2 pe-3.5 ps-10 !text-sm;
   }
@@ -169,6 +176,7 @@ br {
   .input-label-sm {
     @apply !text-sm !font-semibold;
   }
+
   .input-sm {
     @apply h-11 py-1 pe-3.5 ps-10 !text-sm;
   }
@@ -285,6 +293,7 @@ br {
     --color-green: #5cd178;
     /* ... */
   }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -299,18 +308,135 @@ br {
 @keyframes glow {
   0% {
     box-shadow:
-      0 0 1px rgba(52, 0, 128, 0.7),
-      0 0 2px rgba(128, 0, 0, 0.7),
-      0 0 3px rgba(128, 0, 0, 0.7);
+      0 0 10px rgb(238, 255, 0),
+      0 0 10px rgba(115, 128, 0, 0.7),
+      0 0 10px rgb(255, 231, 18);
   }
+
   100% {
     box-shadow:
-      0 0 20px rgba(128, 0, 19, 0.7),
-      0 0 30px rgba(128, 0, 0, 0.7),
-      0 0 40px rgba(128, 0, 0, 0.7);
+      0 0 10px rgba(255, 239, 20, 0.7),
+      1px 1px 10px rgb(251, 255, 0),
+      0 0 10px rgba(251, 255, 0, 0.7);
   }
 }
 
 .animate-glow {
-  animation: glow 1.5s infinite alternate; /* Duration and infinite animation */
+  animation: glow 1.5s infinite alternate;
+  /* Duration and infinite animation */
+}
+
+/* styles.css */
+.halo {
+  position: relative;
+  display: inline-block;
+}
+
+.halo img {
+  position: relative;
+  z-index: 1;
+}
+
+.halo::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  background-color: rgba(250, 0, 0, 0.137);
+  /* رنگ نورانی */
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  animation: pulsate 1.5s ease-in-out infinite;
+  /* انیمیشن تابش */
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(0.8);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.8);
+  }
+}
+
+
+.balo {
+  position: relative;
+  display: inline-block;
+}
+
+.balo img {
+  position: relative;
+  z-index: 1;
+}
+
+.balo::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  background-color: rgb(255, 230, 0);
+  /* رنگ نورانی */
+  box-shadow: 0 0 10px rgba(255, 238, 160, 0.7);
+  animation: pulsate 1.5s ease-in-out infinite;
+  /* انیمیشن تابش */
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(0.8);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.8);
+  }
+}
+
+
+.image-container {
+  display: inline-block;
+  position: relative;
+}
+
+.image-container img {
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.image-container::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: linear-gradient(270deg, #4caf50, #ffffff, #388e3c, #4caf50);
+  background-size: 400%;
+  z-index: 0;
+  animation: rotateGradient 5s linear infinite;
+}
+
+@keyframes rotateGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
 }
