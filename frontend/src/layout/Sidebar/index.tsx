@@ -1,50 +1,61 @@
-import React, { useState } from "react";
-import {
-  CssBaseline,
-  Drawer as MuiDrawer,
-  AppBar as MuiAppBar,
-  Toolbar,
-  Divider,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import Messages from "../../pages/Messages";
-import SidebarLinks from "./SidebarLinks";
-import Header from "../Header";
+import { PropTypes } from "./Types";
+import React from "react";
+import GroupsIcon from "@mui/icons-material/Groups";
+import { Link } from "react-router-dom";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import LogoTC from "../../assets/img/1724181984017.jpg";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 
-const drawerWidth = 240;
+type Props = PropTypes;
 
-type PropsType = any;
-
-const Sidebar: React.FC<PropsType> = ({ children }) => {
-  const [open, setOpen] = useState(false);
-  const theme = useTheme();
-  const [openMessage, setOpenMessage] = useState<boolean>(false);
-
-  const toggleMenu = () => {
-    setOpen(!open);
-  };
-
+const SidebarLinks: React.FC<Props> = () => {
   return (
-    <>
-      <div className="">
-        <SidebarLinks toggleMenu={toggleMenu} open={open} />
-        <Header
-          open={open}
-          toggleMenu={toggleMenu}
-          openMessage={openMessage}
-          setOpenMessage={setOpenMessage}
-        />
-        <div className="flex flex-grow justify-center items-center">
-          <div className="max-w-7xl max-h-3/4 w-full h-full flex justify-center items-center mt-24">
-            {children}
-          </div>
+    <div className="bg-white shadow-lg  h-screen ">
+      <Link to={"/solo"}>
+        <div className="my-8 flex justify-center">
+          <img
+            src={LogoTC}
+            alt="Logo"
+            className="rounded-full"
+            width={35}
+            height={35}
+          />
         </div>
-      </div>
-      {openMessage && (
-        <Messages setOpenMessage={setOpenMessage} openMessage={openMessage} />
-      )}
-    </>
+      </Link>
+      <Link to={"/friendly"}>
+        <div className="my-8 flex flex-col justify-center">
+          <span className=" flex justify-center">
+            <GroupsIcon className="flex justify-center font40 text-orange-hover" />
+          </span>
+          <span className="flex justify-center font-bold text-gray-800">
+            Friendly
+          </span>
+        </div>
+      </Link>
+      <Link to={"/cup"}>
+        <div className="my-8 flex flex-col justify-center">
+          <span className="flex justify-center">
+            <EmojiEventsIcon className="flex justify-center font40 text-orange-hover" />
+          </span>
+          <span className="flex justify-center font-bold text-gray-800">
+            Cup
+          </span>
+        </div>
+      </Link>
+      <Link to={"/robot"}>
+        <div className="my-8 flex flex-col justify-center">
+          <span className="flex justify-center">
+            <SmartToyIcon className="flex justify-center font40 text-orange-hover" />
+          </span>
+          <span className="flex justify-center font-bold text-gray-800">
+            Robot battle
+          </span>
+        </div>
+      </Link>
+    </div>
   );
 };
 
-export default Sidebar;
+export default SidebarLinks;

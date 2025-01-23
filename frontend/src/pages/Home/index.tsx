@@ -52,8 +52,8 @@ const profiles = [
     img: "https://img.freepik.com/premium-photo/professional-linkedin-profile-photo-young-man-suit-tie-smiling-confidently_1141323-1549.jpg",
     rank: "https://cdn-icons-png.flaticon.com/512/2248/2248967.png",
     username: "jackrooo-1",
-    type: "Loss",
-    color: "red",
+    type: "Success",
+    color: "orange-hover",
     comments: "120k",
     cupPro: null,
   },
@@ -70,9 +70,9 @@ const profiles = [
     img: "https://img.freepik.com/premium-photo/professional-linkedin-profile-photo-young-man-suit-tie-smiling-confidently_1141323-1549.jpg",
     rank: "https://cdn-icons-png.flaticon.com/512/2248/2248967.png",
     username: "jackrooo-1",
-    type: "Loss",
-    color: "red",
-    comments: "120k",
+    type: "Success",
+    color: "orange-hover",
+    comments: "20k",
     cupPro: null,
   },
   {
@@ -189,9 +189,16 @@ const Home = () => {
               </div>
               <div className="absolute font35 top-2 right-4">
                 <div className="flex items-center">
-                  <DangerousIcon
-                    className={`flex items-center text-${profile.color} font35`}
-                  />
+                  {profile?.type?.toLowerCase() === "success" ? (
+                    <VerifiedIcon
+                      className={`flex items-center text-${profile.color} font35`}
+                    />
+                  ) : (
+                    <DangerousIcon
+                      className={`flex items-center text-red font35`}
+                      // className={`flex items-center text-${profile.color} font35`}
+                    />
+                  )}
                   <span className="text-white">{profile.type}</span>
                 </div>
               </div>

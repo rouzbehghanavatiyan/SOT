@@ -26,6 +26,12 @@ const products = [
     price: 25,
     image: "https://via.placeholder.com/150",
   },
+  {
+    id: 5,
+    name: "Support to battle",
+    price: 20,
+    image: "https://via.placeholder.com/150",
+  },
 ];
 
 const Store = () => {
@@ -39,7 +45,7 @@ const Store = () => {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-32 object-cover rounded-md"
+            className="w-full h-44 object-cover rounded-md"
           />
           <div className="mt-2 flex justify-between items-center">
             <div className="text-gray-800 text-lg flex justify-between font-semibold">

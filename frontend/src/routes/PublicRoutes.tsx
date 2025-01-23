@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Solo from "../pages/Solo";
 import PageNotFound from "../pages/PageNotFound";
-import Sidebar from "../layout/Sidebar";
+import Layout from "../layout";
 import Watch from "../pages/Watch";
 import Cup from "../pages/Cup";
 import Friendly from "../pages/Friendly";
@@ -10,11 +10,10 @@ import Live from "../pages/Live";
 import Robot from "../pages/Robot";
 import Store from "../pages/Store";
 
-
 const PublicRoutes = () => {
   return (
     <>
-      <Sidebar>
+      <Layout>
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/*" element={<PageNotFound />} />
@@ -26,7 +25,7 @@ const PublicRoutes = () => {
           <Route path="/robot" element={<Robot />} />
           <Route path="/store" element={<Store />} />
         </Routes>
-      </Sidebar>
+      </Layout>
     </>
   );
 };

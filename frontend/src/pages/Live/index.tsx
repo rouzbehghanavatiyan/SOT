@@ -58,7 +58,7 @@ const Live = () => {
           player1Name: "harison520",
           player2: gymM1,
           player2Name: "saraLuc32",
-          time: "20:00",
+          time: `00:${seconds > 0 ? seconds : "00"}`,
         },
         {
           player1: gymM2,
