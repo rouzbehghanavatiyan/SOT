@@ -16,7 +16,8 @@ const authorizationMidd = (
 ): void => {
   const authHeaders = req.headers.authorization;
   if (!authHeaders || !authHeaders.startsWith("Bearer ")) {
-    throw new CustomErrorApi("No token provided", 401);
+    // throw new CustomErrorApi("No token provided", 401);
+    throw new Error("No token provided");
   }
   const token = authHeaders.split(" ")[1];
   try {
@@ -28,7 +29,8 @@ const authorizationMidd = (
     req.user = { userId, userName };
     next();
   } catch (error) {
-    throw new CustomErrorApi("Not authorized to access this route", 403);
+    // throw new CustomErrorApi("Not authorized to access this route", 403);
+    throw new Error("Not authorized to access this route");
   }
 };
 
