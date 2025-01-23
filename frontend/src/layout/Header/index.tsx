@@ -4,15 +4,7 @@ import {
   CssBaseline,
   Drawer as MuiDrawer,
   AppBar as MuiAppBar,
-  Toolbar,
   IconButton,
-  List,
-  Divider,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -30,8 +22,8 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 
 const Header: React.FC = ({ openMessage, setOpenMessage }: any) => {
   return (
-    <header className="w-full grid grid-cols-7 z-50 sticky top-0 bg-blue ">
-      <div className="gap-4 col-span-2 px-4 flex justify-center items-center">
+    <header className="w-full grid grid-cols-7 z-50 sticky top-0 bg_logo ">
+      <div className="bg_logo_circle gap-4 col-span-2 px-4 flex justify-center items-center text-mainBlack">
         <span className="text-center font40 font-bold ">Star Of Talent</span>
       </div>
       <div className=" flex justify-center items-center col-span-3">
@@ -54,20 +46,20 @@ const Header: React.FC = ({ openMessage, setOpenMessage }: any) => {
         <span className="mx-10 font-bold text-2xl text-white">Learn</span>
       </div>
       <div className=" flex justify-center items-center gap-3 col-span-2">
-        <IconButton className="text-green-dark">
-          <NotificationsIcon />
+        <IconButton className="text-white">
+          <NotificationsIcon className="text-white" />
         </IconButton>
-        <IconButton className="text-green-dark">
-          <SupportAgentIcon />
+        <IconButton className="text-white">
+          <SupportAgentIcon className="text-white" />
         </IconButton>
         <IconButton
           onClick={() => setOpenMessage(!openMessage)}
-          className="text-green-dark"
+          className="text-white"
         >
-          <MailIcon />
+          <MailIcon className="text-white" />
         </IconButton>
         <IconButton className="text-green-dark">
-          <ConfirmationNumberIcon />
+          <ConfirmationNumberIcon className="text-white" />
         </IconButton>
         <IconButton className=" text-green-dark">
           <div className="halo">

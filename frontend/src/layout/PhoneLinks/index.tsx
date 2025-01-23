@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 const PhoneLinks: React.FC = () => {
   return (
     <ResponsiveMaker hiddenWidth={400}>
-      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[370px] md:w-[450px] bg-orange-hover shadow-card p-2 text-center">
+      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-[370px] md:w-[450px] bg_logo shadow-card p-2 text-center font20 text-white font-bold">
         Star Of Talent
       </div>
       <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-[370px] md:w-[450px] bg-white shadow-card p-2 text-center">

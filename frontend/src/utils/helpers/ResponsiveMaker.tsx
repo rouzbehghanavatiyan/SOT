@@ -29,7 +29,7 @@ const ResponsiveMaker: React.FC<PropsType> = ({
     };
   }, [visibleWidth, hiddenWidth]);
 
-  return isVisible ? <div>{children}</div> : null;
+  return isVisible ? <>{children}</> : null;
 };
 
 export default ResponsiveMaker;

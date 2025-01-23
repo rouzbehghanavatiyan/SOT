@@ -26,14 +26,19 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   return (
     <main className="relative">
-      <Header
-        open={open}
-        toggleMenu={toggleMenu}
-        openMessage={openMessage}
-        setOpenMessage={setOpenMessage}
-      />
+      <ResponsiveMaker visibleWidth={700}>
+        <Header
+          open={open}
+          toggleMenu={toggleMenu}
+          openMessage={openMessage}
+          setOpenMessage={setOpenMessage}
+        />
+      </ResponsiveMaker>
       <div className="flex">
-        <SidebarLinks toggleMenu={toggleMenu} open={open} />
+        <ResponsiveMaker visibleWidth={700}>
+          <SidebarLinks toggleMenu={toggleMenu} open={open} />
+        </ResponsiveMaker>
+
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center mt-24">
             {children}
