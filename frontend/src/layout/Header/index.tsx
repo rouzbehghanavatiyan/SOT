@@ -19,6 +19,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 import myRank from "../../assets/img/gold1.jpg";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const Header: React.FC = ({ openMessage, setOpenMessage }: any) => {
   return (
@@ -46,7 +47,10 @@ const Header: React.FC = ({ openMessage, setOpenMessage }: any) => {
         <span className="mx-10 font-bold text-2xl text-white">Learn</span>
       </div>
       <div className=" flex justify-center items-center gap-3 col-span-2">
-        <IconButton className="text-white">
+        <IconButton className="text-white relative">
+          <span className="font15 ">
+            <CircleIcon className="font10 text-pink absolute " />
+          </span>
           <NotificationsIcon className="text-white" />
         </IconButton>
         <IconButton className="text-white">
