@@ -14,7 +14,7 @@ const profiles = [
     username: "sara596-1",
     type: "Loss",
     color: "red",
-    comments: "120k",
+    comments: "4,683",
     cupPro: null,
   },
   {
@@ -131,7 +131,7 @@ const Home = () => {
         {profiles.map((profile, index) => (
           <section
             key={index}
-            className={` mb-8 ${expandedVideo === index ? "col-span-full" : ""}`}>
+            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}>
             <div
               className={`relative ${
                 expandedVideo === index
@@ -169,22 +169,28 @@ const Home = () => {
                 </div>
               </div>
               <div className="absolute font35 top-2 right-4">
-                <div className="flex items-center">
-                  {profile?.type?.toLowerCase() === "success" ? (
-                    <>
-                      <VerifiedIcon
-                        className={`flex items-center text-${profile.color} font35`}
-                      />
-                      <span className="text-green">{profile.type}</span>
-                    </>
-                  ) : (
-                    <>
-                      <DangerousIcon
-                        className={`flex items-center text-red font35`}
-                      />
-                      <span className="text-red">{profile.type}</span>
-                    </>
-                  )}
+                <div className="flex gap-4 items-center">
+                  <div className="flex text-white items-center gap-1">
+                    <ThumbUpOffAltIcon />
+                    <span>{profile.comments}</span>
+                  </div>
+                  <div>
+                    {profile?.type?.toLowerCase() === "success" ? (
+                      <>
+                        <VerifiedIcon
+                          className={`flex items-center text-${profile.color} font35`}
+                        />
+                        <span className="text-green">{profile.type}</span>
+                      </>
+                    ) : (
+                      <>
+                        <DangerousIcon
+                          className={`flex items-center text-red font35`}
+                        />
+                        <span className="text-red">{profile.type}</span>
+                      </>
+                    )}
+                  </div>
                   {/* <div
                     className="flex justify-end  items-center "
                     onClick={() => handleExpand(index)}>
@@ -216,15 +222,14 @@ const Home = () => {
                   />
                 </div>
               </div>
-              <div className="flex gap-2 m-2">
-                <ChatBubbleOutlineIcon className="text-black  cursor-pointer" />
-                <p className="text-black">
-                  <div className="flex items-center gap-2">
-                    <ThumbUpOffAltIcon />
-                    <span>{profile.comments}</span>
-                  </div>
-                </p>
+              <div className="flex items-center gap-1 m-2">
+                <ChatBubbleOutlineIcon className="text-black font20  cursor-pointer" />
+                <span> 1,529 </span>
               </div>
+              <p className="mx-2">
+                this is ganna be best video in the world that u can whole your
+                country. dont forget to be best
+              </p>
             </div>
           </section>
         ))}

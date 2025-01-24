@@ -18,13 +18,15 @@ const PhoneFooter: React.FC = () => {
           <Link to={"/watch"}>
             <PlayArrowIcon className=" font30 text-orange-hover" />
           </Link>
-          <img
-            src={LogoTC}
-            alt="Logo"
-            className="rounded-full"
-            width={30}
-            height={30}
-          />
+          <Link to={"/sot"}>
+            <img
+              src={LogoTC}
+              alt="Logo"
+              className="rounded-full"
+              width={30}
+              height={30}
+            />
+          </Link>
           <NotificationsIcon className=" font30 text-orange-hover" />
           <AccountCircleIcon className=" font30 text-orange-hover" />
         </div>
