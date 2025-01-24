@@ -8,8 +8,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import CommentIcon from "@mui/icons-material/Comment";
 import Comments from "../../common/Comments";
 import ReactPlayer from "react-player";
-import demoVideo from "../../../../../u-35446-1731760254601.mp4";
-import demoVideo3 from "../../../../../u-65320-1736910450676.mp4";
+// import demoVideo from "../../../../../u-35446-1731760254601.mp4";
+// import demoVideo3 from "../../../../../u-65320-1736910450676.mp4";
 
 const allVideo = [
   {
@@ -75,17 +75,16 @@ const Watch = () => {
 
   return (
     <>
-      <div className="col-span-12 md:col-span-12 lg:col-span-12">
-        <div className=" grid grid-cols-1 md:gap-8 gap-0 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 ">
+      <div className="col-span-12 flex justify-center md:col-span-12 lg:col-span-12">
+        <div className=" grid grid-cols-1 md:gap-8 gap-0 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {allVideo.map((dobuleVideo, index) => (
             <section
               key={index}
-              className={`rounded-md bg-red my-1 transition-transform duration-300 ${
+              className={`rounded-md bg-red m-3 transition-transform duration-300 ${
                 selectedVideoIndex === index ? "w-5" : "w-80"
               }`}
-              onClick={() => handleVideoClick(index)}
-            >
-              <div className="relative w-[370px] xl:w-[320px]">
+              onClick={() => handleVideoClick(index)}>
+              <div className="relative w-[400px] xl:w-[330px]">
                 <div className="bg-black p-4">
                   <div className="flex justify-between items-center mb-2">
                     <div className="space-x-4">
@@ -107,7 +106,7 @@ const Watch = () => {
                       <CommentIcon className="absolute right-0 bottom-0 text-white m-1 cursor-pointer" />
                     </span>
                     <ReactPlayer
-                      url={demoVideo}
+                      // url={demoVideo}
                       controls
                       config={
                         {
@@ -141,7 +140,7 @@ const Watch = () => {
                   <div className="relative flex justify-center items-center mb-2">
                     <CommentIcon className="absolute right-0 bottom-0 text-white m-1 cursor-pointer" />
                     <ReactPlayer
-                      url={demoVideo3}
+                      // url={demoVideo3}
                       controls
                       config={
                         {

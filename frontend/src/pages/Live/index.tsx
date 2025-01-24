@@ -47,6 +47,13 @@ const Live = () => {
           player2Name: "saraLuc32",
           time: "12:30",
         },
+        {
+          player1: pro2,
+          player1Name: "harison520",
+          player2: kidViolon4,
+          player2Name: "saraLuc32",
+          time: "12:30",
+        },
       ],
     },
     {
@@ -59,6 +66,13 @@ const Live = () => {
           player2: gymM1,
           player2Name: "saraLuc32",
           time: `00:${seconds > 0 ? seconds : "00"}`,
+        },
+        {
+          player1: gymM2,
+          player1Name: "harison520",
+          player2: gymM3,
+          player2Name: "saraLuc32",
+          time: "20:00",
         },
         {
           player1: gymM2,
@@ -87,6 +101,13 @@ const Live = () => {
           player2Name: "saraLuc32",
           time: "10:25",
         },
+        {
+          player1: inv3,
+          player1Name: "harison520",
+          player2: inv5,
+          player2Name: "saraLuc32",
+          time: "10:25",
+        },
       ],
     },
     {
@@ -97,6 +118,13 @@ const Live = () => {
           player1: cook1,
           player1Name: "harison520",
           player2: cook2,
+          player2Name: "saraLuc32",
+          time: "10:12",
+        },
+        {
+          player1: cook3,
+          player1Name: "harison520",
+          player2: cook4,
           player2Name: "saraLuc32",
           time: "10:12",
         },
@@ -128,8 +156,7 @@ const Live = () => {
         {items.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-12 inset-1 py-5 rounded-md"
-          >
+            className="grid grid-cols-12 inset-1 py-5 rounded-md">
             <div className="grid grid-cols-3 col-span-1 justify-center items-center">
               <span>{item.icon}</span>
               <span>{item.title}</span>
@@ -137,8 +164,7 @@ const Live = () => {
             {item.matches.map((match, matchIndex) => (
               <div
                 key={matchIndex}
-                className="py-2 border rounded-lg flex justify-around transform transition-transform duration-500 hover:scale-105 items-center mx-2 col-span-3 cursor-pointer hover:bg-gray-100"
-              >
+                className="py-2 border rounded-lg flex justify-around transform transition-transform duration-500 hover:scale-105 items-center mx-2 col-span-3 cursor-pointer hover:bg-gray-100">
                 <div className="col-span-3">
                   <div className="relative">
                     <div className="absolute rounded-full"></div>

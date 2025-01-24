@@ -519,7 +519,7 @@ br {
 
 .bg_logo {
   background: rgb(58, 180, 99);
-  background: linear-gradient(90deg, rgb(58, 180, 99) 0%, rgba(31, 111, 120, 0.493) 50%, rgba(69, 182, 252, 0.829) 100%);
+  background: linear-gradient(90deg, rgb(58, 180, 99) 0%, rgb(31, 111, 120) 50%, rgb(69, 182, 252) 100%);
 }
 
 .bg_logo_circle {

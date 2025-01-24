@@ -23,8 +23,7 @@ const Cup = () => {
         <div className=" flex flex-col justify-center">
           <img src={silverCup} width={300} className="m-5" height={300} />
           <span className=" flex font-bold text-2xl justify-center">
-            {" "}
-            cup city{" "}
+            cup city
           </span>
         </div>
         <div className=" flex gap-20 justify-between">

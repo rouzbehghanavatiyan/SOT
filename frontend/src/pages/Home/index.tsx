@@ -1,35 +1,13 @@
-import git2 from "../../assets/videos/git2.mp4";
-import git3 from "../../assets/videos/git3.mp4";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ReactPlayer from "react-player";
-import pro1 from "../../assets/img/1-intro-photo-final.jpg";
-import rank1 from "../../assets/img/rank1.avif";
+import React, { useState } from "react";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import StarRateIcon from "@mui/icons-material/StarRate";
 import DangerousIcon from "@mui/icons-material/Dangerous";
-import git5 from "../../assets/videos/git5.mp4";
-import git6 from "../../assets/videos/git6.mp4";
-import sing1 from "../../assets/videos/sing1.mp4";
-import sing2 from "../../assets/videos/sing2.mp4";
-import cook1 from "../../assets/videos/cook1.mp4";
-import cook2 from "../../assets/videos/cook2.mp4";
-import cupLvl1 from "../../assets/img/cupLevel.webp";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import roberto from "../../assets/img/roberto.avif";
-import Story from "./Story";
-
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import ReactPlayer from "react-player";
+import CropFreeIcon from "@mui/icons-material/CropFree";
+import demoVid from "../../../../../VID_20230630_182952.mp4";
 const profiles = [
-  {
-    img: roberto,
-    rank: "https://cdn3d.iconscout.com/3d/premium/thumb/first-rank-badge-3d-icon-download-in-png-blend-fbx-gltf-file-formats--gold-medal-tag-reward-and-badges-pack-team-sports-icons-6878280.png?f=webp",
-    username: "rabero159",
-    type: "Success",
-    color: "orange-hover",
-    comments: "120k",
-    cupPro: cupLvl1,
-  },
   {
     img: "https://writestylesonline.com/wp-content/uploads/2018/11/Three-Statistics-That-Will-Make-You-Rethink-Your-Professional-Profile-Picture-1024x1024.jpg",
     rank: "https://cdn3d.iconscout.com/3d/premium/thumb/first-rank-badge-3d-icon-download-in-png-blend-fbx-gltf-file-formats--gold-medal-tag-reward-and-badges-pack-team-sports-icons-6878280.png?f=webp",
@@ -141,82 +119,111 @@ const profiles = [
 ];
 
 const Home = () => {
+  const [expandedVideo, setExpandedVideo] = useState(null);
+
+  const handleExpand = (index: any) => {
+    setExpandedVideo((prev) => (prev === index ? null : index));
+  };
+
   return (
-    <div className="col-span-12 md:col-span-12 lg:col-span-12">
-      {/* <Story /> */}
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4">
+    <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12">
+      <div className=" grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {profiles.map((profile, index) => (
-          <section key={index} className="mb-8">
-            <div className="flex justify-between items-center text-2xl">
-              <div className="flex gap-2 my-1 items-center">
-                <div className="relative mb-2 col-span-1">
-                  <img
-                    className="rounded-full relative"
-                    src={profile.img}
-                    width={60}
-                    height={60}
-                    alt="Profile"
-                  />
-                  <img
-                    className="absolute bottom-0"
-                    src={profile.rank}
-                    width={25}
-                    height={25}
-                    alt="Rank"
-                  />
-                </div>
-                <div className="flex col-span-2 justify-center">
-                  <span className="font-bold">{profile.username}</span>
-                  {!!profile.cupPro && (
-                    <div className="flex items-end mx-2">
-                      <img width={25} height={25} src={profile.cupPro} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="relative w-[325px] bg-black h-[450px]">
-              <div className="absolute top-2 left-2 flex space-x-4">
-                <div className="flex-col col-auto gap-2">
-                  <CommentIcon className="text-white cursor-pointer" />
-                  <p className="text-white">
-                    <div className="flex items-center gap-2">
-                      <ThumbUpIcon />
-                      <span>{profile.comments}</span>
-                    </div>
-                  </p>
+          <section
+            key={index}
+            className={` mb-8 ${expandedVideo === index ? "col-span-full" : ""}`}>
+            <div
+              className={`relative ${
+                expandedVideo === index
+                  ? "w-full h-screen "
+                  : "w-full sm:w-[100%] md:w-[100%] lg:w-[325px] h-[650px]"
+              }transition-all duration-500`}>
+              <div className="ms-1 absolute justify-between items-center text-2xl">
+                <div className="flex gap-2 my-1 items-center">
+                  <div className="relative mb-2 col-span-1">
+                    <img
+                      className="rounded-full relative"
+                      src={profile.img}
+                      width={60}
+                      height={60}
+                      alt="Profile"
+                    />
+                    <img
+                      className="absolute bottom-0"
+                      src={profile.rank}
+                      width={25}
+                      height={25}
+                      alt="Rank"
+                    />
+                  </div>
+                  <div className="flex col-span-2 justify-center">
+                    <span className="font-bold text-white">
+                      {profile.username}
+                    </span>
+                    {!!profile.cupPro && (
+                      <div className="flex items-end mx-2">
+                        <img width={25} height={25} src={profile.cupPro} />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="absolute font35 top-2 right-4">
                 <div className="flex items-center">
                   {profile?.type?.toLowerCase() === "success" ? (
-                    <VerifiedIcon
-                      className={`flex items-center text-${profile.color} font35`}
-                    />
+                    <>
+                      <VerifiedIcon
+                        className={`flex items-center text-${profile.color} font35`}
+                      />
+                      <span className="text-green">{profile.type}</span>
+                    </>
                   ) : (
-                    <DangerousIcon
-                      className={`flex items-center text-red font35`}
-                      // className={`flex items-center text-${profile.color} font35`}
-                    />
+                    <>
+                      <DangerousIcon
+                        className={`flex items-center text-red font35`}
+                      />
+                      <span className="text-red">{profile.type}</span>
+                    </>
                   )}
-                  <span className="text-white">{profile.type}</span>
+                  {/* <div
+                    className="flex justify-end  items-center "
+                    onClick={() => handleExpand(index)}>
+                    <CropFreeIcon
+                      className={` ${
+                        expandedVideo === index
+                          ? "text-green-500"
+                          : "text-white"
+                      } font35 cursor-pointer`}
+                    />
+                  </div> */}
                 </div>
               </div>
               <div className="w-full h-full bg-black flex flex-col justify-center items-center">
-                <div className="w-full h-1/2 flex justify-center items-center mb-2">
-                  <iframe
-                    src="https://www.clipsho.com/share/video/play/u3v411on1mm4cfwour"
-                    title="clipsho-video"
-                    className="w-96 h-full"
-                  ></iframe>
+                <div className="w-full h-[450px] flex justify-center items-center mb-2">
+                  <ReactPlayer
+                    controls
+                    width="100%"
+                    height="100%"
+                    url={demoVid}
+                  />
                 </div>
-                <div className="w-full h-1/2 flex justify-center items-center">
-                  <iframe
-                    className="w-96 h-full"
-                    src="https://www.clipsho.com/share/video/play/u3v411u56bm4mnd14y"
-                    title="clipsho-video"
-                  ></iframe>
+                <div className="w-full h-[450px] flex justify-center items-center">
+                  <ReactPlayer
+                    controls
+                    width="100%"
+                    height="100%"
+                    url={demoVid}
+                  />
                 </div>
+              </div>
+              <div className="flex gap-2 m-2">
+                <ChatBubbleOutlineIcon className="text-black  cursor-pointer" />
+                <p className="text-black">
+                  <div className="flex items-center gap-2">
+                    <ThumbUpOffAltIcon />
+                    <span>{profile.comments}</span>
+                  </div>
+                </p>
               </div>
             </div>
           </section>

@@ -12,7 +12,9 @@ import SidebarLinks from "./Sidebar";
 import Header from "./Header";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
-import PhoneLinks from "./PhoneLinks";
+import PhoneFooter from "./PhoneFooter";
+import { Link } from "react-router-dom";
+import PhoneHeader from "./PhoneFooter/PhoneHeader";
 
 type PropsType = any;
 
@@ -26,7 +28,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   return (
     <main className="relative">
-      <ResponsiveMaker visibleWidth={700}>
+      <ResponsiveMaker visibleWidth={975}>
         <Header
           open={open}
           toggleMenu={toggleMenu}
@@ -35,15 +37,15 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         />
       </ResponsiveMaker>
       <div className="flex">
-        <ResponsiveMaker visibleWidth={700}>
+        <ResponsiveMaker visibleWidth={975}>
           <SidebarLinks toggleMenu={toggleMenu} open={open} />
         </ResponsiveMaker>
-
         <div className="flex flex-grow justify-center items-center">
-          <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center mt-24">
-            {children}
+          <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
+            <PhoneHeader />
+            <div className="mt-2">{children}</div>
+            <PhoneFooter />
           </div>
-          <PhoneLinks />
         </div>
       </div>
       {openMessage && (
