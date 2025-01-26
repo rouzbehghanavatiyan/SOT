@@ -10,6 +10,8 @@ import Live from "../pages/Live";
 import Robot from "../pages/Robot";
 import Store from "../pages/Store";
 import Sot from "../pages/Sot";
+import StepTwo from "../common/SoloTalent/StepTwo";
+import StepThree from "../common/SoloTalent/StepThree";
 
 const PublicRoutes = () => {
   return (
@@ -18,6 +20,8 @@ const PublicRoutes = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/*" element={<PageNotFound />} />
+          <Route path="/solo/:id" element={<StepTwo />} />
+          <Route path="/solo/:id/:id" element={<StepThree />} />
           <Route path="/solo" element={<Solo />} />
           <Route path="/sot" element={<Sot />} />
           <Route path="/friendly" element={<Friendly />} />
