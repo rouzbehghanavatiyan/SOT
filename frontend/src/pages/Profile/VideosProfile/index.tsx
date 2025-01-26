@@ -7,7 +7,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
 // import demoVid from "../../../../../u-35446-1731760254601.mp4";
-import Comments from "../../common/Comments";
+import Comments from "../../../common/Comments";
 
 const profiles = [
   {
@@ -120,7 +120,7 @@ const profiles = [
   },
 ];
 
-const Home = () => {
+const VideosProfile = () => {
   const [expandedVideo, setExpandedVideo] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const [closingComments, setClosingComments] = useState(false);
@@ -148,15 +148,13 @@ const Home = () => {
         {profiles.map((profile, index) => (
           <section
             key={index}
-            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}
-          >
+            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}>
             <div
               className={`relative ${
                 expandedVideo === index
                   ? "w-full h-screen"
                   : "w-full sm:w-[100%] md:w-[100%] lg:w-[325px] h-[650px]"
-              }transition-all duration-500`}
-            >
+              }transition-all duration-500`}>
               <div className="ms-1 absolute justify-between items-center m-1 text-2xl">
                 <div className="grid grid-cols-5  gap-2 my-1 items-center">
                   <div className="relative mb-2  col-span-1">
@@ -180,10 +178,10 @@ const Home = () => {
                       {profile.username}
                     </span>
                     {/* {!!profile.cupPro && (
-                      <div className="flex items-end mx-2">
-                        <img width={25} height={25} src={profile.cupPro} />
-                      </div>
-                    )} */}
+                        <div className="flex items-end mx-2">
+                          <img width={25} height={25} src={profile.cupPro} />
+                        </div>
+                      )} */}
                   </div>
                 </div>
               </div>
@@ -215,16 +213,16 @@ const Home = () => {
                     <span>{profile.comments}</span>
                   </div>
                   {/* <div
-                    className="flex justify-end  items-center "
-                    onClick={() => handleExpand(index)}>
-                    <CropFreeIcon
-                      className={` ${
-                        expandedVideo === index
-                          ? "text-green-500"
-                          : "text-white"
-                      } font35 cursor-pointer`}
-                    />
-                  </div> */}
+                      className="flex justify-end  items-center "
+                      onClick={() => handleExpand(index)}>
+                      <CropFreeIcon
+                        className={` ${
+                          expandedVideo === index
+                            ? "text-green-500"
+                            : "text-white"
+                        } font35 cursor-pointer`}
+                      />
+                    </div> */}
                 </div>
               </div>
               <div className="w-full h-full bg-black flex flex-col justify-center items-center">
@@ -269,4 +267,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default VideosProfile;

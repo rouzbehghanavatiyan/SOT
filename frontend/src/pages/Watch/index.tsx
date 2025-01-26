@@ -92,10 +92,7 @@ const Watch: React.FC = () => {
   return (
     <>
       <div className={`container ${isFullscreen ? "fullscreen" : ""}`}>
-        <div onTouchEnd={handleKeshesh} className="bg-red">
-          {" "}
-          dddfdfsdffdfsdfffffffffffffffffffffff{" "}
-        </div>
+      
         <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12">
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {allDableWatch.map((datbleWatch: any, index) => {

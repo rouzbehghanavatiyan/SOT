@@ -27,8 +27,12 @@ const PhoneFooter: React.FC = () => {
               height={30}
             />
           </Link>
-          <NotificationsIcon className=" font30 text-orange-hover" />
-          <AccountCircleIcon className=" font30 text-orange-hover" />
+          <Link to={"/notification"}>
+            <NotificationsIcon className=" font30 text-orange-hover" />
+          </Link>
+          <Link to={"/profile"}>
+            <AccountCircleIcon className=" font30 text-orange-hover" />
+          </Link>
         </div>
       </div>
     </ResponsiveMaker>

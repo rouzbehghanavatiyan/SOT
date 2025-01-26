@@ -13,6 +13,8 @@ import Sot from "../pages/Sot";
 import TalentMode from "../common/TalentMode";
 import StepTwo from "../common/TalentMode/StepTwo";
 import StepThree from "../common/TalentMode/StepThree";
+import Notification from "../pages/Notification";
+import Profile from "../pages/Profile";
 
 const PublicRoutes = () => {
   return (
@@ -30,6 +32,9 @@ const PublicRoutes = () => {
         <Route path="/live" element={<Live />} />
         <Route path="/robot" element={<Robot />} />
         <Route path="/store" element={<Store />} />
+        <Route path="/notification" element={<Notification />} />
+        <Route path="/profile" element={<Profile />} />
+        
       </Routes>
     </Layout>
   );

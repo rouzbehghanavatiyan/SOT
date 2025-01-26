@@ -36,22 +36,17 @@ const products = [
 
 const Store = () => {
   return (
-    <div className="flex flex-wrap justify-center">
+    <div className="flex flex-col justify-center">
       {products.map((product) => (
         <div
           key={product.id}
-          className="bg-white border rounded-lg p-4 m-4 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer hover:bg-gray-100"
-        >
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-44 object-cover rounded-md"
-          />
+          className="bg-white border rounded-lg p-4 m-4 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer hover:bg-gray-100">
+       
           <div className="mt-2 flex justify-between items-center">
             <div className="text-gray-800 text-lg flex justify-between font-semibold">
               <span>{product.name}</span>
             </div>
-            <ConfirmationNumberIcon />
+            <ConfirmationNumberIcon className="font25 text-gray-800" />
           </div>
           <div>${product.price}</div>
         </div>
