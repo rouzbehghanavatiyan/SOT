@@ -7,6 +7,7 @@ import LogoTC from "../../assets/img/1724181984017.jpg";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
+import HandshakeIcon from '@mui/icons-material/Handshake';
 
 type Props = PropTypes;
 
@@ -27,7 +28,7 @@ const SidebarLinks: React.FC<Props> = () => {
       <Link to={"/friendly"}>
         <div className="my-8 flex flex-col justify-center">
           <span className=" flex justify-center">
-            <GroupsIcon className="flex justify-center font40 text-orange-hover" />
+            <HandshakeIcon className="flex justify-center font40 text-orange-hover" />
           </span>
           <span className="flex justify-center font-bold text-gray-800">
             Friendly

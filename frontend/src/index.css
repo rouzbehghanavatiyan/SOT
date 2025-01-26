@@ -14,6 +14,10 @@ p {
   color: #272343;
 }
 
+/* .shadow_container {
+  box-shadow: 0px 0px 15px 3px rgb(0 0 0 / 75%)
+} */
+
 /* 
 @media (min-width: 600px) {
   .css-ju88wr-MuiToolbar-root {
@@ -600,4 +604,65 @@ br {
   100% {
     clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
   }
+}
+
+
+/* لودینگ */
+
+.loader-wrapper {
+  width: 35px;
+  height: 35px;
+  border-radius: 50px;
+  position: relative;
+  animation: rotate 1s linear infinite
+}
+
+.loader-wrapper::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50px;
+  border: 5px solid #FFF;
+  animation: prixClipFix 2s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes prixClipFix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+  }
+
+  25% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+  }
+
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+  }
+
+  75% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+  }
+
+  100% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+  }
+}
+
+.fullscreen {
+  overflow: hidden;
+  position: fixed;
+  /* برای اینکه container در تمام صفحه قرار بگیرد */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  /* برای نمایش در بالای سایر عناصر */
 }

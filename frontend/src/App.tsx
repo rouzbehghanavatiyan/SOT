@@ -5,8 +5,6 @@ import SignUpForm from "./pages/SignUp";
 import "./services/axios";
 
 function App() {
-  console.log("BHHHHHHHBBBBBBBBBBBBB");
-  
   return (
     <Routes>
       <Route path="/*" element={<PublicRoutes />} />

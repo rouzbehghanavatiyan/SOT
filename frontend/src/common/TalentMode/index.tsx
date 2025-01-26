@@ -13,6 +13,7 @@ import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import asyncWrapper from "../AsyncWrapper";
 import { categoryList } from "../../services/dotNet";
+import Loading from "../../components/Loading";
 
 type Props = {};
 
@@ -21,14 +22,16 @@ const TalentMode: FC<Props> = () => {
   const location = useLocation();
   const [allCategory, setAllCategory] = useState<any[]>([]);
   const [showSettingSolo, setShowSettingSolo] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSettingSolo = () => {
     setShowSettingSolo(true);
   };
 
   const handleGetCategory = asyncWrapper(async () => {
-    console.log("Fetching categories");
+    setIsLoading(true);
     const res = await categoryList();
+    setIsLoading(false);
     const { data, status } = res?.data;
     if (status === 0) {
       setAllCategory(data || []);
@@ -56,6 +59,7 @@ const TalentMode: FC<Props> = () => {
 
   return (
     <>
+      <Loading isLoading={isLoading ? true : false} />
       <div className="grid justify-center">
         <div className="w-screen md:w-full h-screen md:h-full ">
           <div className="border-b-2 px-3 flex justify-between text-center items-center">
