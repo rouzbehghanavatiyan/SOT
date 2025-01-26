@@ -2,18 +2,17 @@ import { Routes, Route } from "react-router-dom";
 import PublicRoutes from "./routes/PublicRoutes";
 import Login from "./pages/Login";
 import SignUpForm from "./pages/SignUp";
+import "./services/axios";
 
 function App() {
+  console.log("BHHHHHHHBBBBBBBBBBBBB");
+  
   return (
-    <>
-      <div className=" mx-auto w-100 m-0 p-0 d-flex flex-column min-vh-100 position-relative">
-        <Routes>
-          <Route path="/*" element={<PublicRoutes />} />
-          <Route path="/" element={<Login />} />
-          <Route path="/signUp" element={<SignUpForm />} />
-        </Routes>
-      </div>
-    </>
+    <Routes>
+      <Route path="/*" element={<PublicRoutes />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/signUp" element={<SignUpForm />} />
+    </Routes>
   );
 }
 

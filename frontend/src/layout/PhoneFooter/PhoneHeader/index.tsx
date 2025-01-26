@@ -5,18 +5,21 @@ import EmailIcon from "@mui/icons-material/Email";
 
 const PhoneHeader = () => {
   return (
-    <ResponsiveMaker hiddenWidth={975}>
-      <div className="sticky top-0 left-0 w-full bg_logo shadow-2xl p-2 text-center text-white font-bold z-10 flex">
+    <ResponsiveMaker hiddenWidth={768}>
+      <div className="sticky top-0 left-0 w-full bg_logo shadow-2xl px-4 py-2 text-center text-white font-bold z-10 flex">
         <div className=" grid grid-cols-2 w-full items-center ">
-          <span className="font20 flex justify-start col-span-1">
+          <span className="font25 flex justify-start col-span-1">
             Star Of Talent
           </span>
           <div className="col-span-1 flex justify-end gap-4">
-            <span className="col-span-1 ">
-              <ConfirmationNumberIcon className="flex items-center text-white" />
+            <span className=" col-span-1 relative  ">
+              <ConfirmationNumberIcon className="flex font25 items-center text-white" />
+              <span className="absolute top-0 right-4 text-white bg-red w-full rounded-sm font8">
+                124
+              </span>
             </span>
             <span className="col-span-1">
-              <EmailIcon className=" flex  items-center text-white" />
+              <EmailIcon className=" flex font25  items-center text-white" />
             </span>
           </div>
         </div>

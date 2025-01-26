@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const PhoneFooter: React.FC = () => {
   return (
-    <ResponsiveMaker hiddenWidth={975}>
+    <ResponsiveMaker hiddenWidth={768}>
       <div className="sticky bottom-0 left-0 w-full bg-white shadow-card p-2 text-center">
         <div className="flex gap-10 justify-center">
           <Link to={"/home"}>

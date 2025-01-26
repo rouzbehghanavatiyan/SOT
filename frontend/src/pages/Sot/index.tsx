@@ -4,6 +4,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Link } from "react-router-dom";
+
 const Sot = () => {
   return (
     <section className="w-full flex-col h-screen justify-center">
