@@ -1,22 +1,48 @@
 import React from "react";
+import ChatFields from "../ChatFields";
+
+const image =
+  "https://writestylesonline.com/wp-content/uploads/2018/11/Three-Statistics-That-Will-Make-You-Rethink-Your-Professional-Profile-Picture-1024x1024.jpg";
 
 const Comments = ({ handleShowCMT, closingComments }) => {
   return (
-    <div
-      className={`fixed inset-0 flex items-end justify-center bg-black bg-opacity-70 z-50`}
-      onClick={handleShowCMT}
-    >
+    <div>
       <div
-        className={`bg-white w-full h-1/2 rounded-t-lg ${closingComments ? "animate-slideDown" : "animate-slideUp"}`}
-        onClick={(e) => e.stopPropagation()}
+        className={`fixed inset-0 flex flex-col justify-end bg-opacity-70 z-40`}
+        onClick={handleShowCMT}
       >
-        <h2 className="text-center p-4">Comments</h2>
-        <button
-          onClick={handleShowCMT}
-          className="m-4 p-2 bg-red-500 text-white rounded"
+        <div
+          className={`bg-white w-full h-[80vh] rounded-t-lg overflow-hidden ${closingComments ? "animate-slideDown" : "animate-slideUp"}`}
+          onClick={(e) => e.stopPropagation()}
         >
-          Close
-        </button>
+          <div className="h-full overflow-y-auto">
+            <h2 className="text-center p-4">Comments</h2>
+            {[...Array(10)].map((_, index) => (
+              <div key={index}>
+                <div className="grid-cols-6 grid p-2">
+                  <img
+                    className="rounded-full ms-2"
+                    src={image}
+                    width={50}
+                    height={50}
+                    alt="Rank"
+                  />
+                  <span className="font-bold">Sara510</span>
+                  <p className="col-span-6 m-2 ">
+                    test test test test test test test test test test test test
+                    test test test test test test test test test test test test
+                    test test test test test test test test test test test test
+                    test test test test test test test test test test test test
+                    test test test test test test test test test test test test
+                    test test test test test
+                  </p>
+                </div>
+                <hr className="my-2" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <ChatFields />
       </div>
     </div>
   );

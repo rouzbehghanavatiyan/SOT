@@ -6,7 +6,9 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
-import demoVid from "../../../../../VID_20230630_182952.mp4";
+import demoVid from "../../../../../u-35446-1731760254601.mp4";
+import Comments from "../../common/Comments";
+
 const profiles = [
   {
     img: "https://writestylesonline.com/wp-content/uploads/2018/11/Three-Statistics-That-Will-Make-You-Rethink-Your-Professional-Profile-Picture-1024x1024.jpg",
@@ -120,9 +122,24 @@ const profiles = [
 
 const Home = () => {
   const [expandedVideo, setExpandedVideo] = useState(null);
+  const [showComments, setShowComments] = useState(false);
+  const [closingComments, setClosingComments] = useState(false);
 
   const handleExpand = (index: any) => {
     setExpandedVideo((prev) => (prev === index ? null : index));
+  };
+
+  const handleShowCMT = () => {
+    if (showComments) {
+      setClosingComments(true);
+
+      setTimeout(() => {
+        setShowComments(false);
+        setClosingComments(false);
+      }, 300);
+    } else {
+      setShowComments(true);
+    }
   };
 
   return (
@@ -131,16 +148,18 @@ const Home = () => {
         {profiles.map((profile, index) => (
           <section
             key={index}
-            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}>
+            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}
+          >
             <div
               className={`relative ${
                 expandedVideo === index
-                  ? "w-full h-screen "
+                  ? "w-full h-screen"
                   : "w-full sm:w-[100%] md:w-[100%] lg:w-[325px] h-[650px]"
-              }transition-all duration-500`}>
-              <div className="ms-1 absolute justify-between items-center text-2xl">
-                <div className="flex gap-2 my-1 items-center">
-                  <div className="relative mb-2 col-span-1">
+              }transition-all duration-500`}
+            >
+              <div className="ms-1 absolute justify-between items-center m-1 text-2xl">
+                <div className="grid grid-cols-5  gap-2 my-1 items-center">
+                  <div className="relative mb-2  col-span-1">
                     <img
                       className="rounded-full relative"
                       src={profile.img}
@@ -156,40 +175,44 @@ const Home = () => {
                       alt="Rank"
                     />
                   </div>
-                  <div className="flex col-span-2 justify-center">
-                    <span className="font-bold text-white">
+                  <div className="flex col-span-2 items-start justify-start align-top ">
+                    <span className="font-bold flex items-start  text-white">
                       {profile.username}
                     </span>
-                    {!!profile.cupPro && (
+                    {/* {!!profile.cupPro && (
                       <div className="flex items-end mx-2">
                         <img width={25} height={25} src={profile.cupPro} />
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>
               <div className="absolute font35 top-2 right-4">
-                <div className="flex gap-4 items-center">
-                  <div className="flex text-white items-center gap-1">
-                    <ThumbUpOffAltIcon />
-                    <span>{profile.comments}</span>
-                  </div>
+                <div className="flex flex-col gap-4 items-center">
                   <div>
                     {profile?.type?.toLowerCase() === "success" ? (
                       <>
                         <VerifiedIcon
                           className={`flex items-center text-${profile.color} font35`}
                         />
-                        <span className="text-green">{profile.type}</span>
+                        <span className="text-green font18 font-bold">
+                          {profile.type}
+                        </span>
                       </>
                     ) : (
                       <>
                         <DangerousIcon
                           className={`flex items-center text-red font35`}
                         />
-                        <span className="text-red">{profile.type}</span>
+                        <span className="text-red font18 font-bold">
+                          {profile.type}
+                        </span>
                       </>
                     )}
+                  </div>
+                  <div className="flex text-white items-center gap-1">
+                    <ThumbUpOffAltIcon className=" font20 font-bold" />
+                    <span>{profile.comments}</span>
                   </div>
                   {/* <div
                     className="flex justify-end  items-center "
@@ -223,7 +246,9 @@ const Home = () => {
                 </div>
               </div>
               <div className="flex items-center gap-1 m-2">
-                <ChatBubbleOutlineIcon className="text-black font20  cursor-pointer" />
+                <span onClick={handleShowCMT}>
+                  <ChatBubbleOutlineIcon className="text-black font20  cursor-pointer" />
+                </span>
                 <span> 1,529 </span>
               </div>
               <p className="mx-2">
@@ -234,6 +259,12 @@ const Home = () => {
           </section>
         ))}
       </div>
+      {showComments && (
+        <Comments
+          handleShowCMT={handleShowCMT}
+          closingComments={closingComments}
+        />
+      )}
     </div>
   );
 };

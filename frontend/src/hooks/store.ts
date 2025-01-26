@@ -1,9 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
+import mainSlice from "../common/Slices/main";
 
 const rootReducer = {
-  //   tax: taxSlice,
-  //   main: mainSlice,
-  //   account: accountSlice,
+  main: mainSlice,
 };
 
 export const store = configureStore({

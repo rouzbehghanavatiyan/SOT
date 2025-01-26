@@ -8,6 +8,7 @@ export interface ButtonProps
   label?: string;
   asChild?: boolean;
   icon?: any;
+  loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -20,6 +21,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size,
       asChild = false,
+      loading = false,
       ...props
     },
     ref
@@ -31,9 +33,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         {...props}
+        disabled={loading}
       >
-        <span className="mx-1">{icon}</span>
-        {label}
+        {loading ? (
+          <div className="loader_btn mx-1" />
+        ) : (
+          <>
+            <span className="mx-1">{icon}</span>
+            {label}
+          </>
+        )}
       </Comp>
     );
   }
@@ -49,6 +58,8 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary text-white text-md shadow hover:bg-primary-hover hover:text-white",
+        green:
+          "bg-green text-white text-md shadow hover:bg-gray hover:text-white",
         secondary:
           "bg-secondary !text-white shadow-sm hover:bg-secondary-hover",
         ghost: "text-mainBlack hover:text-mainGray-dark",
