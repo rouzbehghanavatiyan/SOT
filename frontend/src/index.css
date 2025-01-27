@@ -666,3 +666,8 @@ br {
   z-index: 9999;
   /* برای نمایش در بالای سایر عناصر */
 }
+
+.video-slide {
+  position: relative;
+  width: 100%;
+}
