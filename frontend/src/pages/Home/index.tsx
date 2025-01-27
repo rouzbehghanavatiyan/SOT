@@ -6,7 +6,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
-// import demoVid from "../../../../../u-35446-1731760254601.mp4";
+import demoVid from "../../../../../u-35446-1731760254601.mp4";
 import Comments from "../../common/Comments";
 
 const profiles = [
@@ -142,6 +142,7 @@ const Home = () => {
     }
   };
 
+
   return (
     <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12">
       <div className=" grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -176,7 +177,7 @@ const Home = () => {
                     />
                   </div>
                   <div className="flex col-span-2 items-start justify-start align-top ">
-                    <span className="font-bold flex items-start  text-white">
+                    <span className="font-bold flex items-start text-white">
                       {profile.username}
                     </span>
                     {/* {!!profile.cupPro && (
@@ -233,7 +234,7 @@ const Home = () => {
                     controls
                     width="100%"
                     height="100%"
-                    // url={demoVid}
+                    url={demoVid}
                   />
                 </div>
                 <div className="w-full h-[450px] flex justify-center items-center">
@@ -241,7 +242,7 @@ const Home = () => {
                     controls
                     width="100%"
                     height="100%"
-                    // url={demoVid}
+                    url={demoVid}
                   />
                 </div>
               </div>
