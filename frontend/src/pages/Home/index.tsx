@@ -6,8 +6,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
-import demoVid1 from "../../../../../d55c684301ec7e7fe086680c18c5e82d61899342-720p.mp4";
-import demoVid2 from "../../../../../VID_20230630_182952.mp4";
+import demoVid from "../../../../../u-35446-1731760254601.mp4";
 import Comments from "../../common/Comments";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -147,6 +146,7 @@ const Home = () => {
       setShowComments(true);
     }
   };
+
 
   return (
     <>

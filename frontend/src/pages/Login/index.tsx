@@ -6,6 +6,7 @@ import { Button } from "../../components/Button";
 import logo from "../../assets/img/1724181984017.jpg";
 import Input from "../../components/Input";
 import { login } from "../../services/dotNet";
+import { jwtDecode } from "jwt-decode";
 
 const LogInForm: FC = () => {
   const [operatingSystem, setOperatingSystem] = useState<string | null>(null);
@@ -34,7 +35,14 @@ const LogInForm: FC = () => {
     const { status, data } = res?.data;
     if (status === 0) {
       navigate("/home");
+      const fixUser: any = jwtDecode(data?.token);
+      const userId =
+        fixUser[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ];
+      console.log(userId);
       sessionStorage.setItem("token", data?.token);
+      sessionStorage.setItem("userId", userId);
     } else {
     }
   };
