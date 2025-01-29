@@ -38,7 +38,6 @@ const Watch: React.FC = () => {
       userId: userIdFromSStorage,
       movieId: movieId,
     };
-    console.log(postData);
     const res = await addLike(postData);
     console.log(res);
     setLikedVideos(newLikedVideos);
@@ -146,7 +145,7 @@ const Watch: React.FC = () => {
                   key={index}
                   className="flex bg-black gap-10 flex-col"
                 >
-                  <div className="flex-shrink-0 h-[40vh]">
+                  <div className="flex-shrink-0 h-[38vh]">
                     <OptionWatchs
                       handleLiked={handleLiked}
                       parent={parent}
@@ -167,7 +166,7 @@ const Watch: React.FC = () => {
                       }}
                     />
                   </div>
-                  <div className="flex-shrink-0 h-[40vh]">
+                  <div className="flex-shrink-0 h-[38vh]">
                     <OptionWatchs
                       handleLiked={handleLiked}
                       parent={parent}
