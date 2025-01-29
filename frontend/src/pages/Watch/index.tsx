@@ -196,7 +196,7 @@ const Watch: React.FC = () => {
                 </SwiperSlide>
               );
             })}
-          </div>s
+          </div>
         </div>
         {showComments && (
           <Comments
