@@ -24,7 +24,7 @@ export const categoryList = async () => {
   return await axios.get(url);
 };
 
-export const addLike = async () => {
+export const addLike = async (postData: any) => {
   const url = `${baseURL}/addLike`;
-  return await axios.get(url);
+  return await axios.post(url, postData);
 };

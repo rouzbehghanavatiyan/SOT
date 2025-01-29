@@ -9,15 +9,15 @@ import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
 
 const PhoneFooter: React.FC = () => {
-  const [activeIcon, setActiveIcon] = useState<string | null>(null); // وضعیت آیکون فعال
+  const [activeIcon, setActiveIcon] = useState<string | null>(null);
 
   const handleWatchClick = () => {
-    setActiveIcon("watch"); // تنظیم آیکون Watch به عنوان فعال
+    setActiveIcon("watch");
   };
 
   return (
-    <ResponsiveMaker visibleWidth={400}>
-      <div className="sticky bottom-0 left-0 w-full bg-white shadow-card text-center">
+    <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
+      <div className="fixed bottom-0 left-0 w-full bg-white shadow-card text-center">
         <div className="flex gap-10 justify-center">
           <NavLink
             to={"/home"}
@@ -26,7 +26,8 @@ const PhoneFooter: React.FC = () => {
                 "flex w-14 py-2 items-center  justify-center",
                 isActive ? " border-t-2 border-green" : ""
               )
-            }>
+            }
+          >
             <HomeIcon className="font30 text-orange-hover" />
           </NavLink>
           <NavLink
@@ -37,7 +38,8 @@ const PhoneFooter: React.FC = () => {
                 "flex w-14 py-2 items-center  justify-center",
                 isActive ? " border-t-2 border-green" : ""
               )
-            }>
+            }
+          >
             <PlayArrowIcon className={`font30 text-orange-hover `} />
           </NavLink>
           <NavLink
@@ -47,7 +49,8 @@ const PhoneFooter: React.FC = () => {
                 "flex w-14 py-2 items-center  justify-center",
                 isActive ? " border-t-2 border-green" : ""
               )
-            }>
+            }
+          >
             <img
               src={LogoTC}
               alt="Logo"
@@ -63,7 +66,8 @@ const PhoneFooter: React.FC = () => {
                 "flex w-14 py-2 items-center  justify-center",
                 isActive ? " border-t-2 border-green" : ""
               )
-            }>
+            }
+          >
             <NotificationsIcon className="font30 text-orange-hover" />
           </NavLink>
           <NavLink
@@ -73,7 +77,8 @@ const PhoneFooter: React.FC = () => {
                 "flex w-14 py-2 items-center  justify-center",
                 isActive ? "border-t-2 border-green" : ""
               )
-            }>
+            }
+          >
             <AccountCircleIcon className="font30 text-orange-hover" />
           </NavLink>
         </div>

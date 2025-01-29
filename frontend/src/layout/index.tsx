@@ -43,7 +43,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
             <PhoneHeader />
-            <div className="mt-2">{children}</div>
+            <div>{children}</div>
             <PhoneFooter />
           </div>
         </div>

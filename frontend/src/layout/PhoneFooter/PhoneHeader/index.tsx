@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const PhoneHeader = () => {
   return (
-    <ResponsiveMaker hiddenWidth={768}>
+    <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
       <Link to={"/store"}>
         <div className="sticky top-0 left-0 w-full bg_logo shadow-2xl px-4 py-2 text-center text-white font-bold z-10 flex">
           <div className=" grid grid-cols-2 w-full items-center ">

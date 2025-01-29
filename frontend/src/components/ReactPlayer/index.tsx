@@ -8,44 +8,40 @@ const VideoReactPlayer: React.FC = ({
   muted = false,
   url,
   //   onProgress,
+  width = "100%",
+  height = "100%",
   onDuration,
   onEnded,
   className,
 }: any) => {
-  const onProgress = (e) => {
-    console.log(e);
-  };
-
   return (
-    <div>
-      <ReactPlayer
-        className={className}
-        width="100%"
-        height="100%"
-        playing={playing}
-        loop={loop}
-        playbackRate={playbackRate}
-        muted={muted}
-        onReady={() => console.log("onReady")}
-        onStart={() => console.log("onStart")}
-        onBuffer={() => console.log("onBuffer")}
-        onSeek={(e: any) => console.log("Seeking", e)}
-        onEnded={onEnded}
-        onError={(e: any) => console.log("onError", e)}
-        onProgress={onProgress}
-        onDuration={onDuration}
-        config={{
-          youtube: {
-            playerVars: { showinfo: 1 },
-          },
-          facebook: {
-            appId: "12345",
-          },
-        }}
-        url={url}
-        controls
-      />
-    </div>
+    <ReactPlayer
+      className={className}
+      width={width}
+      height={height}
+      playing={playing}
+      loop={loop}
+      playbackRate={playbackRate}
+      muted={muted}
+      // onReady={() => console.log("onReady")}
+      // onStart={() => console.log("onStart")}
+      // onBuffer={() => console.log("onBuffer")}
+      // onSeek={(e: any) => console.log("Seeking", e)}
+      onEnded={onEnded}
+      // onError={(e: any) => console.log("onError", e)}
+      // onProgress={onProgress}
+      onDuration={onDuration}
+      config={{
+        youtube: {
+          playerVars: { showinfo: 1 },
+        },
+        facebook: {
+          appId: "12345",
+        },
+      }}
+      url={url}
+      controls
+    />
   );
 };
 
