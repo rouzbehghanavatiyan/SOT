@@ -20,6 +20,14 @@ import { Mousewheel, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import OptionWatchs from "./OptionWatchs";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import cook3 from "../../../assets/img/cook3.jpg";
+import cook4 from "../../assets/img/cook4.jpg";
+import inv5 from "../../assets/img/inv5.jpg";
+import Image from "../../../components/Image";
+import rank1 from "../../assets/img/rank11.webp";
+import rank2 from "../../assets/img/rank3.webp";
+import rank3 from "../../assets/img/rank5.webp";
+
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = sessionStorage.getItem("userId");
 // import demoVideo from "../../../../../u-35446-1731760254601.mp4";
@@ -143,10 +151,13 @@ const Watch: React.FC = () => {
               return (
                 <SwiperSlide
                   key={index}
-                  className="flex bg-black gap-10 flex-col"
+                  className="flex border-2 bg-black gap-12 flex-col"
                 >
-                  <div className="flex-shrink-0 h-[38vh]">
+                  <div className=" flex-shrink-0 h-[35vh] my-2">
                     <OptionWatchs
+                      profileName={"profileName"}
+                      imgSrc={inv5}
+                      rankSrc={rank3}
                       handleLiked={handleLiked}
                       parent={parent}
                       child={child}
@@ -166,8 +177,11 @@ const Watch: React.FC = () => {
                       }}
                     />
                   </div>
-                  <div className="flex-shrink-0 h-[38vh]">
+                  <div className=" flex-shrink-0 h-[35vh]">
                     <OptionWatchs
+                      profileName={"profileName"}
+                      imgSrc={cook4}
+                      rankSrc={rank1}
                       handleLiked={handleLiked}
                       parent={parent}
                       child={child}
@@ -182,7 +196,7 @@ const Watch: React.FC = () => {
                 </SwiperSlide>
               );
             })}
-          </div>
+          </div>s
         </div>
         {showComments && (
           <Comments
