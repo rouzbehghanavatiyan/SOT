@@ -8,6 +8,7 @@ import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
 // import demoVid from "../../../../../u-35446-1731760254601.mp4";
 import Comments from "../../../common/Comments";
+import userProfile from "../../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 
 const profiles = [
   {
@@ -160,7 +161,7 @@ const VideosProfile = () => {
                   <div className="relative mb-2  col-span-1">
                     <img
                       className="rounded-full relative"
-                      src={profile.img}
+                      src={userProfile}
                       width={60}
                       height={60}
                       alt="Profile"
