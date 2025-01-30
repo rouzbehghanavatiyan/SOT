@@ -21,6 +21,8 @@ import OptionHomes from "./OptionHomes";
 import cook3 from "../../assets/img/cook3.jpg";
 import cook4 from "../../assets/img/cook4.jpg";
 import inv5 from "../../assets/img/inv5.jpg";
+import Video from "../../components/Video";
+import Rank from "../../components/Rank";
 
 const dubleVideos = [
   {
@@ -74,6 +76,8 @@ const Home = () => {
   const [expandedVideo, setExpandedVideo] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const [closingComments, setClosingComments] = useState(false);
+  const [isPlayingBottom, setIsPlayingBottom] = useState(false);
+  const [isPlayingTop, setIsPlayingTop] = useState(false);
 
   const handleExpand = (index: any) => {
     setExpandedVideo((prev) => (prev === index ? null : index));
@@ -92,9 +96,17 @@ const Home = () => {
     }
   };
 
+  const handleVideoBottom = () => {
+    setIsPlayingBottom(!isPlayingBottom);
+  };
+
+  const handleVideoTop = () => {
+    setIsPlayingTop(!isPlayingTop);
+  };
+
   return (
     <>
-      <Swiper
+      {/* <Swiper
         direction={"vertical"}
         slidesPerView={1}
         mousewheel={true}
@@ -107,20 +119,20 @@ const Home = () => {
                 <SwiperSlide key={index} className="bg-black flex flex-col">
                   <OptionHomes result profile={profile} />
                   <div className="w-[100%] h-[31vh]">
-                    <ReactPlayer
-                      controls
-                      width="100%"
-                      height="100%"
+                    <Video
+                      loop
+                      handleVideo={handleVideoTop}
                       url={demoVid}
+                      playing={isPlayingTop}
                     />
                   </div>
-                  <OptionHomes profile={profile}/>
+                  <OptionHomes profile={profile} />
                   <div className="w-[100%] h-[31vh]">
-                    <ReactPlayer
-                      controls
-                      width="100%"
-                      height="100%"
+                    <Video
+                      loop
+                      handleVideo={handleVideoBottom}
                       url={demoVid2}
+                      playing={isPlayingBottom}
                     />
                   </div>
                   <div className="flex items-center gap-1 m-2">
@@ -140,7 +152,8 @@ const Home = () => {
             )}
           </div>
         </div>
-      </Swiper>
+      </Swiper> */}
+      <Rank />
       {showComments && (
         <Comments
           handleShowCMT={handleShowCMT}

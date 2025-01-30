@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import "video.js/dist/video-js.css";
-import videojs from "video.js";
 
 type PropsType = any;
 

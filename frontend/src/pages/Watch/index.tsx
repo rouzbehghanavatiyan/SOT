@@ -13,7 +13,6 @@ import asyncWrapper from "../../common/AsyncWrapper";
 import Loading from "../../components/Loading";
 import AspectRatioIcon from "@mui/icons-material/AspectRatio";
 import Slider from "react-slick";
-import VideoReactPlayer from "../../components/ReactPlayer";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Mousewheel, Pagination } from "swiper/modules";
