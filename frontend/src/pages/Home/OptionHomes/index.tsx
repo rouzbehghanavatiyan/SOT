@@ -3,38 +3,13 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import CommentIcon from "@mui/icons-material/Comment";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import Image from "../../../components/Image";
 
 const OptionHomes = ({ result, profile }: any) => {
   return (
-    <div className="absolute top-0 w-full bg_options">
-      <div className="grid grid-cols-3 mx-2 items-start">
-        <div className="flex col-span-1 justify-start items-center">
-          <div className="flex flex-col items-start gap-1">
-            <div className="relative ">
-              <img
-                className="rounded-full"
-                src={profile.img}
-                width={50}
-                height={50}
-                alt="Profile"
-              />
-              <span className="absolute bottom-0 ">
-                <img
-                  className="right-0 bottom-0"
-                  src={profile.rank}
-                  width={25}
-                  height={25}
-                  alt="Rank"
-                />
-              </span>
-            </div>
-            <span className="font-bold text-black">
-              {profile.username.length > 12
-                ? `${profile.username.slice(0, 12)} ...`
-                : profile.username}
-            </span>
-          </div>
-        </div>
+    <div className="w-full bg-black">
+      <div className="grid grid-cols-3 m-2 items-start">
+        <Image imgSrc={profile?.img} rankSrc={profile?.rank} />
         {result ? (
           <div className="col-span-1 flex justify-center items-center">
             {profile.type.toLowerCase() === "success" ? (
@@ -60,8 +35,8 @@ const OptionHomes = ({ result, profile }: any) => {
         )}
         <div className="  flex justify-end items-center col-span-1">
           <div className="flex flex-col gap-4 items-center">
-            <div className="flex items-center gap-1 text-black">
-              <ThumbUpOffAltIcon className="font20 font-bold text-black" />
+            <div className="flex items-center gap-1 text-white">
+              <ThumbUpOffAltIcon className="font35 font-bold text-white" />
               <span>{profile.comments}</span>
             </div>
           </div>

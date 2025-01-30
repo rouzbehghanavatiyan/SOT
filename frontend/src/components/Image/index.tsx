@@ -1,23 +1,33 @@
 import React from "react";
 
-const Image: React.FC = ({ imgSrc, rankSrc }: any) => {
+const Image: React.FC = ({
+  imgSrc,
+  rankSrc,
+  profileName = "profileName",
+}: any) => {
   return (
-    <div className="relative ">
-      <img
-        className="rounded-full"
-        src={imgSrc}
-        width={50}
-        height={50}
-        alt="Profile"
-      />
-      <span className="absolute bottom-0 ">
+    <div className="relative  flex">
+      <div>
         <img
-          className="right-0 bottom-0"
+          className="rounded-full"
+          src={imgSrc}
+          width={60}
+          height={60}
+          alt="Profile"
+        />
+        <img
+          className="absolute bottom-0 left-0"
           src={rankSrc}
-          width={25}
-          height={25}
+          width={30}
+          height={30}
           alt="Rank"
         />
+      </div>
+
+      <span className="font-bold ms-1 text-white">
+        {profileName.length > 12
+          ? `${profileName.slice(0, 12)} ...`
+          : profileName}
       </span>
     </div>
   );

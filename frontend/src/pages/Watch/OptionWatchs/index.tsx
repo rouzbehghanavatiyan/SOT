@@ -29,17 +29,12 @@ const OptionWatchs: React.FC = ({
 }: any) => {
   const [likedVideos, setLikedVideos] = useState<any>(null);
   return (
-    <div className="flex justify-between mx-3 items-center">
-      <div className="flex gap-3 items-center">
-        <div>
-          <Image imgSrc={imgSrc} rankSrc={rankSrc} />
-          <span className="font-bold text-white">
-            {profileName.length > 12
-              ? `${profileName.slice(0, 12)} ...`
-              : profileName}
-          </span>
+    <div className="flex justify-between mx-3  items-center">
+      <div className="flex gap-3 items-center ">
+        <div className="">
+          <Image profileName={profileName} imgSrc={imgSrc} rankSrc={rankSrc} />
         </div>
-        <span className="p-2 text-white border cursor-pointer">Follow</span>
+        <span className="p-2  text-white border cursor-pointer">Follow</span>
         {/* <MoreVertIcon className="text-white font25 cursor-pointer" /> */}
       </div>
 
