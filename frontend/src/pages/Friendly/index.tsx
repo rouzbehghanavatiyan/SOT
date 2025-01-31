@@ -9,7 +9,7 @@ const Friendly = () => {
   return (
     <>
       <div className="flex">
-        <div className="w-1/2" >  
+        <div className="w-1/2">
           <Button className="my-2" label="Create" variant={"secondary"} />
           <div className="m-auto p-auto  border-dotted p-4  border-2">
             <div className="flex gap-5 justify-around">

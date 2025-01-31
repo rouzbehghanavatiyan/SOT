@@ -91,7 +91,7 @@ const index: FC<Props> = () => {
   return (
     <>
       <div className="flex gap-24">
-        <div>
+        <div className="">
           <div className=" border-b-2 flex justify-between text-center items-center">
             <span className="font-bold text-2xl flex justify-start">Solo</span>
             <SettingsInputCompositeIcon
