@@ -11,20 +11,19 @@ import { store } from "./hooks/store.ts";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-// DOMPurify.sanitize(
 root.render(
-  <StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </BrowserRouter>
-  </StrictMode>
+  // <StrictMode>
+  <BrowserRouter>
+    {/* <Provider store={store}> */}
+    <App />
+    {/* </Provider> */}
+  </BrowserRouter>
+  // </StrictMode>
 ),
-{
-  FORCE_BODY: true,
-  SANITIZE_NAMED_PROPS: true,
-};
+  {
+    FORCE_BODY: true,
+    SANITIZE_NAMED_PROPS: true,
+  };
 // );
 
 // const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -1,107 +1,209 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import FlareIcon from "@mui/icons-material/Flare";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Input from "../../components/Input";
 import SearchIcon from "@mui/icons-material/Search";
+import CommentIcon from "@mui/icons-material/Comment";
+import Comments from "../../common/Comments";
+import ReactPlayer from "react-player";
+import { addLike, attachmentList } from "../../services/dotNet";
+import asyncWrapper from "../../common/AsyncWrapper";
+import Loading from "../../components/Loading";
+import AspectRatioIcon from "@mui/icons-material/AspectRatio";
+import Slider from "react-slick";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Mousewheel, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import OptionWatchs from "./OptionWatchs";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import cook3 from "../../../assets/img/cook3.jpg";
+import cook4 from "../../assets/img/cook4.jpg";
+import inv5 from "../../assets/img/inv5.jpg";
+import Image from "../../../components/Image";
+import rank1 from "../../assets/img/rank11.webp";
+import rank2 from "../../assets/img/rank3.webp";
+import rank3 from "../../assets/img/rank5.webp";
 
-const Watch = () => {
-  const [searching, setSearching] = useState("");
+const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
+const userIdFromSStorage = sessionStorage.getItem("userId");
+// import demoVideo from "../../../../../u-35446-1731760254601.mp4";
+// import demoVideo3 from "../../../../../u-65320-1736910450676.mp4";
 
-  const allVideo = [
-    {
-      srcUp: "https://www.clipsho.com/share/video/play/u3v411u56bm4fcd7yd",
-      srcDown: "https://www.clipsho.com/share/video/play/u3v411on1mm4cfwour",
+const Watch: React.FC = () => {
+  const [allDableWatch, setAllDableWatch] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const [showComments, setShowComments] = useState(false);
+  const [closingComments, setClosingComments] = useState(false);
+
+  const handleLiked = asyncWrapper(async (movieId: number) => {
+    console.log(movieId);
+    const postData = {
+      userId: userIdFromSStorage,
+      movieId: movieId,
+    };
+    const res = await addLike(postData);
+    console.log(res);
+    setLikedVideos(newLikedVideos);
+  });
+
+  const handleShowCMT = () => {
+    if (showComments) {
+      setClosingComments(true);
+
+      setTimeout(() => {
+        setShowComments(false);
+        setClosingComments(false);
+      }, 300);
+    } else {
+      setShowComments(true);
+    }
+  };
+
+  const handleAttachmentList = asyncWrapper(async () => {
+    const res = await attachmentList();
+    const { data, status } = res?.data;
+    if (status === 0) {
+      setAllDableWatch(data);
+    }
+  });
+
+  useEffect(() => {
+    handleAttachmentList();
+  }, []);
+
+  const handleRatio = (id: any) => {
+    console.log(id);
+    if (!isFullscreen) {
+      const elem: any = document.getElementById(`video-${id}`); // استفاده از unique ID
+      if (elem) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      }
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen(); // برای خروج از حالت Fullscreen
+      setIsFullscreen(false);
+    }
+  };
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    vertical: true,
+    verticalSwiping: true,
+    beforeChange: function (currentSlide: any, nextSlide: any) {
+      console.log("before change", currentSlide, nextSlide);
     },
-    {
-      srcUp: "https://www.clipsho.com/share/video/play/u3v411u56bm4fcd7yd",
-      srcDown: "https://www.clipsho.com/share/video/play/u3v411on1mm4cfwour",
+    afterChange: function (currentSlide: any) {
+      console.log("after change", currentSlide);
     },
-    {
-      srcUp: "https://www.clipsho.com/share/video/play/u3v411u56bm4fcd7yd",
-      srcDown: "https://www.clipsho.com/share/video/play/u3v411on1mm4cfwour",
-    },
-    {
-      srcUp: "https://www.clipsho.com/share/video/play/u3v411u56bm4fcd7yd",
-      srcDown: "https://www.clipsho.com/share/video/play/u3v411on1mm4cfwour",
-    },
-    {
-      srcUp: "https://www.clipsho.com/share/video/play/u3v411u56bm4fcd7yd",
-      srcDown: "https://www.clipsho.com/share/video/play/u3v411on1mm4cfwour",
-    },
-  ];
+  };
+
+  const getVideosForDisplay = (allDableWatch: any) => {
+    const videoGroups = allDableWatch
+      .filter((item: any) => item.parentId === null)
+      .map((parentItem: any) => {
+        const childItem = allDableWatch.find(
+          (child: any) => child.parentId === parentItem.inviteId
+        );
+
+        return {
+          parent: parentItem,
+          child: childItem ? childItem : null,
+        };
+      })
+      .filter((group: any) => group.child !== null);
+    return videoGroups;
+  };
+
+  const videoGroups = getVideosForDisplay(allDableWatch);
 
   return (
     <>
-      <div className="col-span-12 md:col-span-12 lg:col-span-12">
-        <div className="flex m-4 mb-2 items-center">
-          <Input
-            className="xxl:w-[1200px]  xl:w-[1100px] xs:w-[600px] "
-            value={searching}
-            onChange={(e: any) => setSearching(e.target.value)}
-            placeholder="Search . . ."
+      <Swiper
+        direction={"vertical"}
+        slidesPerView={1}
+        mousewheel={true}
+        className="mySwiper h-screen"
+      >
+        <div className="container h-screen w-screen">
+          <div className="flex flex-col">
+            {videoGroups.map((group: any, index: any) => {
+              const { parent, child } = group;
+              const fixVideo1 = `${baseURL}/${parent.attachmentType}/${parent.fileName}${parent.ext}`;
+              const fixVideo2 = child
+                ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
+                : "";
+              return (
+                <SwiperSlide
+                  key={index}
+                  className="flex border-2 bg-black gap-12 flex-col"
+                >
+                  <div className=" flex-shrink-0 h-[35vh] my-2">
+                    <OptionWatchs
+                      profileName={"profileName"}
+                      imgSrc={inv5}
+                      rankSrc={rank3}
+                      handleLiked={handleLiked}
+                      parent={parent}
+                      child={child}
+                    />
+                    <ReactPlayer
+                      width="100%"
+                      height="100%"
+                      url={fixVideo1}
+                      controls
+                      config={{
+                        youtube: {
+                          playerVars: { showinfo: 1 },
+                        },
+                        facebook: {
+                          appId: "12345",
+                        },
+                      }}
+                    />
+                  </div>
+                  <div className=" flex-shrink-0 h-[35vh]">
+                    <OptionWatchs
+                      profileName={"profileName"}
+                      imgSrc={cook4}
+                      rankSrc={rank1}
+                      handleLiked={handleLiked}
+                      parent={parent}
+                      child={child}
+                    />
+                    <ReactPlayer
+                      width="100%"
+                      height="100%"
+                      url={fixVideo2}
+                      controls
+                    />
+                  </div>
+                </SwiperSlide>
+              );
+            })}
+          </div>
+        </div>
+        {showComments && (
+          <Comments
+            handleShowCMT={handleShowCMT}
+            closingComments={closingComments}
           />
-          <span>
-            <SearchIcon className="text-gray-800 ms-2" />
-          </span>
-        </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 p-4">
-          {allVideo.map((video, index) => (
-            <section key={index} className="bg-gray-100 rounded-md p-2">
-              <div className="border-b-2 my-2">
-                <AudiotrackIcon className="text-2xl" />
-                <span className="text-2xl">Music / Guitar</span>
-              </div>
-              <div className="relative">
-                <div className="bg-black p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="space-x-4">
-                      <ThumbUpIcon className="text-white cursor-pointer" />
-                      <FlareIcon className="text-white cursor-pointer" />
-                    </div>
-                    <div>
-                      <span className="p-2 text-white border cursor-pointer">
-                        Follow
-                      </span>
-                      <MoreVertIcon className="text-white m-1 cursor-pointer" />
-                    </div>
-                  </div>
-                  <div className="flex justify-center items-center mb-2">
-                    <iframe
-                      className="w-full h-48"
-                      src={video.srcUp}
-                      title="clipsho-video"
-                    ></iframe>
-                  </div>
-                </div>
-                <div className="bg-black p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="space-x-4">
-                      <ThumbUpIcon className="text-white cursor-pointer" />
-                      <FlareIcon className="text-white cursor-pointer" />
-                    </div>
-                    <div>
-                      <span className="p-2 text-white border cursor-pointer">
-                        Follow
-                      </span>
-                      <MoreVertIcon className="text-white m-1 cursor-pointer" />
-                    </div>
-                  </div>
-                  <div className="flex justify-center items-center mb-2">
-                    <iframe
-                      src={video.srcDown}
-                      title="clipsho-video"
-                      className="w-full h-48"
-                    ></iframe>
-                  </div>
-                </div>
-              </div>
-            </section>
-          ))}
-        </div>
-      </div>
+        )}
+      </Swiper>
     </>
   );
 };

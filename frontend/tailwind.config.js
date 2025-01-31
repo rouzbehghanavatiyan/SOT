@@ -47,7 +47,7 @@ const config = {
         900: "#454545",
       },
       red: {
-        DEFAULT: "#F04438",
+        DEFAULT: "#AA0000",
       },
       black: {
         DEFAULT: "#000000",

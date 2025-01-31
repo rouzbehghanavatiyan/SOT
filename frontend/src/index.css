@@ -7,11 +7,16 @@ body * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-size: 15px !important;
 }
 
 p {
   color: #272343;
 }
+
+/* .shadow_container {
+  box-shadow: 0px 0px 15px 3px rgb(0 0 0 / 75%)
+} */
 
 /* 
 @media (min-width: 600px) {
@@ -71,6 +76,22 @@ br {
   user-select: none;
 }
 
+.font8 {
+  font-size: 8px !important;
+}
+
+.font9 {
+  font-size: 9px !important;
+}
+
+.font10 {
+  font-size: 10px !important;
+}
+
+.font15 {
+  font-size: 15px !important;
+}
+
 .font20 {
   font-size: 20px !important;
 }
@@ -94,6 +115,31 @@ br {
 .font50 {
   font-size: 50px !important;
 }
+
+.font60 {
+  font-size: 60px !important;
+}
+
+.font70 {
+  font-size: 70px !important;
+}
+
+.font80 {
+  font-size: 80px !important;
+}
+
+.font100 {
+  font-size: 100px !important;
+}
+
+.font200 {
+  font-size: 200px !important;
+}
+
+.font250 {
+  font-size: 250px !important;
+}
+
 
 /* collapsible animation */
 .CollapsibleContent {
@@ -431,6 +477,8 @@ br {
   animation: rotateGradient 5s linear infinite;
 }
 
+
+/* like */
 @keyframes rotateGradient {
   0% {
     background-position: 0% 50%;
@@ -439,4 +487,206 @@ br {
   100% {
     background-position: 100% 50%;
   }
+}
+
+@keyframes thumbUpAnimation {
+  0% {
+    transform: scale(1);
+    color: white;
+    /* رنگ ابتدایی */
+  }
+
+  50% {
+    transform: scale(1.25);
+    color: white;
+    /* رنگ در نیمه راه */
+  }
+
+  100% {
+    transform: scale(1);
+    color: blue;
+    /* رنگ نهایی */
+  }
+}
+
+.animate-thumb-up {
+  animation: thumbUpAnimation 0.6s ease forwards;
+  /* افزودن انیمیشن */
+}
+
+/* cmt کامنت */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s forwards;
+}
+
+/* cmt کامنت */
+
+.react-player {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.react-player iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.bg_logo {
+  background: rgb(58, 180, 99);
+  background: linear-gradient(90deg, rgb(58, 180, 99) 0%, rgb(31, 111, 120) 50%, rgb(69, 182, 252) 100%);
+}
+
+.bg_logo_circle {
+  background: rgba(255, 255, 255, 0.164);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 0%, rgba(18, 68, 31, 0) 100%, rgba(223, 233, 235, 0) 100%);
+}
+
+
+
+/* دکمه لودر */
+
+.loader_btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50px;
+  position: relative;
+  animation: rotate 1s linear infinite
+}
+
+.loader_btn::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50px;
+  border: 5px solid #FFF;
+  animation: prixClipFix 2s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes prixClipFix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+  }
+
+  25% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+  }
+
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+  }
+
+  75% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+  }
+
+  100% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+  }
+}
+
+
+/* لودینگ */
+
+.loader-wrapper {
+  width: 35px;
+  height: 35px;
+  border-radius: 50px;
+  position: relative;
+  animation: rotate 1s linear infinite
+}
+
+.loader-wrapper::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50px;
+  border: 5px solid #FFF;
+  animation: prixClipFix 2s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes prixClipFix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+  }
+
+  25% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+  }
+
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+  }
+
+  75% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+  }
+
+  100% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+  }
+}
+
+.fullscreen {
+  overflow: hidden;
+  position: fixed;
+  /* برای اینکه container در تمام صفحه قرار بگیرد */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  /* برای نمایش در بالای سایر عناصر */
+}
+
+.video-slide {
+  position: relative;
+  width: 100%;
+}
+
+.bg_options {
+  background: rgb(255, 255, 255);
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.bg_cover {
+  background: rgb(0, 255, 64);
+  background: linear-gradient(270deg, rgb(255, 255, 255) 0%, #ffffff 100%);
 }

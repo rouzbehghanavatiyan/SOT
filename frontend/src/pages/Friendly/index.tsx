@@ -20,10 +20,10 @@ const Friendly = () => {
                 <span className="p-4 bg-orange-hover text-white">User 4</span>
               </div>
               <div className="my-4 grid grid-cols-1 gap-4 justify-between">
-                <span className="p-4 bg-orange-hover text-white ">User 1</span>
-                <span className="p-4 bg-orange-hover text-white">User 2</span>
-                <span className="p-4 bg-orange-hover text-white">User 3</span>
-                <span className="p-4 bg-orange-hover text-white">User 4</span>
+                <span className="p-4 bg-orange-hover text-white ">User 5</span>
+                <span className="p-4 bg-orange-hover text-white">User 6</span>
+                <span className="p-4 bg-orange-hover text-white">User 7</span>
+                <span className="p-4 bg-orange-hover text-white">User 8</span>
               </div>
             </div>
           </div>
