@@ -8,7 +8,7 @@ const PhoneHeader = () => {
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
       <Link to={"/store"}>
-        <div className="sticky top-0 left-0 w-full bg_logo shadow-2xl px-4 py-2 text-center text-white font-bold z-10 flex">
+        <div className="sticky z-40 top-0 left-0 w-full bg_logo shadow-2xl px-4 py-2 text-center text-white font-bold flex">
           <div className=" grid grid-cols-2 w-full items-center ">
             <span className="font25 flex justify-start col-span-1">
               Star Of Talent

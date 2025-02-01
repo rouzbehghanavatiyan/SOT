@@ -2,55 +2,50 @@ import React from "react";
 import starRank from "../../assets/img/rank1.avif";
 import goldPer1 from "../../assets/img/rank10.webp";
 import goldStar2 from "../../assets/img/goldStar.webp";
+import gold from "../../assets/img/rank3.webp";
+import silverRank from "../../assets/img/rank8.webp";
 
-import bronze3 from "../../assets/img/rank11.webp";
-import gold1 from "../../assets/img/rank3.webp";
-import blue4 from "../../assets/img/rank4.png";
-import white1 from "../../assets/img/rank5.webp";
-import purple1 from "../../assets/img/rank6.webp";
-import goldSircle1 from "../../assets/img/rank7.webp";
-import silver2 from "../../assets/img/rank8.webp";
-import silverPer2 from "../../assets/img/rank9.webp";
-import silverSircle2 from "../../assets/img/silverRank2.jpg";
+interface RankProps {
+  type?: "bronze" | "silver" | "gold";
+  level?: 1 | 2 | 3;
+  className?: string;
+  starWidth?: number;
+  starHeight?: number;
+  rankWidth?: number;
+  rankHeight?: number;
+}
 
-const Rank: React.FC = ({
+const Rank: React.FC<RankProps> = ({
+  type = "bronze",
+  level = 1,
+  className,
   starWidth = 10,
   starHeight = 10,
   rankWidth = 50,
   rankHeight = 50,
-}: any) => {
+}) => {
+  const rankImage = type === "bronze" ? gold : type === "gold" ? goldPer1 : silverRank;
+
+  const stars = Array(level).fill(
+    <img
+      className="rounded-full shadow-lg"
+      width={starWidth}
+      height={starHeight}
+      src={goldStar2}
+      alt="Star"
+    />
+  );
+
   return (
-    <div className="bg-red flex">
+    <div className={`${className} z-10 flex flex-col justify-center w-7`}>
       <img
         className=""
         width={rankWidth}
         height={rankHeight}
-        src={goldPer1}
+        src={rankImage}
         alt="My Rank"
       />
-      <span className="flex bg-orange-hover justify-center gap-1">
-        <img
-          className="rounded-full shadow-lg"
-          width={starWidth}
-          height={starHeight}
-          src={goldStar2}
-          alt="My Rank"
-        />
-        <img
-          className="rounded-full shadow-lg"
-          width={starWidth}
-          height={starHeight}
-          src={goldStar2}
-          alt="My Rank"
-        />
-        <img
-          className="rounded-full shadow-lg"
-          width={starWidth}
-          height={starHeight}
-          src={goldStar2}
-          alt="My Rank"
-        />
-      </span>
+      <span className="flex gap-1 justify-center">{stars}</span>
     </div>
   );
 };

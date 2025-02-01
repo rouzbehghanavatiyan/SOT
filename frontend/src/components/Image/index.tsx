@@ -1,30 +1,36 @@
 import React from "react";
+import Rank from "../Rank";
+interface ImageProps {
+  imgSrc: string; // آدرس تصویر پروفایل
+  rankSrc: string; // آدرس تصویر رنک
+  profileName?: string; // نام پروفایل (اختیاری)
+  type?: "bronze" | "silver" | "gold";
+  level?: 1 | 2 | 3;
+  className?: string;
+  starWidth?: number;
+  starHeight?: number;
+  rankWidth?: number;
+  rankHeight?: number;
 
-const Image: React.FC = ({
+}
+
+const Image: React.FC<ImageProps> = ({
   imgSrc,
-  rankSrc,
   profileName = "profileName",
-}: any) => {
+  className,
+}) => {
   return (
-    <div className="relative  flex">
-      <div>
+    <div className={`${className} flex`}>
+      <div className=" " >
         <img
           className="rounded-full"
           src={imgSrc}
-          width={60}
-          height={60}
+          width={45}
+          height={45}
           alt="Profile"
         />
-        <img
-          className="absolute bottom-0 left-0"
-          src={rankSrc}
-          width={30}
-          height={30}
-          alt="Rank"
-        />
       </div>
-
-      <span className="font-bold ms-1 text-white">
+      <span className="font-bold ms-1">
         {profileName.length > 12
           ? `${profileName.slice(0, 12)} ...`
           : profileName}
