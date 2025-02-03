@@ -1,45 +1,73 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NetworkCheckIcon from "@mui/icons-material/NetworkCheck";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import WifiOffIcon from "@mui/icons-material/WifiOff";
 import AltRouteIcon from "@mui/icons-material/AltRoute";
+import { useLocation, useNavigate } from "react-router-dom";
+import asyncWrapper from "../../AsyncWrapper";
+import { subSubCategoryList } from "../../../services/dotNet";
+import AudiotrackIcon from "@mui/icons-material/Audiotrack";
+import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
+import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
+import Loading from "../../../components/Loading";
 
-const StepThree = () => {
+const StepThree: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const [allSubSubCategory, setAllSubSubCategory] = useState<any>();
+
+  console.log(location?.state?.subCategory?.id);
+
+  const handleGetCategory = asyncWrapper(async () => {
+    setIsLoading(true);
+    const res = await subSubCategoryList(location?.state?.subCategory?.id);
+    setIsLoading(false);
+    const { data, status } = res?.data;
+    if (status === 0) {
+      setAllSubSubCategory(data || []);
+    }
+  });
+
+  useEffect(() => {
+    handleGetCategory();
+  }, []);
+
+  const iconMap: { [key: string]: JSX.Element } = {
+    singer: <AudiotrackIcon className="text-2xl mx-3 font25" />,
+    guitar: <AudiotrackIcon className="text-2xl mx-3 font25" />,
+    violen: <AudiotrackIcon className="text-2xl mx-3 font25" />,
+    optional: <OutdoorGrillIcon className="text-2xl mx-3 font25" />,
+  };
+
+  const handleAcceptCategory = (category: any) => {
+    console.log(category);
+    const newPath = `${location.pathname}/${category?.name}`;
+    navigate(newPath);
+  };
+
   return (
-    <div className="w-full flex-col h-screen justify-center ">
-      <div className=" grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
-          <NetworkCheckIcon className="font100 flex justify-center text-green-dark" />
-        </span>
-        <span className="text-gray-800 flex  items-center col-span-2 font20 font-bold">
-          Turbo
-        </span>
+    <>
+      <Loading isLoading={isLoading ? true : false} />
+      <div className="grid justify-center">
+        <div className="w-screen md:w-full h-screen md:h-full ">
+          <div className="border-b-2 px-3 flex justify-between text-center items-center">
+            <span className="font-bold text-2xl flex justify-start">SOT</span>
+          </div>
+          {allSubSubCategory?.map((category: any) => (
+            <span
+              key={category.id}
+              onClick={() => handleAcceptCategory(category)}
+              className="bg-green-dark w-full md:min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
+            >
+              {iconMap[category.name.toLowerCase()]}{" "}
+              <span className="font20 py-2">{category.name}</span>
+            </span>
+          ))}
+        </div>
       </div>
-      <div className=" grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
-          <RadioButtonCheckedIcon className="font100 flex justify-center text-green-dark" />
-        </span>
-        <span className="text-gray-800 flex  items-center col-span-2 font20 font-bold">
-          Live
-        </span>
-      </div>
-      <div className=" grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
-          <WifiOffIcon className="font100 flex justify-center text-green-dark" />
-        </span>
-        <span className="text-gray-800 flex  items-center col-span-2 font20 font-bold">
-          Offline
-        </span>
-      </div>
-      <div className=" grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
-          <AltRouteIcon className="font100 flex justify-center text-green-dark" />
-        </span>
-        <span className="text-gray-800 flex  items-center col-span-2 font20 font-bold">
-          Oprational
-        </span>
-      </div>
-    </div>
+    </>
   );
 };
 

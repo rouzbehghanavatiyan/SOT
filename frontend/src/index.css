@@ -92,8 +92,16 @@ br {
   font-size: 15px !important;
 }
 
+.font18 {
+  font-size: 18px !important;
+}
+
 .font20 {
   font-size: 20px !important;
+}
+
+.font23 {
+  font-size: 23px !important;
 }
 
 .font25 {
@@ -192,7 +200,7 @@ br {
   }
 
   .input {
-    @apply block w-full rounded-xl border border-solid border-gray-200 placeholder-gray-200 outline-none;
+    @apply block w-full rounded-sm border border-solid border-gray-200 placeholder-gray-200 outline-none;
   }
 
   .input-icon {
@@ -224,7 +232,7 @@ br {
   }
 
   .input-sm {
-    @apply h-11 py-1 pe-3.5 ps-10 !text-sm;
+    @apply h-8 pe-3.5 ps-5 !text-sm;
   }
 
   .input_date {
@@ -570,8 +578,8 @@ br {
 /* دکمه لودر */
 
 .loader_btn {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   border-radius: 50px;
   position: relative;
   animation: rotate 1s linear infinite
@@ -689,4 +697,57 @@ br {
 .bg_cover {
   background: rgb(0, 255, 64);
   background: linear-gradient(270deg, rgb(255, 255, 255) 0%, #ffffff 100%);
+}
+
+
+.bg_profile {
+  background: rgb(0, 0, 0);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #0000008a 100%);
+}
+
+.controls {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+.seek-bar {
+  -webkit-appearance: none;
+  /* برای Chrome، Safari و Opera */
+  width: 100%;
+  height: 2px;
+  /* ارتفاع اهرم را به 2px تغییر دادیم */
+  background: rgb(255, 255, 255);
+  /* تغییر رنگ اهرم به خاکستری */
+  border-radius: 5px;
+  /* گوشه‌های اهرم را کمی گرد کردیم */
+  cursor: pointer;
+}
+
+.seek-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 12px;
+  /* ارتفاع ناودانی */
+  width: 12px;
+  /* عرض ناودانی */
+  border-radius: 50%;
+  /* گوشه‌های ناودان را گرد کرده‌ایم */
+  background: white;
+  /* رنگ ناودان */
+  cursor: pointer;
+}
+
+.seek-bar::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
 }

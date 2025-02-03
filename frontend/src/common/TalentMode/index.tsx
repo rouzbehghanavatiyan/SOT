@@ -38,8 +38,9 @@ const TalentMode: FC<Props> = () => {
     }
   });
 
-  const handleAcceptCategory = (data: string) => {
-    const newPath = `${location.pathname}/${data}`;
+  const handleAcceptCategory = (data: any) => {
+    console.log(data);
+    const newPath = `${location.pathname}/${data?.name}`;
     navigate(newPath);
   };
 
@@ -68,7 +69,7 @@ const TalentMode: FC<Props> = () => {
                 <ArrowBackIcon className="font20" />
               </Link>
             </ResponsiveMaker>
-            <span className="font-bold text-2xl flex justify-start">Solo</span>
+            <span className="font-bold text-2xl flex justify-start">SOT</span>
             <SettingsInputCompositeIcon
               onClick={handleSettingSolo}
               className="flex cursor-pointer justify-between text-center items-center"
@@ -77,7 +78,7 @@ const TalentMode: FC<Props> = () => {
           {allCategory.map((category) => (
             <span
               key={category.id}
-              onClick={() => handleAcceptCategory(category.name.toLowerCase())}
+              onClick={() => handleAcceptCategory(category)}
               className="bg-green-dark w-full md:min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
             >
               {iconMap[category.name.toLowerCase()]}{" "}

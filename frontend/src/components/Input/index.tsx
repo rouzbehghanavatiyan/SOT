@@ -97,7 +97,7 @@ const Input: FC<InputProps> = ({
           // onChange={(e) => changeHandler(e, onChange)}
           value={hasNumberSeparator ? formatValue(value) : value}
           ref={ref}
-          className={`${className} input input-sm lg:input-base data-[state=failed]:input-failed data-[state=success]:input-success truncate disabled:cursor-pointer disabled:!border-none disabled:bg-gray-100 disabled:text-[#777777] disabled:!shadow-none data-[state=disabled]:disabled:!px-3 data-[state=disabled]:disabled:!py-2`}
+          className={`${className} input input-sm lg:input-base data-[state=failed]:input-failed data-[state=success]:input-success truncate disabled:cursor-pointer disabled:!border-none disabled:bg-gray-100 disabled:text-[#777777] disabled:!shadow-none data-[state=disabled]:disabled:!px-1 data-[state=disabled]:disabled:!py-2`}
           data-state={
             disabled && !Icon
               ? "disabled"

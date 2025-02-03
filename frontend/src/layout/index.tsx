@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CssBaseline,
   Drawer as MuiDrawer,
@@ -15,16 +15,23 @@ import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
 import { Link } from "react-router-dom";
 import PhoneHeader from "./PhoneFooter/PhoneHeader";
+import { handleCategories } from "../common/Slices/main";
+import { useAppDispatch } from "../hooks/hook";
 
 type PropsType = any;
 
 const Sidebar: React.FC<PropsType> = ({ children }) => {
+  // const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
 
   const toggleMenu = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    // dispatch(handleCategories(2));
+  }, []);
 
   return (
     <main className="relative">

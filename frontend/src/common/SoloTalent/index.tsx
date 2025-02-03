@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
@@ -11,6 +11,8 @@ import SettingSolo from "./SettingSolo/index.tsx";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link, useNavigate } from "react-router-dom";
+import { categoryList } from "../../services/dotNet/index.tsx";
+import asyncWrapper from "../AsyncWrapper/index.ts";
 
 type Props = {};
 
@@ -43,32 +45,37 @@ const SoloTalent: FC<Props> = () => {
           <Link key={"music"} to={`/solo/music`}>
             <span
               onClick={() => handleMode("music")}
-              className="bg-green-dark w-full md:min-w-52  my-2 flex justify-start items-center text-white cursor-pointer">
+              className="bg-green-dark w-full md:min-w-52  my-2 flex justify-start items-center text-white cursor-pointer"
+            >
               <AudiotrackIcon className=" text-2xl mx-3" />
               <span className="text-2xl ">Music</span>
             </span>
           </Link>
           <span
             onClick={() => handleMode("sport")}
-            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer">
+            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
+          >
             <SportsKabaddiIcon className=" text-2xl mx-3" />
             <span className="text-2xl ">Sport</span>
           </span>
           <span
             onClick={() => handleMode("inventor")}
-            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer">
+            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
+          >
             <PrecisionManufacturingIcon className=" text-2xl mx-3" />
             <span className="text-2xl ">Inventor</span>
           </span>
           <span
             onClick={() => handleMode("cook")}
-            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer">
+            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
+          >
             <OutdoorGrillIcon className=" text-2xl mx-3" />
             <span className="text-2xl ">Cook</span>
           </span>
           <span
             onClick={() => handleMode("photography")}
-            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer">
+            className="bg-green-dark min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
+          >
             <LocalSeeIcon className=" text-2xl mx-3" />
             <span className="text-2xl ">photography</span>
           </span>

@@ -4,14 +4,24 @@ import DangerousIcon from "@mui/icons-material/Dangerous";
 import CommentIcon from "@mui/icons-material/Comment";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import Image from "../../../components/Image";
+import ImageRank from "../../../components/ImageRank";
 
 const OptionHomes = ({ result, profile }: any) => {
   return (
     <div className="w-full bg-black">
-      <div className="grid grid-cols-3 m-2 items-start">
-        <Image imgSrc={profile?.img} rankSrc={profile?.rank} />
+      <div className=" m-2 items-start">
+        <ImageRank
+          imgSrc={profile?.img}
+          profileName="jack"
+          profileFontColor="white"
+          type={profile?.rank}
+          level={2}
+          rankWidth={45}
+          starWidth={6}
+          className="absolute bottom-0"
+        />
         {result ? (
-          <div className="col-span-1 flex justify-center items-center">
+          <div className=" absolute top-2 left-36 w-36 flex justify-center items-center">
             {profile.type.toLowerCase() === "success" ? (
               <>
                 <VerifiedIcon

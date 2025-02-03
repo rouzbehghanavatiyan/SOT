@@ -15,6 +15,7 @@ import StepTwo from "../common/TalentMode/StepTwo";
 import StepThree from "../common/TalentMode/StepThree";
 import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
+import StepFour from "../common/TalentMode/StepFour";
 
 const PublicRoutes = () => {
   return (
@@ -23,8 +24,9 @@ const PublicRoutes = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/*" element={<PageNotFound />} />
         <Route path="/solo" element={<TalentMode />} />
-        <Route path="/solo/:id" element={<StepTwo />} />
-        <Route path="/solo/:id/:id" element={<StepThree />} />
+        <Route path="/sot/:id" element={<StepTwo />} />
+        <Route path="/sot/:id/:id" element={<StepThree />} />
+        <Route path="/sot/:id/:id/:id" element={<StepFour />} />
         <Route path="/sot" element={<Sot />} />
         <Route path="/friendly" element={<Friendly />} />
         <Route path="/cup" element={<Cup />} />
@@ -34,7 +36,6 @@ const PublicRoutes = () => {
         <Route path="/store" element={<Store />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/profile" element={<Profile />} />
-        
       </Routes>
     </Layout>
   );

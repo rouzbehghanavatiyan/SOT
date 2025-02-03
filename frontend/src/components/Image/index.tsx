@@ -5,23 +5,24 @@ interface ImageProps {
   rankSrc: string; // آدرس تصویر رنک
   profileName?: string; // نام پروفایل (اختیاری)
   type?: "bronze" | "silver" | "gold";
+  profileFontColor?: string;
   level?: 1 | 2 | 3;
   className?: string;
   starWidth?: number;
   starHeight?: number;
   rankWidth?: number;
   rankHeight?: number;
-
 }
 
 const Image: React.FC<ImageProps> = ({
   imgSrc,
+  profileFontColor = "white",
   profileName = "profileName",
   className,
 }) => {
   return (
     <div className={`${className} flex`}>
-      <div className=" " >
+      <div className=" ">
         <img
           className="rounded-full"
           src={imgSrc}
@@ -30,7 +31,7 @@ const Image: React.FC<ImageProps> = ({
           alt="Profile"
         />
       </div>
-      <span className="font-bold ms-1">
+      <span className={`font-bold text-${profileFontColor} ms-1`}>
         {profileName.length > 12
           ? `${profileName.slice(0, 12)} ...`
           : profileName}

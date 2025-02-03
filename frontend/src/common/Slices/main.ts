@@ -1,4 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { TypeCategories } from "./mainType";
+import asyncWrapper from "../AsyncWrapper";
+import { categoryList } from "../../services/dotNet";
 
 type MessageModal = {
   title?: string;
@@ -32,23 +35,29 @@ const initialState: MainType = {
   showLoading: { btnName: "", value: false },
   showLoadingBtn: "",
 };
+
 // -> handle get user menu list
-// export const handleGetUserMenuList: any = createAsyncThunk(
-//   "main/handleGetUserMenuList",
-//   async (obj: any, { dispatch, getState }) => {
-//     try {
-//       // dispatch(RsetShowLoading(true))
-//       if (resUserMenuList?.data?.code === 0) {
-//         return resUserMenuList.data;
-//       } else {
-//         dispatch(RsetShowLoading({ value: false }));
-//       }
-//     } catch (error) {
-//       console.log(error);
-//       throw Error;
-//     }
-//   }
-// );
+export const handleCategories = createAsyncThunk(
+  "main/handleCategories",
+  async (data: TypeCategories, { dispatch, getState }: any) => {
+    const postData: TypeCategories = {};
+    console.log(data);
+    // dispatch(RsetShowLoading({ value: true, btnName: data?.loadingName }));
+    const resBuyerPersonList = await categoryList(data?.id);
+    // dispatch(RsetShowLoading({ value: false, btnName: "" }));
+    if (resBuyerPersonList.data.code === 0) {
+      dispatch(RsetPersonBuyerList(resBuyerPersonList?.data?.result));
+    } else {
+      dispatch(
+        RsetShowToast({
+          show: true,
+          title: resBuyerPersonList?.data?.message,
+          bg: "danger",
+        })
+      );
+    }
+  }
+);
 
 const mainSlice = createSlice({
   name: "main",
@@ -62,18 +71,6 @@ const mainSlice = createSlice({
       actions: PayloadAction<{ btnName?: string | number; value?: boolean }>
     ) => {
       return { ...state, showLoading: actions.payload };
-    },
-    RsetShowToast: (state, actions: PayloadAction<ToastifyType>) => {
-      return { ...state, showToast: actions.payload };
-    },
-    RsetShowModal: (state, actions: PayloadAction<MessageModal>) => {
-      return { ...state, showModal: actions.payload };
-    },
-    RsetQuestionModal: (state, actions: PayloadAction<ShowQuestion>) => {
-      return { ...state, showQuestionModal: actions.payload };
-    },
-    RsetShowLoadingBtn: (state, actions: PayloadAction<string>) => {
-      return { ...state, showLoadingBtn: actions.payload };
     },
   },
   //   extraReducers: (builder) => {
