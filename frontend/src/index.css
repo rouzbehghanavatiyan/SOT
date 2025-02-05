@@ -3,28 +3,16 @@
 @tailwind utilities;
 
 body * {
-  /* background: #fffffe; */
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-size: 15px !important;
+  font-family: 'Courier New', monospace;
 }
 
 p {
   color: #272343;
 }
-
-/* .shadow_container {
-  box-shadow: 0px 0px 15px 3px rgb(0 0 0 / 75%)
-} */
-
-/* 
-@media (min-width: 600px) {
-  .css-ju88wr-MuiToolbar-root {
-    margin-left: calc(-1.5 * var(--mui-spacing));
-    margin-right: calc(-1.5 * var(--mui-spacing));
-  }
-} */
 
 br {
   user-select: none;
@@ -36,32 +24,17 @@ br {
 
 @font-face {
   font-family: "Vazirmatn";
-  src: url("./assets/fonts/Vazirmatn-FD-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("./assets/fonts/Vazirmatn-FD-SemiBold.woff2") format("woff2");
+  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "iranSans";
-  src: url("./assets/fonts/iranSans.eot") format("eot");
-  src: url("./assets/fonts/iranSans.ttf") format("ttf");
-  src: url("./assets/fonts/iranSans.woff") format("woff");
-}
-
-@font-face {
-  font-family: "iranSansFaNum";
-  src: url("./assets/fonts/IRANSansWeb_FaNum_Light.eot") format("eot");
-  src: url("./assets/fonts/IRANSansWeb_FaNum.ttf") format("ttf");
-  src: url("./assets/fonts/IRANSansWeb_FaNum.woff") format("woff");
+  font-family: "Vazirmatn";
+  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
+  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
+  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
 }
 
 body * {
@@ -74,6 +47,10 @@ body * {
 
 br {
   user-select: none;
+}
+
+.icon_size {
+  font-size: 30px !important;
 }
 
 .font8 {
@@ -750,4 +727,8 @@ br {
   border-radius: 50%;
   background: white;
   cursor: pointer;
+}
+
+.border_phone_footer {
+  border-top: 1px solid rgba(0, 128, 0, 0.404);
 }

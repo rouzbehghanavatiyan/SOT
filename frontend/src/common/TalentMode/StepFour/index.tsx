@@ -3,12 +3,8 @@ import NetworkCheckIcon from "@mui/icons-material/NetworkCheck";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import WifiOffIcon from "@mui/icons-material/WifiOff";
 import AltRouteIcon from "@mui/icons-material/AltRoute";
-import asyncWrapper from "../../AsyncWrapper";
-import { Link } from "react-router-dom";
 import EditVideo from "../../../components/EditVideo";
 import Operational from "./Operational";
-import axios from "axios";
-import { addMovie } from "../../../services/dotNet";
 
 const StepFour: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -18,8 +14,21 @@ const StepFour: React.FC = () => {
   const [showOperational, setShowOperational] = useState<boolean>(false);
   const [allFormData, setAllFormData] = useState<any>(null);
 
+  const dataURLtoBlob = (dataURL: string): Blob => {
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
       setVideoFile(file);
       const url = URL.createObjectURL(file);
@@ -50,16 +59,11 @@ const StepFour: React.FC = () => {
               );
               const dataURL = canvas.toDataURL("image/png");
               setCoverImage(dataURL);
-              const formData = new FormData();
-              formData.append("videoFile", file);
-              formData.append("coverImage", dataURL);
-              formData.append("userId", "1");
-              formData.append("title", "عنوان ویدیو");
-              formData.append("description", "توضیحات ویدیو");
-              for (const [key, value] of formData.entries()) {
-                console.log(key, value);
-              }
-              setAllFormData(formData);
+              const blob = dataURLtoBlob(dataURL);
+              const coverImageFile = new File([blob], "cover.png", {
+                type: "image/png",
+              });
+              setAllFormData({ imageCover: coverImageFile, video: file });
             }
           }
         };

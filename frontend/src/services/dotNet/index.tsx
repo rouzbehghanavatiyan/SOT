@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AddMovieType } from "../../components/EditVideo/type";
 
 const baseURL: string | undefined = import.meta.env.VITE_URL;
 
@@ -39,11 +40,12 @@ export const subSubCategoryList = async (subCatId: number) => {
   return await axios.get(url);
 };
 
-export const addMovie = async (data: FormData) => {
+export const addMovie = async (data: AddMovieType) => {
   const url = `${baseURL}/addMovie`;
-  return await axios.post(url, data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  return await axios.post(url, data);
+};
+
+export const addAttachment = async (data: FormData) => {
+  const url = `${baseURL}/addAttachment`;
+  return await axios.post(url, data);
 };

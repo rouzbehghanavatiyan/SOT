@@ -6,10 +6,13 @@ axios.interceptors.request.use(
   function (config: any) {
     const state = store.getState();
 
+    console.log(config);
+
     if (
-      config.url.toLowerCase().includes("bill/batchinsert") ||
-      config.url.toLowerCase().includes("buyerperson/batchinsert") ||
-      config.url.toLowerCase().includes("stuff/batchinsert")
+      // config.url.toLowerCase().includes("bill/batchinsert") ||
+      // config.url.toLowerCase().includes("buyerperson/batchinsert") ||
+      // config.url.toLowerCase().includes("stuff/batchinsert")
+      config.url.toLowerCase().includes("/addattachment")
     ) {
       config.headers["Content-Type"] = "multipart/form-data";
     } else {

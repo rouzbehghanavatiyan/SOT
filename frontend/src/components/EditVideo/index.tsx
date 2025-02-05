@@ -4,7 +4,8 @@ import { Button } from "../Button";
 import SlideRange from "../SlideRange";
 import Modal from "../Modal";
 import asyncWrapper from "../../common/AsyncWrapper";
-import { addMovie } from "../../services/dotNet";
+import { addAttachment, addMovie } from "../../services/dotNet";
+import { GetServices } from "../../utils/mainType/allMainType";
 
 const EditVideo: React.FC = ({
   showEditMovie,
@@ -17,9 +18,35 @@ const EditVideo: React.FC = ({
   const [rate, setRate] = useState(0);
 
   console.log(allFormData);
+
   const handleAccept = asyncWrapper(async () => {
-    const res = await addMovie(allFormData);
-    console.log("داده‌ها با موفقیت ارسال شدند:", res.data);
+    const postData = {
+      userId: sessionStorage?.getItem("userId") as null,
+      name: "",
+      description: desc,
+      title: title,
+      subSubCategoryId: 1,
+    };
+    const res = await addMovie(postData);
+    const { status, data }: GetServices = res?.data;
+    let listFile: any;
+    if (status === 0) {
+      const formData = new FormData();
+      if (allFormData?.imageCover) {
+        formData.append("formFile", allFormData.imageCover);
+      }
+      if (allFormData?.video) {
+        formData.append("formFile", allFormData.video);
+      }
+      formData.append("attachmentId", data?.id);
+      formData.append("attachmentType", "mo");
+      formData.append("attachmentName", "movies");
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      const resAttachment = await addAttachment(formData);
+      console.log(resAttachment);
+    }
   });
 
   return (
