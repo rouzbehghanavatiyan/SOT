@@ -32,6 +32,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import FlareIcon from "@mui/icons-material/Flare";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Loading from "../../components/Loading";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = sessionStorage.getItem("userId");
@@ -124,6 +125,8 @@ const items = [
 ];
 
 const StepOne: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeProfiles, setActiveProfiles] = useState<Set<number>>(new Set());
   const [lastTap, setLastTap] = useState<number>(0);
   const [searching, setSearching] = useState<string>("");
@@ -146,15 +149,17 @@ const StepOne: React.FC = () => {
     });
   };
 
-  const handleDoubleTap = (index: number) => {
+  const handleDoubleTap = (item: any) => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
-
     if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
-      console.log(`Double-tap detected on item with index: ${index}`);
+      console.log(item?.group);
+      const newPath = `${location.pathname}/show`;
+      navigate(newPath);
       setLastTap(0);
     } else {
-      handleShowProfile(index);
+      console.log(item?.index);
+      handleShowProfile(item?.index);
       setLastTap(now);
     }
   };
@@ -266,7 +271,7 @@ const StepOne: React.FC = () => {
           return (
             <div
               key={index}
-              onClick={() => handleDoubleTap(index)}
+              onClick={() => handleDoubleTap({ group, index })}
               className="my-1 flex-1 flex  flex-col"
             >
               <div className="flex-1">

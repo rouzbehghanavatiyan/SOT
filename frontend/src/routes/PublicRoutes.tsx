@@ -16,6 +16,7 @@ import StepThree from "../common/TalentMode/StepThree";
 import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
 import StepFour from "../common/TalentMode/StepFour";
+import ShowWatch from "../pages/ShowWatch";
 
 const PublicRoutes = () => {
   return (
@@ -28,6 +29,7 @@ const PublicRoutes = () => {
         <Route path="/sot/:id/:id" element={<StepThree />} />
         <Route path="/sot/:id/:id/:id" element={<StepFour />} />
         <Route path="/sot" element={<Sot />} />
+        <Route path="/watch/show" element={<ShowWatch />} />
         <Route path="/friendly" element={<Friendly />} />
         <Route path="/cup" element={<Cup />} />
         <Route path="/watch" element={<Watch />} />
