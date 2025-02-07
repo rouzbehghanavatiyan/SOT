@@ -1,7 +1,4 @@
 import { Router } from "express";
-import chatRoom from "./chatRoom";
-import loginData from "./loginData";
-import group from "./group";
 import categoryTest from "./categoryTest";
 
 const getAllRouter = () => {
