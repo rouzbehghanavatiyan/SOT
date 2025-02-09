@@ -9,49 +9,40 @@ import {
 import asyncWrapper from "../../common/AsyncWrapper";
 import Video from "../../components/Video";
 import { useAppSelector } from "../../hooks/hook";
+import OptionHomes from "../Home/OptionHomes";
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 
 const ShowWatch = ({}) => {
-  const [videoSrc, setVideoSrc] = useState([]);
-  const [dataBinery, setDataBinery] = useState(null);
+  const [dataBineryTop, setDataBineryTop] = useState({});
+  const [dataBineryBottom, setDataBineryBottom] = useState({});
   const { main } = useAppSelector((state) => state);
   const [isPlayingBottom, setIsPlayingBottom] = useState(false);
-  const [isPlayingTop, setIsPlayingTop] = useState(false);
+  const [isPlayingTop, setIsPlayingTop] = useState(true);
 
-  const handleVideoBottom = () => {
-    setIsPlayingBottom(!isPlayingBottom);
-  };
-
-  const handleVideoTop = () => {
-    setIsPlayingTop(!isPlayingTop);
-  };
   const handleAttachmentListByInviteId = asyncWrapper(async () => {
     const inviteId = main?.dobuleVideo?.child?.parentId;
     const res = await attachmentListByInviteId(inviteId);
     const { status, data } = res?.data;
-    if (status === 0) {
-      const fixVideo1 = `wwwroot/${data[0]?.attachmentType}/${data[0]?.fileName}${data[0]?.ext}`;
-      console.log("1", data);
-      setVideoSrc(data);
-      console.log("2", fixVideo1);
-      const res = await attachmentPlay(fixVideo1);
-      console.log(res);
-      setDataBinery(res?.data);
+    const allDataMap = data?.map((item: any) => {
+      return item;
+    });
+    const videoPlayer = document.getElementById("videoPlayer");
+    if (status === 0 && allDataMap.length >= 2) {
+      const fixVideo1 = `wwwroot/${allDataMap[0]?.attachmentType}/${allDataMap[0]?.fileName}${allDataMap[0]?.ext}`;
+      const fixVideo2 = `wwwroot/${allDataMap[1]?.attachmentType}/${allDataMap[1]?.fileName}${allDataMap[1]?.ext}`;
 
-      // const getBlob = await res?.data?.blob();
-      // const objectUrl = URL.createObjectURL(getBlob);
-      // console.log(getBlob);
+      const res1 = await attachmentPlay(fixVideo1);
+      console.log(res1);
+      const res2 = await attachmentPlay(fixVideo2);
+
+      setDataBineryTop(res1);
+      setDataBineryBottom(res2);
     }
   });
 
   useEffect(() => {
     handleAttachmentListByInviteId();
   }, []);
-
-  const fixVideo1 = `${baseURL}/${videoSrc[0]?.attachmentType}/${videoSrc[0]?.fileName}${videoSrc[0]?.ext}`;
-  const fixVideo2 = `${baseURL}/${videoSrc[1]?.attachmentType}/${videoSrc[1]?.fileName}${videoSrc[1]?.ext}`;
-
-  console.log(fixVideo1);
 
   return (
     <>
@@ -64,22 +55,21 @@ const ShowWatch = ({}) => {
         <div className="grid grid-cols-1 md:grid-cols-3 justify-center  bg-white">
           <div className="h-screen">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-center bg-white h-[80%]">
-              <SwiperSlide className="bg-black flex flex-col">
-                {/* <OptionHomes result profile={profile} /> */}
-                <div className="w-[100%] h-[31vh]">
+              <SwiperSlide className="bg-gray-900 flex flex-col">
+                <div className="w-[100%] h-[31vh] ">
                   <Video
                     loop
-                    handleVideo={handleVideoTop}
-                    url={dataBinery}
+                    handleVideo={() => setIsPlayingTop(!isPlayingTop)}
+                    url={dataBineryTop}
                     playing={isPlayingTop}
                   />
                 </div>
-                {/* <OptionHomes profile={profile} /> */}
-                <div className="w-[100%] h-[31vh]">
+                {/* <OptionHomes profile={profile} />s */}
+                <div className="w-[100%] h-[31vh] my-4">
                   <Video
                     loop
-                    handleVideo={handleVideoBottom}
-                    url={fixVideo2}
+                    handleVideo={() => setIsPlayingBottom(!isPlayingBottom)}
+                    url={dataBineryBottom}
                     playing={isPlayingBottom}
                   />
                 </div>

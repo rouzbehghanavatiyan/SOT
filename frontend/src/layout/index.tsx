@@ -15,13 +15,16 @@ import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
 import { Link } from "react-router-dom";
 import PhoneHeader from "./PhoneFooter/PhoneHeader";
-import { handleCategories } from "../common/Slices/main";
+import { handleCategories, RsetCategory } from "../common/Slices/main";
 import { useAppDispatch } from "../hooks/hook";
+import { useSelector } from "react-redux";
+import { categoryList } from "../services/dotNet";
+import asyncWrapper from "../common/AsyncWrapper";
 
 type PropsType = any;
 
 const Sidebar: React.FC<PropsType> = ({ children }) => {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
 
@@ -29,8 +32,19 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     setOpen(!open);
   };
 
+  const handleGetCategory = asyncWrapper(async () => {
+    const res = await categoryList();
+    const { data, status } = res?.data;
+    if (status === 0) {
+      dispatch(RsetCategory(data));
+    }
+  });
+
+  console.log("LAAAAAAAAAAAAAAAAAAAAAYOUT");
+  
+
   useEffect(() => {
-    // dispatch(handleCategories(2));
+    handleGetCategory();
   }, []);
 
   return (

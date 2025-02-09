@@ -7,6 +7,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const PhoneFooter: React.FC = () => {
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
@@ -63,12 +64,13 @@ const PhoneFooter: React.FC = () => {
             to={"/notification"}
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center  justify-center",
+                "flex w-14 py-2 items-center relative justify-center",
                 isActive ? " border_phone_footer " : ""
               )
             }
           >
             <NotificationsIcon className="icon_size text-orange-hover" />
+            <CircleIcon className="text-red absolute top-2 right-2 font10" />
           </NavLink>
           <NavLink
             to={"/profile"}

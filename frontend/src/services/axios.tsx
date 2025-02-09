@@ -5,18 +5,16 @@ import { store } from "../hooks/store";
 axios.interceptors.request.use(
   function (config: any) {
     const state = store.getState();
+    // if (config.url.toLowerCase().includes("/addattachment")) {
+    //   config.headers["Content-Type"] = "multipart/form-data";
+    // } else if (config.url.toLowerCase().includes("/attachmentplay")) {
+    //   config.headers["Content-Type"] = "video/mp4";
+    // } else {
+    //   config.headers["Content-Type"] = "application/json";
+    // }
 
-    console.log(config);
-
-    if (
-      // config.url.toLowerCase().includes("bill/batchinsert") ||
-      // config.url.toLowerCase().includes("buyerperson/batchinsert") ||
-      // config.url.toLowerCase().includes("stuff/batchinsert")
-      config.url.toLowerCase().includes("/addattachment")
-    ) {
-      config.headers["Content-Type"] = "multipart/form-data";
-    } else {
-      config.headers["Content-Type"] = "application/json";
+    if (config.url.toLowerCase().includes("/attachmentplay")) {
+      config.headers["Content-Type"] = "video/mp4";
     }
 
     config.headers.Authorization = `Bearer ${sessionStorage.getItem("token")}`;
@@ -53,7 +51,6 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.log(error);
     if (error.response.status === 401) {
       store.dispatch(
         RsetMessageModal({
@@ -83,7 +80,6 @@ axios.interceptors.response.use(
         return;
       }
     } catch (error: any) {
-      console.log(error);
       const { message }: any = error;
       // Do something with response error
       store.dispatch(

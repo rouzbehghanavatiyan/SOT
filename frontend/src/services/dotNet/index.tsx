@@ -49,3 +49,22 @@ export const addAttachment = async (data: FormData) => {
   const url = `${baseURL}/addAttachment`;
   return await axios.post(url, data);
 };
+
+// نمایش فیلم
+export const attachmentListByInviteId = async (id: number) => {
+  const url = `${baseURL}/attachmentListByInviteId?inviteId=${id}`;
+  return await axios.get(url);
+};
+
+// 2نمایش فیلم
+export const attachmentPlay = async (path: string) => {
+  const url = `${baseURL}/attachmentPlay?path=${path}`;
+  // console.log(url);
+  return url;
+};
+
+// درخواست
+export const addInvite = async (postData: any) => {
+  const url = `${baseURL}/addInvite`;
+  return await axios.post(url, postData);
+};

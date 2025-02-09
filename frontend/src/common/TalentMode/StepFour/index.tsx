@@ -13,6 +13,7 @@ const StepFour: React.FC = () => {
   const [showEditMovie, setShowEditMovie] = useState<boolean>(false);
   const [showOperational, setShowOperational] = useState<boolean>(false);
   const [allFormData, setAllFormData] = useState<any>(null);
+  const [mode, setMode] = useState<any>({});
 
   const dataURLtoBlob = (dataURL: string): Blob => {
     const arr = dataURL.split(",");
@@ -28,7 +29,6 @@ const StepFour: React.FC = () => {
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
     if (file) {
       setVideoFile(file);
       const url = URL.createObjectURL(file);
@@ -72,6 +72,16 @@ const StepFour: React.FC = () => {
   };
 
   const handleOffline = () => {
+    setMode({ show: true, typeMode: 3 });
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "video/*";
+    input.onchange = handleVideoUpload;
+    input.click();
+  };
+
+  const handleOptional = () => {
+    setMode({ show: true, typeMode: 4 });
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "video/*";
@@ -106,25 +116,17 @@ const StepFour: React.FC = () => {
           Offline
         </span>
       </div>
-      <div
-        onClick={() => setShowOperational(true)}
-        className="grid grid-cols-3"
-      >
+      <div onClick={handleOptional} className="grid grid-cols-3">
         <span className="flex justify-center col-span-1">
           <AltRouteIcon className="font100 flex justify-center text-green-dark" />
         </span>
         <span className="text-gray-800 flex items-center col-span-2 font20 font-bold">
-          Operational
+          Optional
         </span>
       </div>
-      {showOperational && (
-        <Operational
-          showOperational={showOperational}
-          setShowOperational={setShowOperational}
-        />
-      )}
       {showEditMovie && (
         <EditVideo
+          mode={mode}
           allFormData={allFormData}
           showEditMovie={showEditMovie}
           setShowEditMovie={setShowEditMovie}

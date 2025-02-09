@@ -26,6 +26,8 @@ interface MainType {
   showLoading?: { btnName?: string | number; value?: boolean };
   showLoadingBtn?: string;
   loading: boolean;
+  dobuleVideo: null;
+  category: any;
 }
 const initialState: MainType = {
   messageModal: { title: "", show: false },
@@ -34,6 +36,8 @@ const initialState: MainType = {
   showQuestionModal: { show: false, answer: false },
   showLoading: { btnName: "", value: false },
   showLoadingBtn: "",
+  dobuleVideo: null,
+  category: [],
 };
 
 // -> handle get user menu list
@@ -72,6 +76,12 @@ const mainSlice = createSlice({
     ) => {
       return { ...state, showLoading: actions.payload };
     },
+    RsetDobuleVideo: (state, actions: PayloadAction<any>) => {
+      return { ...state, dobuleVideo: actions.payload };
+    },
+    RsetCategory: (state, actions: PayloadAction<any>) => {
+      return { ...state, category: actions.payload };
+    },
   },
   //   extraReducers: (builder) => {
   //     builder
@@ -102,5 +112,6 @@ const mainSlice = createSlice({
   //   },
 });
 
-export const { RsetMessageModal, RsetLoading } = mainSlice.actions;
+export const { RsetMessageModal, RsetLoading, RsetDobuleVideo, RsetCategory } =
+  mainSlice.actions;
 export default mainSlice.reducer;

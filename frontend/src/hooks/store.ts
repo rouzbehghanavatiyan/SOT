@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import mainSlice from "../common/Slices/main";
 
 const rootReducer = {
-  // main: mainSlice,
+  main: mainSlice,
 };
 
 export const store = configureStore({

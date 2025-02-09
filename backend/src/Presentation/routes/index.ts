@@ -1,10 +1,12 @@
 import { Router } from "express";
-import categoryTest from "./categoryTest";
+import offLine from "./offLine";
+import likeRoutes from "./likeRoutes";
 
 const getAllRouter = () => {
   const router = Router();
 
-  router.use("/category", categoryTest);
+  router.use("/offLine", offLine);
+  router.use("/like", likeRoutes);
 
   return router;
 };

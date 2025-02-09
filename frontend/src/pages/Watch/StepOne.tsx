@@ -33,103 +33,19 @@ import FlareIcon from "@mui/icons-material/Flare";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Loading from "../../components/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { RsetDobuleVideo } from "../../common/Slices/main";
 
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
-const items = [
-  {
-    id: 1,
-    imageTop: cooking1,
-    imageBott: cooking2,
-    profileImageTop: cook4,
-    profileImageBott: cook1,
-    alt: "Image 1",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 2,
-    imageTop: menGym2,
-    imageBott: womenGymPro1,
-    profileImageTop: gymM3,
-    profileImageBott: womenGym,
-    alt: "Image 2",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: blackProfile,
-    profileImageBott: roberto,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 4,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 4",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-];
-
 const StepOne: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { main } = useAppSelector((state) => state);
   const location = useLocation();
   const [activeProfiles, setActiveProfiles] = useState<Set<number>>(new Set());
   const [lastTap, setLastTap] = useState<number>(0);
-  const [searching, setSearching] = useState<string>("");
   const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -153,7 +69,7 @@ const StepOne: React.FC = () => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
     if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
-      console.log(item?.group);
+      dispatch(RsetDobuleVideo(item?.group));
       const newPath = `${location.pathname}/show`;
       navigate(newPath);
       setLastTap(0);
