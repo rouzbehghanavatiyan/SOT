@@ -9,6 +9,10 @@ import cup4 from "../../assets/img/cup3.png";
 import VideosProfile from "./VideosProfile";
 
 const Profile: React.FC = () => {
+  const handleProfile = () => {
+    
+  };
+
   return (
     <>
       <ResponsiveMaker hiddenWidth={975}>
@@ -17,7 +21,12 @@ const Profile: React.FC = () => {
             <div className="px-3  m-2 border-b-2">
               <div className="col-span-3 relative right-2 p-1">
                 <div className="flex h-32">
-                  <img className="  rounded-full h-24 w-24" src={userProfile} />
+                  <span onClick={handleProfile} className="">
+                    <img
+                      className="  rounded-full h-24 w-24"
+                      src={userProfile}
+                    />
+                  </span>
                   <span className="absolute  left-0 bottom-6 ">
                     <img
                       className="rounded-full  w-8"

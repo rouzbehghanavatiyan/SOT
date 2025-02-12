@@ -10,7 +10,6 @@ import Operational from "../../common/TalentMode/StepFour/Operational";
 import Loading from "../Loading";
 import Timer from "../Timer";
 import { redirect, useNavigate } from "react-router-dom";
-
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const EditVideo: React.FC = ({
@@ -29,11 +28,11 @@ const EditVideo: React.FC = ({
   const handleAcceptOffline = asyncWrapper(async () => {
     if (currentStep === 1) {
       const postData = {
-        userId: sessionStorage?.getItem("userId") as null,
-        name: "",
-        description: movieData?.desc,
-        title: movieData?.title,
-        subSubCategoryId: 1,
+        userId: (sessionStorage?.getItem("userId") as null) || null,
+        description: movieData?.desc || null,
+        title: movieData?.title || null,
+        subSubCategoryId: 1 || null,
+        modeId: mode?.typeMode || null,
       };
       setIsLoadingBtn(true);
       setFindingMatch(true);
@@ -57,10 +56,9 @@ const EditVideo: React.FC = ({
           resAttachment?.data;
         if (attachmentStatus === 0) {
           console.log(resMovieData);
-
           const postInvite = {
             parentId: null,
-            userId: userIdFromSStorage,
+            userId: Number(userIdFromSStorage),
             movieId: resMovieData?.id,
             status: 0,
           };
@@ -72,7 +70,9 @@ const EditVideo: React.FC = ({
           }));
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
+          console.log(inviteStatus);
           if (inviteStatus === 0) {
+            setShowEditMovie(false);
             navigate(`/watch`);
           }
         }
@@ -175,19 +175,17 @@ const EditVideo: React.FC = ({
               findingMatch ? (
                 <>
                   <div className="flex me-1 justify-center items-center shadow-xl rounded-lg">
-                    <div className="flex items-center">
-                      <span>Finding</span>
-                      <div className="loader-dot"> </div>
-                    </div>
+                    <div className="loader-text"> </div>
+                    {/* Finding user */}
                   </div>
-                  {/* <div className="font20 font-bold">
+                  <div className="font20 font-bold">
                     <Timer
                       setShowEditMovie={setShowEditMovie}
                       setFindingMatch={setFindingMatch}
                       movieData={movieData}
                       active={findingMatch}
                     />
-                  </div> */}
+                  </div>
                 </>
               ) : (
                 "Accept"

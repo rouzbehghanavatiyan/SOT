@@ -50,7 +50,7 @@ const PhoneHeader = () => {
             {itsProfileRoute ? (
               <Link to="/setting">
                 <span>
-                  <SettingsIcon className="icon_size items-start text-white" />
+                  <SettingsIcon className=" icon_size items-start text-green" />
                 </span>
               </Link>
             ) : (
