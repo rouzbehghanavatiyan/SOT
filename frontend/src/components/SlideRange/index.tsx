@@ -3,7 +3,6 @@ import React, { useState } from "react";
 const SlideRange: React.FC = () => {
   const [value, setValue] = useState(0); // مقدار پیش‌فرض اسلایدر
 
-  // تابع برای محدود کردن مقادیر به ۰، ۲۰، ۴۰، ۶۰، ۸۰، ۱۰۰
   const handleChange = (e) => {
     const newValue = Math.round(e.target.value / 20) * 20;
     setValue(newValue);

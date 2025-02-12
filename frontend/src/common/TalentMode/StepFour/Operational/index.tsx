@@ -105,90 +105,6 @@ const items = [
     rankTypeBott: "silver",
     rankLevelBott: 2,
   },
-  {
-    id: 1,
-    imageTop: cooking1,
-    imageBott: cooking2,
-    profileImageTop: cook4,
-    profileImageBott: cook1,
-    alt: "Image 1",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 2,
-    imageTop: menGym2,
-    imageBott: womenGymPro1,
-    profileImageTop: gymM3,
-    profileImageBott: womenGym,
-    alt: "Image 2",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: blackProfile,
-    profileImageBott: roberto,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 4,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 4",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
 ];
 
 const Operational: React.FC = () => {
@@ -243,6 +159,14 @@ const Operational: React.FC = () => {
               </span>
             </div>
           ))}
+        </div>
+        <div
+          className={`inset-0 flex justify-center items-center transition-opacity h-11 w-full gap-2 z-50`}
+        >
+          <div className=" w-10 h-10 flex justify-center items-center shadow-xl rounded-lg">
+            <div className="loader-text w-16 h-16"> </div>
+          </div>
+          <div className="text-gray-800"> Finding users . . . </div>
         </div>
       </div>
     </>

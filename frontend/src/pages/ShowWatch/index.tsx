@@ -6,18 +6,27 @@ import {
   attachmentListByInviteId,
   attachmentPlay,
 } from "../../services/dotNet";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import asyncWrapper from "../../common/AsyncWrapper";
 import Video from "../../components/Video";
 import { useAppSelector } from "../../hooks/hook";
 import OptionHomes from "../Home/OptionHomes";
+import OptionShow from "./optionShow";
+import Comments from "../../common/Comments";
+import ImageRank from "../../components/ImageRank";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import { Mousewheel } from "swiper/modules";
+
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 
 const ShowWatch = ({}) => {
-  const [dataBineryTop, setDataBineryTop] = useState({});
-  const [dataBineryBottom, setDataBineryBottom] = useState({});
+  const [showComments, setShowComments] = useState(false);
+  const [closingComments, setClosingComments] = useState(false);
+  const [videos, setVideos] = useState([]); // آرایه برای ذخیره داده‌های ویدیوها
   const { main } = useAppSelector((state) => state);
-  const [isPlayingBottom, setIsPlayingBottom] = useState(false);
-  const [isPlayingTop, setIsPlayingTop] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true); // حالت پخش ویدیو
+  const [isLiked, setIsLiked] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleAttachmentListByInviteId = asyncWrapper(async () => {
     const inviteId = main?.dobuleVideo?.child?.parentId;
@@ -26,59 +35,140 @@ const ShowWatch = ({}) => {
     const allDataMap = data?.map((item: any) => {
       return item;
     });
-    const videoPlayer = document.getElementById("videoPlayer");
     if (status === 0 && allDataMap.length >= 2) {
-      const fixVideo1 = `wwwroot/${allDataMap[0]?.attachmentType}/${allDataMap[0]?.fileName}${allDataMap[0]?.ext}`;
-      const fixVideo2 = `wwwroot/${allDataMap[1]?.attachmentType}/${allDataMap[1]?.fileName}${allDataMap[1]?.ext}`;
-
-      const res1 = await attachmentPlay(fixVideo1);
-      console.log(res1);
-      const res2 = await attachmentPlay(fixVideo2);
-
-      setDataBineryTop(res1);
-      setDataBineryBottom(res2);
+      const videoData = await Promise.all(
+        allDataMap.map(async (item: any) => {
+          const fixVideo = `wwwroot/${item?.attachmentType}/${item?.fileName}${item?.ext}`;
+          const res = await attachmentPlay(fixVideo);
+          return res;
+        })
+      );
+      setVideos(videoData);
     }
   });
+
+  const handleShowCMT = () => {
+    if (showComments) {
+      setClosingComments(true);
+      setTimeout(() => {
+        setShowComments(false);
+        setClosingComments(false);
+      }, 300);
+    } else {
+      setShowComments(true);
+    }
+  };
+
+  const handleLikeClick = (index: number) => {
+    console.log(index);
+    if (isLiked) {
+      setIsLiked(!isLiked);
+    }
+  };
 
   useEffect(() => {
     handleAttachmentListByInviteId();
   }, []);
 
+  const chunkedVideos = [];
+  for (let i = 0; i < videos.length; i += 2) {
+    chunkedVideos.push(videos.slice(i, i + 2));
+  }
+
   return (
-    <>
-      <Swiper
-        direction={"vertical"}
-        slidesPerView={1}
-        mousewheel={true}
-        className="mySwiper h-screen"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 justify-center  bg-white">
-          <div className="h-screen">
-            <div className="grid grid-cols-1 md:grid-cols-3 justify-center bg-white h-[80%]">
-              <SwiperSlide className="bg-gray-900 flex flex-col">
-                <div className="w-[100%] h-[31vh] ">
-                  <Video
-                    loop
-                    handleVideo={() => setIsPlayingTop(!isPlayingTop)}
-                    url={dataBineryTop}
-                    playing={isPlayingTop}
-                  />
-                </div>
-                {/* <OptionHomes profile={profile} />s */}
-                <div className="w-[100%] h-[31vh] my-4">
-                  <Video
-                    loop
-                    handleVideo={() => setIsPlayingBottom(!isPlayingBottom)}
-                    url={dataBineryBottom}
-                    playing={isPlayingBottom}
-                  />
-                </div>
-              </SwiperSlide>
+    <Swiper
+      direction={"vertical"}
+      slidesPerView={1}
+      mousewheel={true}
+      modules={[Mousewheel]}
+      className="mySwiper h-screen"
+    >
+      {chunkedVideos.map((videoPair, index: number) => (
+        <SwiperSlide className="bg-black flex flex-col h-screen" key={index}>
+          <div className="flex-1 relative">
+            <div className="h-full flex flex-col">
+              <div className="flex justify-between items-center p-2">
+                <ImageRank profileName="armanghdi_42341241241242142" />
+                <span className="border px-3 py-1 text-white"> Fallow </span>
+                <ThumbUpOffAltIcon
+                  className={`text-white font30 cursor-pointer ${
+                    isAnimating
+                      ? isLiked
+                        ? "like_animation text-blue"
+                        : "unlike_animation"
+                      : "text-white"
+                  } ${isLiked ? "text-blue-500" : ""}`}
+                  onClick={() => handleLikeClick(1)}
+                />
+              </div>
+              <div className="flex-1">
+                <Video
+                  loop
+                  handleVideo={() => setIsPlaying(!isPlaying)}
+                  url={videoPair[0]}
+                  playing={isPlaying}
+                />
+              </div>
+              <div className="flex justify-end items-center p-2">
+                <ChatBubbleOutlineIcon
+                  className="text-white font25 cursor-pointer"
+                  onClick={handleShowCMT}
+                />
+                <span className="text-white ml-1">1,529</span>
+              </div>
             </div>
           </div>
-        </div>
-      </Swiper>
-    </>
+          <div className="flex-1 relative">
+            <div className="h-full flex flex-col">
+              <div className="flex justify-between items-center p-2 ">
+                <ImageRank />
+                <span className="border px-3 py-1 text-white"> Fallow </span>
+                <ThumbUpOffAltIcon
+                  className={`text-white font30 cursor-pointer ${
+                    isAnimating
+                      ? isLiked
+                        ? "like_animation"
+                        : "unlike_animation"
+                      : ""
+                  } ${isLiked ? "text-blue-500" : ""}`}
+                  onClick={() => handleLikeClick(2)}
+                />
+              </div>
+              <div className="flex-1 w-[100%] h-[36vh]">
+                <Video
+                  className="video_container"
+                  loop
+                  handleVideo={() => setIsPlaying(!isPlaying)}
+                  url={videoPair[1]}
+                  playing={isPlaying}
+                />
+              </div>
+              <div className="flex mb-14  justify-end items-center p-2">
+                <ChatBubbleOutlineIcon
+                  className="text-white font25 cursor-pointer"
+                  onClick={handleShowCMT}
+                />
+                <span className="text-white ml-1">1,529</span>
+              </div>
+            </div>
+          </div>
+
+          {showComments && (
+            <Comments
+              handleShowCMT={handleShowCMT}
+              closingComments={closingComments}
+            />
+          )}
+        </SwiperSlide>
+      ))}
+
+      {showComments && (
+        <Comments
+          handleShowCMT={handleShowCMT}
+          closingComments={closingComments}
+        />
+      )}
+    </Swiper>
   );
 };
 

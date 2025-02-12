@@ -1,21 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
-import cook4 from "../../assets/img/cook2.jpg";
-import cooking1 from "../../assets/img/cooking1.webp";
-import cooking2 from "../../assets/img/cooking2.jpeg";
-import cooking3 from "../../assets/img/cooking3.jpg";
-import cook1 from "../../assets/img/cook1.jpg";
-import roberto from "../../assets/img/roberto.avif";
-import gymM3 from "../../assets/img/gymM3.jpg";
-import violon from "../../assets/img/kidViolon2.avif";
-import violon2 from "../../assets/img/violinKid4.jpg";
-import menGym2 from "../../assets/img/menGym2.png";
-import blackProfile from "../../assets/img/1-intro-photo-final.jpg";
-import womenGymPro1 from "../../assets/img/womenGym1.jpg";
-import womenGym from "../../assets/img/women-AI-Profile-Picture.jpg";
-import Rank from "../../components/Rank";
-import Image from "../../components/Image";
+ 
 import ImageRank from "../../components/ImageRank";
 import Input from "../../components/Input";
 import SearchIcon from "@mui/icons-material/Search";
@@ -25,12 +11,7 @@ import { addLike } from "../../services/dotNet";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper/modules";
 import "swiper/css";
-import ReactPlayer from "react-player";
-import AspectRatioIcon from "@mui/icons-material/AspectRatio";
-import OptionWatchs from "./OptionWatchs";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import FlareIcon from "@mui/icons-material/Flare";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+ 
 import Loading from "../../components/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
@@ -65,19 +46,19 @@ const StepOne: React.FC = () => {
     });
   };
 
-  const handleDoubleTap = (item: any) => {
-    const now = Date.now();
-    const DOUBLE_PRESS_DELAY = 300;
-    if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
-      dispatch(RsetDobuleVideo(item?.group));
-      const newPath = `${location.pathname}/show`;
-      navigate(newPath);
-      setLastTap(0);
-    } else {
-      console.log(item?.index);
-      handleShowProfile(item?.index);
-      setLastTap(now);
-    }
+  const handleShowMatch = (item: any) => {
+    // const now = Date.now();
+    // const DOUBLE_PRESS_DELAY = 300;
+    // if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
+    dispatch(RsetDobuleVideo(item?.group));
+    const newPath = `${location.pathname}/show`;
+    navigate(newPath);
+    setLastTap(0);
+    // } else {
+    //   console.log(item?.index);
+    //   handleShowProfile(item?.index);
+    //   setLastTap(now);
+    // }
   };
 
   const handleAttachmentList = asyncWrapper(async () => {
@@ -177,7 +158,7 @@ const StepOne: React.FC = () => {
   return (
     <>
       <Loading isLoading={isLoading ? true : false} />
-      <div className="grid grid-cols-2 gap-[1px] p-[1px]">
+      <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
         {videoGroups.map((group: any, index: number) => {
           const { parent, child } = group;
           const fixImg1 = `${baseURL}/${parent.attachmentType}/${parent.fileName}${parent.ext}`;
@@ -187,8 +168,8 @@ const StepOne: React.FC = () => {
           return (
             <div
               key={index}
-              onClick={() => handleDoubleTap({ group, index })}
-              className="my-1 flex-1 flex  flex-col"
+              onClick={() => handleShowMatch({ group, index })}
+              className="flex-1 flex  flex-col"
             >
               <div className="flex-1">
                 <span className="relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
@@ -197,9 +178,8 @@ const StepOne: React.FC = () => {
                     alt={parent.alt}
                     className="w-full min-h-44 max-h-44 object-cover"
                   />
-                  {activeProfiles.has(index) && (
+                  <span className="absolute top-0 w-full bg_profile_watch">
                     <ImageRank
-                      showBackground
                       profileName={parent.userName}
                       profileFontColor="white"
                       score={parent.score}
@@ -207,7 +187,7 @@ const StepOne: React.FC = () => {
                       starWidth={6}
                       className="absolute bottom-0"
                     />
-                  )}
+                  </span>
                 </span>
               </div>
               <div className="flex-1 bg-white">
@@ -218,7 +198,7 @@ const StepOne: React.FC = () => {
                       alt={child.alt || "Profile image"}
                       className="w-full min-h-44 max-h-44 object-cover"
                     />
-                    {activeProfiles.has(index) && (
+                    <span className="absolute top-0 w-full bg_profile_watch">
                       <ImageRank
                         showBackground
                         profileName={child.userName}
@@ -228,7 +208,7 @@ const StepOne: React.FC = () => {
                         starWidth={6}
                         className="absolute bottom-0"
                       />
-                    )}
+                    </span>
                     <figcaption className="sr-only">
                       {child.userName}
                     </figcaption>

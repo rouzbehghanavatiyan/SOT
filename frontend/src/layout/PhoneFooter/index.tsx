@@ -18,73 +18,73 @@ const PhoneFooter: React.FC = () => {
 
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
-      <div className="fixed z-50 bottom-0 left-0 w-full bg-white shadow-card text-center">
-        <div className="flex gap-5 justify-center">
-          <NavLink
-            to={"/home"}
-            className={({ isActive }) =>
-              cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? " border_phone_footer " : ""
-              )
-            }
-          >
-            <HomeIcon className="icon_size text-orange-hover" />
-          </NavLink>
-          <NavLink
-            to={"/watch"}
-            onClick={handleWatchClick}
-            className={({ isActive }) =>
-              cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? " border_phone_footer " : ""
-              )
-            }
-          >
-            <PlayArrowIcon className={`icon_size text-orange-hover `} />
-          </NavLink>
-          <NavLink
-            to={"/sot"}
-            className={({ isActive }) =>
-              cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? " border_phone_footer " : ""
-              )
-            }
-          >
-            <img
-              src={LogoTC}
-              alt="Logo"
-              className="rounded-full"
-              width={30}
-              height={30}
-            />
-          </NavLink>
-          <NavLink
-            to={"/notification"}
-            className={({ isActive }) =>
-              cn(
-                "flex w-14 py-2 items-center relative justify-center",
-                isActive ? " border_phone_footer " : ""
-              )
-            }
-          >
-            <NotificationsIcon className="icon_size text-orange-hover" />
-            <CircleIcon className="text-red absolute top-2 right-2 font10" />
-          </NavLink>
-          <NavLink
-            to={"/profile"}
-            className={({ isActive }) =>
-              cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? "border_phone_footer " : ""
-              )
-            }
-          >
-            <AccountCircleIcon className="icon_size text-orange-hover" />
-          </NavLink>
+        <div className="fixed z-50 mt-9 bottom-0 left-0 w-full bg-white shadow-card text-center">
+          <div className="flex gap-5 justify-center">
+            <NavLink
+              to={"/home"}
+              className={({ isActive }) =>
+                cn(
+                  "flex w-14 py-2 items-center  justify-center",
+                  isActive ? " border_phone_footer " : ""
+                )
+              }
+            >
+              <HomeIcon className="icon_size text-orange-hover" />
+            </NavLink>
+            <NavLink
+              to={"/watch"}
+              onClick={handleWatchClick}
+              className={({ isActive }) =>
+                cn(
+                  "flex w-14 py-2 items-center  justify-center",
+                  isActive ? " border_phone_footer " : ""
+                )
+              }
+            >
+              <PlayArrowIcon className={`icon_size text-orange-hover `} />
+            </NavLink>
+            <NavLink
+              to={"/sot"}
+              className={({ isActive }) =>
+                cn(
+                  "flex w-14 py-2 items-center  justify-center",
+                  isActive ? " border_phone_footer " : ""
+                )
+              }
+            >
+              <img
+                src={LogoTC}
+                alt="Logo"
+                className="rounded-full"
+                width={30}
+                height={30}
+              />
+            </NavLink>
+            <NavLink
+              to={"/notification"}
+              className={({ isActive }) =>
+                cn(
+                  "flex w-14 py-2 items-center relative justify-center",
+                  isActive ? " border_phone_footer " : ""
+                )
+              }
+            >
+              <NotificationsIcon className="icon_size text-orange-hover" />
+              <CircleIcon className="text-red absolute top-2 right-2 font10" />
+            </NavLink>
+            <NavLink
+              to={"/profile"}
+              className={({ isActive }) =>
+                cn(
+                  "flex w-14 py-2 items-center  justify-center",
+                  isActive ? "border_phone_footer " : ""
+                )
+              }
+            >
+              <AccountCircleIcon className="icon_size text-orange-hover" />
+            </NavLink>
+          </div>
         </div>
-      </div>
     </ResponsiveMaker>
   );
 };

@@ -44,7 +44,7 @@ const Modal: FC<ModalPropsType> = ({
         onClick={handleOnClose}
       >
         {!!title && (
-          <DialogHeader>
+          <DialogHeader  >
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
         )}

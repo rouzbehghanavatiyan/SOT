@@ -114,11 +114,11 @@ const Home = () => {
         mousewheel={true}
         className="mySwiper h-screen"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 justify-center  bg-white">
+        <div className="grid grid-cols-1 md:grid-cols-3 justify-centerbg-white">
           <div className="h-screen">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-center bg-white h-[80%]">
               {dubleVideos.map((profile, index) => (
-                <SwiperSlide key={index} className="bg-black flex flex-col">
+                <SwiperSlide key={index} className="bg-white flex flex-col">
                   <OptionHomes result profile={profile} />
                   <div className="w-[100%] h-[31vh]">
                     <Video
@@ -155,7 +155,6 @@ const Home = () => {
           </div>
         </div>
       </Swiper>
-      {/* <Rank /> */}
       {showComments && (
         <Comments
           handleShowCMT={handleShowCMT}

@@ -8,8 +8,8 @@ import ImageRank from "../../../components/ImageRank";
 
 const OptionHomes = ({ result, profile }: any) => {
   return (
-    <div className="w-full bg-black">
-      <div className=" m-2 items-start">
+    <div className="w-full bg_profile">
+      <div className="flex   items-center justify-between m-2">
         <ImageRank
           imgSrc={profile?.img}
           profileName="jack"
@@ -21,7 +21,7 @@ const OptionHomes = ({ result, profile }: any) => {
           className="absolute bottom-0"
         />
         {result ? (
-          <div className=" absolute top-2 left-36 w-36 flex justify-center items-center">
+          <div className="top-2 left-36 w-36 flex justify-center items-center">
             {profile.type.toLowerCase() === "success" ? (
               <>
                 <VerifiedIcon
@@ -46,8 +46,8 @@ const OptionHomes = ({ result, profile }: any) => {
         <div className="  flex justify-end items-center col-span-1">
           <div className="flex flex-col gap-4 items-center">
             <div className="flex items-center gap-1 text-white">
-              <ThumbUpOffAltIcon className="font35 font-bold text-white" />
-              <span>{profile.comments}</span>
+              <ThumbUpOffAltIcon className="font35 font-bold text-gray-200" />
+              <span className="text-gray-200">{profile.comments}</span>
             </div>
           </div>
         </div>

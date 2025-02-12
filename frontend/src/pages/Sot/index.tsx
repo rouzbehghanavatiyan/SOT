@@ -52,21 +52,11 @@ const TalentMode: FC<Props> = () => {
     solo: <PersonIcon className="text-2xl mx-3 font25" />,
   };
 
-  console.log(main?.category);
-  
-
   return (
     <>
       <Loading isLoading={isLoading ? true : false} />
       <div className="grid justify-center">
         <div className="w-screen md:w-full h-screen md:h-full ">
-          <div className="border-b-2 px-3 flex justify-between text-center items-center">
-            <span className="font-bold text-2xl flex justify-start">SOT</span>
-            <SettingsInputCompositeIcon
-              onClick={handleSettingSolo}
-              className="flex cursor-pointer justify-between text-center items-center"
-            />
-          </div>
           {main?.category?.map((category) => (
             <span
               key={category?.id}

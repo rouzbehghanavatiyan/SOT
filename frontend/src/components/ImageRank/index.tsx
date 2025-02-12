@@ -13,12 +13,10 @@ interface ProfileWithRankProps {
   starHeight?: number;
   rankWidth?: number;
   rankHeight?: number;
-  showBackground?: boolean;
 }
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
   imgSrc,
-  showBackground = false,
   profileName = "profileName",
   profileFontColor = "white",
   score = 1,
@@ -34,12 +32,11 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   const fixScore = () => {
     let newRankSrc: string;
     let newStars: JSX.Element[];
-
     if (score >= 0 && score < 10) {
       newRankSrc = goldPer1;
       newStars = Array(1).fill(
         <img
-          className="rounded-full shadow-lg"
+          className="rounded-full shadow-lg w-2"
           width={starWidth}
           height={starHeight}
           src={goldStar2}
@@ -50,7 +47,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
       newRankSrc = silverRank;
       newStars = Array(2).fill(
         <img
-          className="rounded-full shadow-lg"
+          className="rounded-full shadow-lg w-2"
           width={starWidth}
           height={starHeight}
           src={goldStar2}
@@ -61,7 +58,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
       newRankSrc = goldPer1;
       newStars = Array(3).fill(
         <img
-          className="rounded-full shadow-lg"
+          className="rounded-full shadow-lg w-2"
           width={starWidth}
           height={starHeight}
           src={goldStar2}
@@ -79,41 +76,35 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   }, [score, starWidth, starHeight]);
 
   return (
-    <span
-      className={`${className} ${
-        showBackground ? "bg_profile" : ""
-      } block top-0 w-full h-[76px]`}
-    >
-      <span className="relative h-16 flex">
-        <div className="flex ms-1 items-center">
-          {imgSrc ? (
-            <img
-              className="rounded-full"
-              src={imgSrc}
-              width={45}
-              height={45}
-              alt="Profile"
-            />
-          ) : (
-            <AccountCircleIcon className="text-gray-200 bg-white rounded-full font40" />
-          )}
-          <span className={`font-bold text-${profileFontColor} ms-1`}>
-            {profileName.length > 12
-              ? `${profileName.slice(0, 12)}...`
-              : profileName}
-          </span>
-        </div>
-        <div className="z-10 absolute bottom-0 justify-center w-7">
+    <div className="flex relative h-16">
+      <div className="flex ms-1 items-center ">
+        {imgSrc ? (
           <img
-            width={rankWidth}
-            height={rankHeight}
-            src={rankSrc}
-            alt="My Rank"
+            className="rounded-full"
+            src={imgSrc}
+            width={45}
+            height={45}
+            alt="Profile"
           />
-          <span className="flex gap-1 justify-center">{stars}</span>
-        </div>
-      </span>
-    </span>
+        ) : (
+          <AccountCircleIcon className="text-gray-200 bg-white rounded-full font40" />
+        )}
+        <span className={`font-bold text-${profileFontColor} ms-1`}>
+          {profileName.length > 12
+            ? `${profileName.slice(0, 12)}...`
+            : profileName}
+        </span>
+      </div>
+      <div className="absolute bottom-0 left-0 z-10 justify-center w-7">
+        <img
+          width={rankWidth}
+          height={rankHeight}
+          src={rankSrc}
+          alt="My Rank"
+        />
+        <span className="flex gap-1 justify-center">{stars}</span>
+      </div>
+    </div>
   );
 };
 

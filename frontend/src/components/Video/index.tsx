@@ -51,7 +51,7 @@ const Video: React.FC = ({
 
   return (
     <div style={{ position: "relative", width, height }}>
-      <span onClick={handleVideoClick}>
+      <span className="" onClick={handleVideoClick}>
         <ReactPlayer
           ref={playerRef}
           style={{ pointerEvents: "none" }}

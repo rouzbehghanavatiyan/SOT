@@ -528,8 +528,6 @@ br {
   animation: slideDown 0.3s forwards;
 }
 
-/* cmt کامنت */
-
 .react-player {
   width: 100% !important;
   height: 100% !important;
@@ -543,6 +541,10 @@ br {
 .bg_logo {
   background: rgb(58, 180, 99);
   background: linear-gradient(90deg, rgb(58, 180, 99) 0%, rgb(31, 111, 120) 50%, rgb(69, 182, 252) 100%);
+}
+
+.bg_phone_header {
+  background: rgb(245, 245, 245);
 }
 
 .bg_logo_circle {
@@ -621,6 +623,25 @@ br {
   animation: prixClipFix 2s linear infinite;
 }
 
+.loader-text {
+  width: 25px;
+  height: 25px;
+  border-radius: 50px;
+  position: relative;
+  animation: rotate 1s linear infinite
+}
+
+.loader-text::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50px;
+  border: 5px solid #ffffff;
+  animation: prixClipFix 2s linear infinite;
+}
+
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg)
@@ -646,6 +667,34 @@ br {
 
   100% {
     clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+  }
+}
+
+/* loading dot */
+.loader-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 12px 0 #fff, -32px 0 #fff;
+  position: relative;
+  animation: flash 0.5s ease-out infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #FFF2;
+    box-shadow: 12px 0 #FFF2, -32px 0 #FFF;
+  }
+
+  50% {
+    background-color: #FFF;
+    box-shadow: 12px 0 #FFF2, -32px 0 #FFF2;
+  }
+
+  100% {
+    background-color: #FFF2;
+    box-shadow: 12px 0 #FFF, -32px 0 #FFF2;
   }
 }
 
@@ -677,9 +726,9 @@ br {
 }
 
 
-.bg_profile {
+.bg_profile_watch {
   background: rgb(0, 0, 0);
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #0000008a 100%);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
 }
 
 .controls {
@@ -731,4 +780,54 @@ br {
 
 .border_phone_footer {
   border-top: 1px solid rgba(0, 128, 0, 0.404);
+}
+
+
+
+/* video */
+.video_container {
+  max-height: 200px;
+  min-height: 300px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* like */
+.like_animation {
+  animation: like 0.3s ease-in-out;
+}
+
+.unlike_animation {
+  animation: unlike 0.3s ease-in-out;
+}
+
+@keyframes like {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes unlike {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

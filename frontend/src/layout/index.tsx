@@ -40,9 +40,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   });
 
-  console.log("LAAAAAAAAAAAAAAAAAAAAAYOUT");
-  
-
   useEffect(() => {
     handleGetCategory();
   }, []);

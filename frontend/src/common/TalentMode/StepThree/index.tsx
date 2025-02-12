@@ -52,9 +52,6 @@ const StepThree: React.FC = () => {
       <Loading isLoading={isLoading ? true : false} />
       <div className="grid justify-center">
         <div className="w-screen md:w-full h-screen md:h-full ">
-          <div className="border-b-2 px-3 flex justify-between text-center items-center">
-            <span className="font-bold text-2xl flex justify-start">SOT</span>
-          </div>
           {allSubSubCategory?.map((category: any) => (
             <span
               key={category.id}

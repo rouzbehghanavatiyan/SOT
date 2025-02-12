@@ -7,6 +7,9 @@ import asyncWrapper from "../../common/AsyncWrapper";
 import { addAttachment, addInvite, addMovie } from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
 import Operational from "../../common/TalentMode/StepFour/Operational";
+import Loading from "../Loading";
+import Timer from "../Timer";
+import { redirect, useNavigate } from "react-router-dom";
 
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
@@ -17,68 +20,90 @@ const EditVideo: React.FC = ({
   allFormData,
   mode,
 }: any) => {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [rate, setRate] = useState(0);
+  const [movieData, setMovieData] = useState<any>({});
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
+  const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const navigate = useNavigate();
 
-  const handleAccept = asyncWrapper(async () => {
+  const handleAcceptOffline = asyncWrapper(async () => {
     if (currentStep === 1) {
-      // مرحله اول: ذخیره اطلاعات اولیه
       const postData = {
         userId: sessionStorage?.getItem("userId") as null,
         name: "",
-        description: desc,
-        title: title,
+        description: movieData?.desc,
+        title: movieData?.title,
         subSubCategoryId: 1,
       };
       setIsLoadingBtn(true);
+      setFindingMatch(true);
       const res = await addMovie(postData);
-      const { status: movieStatus, data: movieData }: GetServices = res?.data;
+      const { status: movieStatus, data: resMovieData }: GetServices =
+        res?.data;
       if (movieStatus === 0) {
         setIsLoadingBtn(false);
-        setCurrentStep(2); // رفتن به مرحله دوم
-      }
-    } else if (currentStep === 2) {
-      // مرحله دوم: آپلود فایل‌ها
-      const formData = new FormData();
-      if (allFormData?.imageCover) {
-        formData.append("formFile", allFormData.imageCover);
-      }
-      if (allFormData?.video) {
-        formData.append("formFile", allFormData.video);
-      }
-      formData.append("attachmentId", movieData?.id);
-      formData.append("attachmentType", "mo");
-      formData.append("attachmentName", "movies");
+        const formData = new FormData();
+        if (allFormData?.imageCover) {
+          formData.append("formFile", allFormData.imageCover);
+        }
+        if (allFormData?.video) {
+          formData.append("formFile", allFormData.video);
+        }
+        formData.append("attachmentId", resMovieData?.id);
+        formData.append("attachmentType", "mo");
+        formData.append("attachmentName", "movies");
+        const resAttachment = await addAttachment(formData);
+        const { status: attachmentStatus, data: attachmentData } =
+          resAttachment?.data;
+        if (attachmentStatus === 0) {
+          console.log(resMovieData);
 
-      const resAttachment = await addAttachment(formData);
-      const { status: attachmentStatus, data: attachmentData } =
-        resAttachment?.data;
-      if (attachmentStatus === 0) {
-        setShowEditMovie(false);
-        const postInvite = {
-          parentId: null,
-          userId: userIdFromSStorage,
-          movieId: movieData?.id,
-        };
-        const resInvite = await addInvite(postInvite);
-        console.log(resInvite);
+          const postInvite = {
+            parentId: null,
+            userId: userIdFromSStorage,
+            movieId: resMovieData?.id,
+            status: 0,
+          };
+
+          setMovieData((prev: any) => ({
+            ...prev,
+            userId: userIdFromSStorage,
+            movieId: resMovieData?.id,
+          }));
+          const resInvite = await addInvite(postInvite);
+          const { status: inviteStatus, data: inviteData } = resInvite?.data;
+          if (inviteStatus === 0) {
+            navigate(`/watch`);
+          }
+        }
       }
     }
   });
 
+  const handleAcceptOptional = asyncWrapper(async () => {
+    setCurrentStep(2);
+  });
+
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1); // بازگشت به مرحله قبل
+      setCurrentStep(currentStep - 1);
     }
   };
 
   return (
-    <Modal padding="0" isOpen={showEditMovie} onClose={setShowEditMovie}>
+    <Modal
+      title={
+        mode?.typeMode === 3
+          ? "offline"
+          : mode?.typeMode === 4
+            ? "Optional"
+            : ""
+      }
+      padding="0"
+      isOpen={showEditMovie}
+      onClose={setShowEditMovie}
+    >
       <div className="flex flex-col">
-        <span className="flex justify-center text-white p-2 border-b-2 bg-green">Offline</span>
         {currentStep === 1 && (
           <div className="p-5">
             <div className="border mb-4 p-1">
@@ -92,20 +117,38 @@ const EditVideo: React.FC = ({
             </div>
             <div>
               <span className="mb-4 mt-4 ">Title</span>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Input
+                value={movieData?.title}
+                onChange={(e: any) =>
+                  setMovieData((prev: any) => ({
+                    ...prev,
+                    title: e.target.value,
+                  }))
+                }
+              />
             </div>
             <div className="">
               <span className="flex my-4">Description</span>
               <textarea
                 className=" border w-full focus:border-none outline-mainGray-dark px-5 py-1"
                 rows={6}
-                value={desc}
-                onChange={(e) => setDesc(e.target.value)}
+                value={movieData?.desc}
+                onChange={(e: any) =>
+                  setMovieData((prev: any) => ({
+                    ...prev,
+                    desc: e.target.value,
+                  }))
+                }
               />
             </div>
             <SlideRange
-              rangeValue={rate}
-              setRangeValue={(e) => setRate(e.target.value)}
+              rangeValue={movieData?.rate}
+              setRangeValue={(e: any) =>
+                setMovieData((prev: any) => ({
+                  ...prev,
+                  rate: e.target.value,
+                }))
+              }
             />
           </div>
         )}
@@ -120,9 +163,36 @@ const EditVideo: React.FC = ({
           <Button
             loading={isLoadingBtn}
             className="border"
-            onClick={handleAccept}
+            onClick={
+              mode.typeMode === 3
+                ? handleAcceptOffline
+                : mode.typeMode === 4
+                  ? handleAcceptOptional
+                  : null
+            }
             variant={"green"}
-            label={currentStep === 1 ? "Accept" : "Accept"}
+            label={
+              findingMatch ? (
+                <>
+                  <div className="flex me-1 justify-center items-center shadow-xl rounded-lg">
+                    <div className="flex items-center">
+                      <span>Finding</span>
+                      <div className="loader-dot"> </div>
+                    </div>
+                  </div>
+                  {/* <div className="font20 font-bold">
+                    <Timer
+                      setShowEditMovie={setShowEditMovie}
+                      setFindingMatch={setFindingMatch}
+                      movieData={movieData}
+                      active={findingMatch}
+                    />
+                  </div> */}
+                </>
+              ) : (
+                "Accept"
+              )
+            }
           />
           {currentStep > 1 && (
             <Button

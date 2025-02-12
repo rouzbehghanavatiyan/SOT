@@ -48,3 +48,60 @@ export default tseslint.config({
   },
 })
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--  dobule click -->
+  const handleDoubleTap = (item: any) => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+    if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
+      dispatch(RsetDobuleVideo(item?.group));
+      const newPath = `${location.pathname}/show`;
+      navigate(newPath);
+      setLastTap(0);
+    } else {
+      console.log(item?.index);
+      handleShowProfile(item?.index);
+      setLastTap(now);
+    }
+  };
+
+ {activeProfiles.has(index) && (
+                      <span className="absolute top-0 w-full bg_profile">
+                        <ImageRank
+                          showBackground
+                          profileName={child.userName}
+                          profileFontColor="white"
+                          score={child.score}
+                          rankWidth={45}
+                          starWidth={6}
+                          className="absolute bottom-0"
+                        />
+                      </span>
+                    )}
