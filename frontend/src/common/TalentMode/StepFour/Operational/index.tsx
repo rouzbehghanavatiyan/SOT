@@ -166,7 +166,10 @@ const Operational: React.FC = () => {
           <div className=" w-10 h-10 flex justify-center items-center shadow-xl rounded-lg">
             <div className="loader-text w-16 h-16"> </div>
           </div>
-          <div className="text-gray-800"> Finding users . . . </div>
+          <div className="text-gray-800">
+            <span> Finding users</span>
+            <span className="loader-dot text-red" >  </span>
+          </div>
         </div>
       </div>
     </>

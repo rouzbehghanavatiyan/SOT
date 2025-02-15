@@ -2,19 +2,21 @@ import React, { useState, useEffect } from "react";
 import { addInvite } from "../../services/dotNet";
 import asyncWrapper from "../../common/AsyncWrapper";
 import { useNavigate } from "react-router-dom";
+import { TimerProps } from "./types";
+
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
-const Timer: React.FC = ({
+const Timer: React.FC<TimerProps> = ({
   setFindingMatch,
   active,
   movieData,
   setShowEditMovie,
-}: any) => {
+}) => {
   const [isActive, setIsActive] = useState<boolean>(active);
   const [time, setTime] = useState<number>(0);
   const navigate = useNavigate();
 
-  console.log(active);
+  console.log(movieData);
 
   const toggleTimer = () => {
     setIsActive(!isActive);
@@ -39,28 +41,34 @@ const Timer: React.FC = ({
       userId: Number(userIdFromSStorage) || null,
       movieId: movieData?.movieId || null,
       status: 1,
+      inviteId: movieData?.inviteId || null,
     };
     const res = await addInvite(postInvite);
     console.log(res?.data);
 
-    if (res?.data?.status === 0) {
+    if (res?.data?.status === 3) {
       setShowEditMovie(false);
       navigate("/watch");
     }
   });
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isActive) {
+    let interval: ReturnType<typeof setInterval>;
+    let inviteInterval: ReturnType<typeof setInterval>;
+
+    if (isActive && movieData) {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
-      interval = setInterval(() => {
+
+      inviteInterval = setInterval(() => {
         handleAddInvite();
       }, 5000);
     }
+
     return () => {
-      if (interval) clearInterval(interval);
+      clearInterval(interval);
+      clearInterval(inviteInterval);
     };
   }, [isActive, movieData?.movieId]);
 

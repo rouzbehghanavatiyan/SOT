@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import ReactPlayer from "react-player";
+import { VideoProps } from "./types";
 
-const Video: React.FC = ({
+const Video: React.FC<VideoProps> = ({
   loop,
   playing = false,
   playbackRate,
@@ -13,7 +14,7 @@ const Video: React.FC = ({
   handleVideo,
   width = "100%",
   height = "100%",
-}: any) => {
+}) => {
   const playerRef = useRef<any>(null); // Ref برای دسترسی به ReactPlayer
   const [showControls, setShowControls] = useState(false); // وضعیت نمایش کنترل‌ها
   const [played, setPlayed] = useState(0); // زمان فعلی ویدیو (بین ۰ تا ۱)

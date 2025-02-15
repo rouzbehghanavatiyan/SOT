@@ -17,6 +17,7 @@ import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
 import StepFour from "../common/TalentMode/StepFour";
 import ShowWatch from "../pages/ShowWatch";
+import Setting from "../pages/Setting";
 
 const PublicRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const PublicRoutes = () => {
         <Route path="/store" element={<Store />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/setting" element={<Setting />} />
       </Routes>
     </Layout>
   );

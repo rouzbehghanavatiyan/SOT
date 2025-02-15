@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const SlideRange: React.FC = () => {
-  const [value, setValue] = useState(0); // مقدار پیش‌فرض اسلایدر
+  const [value, setValue] = useState<number>(0);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const newValue = Math.round(e.target.value / 20) * 20;
     setValue(newValue);
   };

@@ -40,10 +40,12 @@ const LogInForm: FC = () => {
         fixUser[
           "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
         ];
-      console.log(userId);
       sessionStorage.setItem("token", data?.token);
       sessionStorage.setItem("userId", userId);
     } else {
+      alert("User has been not register")
+      setIsLoadingBtn(false);
+    
     }
   };
 

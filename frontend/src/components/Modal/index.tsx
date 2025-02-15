@@ -13,8 +13,8 @@ interface ModalPropsType {
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   footer?: ReactNode[];
-  width?: `${number}${"px" | "cm" | "mm" | "em"}`;
-  padding?: `${number}${"px" | "cm" | "mm" | "em" | "rem"}`;
+  width?: number; 
+  padding?: number;
   onClose?: () => void;
   className?: string;
 }
@@ -44,7 +44,7 @@ const Modal: FC<ModalPropsType> = ({
         onClick={handleOnClose}
       >
         {!!title && (
-          <DialogHeader  >
+          <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
         )}

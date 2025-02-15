@@ -4,7 +4,7 @@ import goldStar2 from "../../assets/img/goldStar.webp";
 import silverRank from "../../assets/img/rank8.webp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 interface ProfileWithRankProps {
-  imgSrc: string;
+  imgSrc?: string;
   profileName?: string;
   profileFontColor?: string;
   score?: number;
@@ -20,7 +20,6 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   profileName = "profileName",
   profileFontColor = "white",
   score = 1,
-  className = "",
   starWidth = 10,
   starHeight = 10,
   rankWidth = 50,

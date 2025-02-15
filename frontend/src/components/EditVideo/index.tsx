@@ -11,15 +11,49 @@ import Loading from "../Loading";
 import Timer from "../Timer";
 import { redirect, useNavigate } from "react-router-dom";
 const userIdFromSStorage = sessionStorage.getItem("userId");
+interface MovieDataType {
+  parentId: null;
+  userId: number | null;
+  movieId: number | null;
+  status: number | null;
+  inviteId?: any;
+  desc?: string;
+  title?: string;
+  rate?: number;
+}
 
-const EditVideo: React.FC = ({
+interface EditVideoProps {
+  showEditMovie: boolean;
+  setShowEditMovie: React.Dispatch<React.SetStateAction<boolean>>;
+  coverImage?: string;
+  allFormData?: {
+    imageCover?: File;
+    video?: File;
+  };
+  mode?: { typeMode?: number };
+}
+
+interface AddMovieType {
+  userId: number | null;
+  description?: string;
+  title?: string;
+  subSubCategoryId: number;
+  modeId: number | undefined;
+}
+
+const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
   setShowEditMovie,
   coverImage,
   allFormData,
   mode,
-}: any) => {
-  const [movieData, setMovieData] = useState<any>({});
+}) => {
+  const [movieData, setMovieData] = useState<MovieDataType>({
+    parentId: null,
+    userId: null,
+    movieId: null,
+    status: null,
+  });
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -27,12 +61,12 @@ const EditVideo: React.FC = ({
 
   const handleAcceptOffline = asyncWrapper(async () => {
     if (currentStep === 1) {
-      const postData = {
-        userId: (sessionStorage?.getItem("userId") as null) || null,
-        description: movieData?.desc || null,
-        title: movieData?.title || null,
+      const postData: AddMovieType = {
+        userId: Number(sessionStorage?.getItem("userId") as null) || null,
+        description: movieData?.desc ?? "",
+        title: movieData?.title ?? "",
         subSubCategoryId: 1 || null,
-        modeId: mode?.typeMode || null,
+        modeId: mode?.typeMode || 0,
       };
       setIsLoadingBtn(true);
       setFindingMatch(true);
@@ -55,22 +89,21 @@ const EditVideo: React.FC = ({
         const { status: attachmentStatus, data: attachmentData } =
           resAttachment?.data;
         if (attachmentStatus === 0) {
-          console.log(resMovieData);
           const postInvite = {
             parentId: null,
-            userId: Number(userIdFromSStorage),
-            movieId: resMovieData?.id,
+            userId: Number(userIdFromSStorage) || null,
+            movieId: resMovieData?.id || null,
             status: 0,
           };
 
-          setMovieData((prev: any) => ({
-            ...prev,
-            userId: userIdFromSStorage,
-            movieId: resMovieData?.id,
-          }));
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
-          console.log(inviteStatus);
+          setMovieData((prev: any) => ({
+            ...prev,
+            userId: Number(userIdFromSStorage) || null,
+            movieId: Number(resMovieData?.id),
+            inviteId: inviteData,
+          }));
           if (inviteStatus === 0) {
             setShowEditMovie(false);
             navigate(`/watch`);
@@ -99,7 +132,7 @@ const EditVideo: React.FC = ({
             ? "Optional"
             : ""
       }
-      padding="0"
+      padding={0}
       isOpen={showEditMovie}
       onClose={setShowEditMovie}
     >
@@ -142,13 +175,13 @@ const EditVideo: React.FC = ({
               />
             </div>
             <SlideRange
-              rangeValue={movieData?.rate}
-              setRangeValue={(e: any) =>
-                setMovieData((prev: any) => ({
-                  ...prev,
-                  rate: e.target.value,
-                }))
-              }
+            // rangeValue={movieData?.rate}
+            // setRangeValue={(e: any) =>
+            //   setMovieData((prev: any) => ({
+            //     ...prev,
+            //     rate: e.target.value,
+            //   }))
+            // }
             />
           </div>
         )}
@@ -168,7 +201,7 @@ const EditVideo: React.FC = ({
                 ? handleAcceptOffline
                 : mode.typeMode === 4
                   ? handleAcceptOptional
-                  : null
+                  : undefined
             }
             variant={"green"}
             label={

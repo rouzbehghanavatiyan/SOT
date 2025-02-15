@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 import myRank from "../../assets/img/rank6.webp";
@@ -7,10 +7,29 @@ import cupLevel from "../../assets/img/cupLevel.webp";
 import cup3 from "../../assets/img/cup5.png";
 import cup4 from "../../assets/img/cup3.png";
 import VideosProfile from "./VideosProfile";
+import asyncWrapper from "../../common/AsyncWrapper";
 
 const Profile: React.FC = () => {
+  const imageRef = useRef<HTMLVideoElement | null>(null);
+
+  const handleImageProfileUpload = asyncWrapper(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      // const file = event.target.files?.[0];
+      // const formData = new FormData();
+      // formData.append("formFile", file);
+      // formData.append("attachmentId", resMovieData?.id);
+      // formData.append("attachmentType", "mo");
+      // formData.append("attachmentName", "movies");
+      // const resAttachment = await addAttachment(formData);
+    }
+  );
+
   const handleProfile = () => {
-    
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = handleImageProfileUpload;
+    input.click();
   };
 
   return (

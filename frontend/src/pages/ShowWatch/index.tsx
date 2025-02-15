@@ -3,6 +3,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
+  addLike,
   attachmentListByInviteId,
   attachmentPlay,
 } from "../../services/dotNet";
@@ -20,18 +21,20 @@ import { Mousewheel } from "swiper/modules";
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 
 const ShowWatch = ({}) => {
-  const [showComments, setShowComments] = useState(false);
-  const [closingComments, setClosingComments] = useState(false);
-  const [videos, setVideos] = useState([]); // آرایه برای ذخیره داده‌های ویدیوها
-  const { main } = useAppSelector((state) => state);
-  const [isPlaying, setIsPlaying] = useState(true); // حالت پخش ویدیو
-  const [isLiked, setIsLiked] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [showComments, setShowComments] = useState<boolean>(false);
+  const [closingComments, setClosingComments] = useState<boolean>(false);
+  const [videos, setVideos] = useState<string[]>([]);
+  const { main } = useAppSelector((state: any) => state);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true); // حالت پخش ویدیو
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   const handleAttachmentListByInviteId = asyncWrapper(async () => {
     const inviteId = main?.dobuleVideo?.child?.parentId;
     const res = await attachmentListByInviteId(inviteId);
+
     const { status, data } = res?.data;
+    console.log(data);
     const allDataMap = data?.map((item: any) => {
       return item;
     });
@@ -40,7 +43,13 @@ const ShowWatch = ({}) => {
         allDataMap.map(async (item: any) => {
           const fixVideo = `wwwroot/${item?.attachmentType}/${item?.fileName}${item?.ext}`;
           const res = await attachmentPlay(fixVideo);
-          return res;
+          return {
+            url: res,
+            like: item?.like,
+            score: item?.score,
+            id: item?.id,
+            userName: item?.userName,
+          };
         })
       );
       setVideos(videoData);
@@ -59,12 +68,17 @@ const ShowWatch = ({}) => {
     }
   };
 
-  const handleLikeClick = (index: number) => {
-    console.log(index);
-    if (isLiked) {
-      setIsLiked(!isLiked);
-    }
-  };
+  const handleLikeClick = asyncWrapper(async (video: any) => {
+    console.log(video);
+    const postData = {
+      userId: 0,
+      movieId: 0,
+    };
+    const res = await addLike(postData);
+    const { data, status } = res?.data;
+    console.log(data);
+    setIsLiked(!isLiked);
+  });
 
   useEffect(() => {
     handleAttachmentListByInviteId();
@@ -85,80 +99,41 @@ const ShowWatch = ({}) => {
     >
       {chunkedVideos.map((videoPair, index: number) => (
         <SwiperSlide className="bg-black flex flex-col h-screen" key={index}>
-          <div className="flex-1 relative">
-            <div className="h-full flex flex-col">
-              <div className="flex justify-between items-center p-2">
-                <ImageRank profileName="armanghdi_42341241241242142" />
-                <span className="border px-3 py-1 text-white"> Fallow </span>
-                <ThumbUpOffAltIcon
-                  className={`text-white font30 cursor-pointer ${
-                    isAnimating
-                      ? isLiked
-                        ? "like_animation text-blue"
-                        : "unlike_animation"
-                      : "text-white"
-                  } ${isLiked ? "text-blue-500" : ""}`}
-                  onClick={() => handleLikeClick(1)}
-                />
+          {videoPair.map((video, subIndex) => {
+            return (
+              <div className="mb-12 flex-1 relative" key={subIndex}>
+                <div className="h-full flex flex-col">
+                  <div className="flex justify-between items-center p-2">
+                    <ImageRank profileName={video?.userName} />
+                    <span className="border px-3 py-1 text-white">Follow</span>
+                    <ThumbUpOffAltIcon
+                      className={`text-white font30 cursor-pointer ${
+                        isLiked
+                          ? "like_animation text-blue"
+                          : "unlike_animation"
+                      } ${isLiked ? "text-blue-500" : ""}`}
+                      onClick={() => handleLikeClick(video)}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Video
+                      loop
+                      handleVideo={() => setIsPlaying(!isPlaying)}
+                      url={video.url}
+                      playing={isPlaying}
+                    />
+                  </div>
+                  {/* <div className="flex justify-end items-center p-2">
+                    <ChatBubbleOutlineIcon
+                      className="text-white font25 cursor-pointer"
+                      onClick={handleShowCMT}
+                    />
+                    <span className="text-white ml-1">{video.like}</span>
+                  </div> */}
+                </div>
               </div>
-              <div className="flex-1">
-                <Video
-                  loop
-                  handleVideo={() => setIsPlaying(!isPlaying)}
-                  url={videoPair[0]}
-                  playing={isPlaying}
-                />
-              </div>
-              <div className="flex justify-end items-center p-2">
-                <ChatBubbleOutlineIcon
-                  className="text-white font25 cursor-pointer"
-                  onClick={handleShowCMT}
-                />
-                <span className="text-white ml-1">1,529</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex-1 relative">
-            <div className="h-full flex flex-col">
-              <div className="flex justify-between items-center p-2 ">
-                <ImageRank />
-                <span className="border px-3 py-1 text-white"> Fallow </span>
-                <ThumbUpOffAltIcon
-                  className={`text-white font30 cursor-pointer ${
-                    isAnimating
-                      ? isLiked
-                        ? "like_animation"
-                        : "unlike_animation"
-                      : ""
-                  } ${isLiked ? "text-blue-500" : ""}`}
-                  onClick={() => handleLikeClick(2)}
-                />
-              </div>
-              <div className="flex-1 w-[100%] h-[36vh]">
-                <Video
-                  className="video_container"
-                  loop
-                  handleVideo={() => setIsPlaying(!isPlaying)}
-                  url={videoPair[1]}
-                  playing={isPlaying}
-                />
-              </div>
-              <div className="flex mb-14  justify-end items-center p-2">
-                <ChatBubbleOutlineIcon
-                  className="text-white font25 cursor-pointer"
-                  onClick={handleShowCMT}
-                />
-                <span className="text-white ml-1">1,529</span>
-              </div>
-            </div>
-          </div>
-
-          {showComments && (
-            <Comments
-              handleShowCMT={handleShowCMT}
-              closingComments={closingComments}
-            />
-          )}
+            );
+          })}
         </SwiperSlide>
       ))}
 

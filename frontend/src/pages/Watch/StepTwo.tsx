@@ -29,9 +29,8 @@ const StepTwo = () => {
     };
     const res = await addLike(postData);
     console.log(res);
-    // Update liked videos state (example logic)
     const newLikedVideos = [...likedVideos];
-    newLikedVideos[movieId] = true; // Assuming movieId is an index
+    newLikedVideos[movieId] = true; 
     setLikedVideos(newLikedVideos);
   });
 
