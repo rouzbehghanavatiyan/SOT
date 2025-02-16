@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../Input";
 import { Button } from "../Button";
 import SlideRange from "../SlideRange";
@@ -57,6 +57,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [isActive, setIsActive] = useState(false);
   const navigate = useNavigate();
 
   const handleAcceptOffline = asyncWrapper(async () => {
@@ -122,6 +123,37 @@ const EditVideo: React.FC<EditVideoProps> = ({
       setCurrentStep(currentStep - 1);
     }
   };
+
+  const handleAddInvite = asyncWrapper(async () => {
+    console.log("movieData", movieData?.userId);
+    const postInvite = {
+      parentId: null,
+      userId: Number(userIdFromSStorage) || null,
+      movieId: movieData?.movieId || null,
+      status: 1,
+      inviteId: movieData?.inviteId || null,
+    };
+    const res = await addInvite(postInvite);
+    console.log(res?.data);
+
+    if (res?.data?.status === 3) {
+      setShowEditMovie(false);
+      navigate("/watch");
+    }
+  });
+
+  useEffect(() => {
+    let inviteInterval: ReturnType<typeof setInterval>;
+
+    if (findingMatch && movieData) {
+      inviteInterval = setInterval(() => {
+        handleAddInvite();
+      }, 5000);
+    }
+    return () => {
+      clearInterval(inviteInterval);
+    };
+  }, [movieData?.movieId]);
 
   return (
     <Modal
@@ -208,16 +240,10 @@ const EditVideo: React.FC<EditVideoProps> = ({
               findingMatch ? (
                 <>
                   <div className="flex me-1 justify-center items-center shadow-xl rounded-lg">
-                    <div className="loader-text"> </div>
-                    {/* Finding user */}
+                    <div className="loader-text me-1"> </div>
                   </div>
                   <div className="font20 font-bold">
-                    <Timer
-                      setShowEditMovie={setShowEditMovie}
-                      setFindingMatch={setFindingMatch}
-                      movieData={movieData}
-                      active={findingMatch}
-                    />
+                    <Timer className="font20" active={findingMatch} />
                   </div>
                 </>
               ) : (

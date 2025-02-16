@@ -1,64 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
-
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ImageRank from "../../components/ImageRank";
-import Input from "../../components/Input";
-import SearchIcon from "@mui/icons-material/Search";
 import { attachmentList } from "../../services/dotNet";
 import asyncWrapper from "../../common/AsyncWrapper";
-import { addLike } from "../../services/dotNet";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Mousewheel } from "swiper/modules";
 import "swiper/css";
-
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import Loading from "../../components/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { RsetDobuleVideo } from "../../common/Slices/main";
+import Timer from "../../components/Timer";
 
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const StepOne: React.FC = () => {
+  const [lastTap, setLastTap] = useState<number>(0);
+  const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { main } = useAppSelector((state) => state);
   const location = useLocation();
-  const [activeProfiles, setActiveProfiles] = useState<Set<number>>(new Set());
-  const [lastTap, setLastTap] = useState<number>(0);
-  const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showComments, setShowComments] = useState(false);
-  const [closingComments, setClosingComments] = useState(false);
-  const [likedVideos, setLikedVideos] = useState<boolean[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const handleShowProfile = (id: number) => {
-    setActiveProfiles((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
 
   const handleShowMatch = (item: any) => {
-    // const now = Date.now();
-    // const DOUBLE_PRESS_DELAY = 300;
-    // if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
     dispatch(RsetDobuleVideo(item?.group));
     const newPath = `${location.pathname}/show`;
     navigate(newPath);
     setLastTap(0);
-    // } else {
-    //   console.log(item?.index);
-    //   handleShowProfile(item?.index);
-    //   setLastTap(now);
-    // }
   };
 
   const handleAttachmentList = asyncWrapper(async () => {
@@ -75,54 +48,6 @@ const StepOne: React.FC = () => {
     handleAttachmentList();
   }, []);
 
-  const handleLiked = asyncWrapper(async (movieId: number) => {
-    console.log(movieId);
-    const postData = {
-      userId: userIdFromSStorage,
-      movieId: movieId,
-    };
-    const res = await addLike(postData);
-    console.log(res);
-    // Update liked videos state (example logic)
-    const newLikedVideos = [...likedVideos];
-    newLikedVideos[movieId] = true; // Assuming movieId is an index
-    setLikedVideos(newLikedVideos);
-  });
-
-  const handleShowCMT = () => {
-    if (showComments) {
-      setClosingComments(true);
-      setTimeout(() => {
-        setShowComments(false);
-        setClosingComments(false);
-      }, 300);
-    } else {
-      setShowComments(true);
-    }
-  };
-
-  const handleRatio = (id: any) => {
-    console.log(id);
-    const elem: any = document.getElementById(`video-${id}`);
-    if (elem) {
-      if (!isFullscreen) {
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.mozRequestFullScreen) {
-          elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
-        }
-        setIsFullscreen(true);
-      } else {
-        document.exitFullscreen();
-        setIsFullscreen(false);
-      }
-    }
-  };
-
   const getVideosForDisplay = (allDableWatch: any[]) => {
     return allDableWatch
       .filter((item: any) => item.parentId === null)
@@ -138,157 +63,146 @@ const StepOne: React.FC = () => {
       .filter((group: any) => group.child !== null);
   };
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    vertical: true,
-    verticalSwiping: true,
-    beforeChange: function (currentSlide: any, nextSlide: any) {
-      console.log("before change", currentSlide, nextSlide);
-    },
-    afterChange: function (currentSlide: any) {
-      console.log("after change", currentSlide);
-    },
+  const videoGroups = getVideosForDisplay(allDableWatch);
+
+  const checkIsMy = (group: any) => {
+    return (
+      (group?.parent?.userId || group?.child?.userId) ===
+      Number(userIdFromSStorage)
+    );
   };
 
-  const videoGroups = getVideosForDisplay(allDableWatch);
+  const videoGroupsWithOwnership = useMemo(() => {
+    return videoGroups.map((group) => {
+      const isMyVideo = checkIsMy(group);
+      return { ...group, isMyVideo };
+    });
+  }, [videoGroups, userIdFromSStorage]);
+
+  useEffect(() => {
+    let interval: any;
+    if (progress < 60 && isTimerActive) {
+      interval = setInterval(() => {
+        setProgress((prevProgress) => prevProgress + 1);
+      }, 1000);
+    } else if (progress >= 60) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [progress, isTimerActive]);
+
+  useEffect(() => {
+    const hasMyVideo = videoGroupsWithOwnership.some(
+      (group) => group.isMyVideo
+    );
+    setIsTimerActive(hasMyVideo);
+  }, [videoGroupsWithOwnership]);
 
   return (
     <>
       <Loading isLoading={isLoading} />
       <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
-        {videoGroups.map((group, index) => {
-          const { parent, child } = group;
-
-          // Handle potential undefined values and provide a default value
+        {videoGroupsWithOwnership.map((group, index) => {
+          const { parent, child, isMyVideo } = group;
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
-          const itsMyVideo =
-            (group?.parent?.userId || group?.child?.userId) ===
-            Number(userIdFromSStorage);
-
           return (
             <React.Fragment key={index}>
-              {itsMyVideo ? (
-                <div
-                  onClick={() => handleShowMatch({ group, index })}
-                  className={`flex-1 flex flex-col ${
-                    itsMyVideo
-                      ? "col-span-2 row-span-2"
-                      : "col-span-1 row-span-1"
-                  }`}
-                >
-                  <div className="flex-1">
-                    <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-                      <img
-                        src={fixImg1}
-                        alt={parent?.alt || "Parent Image"}
-                        className={`w-full ${
-                          itsMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
-                        } object-cover`}
-                      />
+              <div
+                onClick={() => handleShowMatch({ group, index })}
+                className={`flex-1 flex flex-col ${
+                  isMyVideo ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
+                }`}
+              >
+                <div className="flex-1">
+                  <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                    <img
+                      src={fixImg1}
+                      alt={parent?.alt || "Parent Image"}
+                      className={`w-full ${
+                        isMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
+                      } object-cover`}
+                    />
+                    {isMyVideo && (
                       <span className="absolute top-0 w-full bg_profile_watch">
-                        <ImageRank
-                          profileName={parent?.userName || "Unknown"}
-                          profileFontColor="white"
-                          score={parent?.score || 0}
-                          rankWidth={45}
-                          starWidth={6}
-                          className="absolute bottom-0"
-                        />
-                      </span>
-                    </span>
-                  </div>
-                  {child && (
-                    <div className="flex-1 bg-white">
-                      <div className="flex-1">
-                        <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-                          <img
-                            src={fixImg2}
-                            alt={child?.alt || "Profile image"}
-                            className={`w-full ${
-                              itsMyVideo
-                                ? "min-h-88 max-h-88"
-                                : "min-h-44 max-h-44"
-                            } object-cover`}
+                        <div className="flex justify-between items-center mx-2">
+                          <ImageRank
+                            profileName={parent?.userName || "Unknown"}
+                            profileFontColor="white"
+                            score={parent?.score || 0}
+                            rankWidth={45}
+                            starWidth={6}
+                            className="absolute bottom-0"
                           />
-                          <span className="absolute top-0 w-full bg_profile_watch">
-                            <ImageRank
-                              showBackground
-                              profileName={child?.userName || "Unknown"}
-                              profileFontColor="white"
-                              score={child?.score || 0}
-                              rankWidth={45}
-                              starWidth={6}
-                              className="absolute bottom-0"
-                            />
-                          </span>
-                          <figcaption className="sr-only">
-                            {child?.userName}
-                          </figcaption>
-                        </figure>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  onClick={() => handleShowMatch({ group, index })}
-                  className="flex-1 flex  flex-col"
-                >
-                  <div className="flex-1">
-                    <span className="relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-                      <img
-                        src={fixImg1}
-                        alt={parent?.alt || "Parent Image"}
-                        className="w-full min-h-44 max-h-44 object-cover"
-                      />
-                      <span className="absolute top-0 w-full bg_profile_watch">
-                        <ImageRank
-                          profileName={parent?.userName || "Unknown"}
-                          profileFontColor="white"
-                          score={parent?.score || 0}
-                          rankWidth={45}
-                          starWidth={6}
-                          className="absolute bottom-0"
-                        />
+                          <div className="flex gap-2">
+                            <span className="font20 font-bold text-white">
+                              24K
+                            </span>
+                            <ThumbUpOffAltIcon className="font25 text-white" />
+                          </div>
+                        </div>
                       </span>
-                    </span>
-                  </div>
-                  {child && ( 
-                    <div className="flex-1 bg-white">
-                      <div className="flex-1">
-                        <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-                          <img
-                            src={fixImg2}
-                            alt={child?.alt || "Profile image"}
-                            className="w-full min-h-44 max-h-44 object-cover"
-                          />
-                          <span className="absolute top-0 w-full bg_profile_watch">
-                            <ImageRank
-                              showBackground
-                              profileName={child?.userName || "Unknown"}
-                              profileFontColor="white"
-                              score={child?.score || 0}
-                              rankWidth={45}
-                              starWidth={6}
-                              className="absolute bottom-0"
-                            />
-                          </span>
-                          <figcaption className="sr-only">
-                            {child?.userName}
-                          </figcaption>
-                        </figure>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </span>
                 </div>
-              )}
+                {child && (
+                  <div className="flex-1 bg-white">
+                    <div className="flex-1">
+                      <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                        <img
+                          src={fixImg2}
+                          alt={child?.alt || "Profile image"}
+                          className={`w-full ${
+                            isMyVideo
+                              ? "min-h-88 max-h-88"
+                              : "min-h-44 max-h-44"
+                          } object-cover`}
+                        />
+                        {isMyVideo && (
+                          <span className="absolute top-0 w-full bg_profile_watch">
+                            <div className="flex justify-between items-center mx-2">
+                              <ImageRank
+                                profileName={parent?.userName || "Unknown"}
+                                profileFontColor="white"
+                                score={parent?.score || 0}
+                                rankWidth={45}
+                                starWidth={6}
+                                className="absolute bottom-0"
+                              />
+                              <div className="flex gap-2">
+                                <span className="font20 font-bold text-white">
+                                  350
+                                </span>
+                                <ThumbUpOffAltIcon className="font25 text-white" />
+                              </div>
+                            </div>
+                          </span>
+                        )}
+                        <figcaption className="sr-only">
+                          {child?.userName}
+                        </figcaption>
+                        {isMyVideo && (
+                          <div className="absolute bottom-0 left-0 right-0 mx-5 text-white font25 flex items-center justify-center">
+                            <HourglassTopIcon className="font20" />
+                            <Timer
+                              className="text-white font20"
+                              active={isTimerActive}
+                            />
+                            <div className="w-full h-1 bg-gray-700 rounded-full ml-4 relative text-white bg-gray-800">
+                              <div
+                                className="h-1 bg-blue-500 rounded-full text-green bg-white"
+                                style={{ width: `${(progress / 6000) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
+                      </figure>
+                    </div>
+                  </div>
+                )}
+              </div>
             </React.Fragment>
           );
         })}
@@ -298,76 +212,3 @@ const StepOne: React.FC = () => {
 };
 
 export default StepOne;
-
-// return (
-//   <>
-//     <Loading isLoading={isLoading ? true : false} />
-//     <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
-//       {videoGroups.map((group: any, index: number) => {
-//         const { parent, child } = group;
-//         const fixImg1 = `${baseURL}/${parent.attachmentType}/${parent.fileName}${parent.ext}`;
-//         const fixImg2 = child
-//           ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
-//           : "";
-//         console.log();
-//         const itsMyVideo =
-//           (group?.parent?.userId || group?.child?.userId) ===
-//           Number(userIdFromSStorage);
-//         return (
-//           <>
-//             <div
-//               key={index}
-//               onClick={() => handleShowMatch({ group, index })}
-//               className="flex-1 flex  flex-col"
-//             >
-//               <div className="flex-1">
-//                 <span className="relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-//                   <img
-//                     src={fixImg1}
-//                     alt={parent.alt}
-//                     className="w-full min-h-44 max-h-44 object-cover"
-//                   />
-//                   <span className="absolute top-0 w-full bg_profile_watch">
-//                     {/* <ImageRank
-//                       profileName={parent.userName}
-//                       profileFontColor="white"
-//                       score={parent.score}
-//                       rankWidth={45}
-//                       starWidth={6}
-//                       className="absolute bottom-0"
-//                     /> */}
-//                   </span>
-//                 </span>
-//               </div>
-//               <div className="flex-1 bg-white">
-//                 <div className="flex-1">
-//                   <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-//                     <img
-//                       src={fixImg2}
-//                       alt={child.alt || "Profile image"}
-//                       className="w-full min-h-44 max-h-44 object-cover"
-//                     />
-//                     <span className="absolute top-0 w-full bg_profile_watch">
-//                       {/* <ImageRank
-//                         showBackground
-//                         profileName={child.userName}
-//                         profileFontColor="white"
-//                         score={child.score}
-//                         rankWidth={45}
-//                         starWidth={6}
-//                         className="absolute bottom-0"
-//                       /> */}
-//                     </span>
-//                     <figcaption className="sr-only">
-//                       {child.userName}
-//                     </figcaption>
-//                   </figure>
-//                 </div>
-//               </div>
-//             </div>
-//           </>
-//         );
-//       })}
-//     </div>
-//   </>
-// );
