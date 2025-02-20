@@ -30,7 +30,7 @@ const StepTwo = () => {
     const res = await addLike(postData);
     console.log(res);
     const newLikedVideos = [...likedVideos];
-    newLikedVideos[movieId] = true; 
+    newLikedVideos[movieId] = true;
     setLikedVideos(newLikedVideos);
   });
 
@@ -100,7 +100,6 @@ const StepTwo = () => {
           const fixVideo2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
-
           return (
             <SwiperSlide key={index} className="flex bg-black gap-10 flex-col">
               <div className="flex-shrink-0 h-[40vh]">

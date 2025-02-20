@@ -7,10 +7,10 @@ const Notification: React.FC = () => {
   return (
     <>
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="grid justify-center">
-          <div className="w-screen p-2 md:w-full  h-screen md:h-full">
+        <section className="grid  justify-center">
+          <div className="w-screen  p-2 md:w-full   h-screen md:h-full">
             <ImageRank profileFontColor="black" profileName="rabert_igo" />
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end  gap-3">
               <Button variant={"green"} label="Confirm" />
               <Button
                 className=""

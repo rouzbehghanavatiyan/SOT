@@ -63,9 +63,11 @@ const PhoneHeader = () => {
                     </span>
                   </span>
                 </Link>
-                <span className="col-span-1 ">
-                  <EmailIcon className="flex icon_size items-center text-green" />
-                </span>
+                <Link to={"/messages"}>
+                  <span className="col-span-1 ">
+                    <EmailIcon className="flex icon_size items-center text-green" />
+                  </span>
+                </Link>
               </div>
             )}
           </div>

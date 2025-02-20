@@ -10,7 +10,7 @@ import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import Loading from "../../components/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
-import { RsetDobuleVideo } from "../../common/Slices/main";
+import { RsetDobuleVideo, RsetProgress } from "../../common/Slices/main";
 import Timer from "../../components/Timer";
 
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -20,7 +20,11 @@ const StepOne: React.FC = () => {
   const [lastTap, setLastTap] = useState<number>(0);
   const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(() => {
+    // بازیابی زمان باقیمانده از localStorage
+    const savedProgress = localStorage.getItem("timerProgress");
+    return savedProgress ? parseInt(savedProgress, 10) : 0;
+  });
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -83,20 +87,25 @@ const StepOne: React.FC = () => {
     let interval: any;
     if (progress < 60 && isTimerActive) {
       interval = setInterval(() => {
-        setProgress((prevProgress) => prevProgress + 1);
+        dispatch(RsetProgress(progress + 1));
       }, 1000);
     } else if (progress >= 60) {
       clearInterval(interval);
+      dispatch(RsetResetTimer());
     }
     return () => clearInterval(interval);
-  }, [progress, isTimerActive]);
+  }, [progress, isTimerActive, dispatch]);
 
   useEffect(() => {
     const hasMyVideo = videoGroupsWithOwnership.some(
       (group) => group.isMyVideo
     );
-    setIsTimerActive(hasMyVideo);
-  }, [videoGroupsWithOwnership]);
+    dispatch(setIsTimerActive(hasMyVideo)); // Set timer active state in Redux
+  }, [videoGroupsWithOwnership, dispatch]);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("timerProgress");
+  };
 
   return (
     <>
@@ -109,7 +118,7 @@ const StepOne: React.FC = () => {
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
           return (
-            <React.Fragment key={index}>
+            <>
               <div
                 onClick={() => handleShowMatch({ group, index })}
                 className={`flex-1 flex flex-col ${
@@ -203,7 +212,7 @@ const StepOne: React.FC = () => {
                   </div>
                 )}
               </div>
-            </React.Fragment>
+            </>
           );
         })}
       </div>

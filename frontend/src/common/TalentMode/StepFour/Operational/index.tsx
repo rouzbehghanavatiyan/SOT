@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../../../components/Modal";
 import { Button } from "../../../../components/Button";
 import ImageRank from "../../../../components/ImageRank";
@@ -18,6 +18,7 @@ import womenGymPro1 from "../../../../assets/img/womenGym1.jpg";
 import womenGym from "../../../../assets/img/women-AI-Profile-Picture.jpg";
 import { addInvite } from "../../../../services/dotNet";
 import asyncWrapper from "../../../AsyncWrapper";
+import { useAppSelector } from "../../../../hooks/hook";
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const items = [
@@ -107,58 +108,79 @@ const items = [
   },
 ];
 
-const Operational: React.FC = () => {
-  const [profileData, setProfileData] = useState({});
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+interface PropsType {
+  movieData: any;
+}
 
+const Operational: React.FC<PropsType> = ({ movieData }) => {
+  const { main } = useAppSelector((state) => state);
+  const socket = main?.socketConfig;
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
   const handlePick = (id: number) => {
     setSelectedId(id);
   };
 
-  const handleConfirmUser = asyncWrapper(async () => {
+  const handleConfirmUser = asyncWrapper(async (item: any) => {
     const postInvite = {
-      parentId: null,
+      parentId: item?.id,
       userId: userIdFromSStorage,
-      movieId: movieData?.id,
+      movieId: movieData?.movieId,
     };
 
-    const res = await addInvite(postData);
+    setIsLoadingBtn(true);
+    socket.emit("add_invite", postInvite);
+    const res = await addInvite(postInvite);
+    setIsLoadingBtn(false);
+    console.log(res);
   });
+
+  //--------------------------------------------------------------------------------------------------------------------------------------> باییییییید لایو کاربرها ایجاد شود
+
+  const handleReceiveUsers = (data: any) => {
+    console.log(data);
+  };
+
+  useEffect(() => {
+    socket.on("add_invite", handleReceiveUsers);
+  }, [socket]);
 
   return (
     <>
       <div className="p-2">
         <div className="flex flex-col">
-          {items?.map((item: any, index: number) => (
-            <div key={item.id} className="flex flex-col items-center w-full">
-              <span
-                className="w-full border-b-2"
-                onClick={() => handlePick(index)}
-              >
-                <div className="relative">
-                  <ImageRank
-                    imgSrc={item.profileImageBott}
-                    profileName="rabert5012_3"
-                    profileFontColor="black"
-                    type={item.rankTypeBott}
-                    level={item.rankLevelBott}
-                    rankWidth={45}
-                    starWidth={6}
-                  />
-                  {selectedId === index && (
-                    <div className="absolute right-0 top-5 mb-2">
-                      <Button
-                        onClick={handleConfirmUser}
-                        className=""
-                        variant={"green"}
-                        label="Send invite"
-                      />
-                    </div>
-                  )}
-                </div>
-              </span>
-            </div>
-          ))}
+          {items?.map((item: any, index: number) => {
+            console.log(item);
+            return (
+              <div key={index} className="flex flex-col items-center w-full">
+                <span
+                  className="w-full border-b-2"
+                  onClick={() => handlePick(index)}
+                >
+                  <div className="relative">
+                    <ImageRank
+                      imgSrc={item.profileImageBott}
+                      profileName="rabert5012_3"
+                      profileFontColor="black"
+                      rankWidth={45}
+                      starWidth={6}
+                    />
+                    {selectedId === index && (
+                      <div className="absolute right-0 top-5 mb-2">
+                        <Button
+                          loading={isLoadingBtn}
+                          onClick={() => handleConfirmUser(item)}
+                          className=""
+                          variant={"green"}
+                          label="Send invite"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div
           className={`inset-0 flex justify-center items-center transition-opacity h-11 w-full gap-2 z-50`}
@@ -168,7 +190,7 @@ const Operational: React.FC = () => {
           </div>
           <div className="text-gray-800">
             <span> Finding users</span>
-            <span className="loader-dot text-red" >  </span>
+            <span className="loader-dot text-red"> </span>
           </div>
         </div>
       </div>

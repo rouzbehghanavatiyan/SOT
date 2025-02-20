@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Input from "../Input";
 import { Button } from "../Button";
 import SlideRange from "../SlideRange";
@@ -10,36 +10,9 @@ import Operational from "../../common/TalentMode/StepFour/Operational";
 import Loading from "../Loading";
 import Timer from "../Timer";
 import { redirect, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../hooks/hook";
+import { EditVideoProps, MovieDataType } from "./type";
 const userIdFromSStorage = sessionStorage.getItem("userId");
-interface MovieDataType {
-  parentId: null;
-  userId: number | null;
-  movieId: number | null;
-  status: number | null;
-  inviteId?: any;
-  desc?: string;
-  title?: string;
-  rate?: number;
-}
-
-interface EditVideoProps {
-  showEditMovie: boolean;
-  setShowEditMovie: React.Dispatch<React.SetStateAction<boolean>>;
-  coverImage?: string;
-  allFormData?: {
-    imageCover?: File;
-    video?: File;
-  };
-  mode?: { typeMode?: number };
-}
-
-interface AddMovieType {
-  userId: number | null;
-  description?: string;
-  title?: string;
-  subSubCategoryId: number;
-  modeId: number | undefined;
-}
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -54,41 +27,37 @@ const EditVideo: React.FC<EditVideoProps> = ({
     movieId: null,
     status: null,
   });
+  const { main } = useAppSelector((state) => state);
+  const socket = main?.socketConfig;
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [isActive, setIsActive] = useState(false);
   const navigate = useNavigate();
 
-  const handleAcceptOffline = asyncWrapper(async () => {
-    if (currentStep === 1) {
-      const postData: AddMovieType = {
-        userId: Number(sessionStorage?.getItem("userId") as null) || null,
-        description: movieData?.desc ?? "",
-        title: movieData?.title ?? "",
-        subSubCategoryId: 1 || null,
-        modeId: mode?.typeMode || 0,
-      };
-      setIsLoadingBtn(true);
-      setFindingMatch(true);
-      const res = await addMovie(postData);
-      const { status: movieStatus, data: resMovieData }: GetServices =
-        res?.data;
-      if (movieStatus === 0) {
-        setIsLoadingBtn(false);
-        const formData = new FormData();
-        if (allFormData?.imageCover) {
-          formData.append("formFile", allFormData.imageCover);
-        }
-        if (allFormData?.video) {
-          formData.append("formFile", allFormData.video);
-        }
-        formData.append("attachmentId", resMovieData?.id);
-        formData.append("attachmentType", "mo");
-        formData.append("attachmentName", "movies");
-        const resAttachment = await addAttachment(formData);
-        const { status: attachmentStatus, data: attachmentData } =
-          resAttachment?.data;
+  const handleAttachment = useCallback(
+    asyncWrapper(async (resMovieData: any) => {
+      const formData = new FormData();
+      if (allFormData?.imageCover) {
+        formData.append("formFile", allFormData.imageCover);
+      }
+      if (allFormData?.video) {
+        formData.append("formFile", allFormData.video);
+      }
+      formData.append("attachmentId", resMovieData?.id);
+      formData.append("attachmentType", "mo");
+      formData.append("attachmentName", "movies");
+      const resAttachment = await addAttachment(formData);
+      const { status: attachmentStatus, data: attachmentData } =
+        resAttachment?.data;
+      return { attachmentStatus, attachmentData };
+    }),
+    [allFormData]
+  );
+
+  const handleFixVideo = useCallback(
+    async (resMovieData: any) => {
+      try {
+        const { attachmentStatus } = await handleAttachment(resMovieData);
         if (attachmentStatus === 0) {
           const postInvite = {
             parentId: null,
@@ -96,6 +65,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
             movieId: resMovieData?.id || null,
             status: 0,
           };
+          setFindingMatch(true);
+          socket.emit("findUser_offline", postInvite);
 
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
@@ -110,41 +81,82 @@ const EditVideo: React.FC<EditVideoProps> = ({
             navigate(`/watch`);
           }
         }
+      } catch (error) {
+        console.log(error);
       }
-    }
-  });
+    },
+    [handleAttachment, navigate, setShowEditMovie, socket]
+  );
 
-  const handleAcceptOptional = asyncWrapper(async () => {
-    setCurrentStep(2);
-  });
+  const handleAcceptOptional = useCallback(
+    asyncWrapper(async (resMovieData: any) => {
+      setMovieData((prev: any) => ({
+        ...prev,
+        userId: Number(userIdFromSStorage) || null,
+        movieId: Number(resMovieData?.modeId),
+      }));
+      setCurrentStep(2);
+    }),
+    []
+  );
 
-  const handleBack = () => {
+  const handleUploadVideo = useCallback(
+    asyncWrapper(async () => {
+      setIsLoadingBtn(true);
+      const postData: AddMovieType = {
+        userId: Number(sessionStorage?.getItem("userId") as null) || null,
+        description: movieData?.desc ?? "",
+        title: movieData?.title ?? "",
+        subSubCategoryId: 1 || null,
+        modeId: mode?.typeMode || 0,
+      };
+      const res = await addMovie(postData);
+      const { status: movieStatus, data: resMovieData }: GetServices =
+        res?.data;
+      if (movieStatus === 0) {
+        setIsLoadingBtn(false);
+        if (mode?.typeMode === ModeType.OFFLINE) {
+          handleFixVideo(resMovieData);
+        } else if (mode?.typeMode === ModeType.OPTIONAL) {
+          handleAcceptOptional(resMovieData);
+        }
+      } else {
+        alert("movie does not exist");
+      }
+    }),
+    [handleFixVideo, handleAcceptOptional, movieData, mode]
+  );
+
+  const handleBack = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
-  };
+  }, [currentStep]);
 
-  const handleAddInvite = asyncWrapper(async () => {
-    console.log("movieData", movieData?.userId);
-    const postInvite = {
-      parentId: null,
-      userId: Number(userIdFromSStorage) || null,
-      movieId: movieData?.movieId || null,
-      status: 1,
-      inviteId: movieData?.inviteId || null,
-    };
-    const res = await addInvite(postInvite);
-    console.log(res?.data);
+  const handleAddInvite = useCallback(
+    asyncWrapper(async () => {
+      const postInvite = {
+        parentId: null,
+        userId: Number(userIdFromSStorage) || null,
+        movieId: movieData?.movieId || null,
+        status: 1,
+        inviteId: movieData?.inviteId || null,
+      };
+      const res = await addInvite(postInvite);
+      if (res?.data?.status === 3) {
+        setShowEditMovie(false);
+        navigate("/watch");
+      }
+    }),
+    [movieData, navigate, setShowEditMovie]
+  );
 
-    if (res?.data?.status === 3) {
-      setShowEditMovie(false);
-      navigate("/watch");
-    }
-  });
+  const handleFindOffline = useCallback((data: any) => {
+    console.log(data);
+  }, []);
 
   useEffect(() => {
     let inviteInterval: ReturnType<typeof setInterval>;
-
     if (findingMatch && movieData) {
       inviteInterval = setInterval(() => {
         handleAddInvite();
@@ -153,7 +165,14 @@ const EditVideo: React.FC<EditVideoProps> = ({
     return () => {
       clearInterval(inviteInterval);
     };
-  }, [movieData?.movieId]);
+  }, [findingMatch, movieData, handleAddInvite]);
+
+  useEffect(() => {
+    socket.on("findUser_offline", handleFindOffline);
+    return () => {
+      socket.off("findUser_offline", handleFindOffline);
+    };
+  }, [socket, handleFindOffline]);
 
   return (
     <Modal
@@ -206,20 +225,12 @@ const EditVideo: React.FC<EditVideoProps> = ({
                 }
               />
             </div>
-            <SlideRange
-            // rangeValue={movieData?.rate}
-            // setRangeValue={(e: any) =>
-            //   setMovieData((prev: any) => ({
-            //     ...prev,
-            //     rate: e.target.value,
-            //   }))
-            // }
-            />
+            <SlideRange />
           </div>
         )}
         {currentStep === 2 && mode.typeMode === 4 && (
           <>
-            <Operational />
+            <Operational movieData={movieData} />
           </>
         )}
       </div>
@@ -228,13 +239,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
           <Button
             loading={isLoadingBtn}
             className="border"
-            onClick={
-              mode.typeMode === 3
-                ? handleAcceptOffline
-                : mode.typeMode === 4
-                  ? handleAcceptOptional
-                  : undefined
-            }
+            onClick={handleUploadVideo}
             variant={"green"}
             label={
               findingMatch ? (

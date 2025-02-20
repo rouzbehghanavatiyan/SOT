@@ -28,6 +28,7 @@ interface MainType {
   loading: boolean;
   dobuleVideo: null;
   category: any;
+  socketConfig: any;
 }
 const initialState: MainType = {
   messageModal: { title: "", show: false },
@@ -38,6 +39,7 @@ const initialState: MainType = {
   showLoadingBtn: "",
   dobuleVideo: null,
   category: [],
+  socketConfig: null,
 };
 
 // -> handle get user menu list
@@ -82,6 +84,12 @@ const mainSlice = createSlice({
     RsetCategory: (state, actions: PayloadAction<any>) => {
       return { ...state, category: actions.payload };
     },
+    RsetProgress: (state, actions: PayloadAction<any>) => {
+      return { ...state, progress: actions.payload };
+    },
+    RsetSocketConfig: (state, actions: PayloadAction<any>) => {
+      return { ...state, socketConfig: actions.payload };
+    },
   },
   //   extraReducers: (builder) => {
   //     builder
@@ -112,6 +120,12 @@ const mainSlice = createSlice({
   //   },
 });
 
-export const { RsetMessageModal, RsetLoading, RsetDobuleVideo, RsetCategory } =
-  mainSlice.actions;
+export const {
+  RsetMessageModal,
+  RsetLoading,
+  RsetDobuleVideo,
+  RsetCategory,
+  RsetSocketConfig,
+  RsetProgress,
+} = mainSlice.actions;
 export default mainSlice.reducer;

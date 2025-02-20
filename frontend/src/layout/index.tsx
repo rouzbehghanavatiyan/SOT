@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  CssBaseline,
-  Drawer as MuiDrawer,
-  AppBar as MuiAppBar,
-  Toolbar,
-  Divider,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import Messages from "../pages/Messages";
+import Messages from "../pages/ChatRoom";
 import SidebarLinks from "./Sidebar";
 import Header from "./Header";
-import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
-import { Link } from "react-router-dom";
 import PhoneHeader from "./PhoneFooter/PhoneHeader";
-import { handleCategories, RsetCategory } from "../common/Slices/main";
+import {
+  handleCategories,
+  RsetCategory,
+  RsetSocketConfig,
+} from "../common/Slices/main";
 import { useAppDispatch } from "../hooks/hook";
-import { useSelector } from "react-redux";
 import { categoryList } from "../services/dotNet";
 import asyncWrapper from "../common/AsyncWrapper";
+import { io } from "socket.io-client";
 
 type PropsType = any;
 
@@ -27,6 +21,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
+  const socket = io(import.meta.env.VITE_NODE_IP);
+
+  console.log(import.meta.env.VITE_NODE_IP);
+  
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -40,9 +38,17 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   });
 
+  const handleSocketConfig = () => {
+    dispatch(RsetSocketConfig(socket));
+  };
+
   useEffect(() => {
     handleGetCategory();
   }, []);
+
+  useEffect(() => {
+    handleSocketConfig();
+  }, [socket]);
 
   return (
     <main className="relative">
