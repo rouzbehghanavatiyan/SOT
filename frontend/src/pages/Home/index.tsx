@@ -24,7 +24,6 @@ import cook3 from "../../assets/img/cook3.jpg";
 import cook4 from "../../assets/img/cook4.jpg";
 import inv5 from "../../assets/img/inv5.jpg";
 import Video from "../../components/Video";
-import Rank from "../../components/Rank";
 
 const dubleVideos = [
   {
@@ -118,7 +117,10 @@ const Home = () => {
           <div className="h-screen">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-center bg-white h-[80%]">
               {dubleVideos.map((profile, index) => (
-                <SwiperSlide key={index} className="bg-white flex flex-col">
+                <SwiperSlide
+                  key={index}
+                  className="bg-white relative flex flex-col"
+                >
                   <OptionHomes result profile={profile} />
                   <div className="w-[100%] h-[31vh]">
                     <Video
@@ -128,7 +130,7 @@ const Home = () => {
                       playing={isPlayingTop}
                     />
                   </div>
-                  <OptionHomes profile={profile} />
+                  <OptionHomes useFollow profile={profile} />
                   <div className="w-[100%] h-[31vh]">
                     <Video
                       loop
@@ -137,12 +139,13 @@ const Home = () => {
                       playing={isPlayingBottom}
                     />
                   </div>
-                  <div className="flex items-center gap-1 m-2">
+                  <div className="flex  items-center gap-1 m-2">
                     <span onClick={handleShowCMT}>
-                      <ChatBubbleOutlineIcon className="text-white font20 cursor-pointer" />
+                      <ChatBubbleOutlineIcon className="text-black font20 cursor-pointer" />
                     </span>
-                    <span className="text-white"> 1,529 </span>
+                    <span className="text-black"> 1,529 </span>
                   </div>
+                  <hr />
                 </SwiperSlide>
               ))}
             </div>

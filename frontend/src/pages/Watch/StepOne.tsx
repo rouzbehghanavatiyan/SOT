@@ -100,7 +100,7 @@ const StepOne: React.FC = () => {
     const hasMyVideo = videoGroupsWithOwnership.some(
       (group) => group.isMyVideo
     );
-    dispatch(setIsTimerActive(hasMyVideo)); // Set timer active state in Redux
+    setIsTimerActive(hasMyVideo);
   }, [videoGroupsWithOwnership, dispatch]);
 
   const handleSignOut = () => {

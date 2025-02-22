@@ -19,94 +19,8 @@ import womenGym from "../../../../assets/img/women-AI-Profile-Picture.jpg";
 import { addInvite } from "../../../../services/dotNet";
 import asyncWrapper from "../../../AsyncWrapper";
 import { useAppSelector } from "../../../../hooks/hook";
-const userIdFromSStorage = sessionStorage.getItem("userId");
 
-const items = [
-  {
-    id: 1,
-    imageTop: cooking1,
-    imageBott: cooking2,
-    profileImageTop: cook4,
-    profileImageBott: cook1,
-    alt: "Image 1",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 2,
-    imageTop: menGym2,
-    imageBott: womenGymPro1,
-    profileImageTop: gymM3,
-    profileImageBott: womenGym,
-    alt: "Image 2",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: blackProfile,
-    profileImageBott: roberto,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 3,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 3",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-  {
-    id: 4,
-    imageTop: violon,
-    imageBott: violon2,
-    profileImageTop: cook4,
-    profileImageBott: cook4,
-    alt: "Image 4",
-    rankTypeTop: "gold",
-    rankLevelTop: 3,
-    rankTypeBott: "silver",
-    rankLevelBott: 2,
-  },
-];
+const userIdFromSStorage = sessionStorage.getItem("userId");
 
 interface PropsType {
   movieData: any;
@@ -130,9 +44,9 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
 
     setIsLoadingBtn(true);
     socket.emit("add_invite", postInvite);
-    const res = await addInvite(postInvite);
+    // const res = await addInvite(postInvite);
     setIsLoadingBtn(false);
-    console.log(res);
+    // console.log(res);
   });
 
   //--------------------------------------------------------------------------------------------------------------------------------------> باییییییید لایو کاربرها ایجاد شود
@@ -142,14 +56,25 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
   };
 
   useEffect(() => {
+    if (socket) {
+      socket.emit("user_entered_operational", { userId: userIdFromSStorage });
+    }
+  }, [socket]);
+
+  useEffect(() => {
     socket.on("add_invite", handleReceiveUsers);
+    return () => {
+      if (socket) {
+        socket.off("add_invite", handleReceiveUsers);
+      }
+    };
   }, [socket]);
 
   return (
     <>
       <div className="p-2">
         <div className="flex flex-col">
-          {items?.map((item: any, index: number) => {
+          {["items"]?.map((item: any, index: number) => {
             console.log(item);
             return (
               <div key={index} className="flex flex-col items-center w-full">
@@ -186,10 +111,10 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
           className={`inset-0 flex justify-center items-center transition-opacity h-11 w-full gap-2 z-50`}
         >
           <div className=" w-10 h-10 flex justify-center items-center shadow-xl rounded-lg">
-            <div className="loader-text w-16 h-16"> </div>
+            <div className="loader-userFinding   w-16 h-16"> </div>
           </div>
+          <span> Finding users</span>
           <div className="text-gray-800">
-            <span> Finding users</span>
             <span className="loader-dot text-red"> </span>
           </div>
         </div>

@@ -70,7 +70,7 @@ const PhoneFooter: React.FC = () => {
             }
           >
             <NotificationsIcon className="icon_size text-orange-hover" />
-            <CircleIcon className="text-red absolute top-2 right-2 font10" />
+            {/* <CircleIcon className="text-red absolute top-2 right-2 font10" /> */}
           </NavLink>
           <NavLink
             to={"/profile"}

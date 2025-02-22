@@ -641,6 +641,25 @@ br {
   animation: prixClipFix 2s linear infinite;
 }
 
+.loader-userFinding {
+  width: 25px;
+  height: 25px;
+  border-radius: 50px;
+  position: relative;
+  animation: rotate 1s linear infinite
+}
+
+.loader-userFinding::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50px;
+  border: 5px solid #4d4d4d;
+  animation: prixClipFix 2s linear infinite;
+}
+
+
 
 @keyframes rotate {
   100% {
@@ -728,6 +747,11 @@ br {
 .bg_profile_watch {
   background: rgb(0, 0, 0);
   background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+}
+
+.bg_profile {
+  background: rgb(0, 0, 0);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #e0e0e0 100%);
 }
 
 .controls {

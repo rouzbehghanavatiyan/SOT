@@ -7,11 +7,10 @@ import asyncWrapper from "../../common/AsyncWrapper";
 import { addAttachment, addInvite, addMovie } from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
 import Operational from "../../common/TalentMode/StepFour/Operational";
-import Loading from "../Loading";
 import Timer from "../Timer";
 import { redirect, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/hook";
-import { EditVideoProps, MovieDataType } from "./type";
+import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const EditVideo: React.FC<EditVideoProps> = ({
@@ -59,6 +58,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
       try {
         const { attachmentStatus } = await handleAttachment(resMovieData);
         if (attachmentStatus === 0) {
+          console.log(Number(userIdFromSStorage));
           const postInvite = {
             parentId: null,
             userId: Number(userIdFromSStorage) || null,
@@ -68,7 +68,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
           setFindingMatch(true);
           socket.emit("findUser_offline", postInvite);
 
-          const resInvite = await addInvite(postInvite);
+          // const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
           setMovieData((prev: any) => ({
             ...prev,
@@ -115,9 +115,9 @@ const EditVideo: React.FC<EditVideoProps> = ({
         res?.data;
       if (movieStatus === 0) {
         setIsLoadingBtn(false);
-        if (mode?.typeMode === ModeType.OFFLINE) {
+        if (mode?.typeMode === 3) {
           handleFixVideo(resMovieData);
-        } else if (mode?.typeMode === ModeType.OPTIONAL) {
+        } else if (mode?.typeMode === 4) {
           handleAcceptOptional(resMovieData);
         }
       } else {
@@ -155,17 +155,17 @@ const EditVideo: React.FC<EditVideoProps> = ({
     console.log(data);
   }, []);
 
-  useEffect(() => {
-    let inviteInterval: ReturnType<typeof setInterval>;
-    if (findingMatch && movieData) {
-      inviteInterval = setInterval(() => {
-        handleAddInvite();
-      }, 5000);
-    }
-    return () => {
-      clearInterval(inviteInterval);
-    };
-  }, [findingMatch, movieData, handleAddInvite]);
+  // useEffect(() => {
+  // let inviteInterval: ReturnType<typeof setInterval>;
+  // if (findingMatch && movieData) {
+  //   inviteInterval = setInterval(() => {
+  //     handleAddInvite();
+  //   }, 5000);
+  // }
+  // return () => {
+  //   clearInterval(inviteInterval);
+  // };
+  // }, [findingMatch, movieData, handleAddInvite]);
 
   useEffect(() => {
     socket.on("findUser_offline", handleFindOffline);

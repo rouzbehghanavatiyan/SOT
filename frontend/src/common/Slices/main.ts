@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TypeCategories } from "./mainType";
-import asyncWrapper from "../AsyncWrapper";
 import { categoryList } from "../../services/dotNet";
 
 type MessageModal = {
