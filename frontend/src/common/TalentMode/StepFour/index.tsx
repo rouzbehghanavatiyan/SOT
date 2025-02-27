@@ -3,7 +3,7 @@ import NetworkCheckIcon from "@mui/icons-material/NetworkCheck";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import WifiOffIcon from "@mui/icons-material/WifiOff";
 import AltRouteIcon from "@mui/icons-material/AltRoute";
-import EditVideo from "../../../components/EditVideo";
+import EditVideo from "../../EditVideo";
 import Operational from "./Operational";
 
 const StepFour: React.FC = () => {
@@ -90,7 +90,7 @@ const StepFour: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex-col h-screen justify-center ">
+    <div className="w-full mt-12 flex-col h-screen justify-center ">
       <video ref={videoRef} style={{ display: "none" }} />
       <div className="grid grid-cols-3">
         <span className="flex justify-center col-span-1">

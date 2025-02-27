@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Input from "../Input";
-import { Button } from "../Button";
-import SlideRange from "../SlideRange";
-import Modal from "../Modal";
-import asyncWrapper from "../../common/AsyncWrapper";
+import Input from "../../components/Input";
+import { Button } from "../../components/Button";
+import SlideRange from "../../components/SlideRange";
+import Modal from "../../components/Modal";
+import asyncWrapper from "../AsyncWrapper";
 import { addAttachment, addInvite, addMovie } from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
-import Operational from "../../common/TalentMode/StepFour/Operational";
-import Timer from "../Timer";
+import Operational from "../TalentMode/StepFour/Operational";
+import Timer from "../../components/Timer";
 import { redirect, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/hook";
 import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
@@ -58,17 +58,17 @@ const EditVideo: React.FC<EditVideoProps> = ({
       try {
         const { attachmentStatus } = await handleAttachment(resMovieData);
         if (attachmentStatus === 0) {
-          console.log(Number(userIdFromSStorage));
           const postInvite = {
             parentId: null,
-            userId: Number(userIdFromSStorage) || null,
+            userId:
+              Number(userIdFromSStorage) || main?.userLogin?.userId || null,
             movieId: resMovieData?.id || null,
             status: 0,
           };
+          console.log(postInvite);
           setFindingMatch(true);
-          socket.emit("findUser_offline", postInvite);
-
-          // const resInvite = await addInvite(postInvite);
+          // socket.emit("findUser_offline", postInvite);
+          const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
           setMovieData((prev: any) => ({
             ...prev,
@@ -155,30 +155,30 @@ const EditVideo: React.FC<EditVideoProps> = ({
     console.log(data);
   }, []);
 
-  // useEffect(() => {
-  // let inviteInterval: ReturnType<typeof setInterval>;
-  // if (findingMatch && movieData) {
-  //   inviteInterval = setInterval(() => {
-  //     handleAddInvite();
-  //   }, 5000);
-  // }
-  // return () => {
-  //   clearInterval(inviteInterval);
-  // };
-  // }, [findingMatch, movieData, handleAddInvite]);
-
   useEffect(() => {
-    socket.on("findUser_offline", handleFindOffline);
+    let inviteInterval: ReturnType<typeof setInterval>;
+    if (findingMatch && movieData) {
+      inviteInterval = setInterval(() => {
+        handleAddInvite();
+      }, 5000);
+    }
     return () => {
-      socket.off("findUser_offline", handleFindOffline);
+      clearInterval(inviteInterval);
     };
-  }, [socket, handleFindOffline]);
+  }, [findingMatch, movieData, handleAddInvite]);
+
+  // useEffect(() => {
+  //   socket.on("findUser_offline", handleFindOffline);
+  //   return () => {
+  //     socket.off("findUser_offline", handleFindOffline);
+  //   };
+  // }, [socket, handleFindOffline]);
 
   return (
     <Modal
       title={
         mode?.typeMode === 3
-          ? "offline"
+          ? "Offline"
           : mode?.typeMode === 4
             ? "Optional"
             : ""

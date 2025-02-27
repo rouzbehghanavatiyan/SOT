@@ -111,7 +111,7 @@ const Home = () => {
         direction={"vertical"}
         slidesPerView={1}
         mousewheel={true}
-        className="mySwiper h-screen"
+        className="mySwiper h-screen "
       >
         <div className="grid grid-cols-1 md:grid-cols-3 justify-centerbg-white">
           <div className="h-screen">
@@ -145,7 +145,12 @@ const Home = () => {
                     </span>
                     <span className="text-black"> 1,529 </span>
                   </div>
-                  <hr />
+                  <div className="flex bg-white items-center gap-1 m-2">
+                    this jdsk hg sjdgnbbsbhd thdkdj htishg gj ht where is op
+                    ndhthis jdsk hg sjdgnbbsbhd thdkdj htishg gj ht where is op
+                    ndhthis jdsk hg sjdgnbbsbhd thdkdj htishg gj ht where is op
+                    ndh tnd
+                  </div>
                 </SwiperSlide>
               ))}
             </div>

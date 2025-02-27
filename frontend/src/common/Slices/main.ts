@@ -28,6 +28,7 @@ interface MainType {
   dobuleVideo: null;
   category: any;
   socketConfig: any;
+  userLogin: any;
 }
 const initialState: MainType = {
   messageModal: { title: "", show: false },
@@ -39,6 +40,7 @@ const initialState: MainType = {
   dobuleVideo: null,
   category: [],
   socketConfig: null,
+  userLogin: {},
 };
 
 // -> handle get user menu list
@@ -70,6 +72,9 @@ const mainSlice = createSlice({
   reducers: {
     RsetMessageModal: (state, actions: PayloadAction<MessageModal>) => {
       return { ...state, messageModal: actions.payload };
+    },
+    RsetUserLogin: (state, actions: PayloadAction<any>) => {
+      return { ...state, userLogin: actions.payload };
     },
     RsetLoading: (
       state,
@@ -126,5 +131,6 @@ export const {
   RsetCategory,
   RsetSocketConfig,
   RsetProgress,
+  RsetUserLogin,
 } = mainSlice.actions;
 export default mainSlice.reducer;

@@ -97,6 +97,7 @@ const ShowWatch = ({}) => {
       modules={[Mousewheel]}
       className="mySwiper h-screen"
     >
+    
       {chunkedVideos.map((videoPair, index: number) => (
         <SwiperSlide className="bg-black flex flex-col h-screen" key={index}>
           {videoPair.map((video, subIndex) => {
@@ -136,7 +137,6 @@ const ShowWatch = ({}) => {
           })}
         </SwiperSlide>
       ))}
-
       {showComments && (
         <Comments
           handleShowCMT={handleShowCMT}

@@ -24,7 +24,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const socket = io(import.meta.env.VITE_NODE_IP);
 
   console.log(import.meta.env.VITE_NODE_IP);
-  
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -65,7 +64,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
           <SidebarLinks toggleMenu={toggleMenu} open={open} />
         </ResponsiveMaker>
         <div className="flex flex-grow justify-center items-center">
-          <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
+          <div className="  max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
             <PhoneHeader />
             <div>{children}</div>
             <PhoneFooter />

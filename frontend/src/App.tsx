@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import PublicRoutes from "./routes/PublicRoutes";
 import Login from "./pages/Login";
 import SignUpForm from "./pages/SignUp";
-import EditVideo from "./components/EditVideo";
+import EditVideo from "./common/EditVideo";
 
 function App() {
   return (

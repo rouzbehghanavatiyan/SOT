@@ -94,6 +94,7 @@ const StepTwo = () => {
         modules={[Mousewheel]}
         className="mySwiper h-screen"
       >
+        
         {videoGroups.map((group, index) => {
           const { parent, child } = group;
           const fixVideo1 = `${baseURL}/${parent.attachmentType}/${parent.fileName}${parent.ext}`;

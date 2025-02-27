@@ -50,7 +50,7 @@ const StepThree: React.FC = () => {
   return (
     <>
       <Loading isLoading={isLoading ? true : false} />
-      <div className="grid justify-center">
+      <div className="grid mt-10 justify-center">
         <div className="w-screen md:w-full h-screen md:h-full ">
           {allSubSubCategory?.map((category: any) => (
             <span

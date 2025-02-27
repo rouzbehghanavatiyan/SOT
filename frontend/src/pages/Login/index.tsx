@@ -7,9 +7,11 @@ import logo from "../../assets/img/1724181984017.jpg";
 import Input from "../../components/Input";
 import { login } from "../../services/dotNet";
 import { jwtDecode } from "jwt-decode";
+import { RsetUserLogin } from "../../common/Slices/main";
 
 const LogInForm: FC = () => {
   const [operatingSystem, setOperatingSystem] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [inputs, setInputs] = useState<any>({});
   const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
@@ -40,12 +42,12 @@ const LogInForm: FC = () => {
         fixUser[
           "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
         ];
+      dispatch(RsetUserLogin({ token: data?.token, userId: userId }));
       sessionStorage.setItem("token", data?.token);
       sessionStorage.setItem("userId", userId);
     } else {
-      alert("User has been not register")
+      alert("User has been not register");
       setIsLoadingBtn(false);
-    
     }
   };
 

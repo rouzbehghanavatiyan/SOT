@@ -5,8 +5,8 @@ import ImageRank from "../../../components/ImageRank";
 
 const OptionHomes = ({ result, profile, useFollow }: any) => {
   return (
-    <div className="w-full bg_profile ">
-      <div className="grid grid-cols-3  items-center justify-between m-2">
+    <div className="w-full mt-12   ">
+      <div className="grid grid-cols-3  items-center justify-between mx-2">
         <span className="col-span-1">
           <ImageRank
             imgSrc={profile?.img}
@@ -19,39 +19,33 @@ const OptionHomes = ({ result, profile, useFollow }: any) => {
             className="absolute bottom-0"
           />
         </span>
-
         {result ? (
           <div className="top-2 left-36 w-36 flex justify-center items-center">
             {profile.type.toLowerCase() === "success" ? (
               <>
                 <VerifiedIcon
-                  className={`flex items-center text-${profile.color} font-bold font35`}
+                  className={`flex items-center text-${profile.color} font-bold font25`}
                 />
-                <span className="text-green font18 font-bold">
-                  {profile.type}
-                </span>
+                <span className="text-green font-bold">{profile.type}</span>
               </>
             ) : (
               <>
-                <DangerousIcon className="flex items-center text-red font-bold font35" />
-                <span className="text-red font18 font-bold">
-                  {profile.type}
-                </span>
+                <DangerousIcon className="flex items-center text-red font-bold font25" />
+                <span className="text-red  font-bold">{profile.type}</span>
               </>
             )}
           </div>
         ) : (
           <div className="top-2 left-36  w-36 flex justify-center items-center">
-            <span className="p-1 flex px-3 bg-gray-100 justify-center text-dark border cursor-pointer">
+            <span className="p-1 flex px-3 bg-white justify-center text-dark border cursor-pointer">
               Follow
             </span>
           </div>
         )}
-
-        <div className="flex  justify-end items-center col-span-1">
+        <div className="flex justify-end items-center col-span-1">
           <div className="gap-4 items-center">
             <div className="flex  items-center gap-1 text-gray-200">
-              <ThumbUpOffAltIcon className="font35 font-bold text-gray-800" />
+              <ThumbUpOffAltIcon className="font30 font-bold text-gray-800" />
               <span className="text-gray-800">{profile.comments}</span>
             </div>
           </div>

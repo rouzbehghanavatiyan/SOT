@@ -22,7 +22,7 @@ const PhoneHeader = () => {
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
       {!itsShowWatchRoute && (
-        <div className="sticky z-40 top-0 left-0 w-full bg_phone_header shadow-md px-2 py-2 text-center text-white font-bold flex">
+        <div className="fixed z-40 top-0 left-0 w-full bg_phone_header shadow-md px-2 py-1 text-center text-white font-bold flex">
           <div className="grid grid-cols-5 w-full items-center">
             {itsWatchRoute ? (
               <span className="col-span-3 relative">

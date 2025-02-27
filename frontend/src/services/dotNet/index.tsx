@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AddMovieType } from "../../components/EditVideo/type";
+import { AddMovieType } from "../../common/EditVideo/type";
 
 const baseURL: string | undefined = import.meta.env.VITE_URL;
 

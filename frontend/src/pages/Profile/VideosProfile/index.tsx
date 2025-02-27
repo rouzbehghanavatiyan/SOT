@@ -149,13 +149,15 @@ const VideosProfile = () => {
         {profiles.map((profile, index) => (
           <section
             key={index}
-            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}>
+            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}
+          >
             <div
               className={`relative ${
                 expandedVideo === index
                   ? "w-full h-screen"
                   : "w-full sm:w-[100%] md:w-[100%] lg:w-[325px] h-[650px]"
-              }transition-all duration-500`}>
+              }transition-all duration-500`}
+            >
               <div className="ms-1 absolute justify-between items-center m-1 text-2xl">
                 <div className="grid grid-cols-5  gap-2 my-1 items-center">
                   <div className="relative mb-2  col-span-1">
@@ -250,7 +252,7 @@ const VideosProfile = () => {
                 </span>
                 <span> 1,529 </span>
               </div>
-              <p className="mx-2">
+              <p className="mx-2 text-black">
                 this is ganna be best video in the world that u can whole your
                 country. dont forget to be best
               </p>
