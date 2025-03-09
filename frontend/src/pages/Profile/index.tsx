@@ -35,7 +35,7 @@ const Profile: React.FC = () => {
   return (
     <>
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="grid  justify-center">
+        <section className="grid  justify-center mt-20">
           <div className="w-screen md:w-full md:h-full bg-gray-100">
             <div className="px-3  m-2 border-b-2">
               <div className="col-span-3 relative right-2 p-1">

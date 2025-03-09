@@ -16,17 +16,17 @@ const Messages: React.FC = ({ socket, userInfo }) => {
     }
   };
 
-  useEffect(() => {
-    fetchChatHistory();
-    if (userInfo?.userId) {
-      socket.emit("join_home", userInfo?.userId);
-    }
+  // useEffect(() => {
+  //   fetchChatHistory();
+  //   if (userInfo?.userId) {
+  //     socket.emit("join_home", userInfo?.userId);
+  //   }
 
-    return () => {
-      socket.off("update_online_users");
-      socket.disconnect();
-    };
-  }, [userInfo?.userId]);
+  //   return () => {
+  //     socket.off("update_online_users");
+  //     socket.disconnect();
+  //   };
+  // }, [userInfo?.userId]);
 
   return (
     <>

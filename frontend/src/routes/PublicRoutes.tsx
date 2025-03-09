@@ -16,7 +16,7 @@ import StepThree from "../common/TalentMode/StepThree";
 import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
 import StepFour from "../common/TalentMode/StepFour";
-import ShowWatch from "../pages/ShowWatch";
+import ShowWatch from "../pages/Watch/ShowWatch";
 import Setting from "../pages/Setting";
 import ChatRoom from "../pages/ChatRoom";
 

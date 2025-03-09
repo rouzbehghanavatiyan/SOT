@@ -26,6 +26,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
     movieId: null,
     status: null,
   });
+
   const { main } = useAppSelector((state) => state);
   const socket = main?.socketConfig;
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
@@ -65,9 +66,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
             movieId: resMovieData?.id || null,
             status: 0,
           };
-          console.log(postInvite);
           setFindingMatch(true);
-          // socket.emit("findUser_offline", postInvite);
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
           setMovieData((prev: any) => ({
@@ -77,6 +76,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
             inviteId: inviteData,
           }));
           if (inviteStatus === 0) {
+            console.log("sooooooooooocket", inviteData);
+            socket.emit("add_invite_offline", inviteData);
             setShowEditMovie(false);
             navigate(`/watch`);
           }
@@ -133,46 +134,15 @@ const EditVideo: React.FC<EditVideoProps> = ({
     }
   }, [currentStep]);
 
-  const handleAddInvite = useCallback(
-    asyncWrapper(async () => {
-      const postInvite = {
-        parentId: null,
-        userId: Number(userIdFromSStorage) || null,
-        movieId: movieData?.movieId || null,
-        status: 1,
-        inviteId: movieData?.inviteId || null,
-      };
-      const res = await addInvite(postInvite);
-      if (res?.data?.status === 3) {
-        setShowEditMovie(false);
-        navigate("/watch");
-      }
-    }),
-    [movieData, navigate, setShowEditMovie]
-  );
-
-  const handleFindOffline = useCallback((data: any) => {
-    console.log(data);
-  }, []);
-
   useEffect(() => {
-    let inviteInterval: ReturnType<typeof setInterval>;
-    if (findingMatch && movieData) {
-      inviteInterval = setInterval(() => {
-        handleAddInvite();
-      }, 5000);
-    }
+    socket.on("add_invite_offline_response", (data: any) => {
+      setShowEditMovie(false);
+      navigate(`/watch`);
+    });
     return () => {
-      clearInterval(inviteInterval);
+      socket.off("add_invite_offline_response");
     };
-  }, [findingMatch, movieData, handleAddInvite]);
-
-  // useEffect(() => {
-  //   socket.on("findUser_offline", handleFindOffline);
-  //   return () => {
-  //     socket.off("findUser_offline", handleFindOffline);
-  //   };
-  // }, [socket, handleFindOffline]);
+  }, [socket]);
 
   return (
     <Modal

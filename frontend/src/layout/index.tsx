@@ -21,9 +21,9 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
-  const socket = io(import.meta.env.VITE_NODE_IP);
+  const socket = io(import.meta.env.VITE_NODE_SOCKET);
 
-  console.log(import.meta.env.VITE_NODE_IP);
+  console.log(import.meta.env.VITE_NODE_SOCKET);
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -46,6 +46,9 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // socket.on("connection", () => {
+    //   console.log("Connected to server");
+    // });
     handleSocketConfig();
   }, [socket]);
 
