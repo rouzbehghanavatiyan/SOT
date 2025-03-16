@@ -68,7 +68,7 @@ const Setting: React.FC = () => {
           ))}
         </div>
       </div> */}
-      <div className="grid justify-center">
+      <div className="grid justify-center mt-12">
         <div className="w-screen md:w-full h-screen md:h-full ">
           <div onClick={handleSignOut}>
             <span className="bg-green-dark w-full md:min-w-52 my-2 flex justify-start items-center text-white cursor-pointer">

@@ -1,25 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  CssBaseline,
-  Drawer as MuiDrawer,
-  AppBar as MuiAppBar,
-  IconButton,
-} from "@mui/material";
-import {
-  Menu as MenuIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  Inbox as InboxIcon,
-  Mail as MailIcon,
-} from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
-
-import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
-import CircleIcon from "@mui/icons-material/Circle";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import MultiOptions from "../MultiOptions";
 

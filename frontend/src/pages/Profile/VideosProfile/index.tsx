@@ -149,7 +149,7 @@ const VideosProfile = () => {
         {profiles.map((profile, index) => (
           <section
             key={index}
-            className={`   ${expandedVideo === index ? "col-span-full" : ""}`}
+            className={`${expandedVideo === index ? "col-span-full" : ""}`}
           >
             <div
               className={`relative ${
@@ -206,25 +206,14 @@ const VideosProfile = () => {
                       </>
                     )}
                   </div>
-                  <div className="flex text-white items-center gap-1">
+                  <div className="flex text-black items-center gap-1">
                     <ThumbUpOffAltIcon className=" font20 font-bold" />
                     <span>{profile.comments}</span>
                   </div>
-                  {/* <div
-                      className="flex justify-end  items-center "
-                      onClick={() => handleExpand(index)}>
-                      <CropFreeIcon
-                        className={` ${
-                          expandedVideo === index
-                            ? "text-green-500"
-                            : "text-white"
-                        } font35 cursor-pointer`}
-                      />
-                    </div> */}
                 </div>
               </div>
               <div className="w-full h-full bg-white flex flex-col justify-center items-center">
-                <div className="w-full h-[450px] flex justify-center items-center mb-2">
+                <div className="w-full h-[250px] flex justify-center items-center mb-2">
                   <ReactPlayer
                     controls
                     width="100%"
@@ -232,12 +221,12 @@ const VideosProfile = () => {
                     url={demoVid}
                   />
                 </div>
-                <div className="w-full h-[450px] flex justify-center items-center">
+                <div className="w-full h-[250px] flex justify-center items-center">
                   <ReactPlayer
                     controls
                     width="100%"
                     height="100%"
-                    // url={demoVid}
+                    url={demoVid}
                   />
                 </div>
               </div>

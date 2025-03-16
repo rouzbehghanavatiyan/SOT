@@ -132,7 +132,7 @@ const StepOne: React.FC = () => {
                       alt={parent?.alt || "Parent Image"}
                       className={`w-full ${
                         isMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
-                      } object-cover`}
+                      } object-cover ${isMyVideo ? "max-h-[40vh]" : ""}`} // اضافه کردن max-height برای isMyVideo
                     />
                     {isMyVideo && (
                       <span className="absolute top-0 w-full bg_profile_watch">
@@ -167,7 +167,7 @@ const StepOne: React.FC = () => {
                             isMyVideo
                               ? "min-h-88 max-h-88"
                               : "min-h-44 max-h-44"
-                          } object-cover`}
+                          } object-cover ${isMyVideo ? "max-h-[40vh]" : ""}`} // اضافه کردن max-height برای isMyVideo
                         />
                         {isMyVideo && (
                           <span className=" absolute top-0 w-full bg_profile_watch">

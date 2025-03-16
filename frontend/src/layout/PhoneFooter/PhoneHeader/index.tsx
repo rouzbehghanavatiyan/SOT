@@ -43,13 +43,13 @@ const PhoneHeader = () => {
                 Store
               </span>
             ) : (
-              <span className="icon_size col-span-3 flex justify-start text-green">
+              <span className=" icon_size col-span-3 flex justify-start text-green">
                 Star Of Talent
               </span>
             )}
             {itsProfileRoute ? (
-              <Link to="/setting">
-                <span>
+              <Link to="/setting" className="col-span-2">
+                <span className="flex justify-end">
                   <SettingsIcon className=" icon_size items-start text-green" />
                 </span>
               </Link>
