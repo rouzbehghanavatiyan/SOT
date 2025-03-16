@@ -200,38 +200,22 @@ const EditVideo: React.FC<EditVideoProps> = ({
         )}
         {currentStep === 2 && mode.typeMode === 4 && (
           <>
-            <Operational movieData={movieData} />
+            <Operational
+              movieData={movieData}
+              setShowEditMovie={setShowEditMovie}
+            />
           </>
         )}
       </div>
       <div className="sticky bottom-0 z-50 bg-white w-full p-3  ">
         <div className="flex justify-around">
-          <Button
-            loading={isLoadingBtn}
-            className="border"
-            onClick={handleUploadVideo}
-            variant={"green"}
-            label={
-              findingMatch ? (
-                <>
-                  <div className="flex me-1 justify-center items-center shadow-xl rounded-lg">
-                    <div className="loader-text me-1"> </div>
-                  </div>
-                  <div className="font20 font-bold">
-                    <Timer className="font20" active={findingMatch} />
-                  </div>
-                </>
-              ) : (
-                "Accept"
-              )
-            }
-          />
-          {currentStep > 1 && (
+          {currentStep === 1 && (
             <Button
+              loading={isLoadingBtn}
               className="border"
-              onClick={handleBack}
-              variant={"outLine_secondary"}
-              label="Back"
+              onClick={handleUploadVideo}
+              variant={"green"}
+              label="Accept"
             />
           )}
           {currentStep === 1 && (

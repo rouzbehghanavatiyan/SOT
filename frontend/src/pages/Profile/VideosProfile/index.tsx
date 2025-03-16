@@ -6,7 +6,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
-  import demoVid from "../../../../../../24973359cdff3b2ea4d251b3dc1a919611425919-360p.mp4";
+import demoVid from "../../../../../../24973359cdff3b2ea4d251b3dc1a919611425919-360p.mp4";
 import Comments from "../../../common/Comments";
 import userProfile from "../../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 
@@ -180,11 +180,6 @@ const VideosProfile = () => {
                     <span className="font-bold flex items-start  text-white">
                       {profile.username}
                     </span>
-                    {/* {!!profile.cupPro && (
-                        <div className="flex items-end mx-2">
-                          <img width={25} height={25} src={profile.cupPro} />
-                        </div>
-                      )} */}
                   </div>
                 </div>
               </div>
@@ -228,7 +223,7 @@ const VideosProfile = () => {
                     </div> */}
                 </div>
               </div>
-              <div className="w-full h-full bg-black flex flex-col justify-center items-center">
+              <div className="w-full h-full bg-white flex flex-col justify-center items-center">
                 <div className="w-full h-[450px] flex justify-center items-center mb-2">
                   <ReactPlayer
                     controls
@@ -250,7 +245,7 @@ const VideosProfile = () => {
                 <span onClick={handleShowCMT}>
                   <ChatBubbleOutlineIcon className="text-black font20  cursor-pointer" />
                 </span>
-                <span> 1,529 </span>
+                <span className="text-black"> 1,529 </span>
               </div>
               <p className="mx-2 text-black">
                 this is ganna be best video in the world that u can whole your

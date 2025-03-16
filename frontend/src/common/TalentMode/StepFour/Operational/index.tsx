@@ -11,9 +11,10 @@ const userIdFromSStorage = sessionStorage.getItem("userId");
 
 interface PropsType {
   movieData: any;
+  setShowEditMovie: any;
 }
 
-const Operational: React.FC<PropsType> = ({ movieData }) => {
+const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
   const { main } = useAppSelector((state) => state);
   const socket = main?.socketConfig;
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -31,34 +32,36 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
       userId: userIdFromSStorage,
       movieId: movieData?.movieId,
     };
-
     setIsLoadingBtn(true);
     socket.emit("add_invite", postInvite);
-    setIsLoadingBtn(false);
+    // setIsLoadingBtn(false);
   });
 
   const handleReceiveUsers = (data: any) => {
     console.log(data);
   };
 
-  const handleGetUsers = (data: any) => {
-    console.log(data);
-    console.log(allUsers);
+  const handleGetUsers = (dataList: any[]) => {
+    console.log(dataList);
 
-    const temp: any = [];
-    const filtered = allUsers.filter((user: any) => data?.userId === user?.id);
-    console.log(filtered);
-
-    setFindUser((prevFindUser: any) => {
-      console.log("prevFindUser", prevFindUser);
-      const isDuplicate = prevFindUser.some(
-        (user: any) => user.id === filtered[0]?.id
-      );
-
-      if (!isDuplicate && filtered.length > 0) {
-        return [...prevFindUser, ...filtered];
+    dataList.forEach((data: any) => {
+      if (data.userId === main?.userLogin?.userId) {
+        return;
       }
-      return prevFindUser;
+
+      const filtered = allUsers.filter(
+        (user: any) => data?.userId === user?.id
+      );
+      setFindUser((prevFindUser: any) => {
+        const isDuplicate = prevFindUser.some(
+          (user: any) => user.id === filtered[0]?.id
+        );
+
+        if (!isDuplicate && filtered.length > 0) {
+          return [...prevFindUser, ...filtered];
+        }
+        return prevFindUser;
+      });
     });
   };
 
@@ -92,17 +95,24 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
     };
   }, [allUsers, socket]);
 
-  useEffect(() => {
-    console.log("allUsers updated:", allUsers);
-  }, [allUsers]);
+  const filteredFindUser = findUser.filter(
+    (user: any) => user.id !== Number(userIdFromSStorage)
+  );
 
-  console.log(findUser);
+  const handleClose = () => {
+    if (socket) {
+      socket.emit("user_left_optional", {
+        userId: Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+      });
+    }
+    // setShowEditMovie(false);
+  };
 
   return (
     <>
       <div className="p-2">
-        <div className="flex flex-col">
-          {findUser?.map((item: any, index: number) => {
+        <div className={`flex flex-col`}>
+          {filteredFindUser?.map((item: any, index: number) => {
             return (
               <div key={index} className="flex flex-col items-center w-full">
                 <span
@@ -137,13 +147,25 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
         <div
           className={`inset-0 flex justify-center items-center transition-opacity h-11 w-full gap-2 z-50`}
         >
-          <div className=" w-10 h-10 flex justify-center items-center shadow-xl rounded-lg">
-            <div className="loader-userFinding   w-16 h-16"> </div>
-          </div>
-          <span> Finding users</span>
-          <div className="text-gray-800">
-            <span className="loader-dot text-red"> </span>
-          </div>
+          {!isLoadingBtn && (
+            <>
+              <div className=" w-10 h-10 flex justify-center items-center shadow-xl rounded-lg">
+                <div className="loader-userFinding   w-16 h-16"> </div>
+              </div>
+              <span> Finding users</span>
+              <div className="text-gray-800">
+                <span className="loader-dot text-red"> </span>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="flex justify-around">
+          <Button
+            className="border"
+            onClick={handleClose}
+            variant={"outLine_secondary"}
+            label="Close"
+          />
         </div>
       </div>
     </>

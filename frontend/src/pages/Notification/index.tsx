@@ -9,7 +9,7 @@ const Notification: React.FC = () => {
   return (
     <>
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="grid justify-center">
+        <section className="grid justify-center mt-12">
           <div className="w-screen p-2 md:w-full   h-screen md:h-full">
             <div className=" flex items-center justify-between">
               <ImageRank profileFontColor="black" profileName="rabert_igo" />
