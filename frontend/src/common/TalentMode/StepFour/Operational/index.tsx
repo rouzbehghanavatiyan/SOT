@@ -1,24 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Modal from "../../../../components/Modal";
 import { Button } from "../../../../components/Button";
 import ImageRank from "../../../../components/ImageRank";
 import "swiper/css";
 import "swiper/css/pagination";
-import cook4 from "../../../../assets/img/cook2.jpg";
-import cooking1 from "../../../../assets/img/cooking1.webp";
-import cooking2 from "../../../../assets/img/cooking2.jpeg";
-import cook1 from "../../../../assets/img/cook1.jpg";
-import roberto from "../../../../assets/img/roberto.avif";
-import gymM3 from "../../../../assets/img/gymM3.jpg";
-import violon from "../../../../assets/img/kidViolon2.avif";
-import violon2 from "../../../../assets/img/violinKid4.jpg";
-import menGym2 from "../../../../assets/img/menGym2.png";
-import blackProfile from "../../../../assets/img/1-intro-photo-final.jpg";
-import womenGymPro1 from "../../../../assets/img/womenGym1.jpg";
-import womenGym from "../../../../assets/img/women-AI-Profile-Picture.jpg";
-import { addInvite } from "../../../../services/dotNet";
 import asyncWrapper from "../../../AsyncWrapper";
 import { useAppSelector } from "../../../../hooks/hook";
+import { userList } from "../../../../services/dotNet";
 
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
@@ -30,7 +17,10 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
   const { main } = useAppSelector((state) => state);
   const socket = main?.socketConfig;
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [allUsers, setAllUsers] = useState<any>([]);
+  const [findUser, setFindUser] = useState<any>([]);
   const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
+
   const handlePick = (id: number) => {
     setSelectedId(id);
   };
@@ -44,38 +34,75 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
 
     setIsLoadingBtn(true);
     socket.emit("add_invite", postInvite);
-    // const res = await addInvite(postInvite);
     setIsLoadingBtn(false);
-    // console.log(res);
   });
-
-  //--------------------------------------------------------------------------------------------------------------------------------------> باییییییید لایو کاربرها ایجاد شود
 
   const handleReceiveUsers = (data: any) => {
     console.log(data);
   };
 
-  useEffect(() => {
+  const handleGetUsers = (data: any) => {
+    console.log(data);
+    console.log(allUsers);
+
+    const temp: any = [];
+    const filtered = allUsers.filter((user: any) => data?.userId === user?.id);
+    console.log(filtered);
+
+    setFindUser((prevFindUser: any) => {
+      console.log("prevFindUser", prevFindUser);
+      const isDuplicate = prevFindUser.some(
+        (user: any) => user.id === filtered[0]?.id
+      );
+
+      if (!isDuplicate && filtered.length > 0) {
+        return [...prevFindUser, ...filtered];
+      }
+      return prevFindUser;
+    });
+  };
+
+  const handleFindUsers = asyncWrapper(async () => {
     if (socket) {
-      socket.emit("user_entered_operational", { userId: userIdFromSStorage });
+      const res = await userList();
+      const { data, message, status } = res?.data;
+      if (status === 0) {
+        setAllUsers(data);
+      }
     }
-  }, [socket]);
+  });
 
   useEffect(() => {
-    socket.on("add_invite", handleReceiveUsers);
+    handleFindUsers();
+  }, []);
+
+  useEffect(() => {
+    if (allUsers.length > 0 && socket) {
+      socket.emit("user_entered_optional", {
+        userId: Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+      });
+      socket.on("user_entered_optional_response", handleGetUsers);
+      socket.on("add_invite", handleReceiveUsers);
+    }
     return () => {
       if (socket) {
+        socket.off("user_entered_optional_response", handleGetUsers);
         socket.off("add_invite", handleReceiveUsers);
       }
     };
-  }, [socket]);
+  }, [allUsers, socket]);
+
+  useEffect(() => {
+    console.log("allUsers updated:", allUsers);
+  }, [allUsers]);
+
+  console.log(findUser);
 
   return (
     <>
       <div className="p-2">
         <div className="flex flex-col">
-          {["items"]?.map((item: any, index: number) => {
-            console.log(item);
+          {findUser?.map((item: any, index: number) => {
             return (
               <div key={index} className="flex flex-col items-center w-full">
                 <span
@@ -85,7 +112,7 @@ const Operational: React.FC<PropsType> = ({ movieData }) => {
                   <div className="relative">
                     <ImageRank
                       imgSrc={item.profileImageBott}
-                      profileName="rabert5012_3"
+                      profileName={item?.userName}
                       profileFontColor="black"
                       rankWidth={45}
                       starWidth={6}

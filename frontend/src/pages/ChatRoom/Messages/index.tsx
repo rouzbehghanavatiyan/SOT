@@ -1,45 +1,53 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../../../components/Loading";
 
-const Messages: React.FC = ({ socket, userInfo }) => {
-  const [messages, setMessages] = useState<null>(null);
-  const [showLoading, setShowLoading] = useState<boolean>(false);
+interface Message {
+  text: string;
+}
+
+interface MessagesProps {
+  socket: any;
+  userInfo: {
+    userId?: string;
+  };
+}
+
+const Messages: React.FC<MessagesProps> = ({ socket, userInfo }) => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   const fetchChatHistory = async () => {
     try {
-      console.log(userInfo?.userId);
+      setShowLoading(true);
       const res = await getMessageQuery(userInfo?.userId);
-      console.log(res);
-      setMessages(res?.data?.data);
+      setMessages(res?.data?.data || []);
     } catch (error) {
       console.error("Error fetching chat history:", error);
+    } finally {
+      setShowLoading(false);
     }
   };
 
-  // useEffect(() => {
-  //   fetchChatHistory();
-  //   if (userInfo?.userId) {
-  //     socket.emit("join_home", userInfo?.userId);
-  //   }
-
-  //   return () => {
-  //     socket.off("update_online_users");
-  //     socket.disconnect();
-  //   };
-  // }, [userInfo?.userId]);
+  useEffect(() => {
+    fetchChatHistory();
+    // if (userInfo?.userId) {
+    //   socket.emit("join_home", userInfo?.userId);
+    // }
+    // return () => {
+    //   socket.off("update_online_users");
+    //   socket.disconnect();
+    // };
+  }, [userInfo?.userId]);
 
   return (
     <>
-      <Loading isLoading={showLoading ? true : false} />
+      <Loading isLoading={showLoading} />
       <div className="w-full">
-        <Messages
-          userInfo={userInfo}
-          showLoading={showLoading}
-          setShowLoading={setShowLoading}
-          socket={socket}
-          messages={messages}
-          setMessages={setMessages}
-        />
+        {messages.map((message, index) => (
+          <div key={index} className="bg-red">
+            {message.text}
+          </div>
+        ))}
       </div>
     </>
   );

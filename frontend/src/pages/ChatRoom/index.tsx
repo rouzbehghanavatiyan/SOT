@@ -5,23 +5,17 @@ import { io } from "socket.io-client";
 import Room from "./Room";
 import Fields from "./Fields";
 
-
-interface PropsType {
-  setOpenMessage: React.Dispatch<React.SetStateAction<boolean>>;
-  openMessage: boolean;
-}
-
-const ChatRoom: React.FC<PropsType> = () => {
+const ChatRoom: React.FC = () => {
+  const socket = io(import.meta.env.VITE_NODE_SOCKET);
   const [userInfo, setUserInfo] = useState({});
 
   return (
     <>
       <p className="w-full font15 font-bold bg-white flex justify-between border-b-2 px-3 py-3">
         <span className="text-white">Chat</span>
-        <span className="bg-red">sss</span>
       </p>
       <div className="flex flex-row mx-1 pb-3">
-        <Messages userInfo={userInfo} socket={socket} />
+        {/* <Messages userInfo={userInfo} socket={socket} /> */}
         <Room socket={socket} />
         <Fields />
       </div>

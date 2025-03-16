@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
-import Solo from "../common/TalentMode";
 import PageNotFound from "../pages/PageNotFound";
 import Layout from "../layout";
 import Watch from "../pages/Watch";
@@ -42,6 +41,7 @@ const PublicRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/messages" element={<ChatRoom />} />
+        {/* <Route path="/messages" element={<Setting />} /> */}
       </Routes>
     </Layout>
   );

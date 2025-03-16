@@ -78,20 +78,21 @@ const Video: React.FC<VideoProps> = ({
         />
       </span>
       <div
-        className={`controls ${showControls ? "fade-in" : "fade-out"}`} // اضافه کردن کلاس CSS
+        className={`controls bg_video_progress ${showControls ? "fade-in" : "fade-out"}`}
         style={{
           position: "absolute",
           bottom: "0",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "80%",
+          left: "0",
+          right: "0",
+          transform: "translateX(0)",
+          width: "100%",
           display: "flex",
           alignItems: "center",
           gap: "10px",
           zIndex: 10,
         }}
       >
-        <span style={{ color: "white", fontSize: "8px" }}>
+        <span style={{ color: "white", fontSize: "8px", margin: "0 0 0 10px" }}>
           {formatTime(played * duration)}
         </span>
         <input
@@ -101,7 +102,13 @@ const Video: React.FC<VideoProps> = ({
           step="any"
           value={played}
           onChange={handleSeek}
-          className="seek-bar" // کلاس CSS برای اهرم
+          className="seek-bar"
+          style={{
+            transform: "",
+            transformOrigin: "center",
+            width: "100%",
+            margin: "0 10px",
+          }}
         />
       </div>
     </div>

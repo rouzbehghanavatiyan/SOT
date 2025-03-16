@@ -68,3 +68,8 @@ export const addInvite = async (postData: any) => {
   const url = `${baseURL}/addInvite`;
   return await axios.post(url, postData);
 };
+
+export const userList = async () => {
+  const url = `${baseURL}/userList`;
+  return await axios.get(url);
+};

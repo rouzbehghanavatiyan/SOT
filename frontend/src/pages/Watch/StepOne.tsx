@@ -110,7 +110,7 @@ const StepOne: React.FC = () => {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
+      <div className="grid grid-cols-2 bg-white gap-[5px] mt-12 p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, isMyVideo } = group;
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
@@ -159,7 +159,7 @@ const StepOne: React.FC = () => {
                 {child && (
                   <div className="flex-1 bg-white">
                     <div className="flex-1">
-                      <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                      <figure className=" relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
                         <img
                           src={fixImg2}
                           alt={child?.alt || "Profile image"}
@@ -170,7 +170,7 @@ const StepOne: React.FC = () => {
                           } object-cover`}
                         />
                         {isMyVideo && (
-                          <span className="absolute top-0 w-full bg_profile_watch">
+                          <span className=" absolute top-0 w-full bg_profile_watch">
                             <div className="flex justify-between items-center mx-2">
                               <ImageRank
                                 profileName={parent?.userName || "Unknown"}
@@ -189,7 +189,7 @@ const StepOne: React.FC = () => {
                             </div>
                           </span>
                         )}
-                        <figcaption className="sr-only">
+                        <figcaption className=" sr-only">
                           {child?.userName}
                         </figcaption>
                         {isMyVideo && (

@@ -23,8 +23,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const [openMessage, setOpenMessage] = useState<boolean>(false);
   const socket = io(import.meta.env.VITE_NODE_SOCKET);
 
-  console.log(import.meta.env.VITE_NODE_SOCKET);
-
   const toggleMenu = () => {
     setOpen(!open);
   };
@@ -67,15 +65,15 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
           <SidebarLinks toggleMenu={toggleMenu} open={open} />
         </ResponsiveMaker>
         <div className="flex flex-grow justify-center items-center">
-          <div className="  max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
+          <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
             <PhoneHeader />
-            <div>{children}</div>
+            <div className="">{children}</div>
             <PhoneFooter />
           </div>
         </div>
       </div>
       {openMessage && (
-        <Messages setOpenMessage={setOpenMessage} openMessage={openMessage} />
+        <Messages socket={socket} setOpenMessage={setOpenMessage} openMessage={openMessage} />
       )}
     </main>
   );

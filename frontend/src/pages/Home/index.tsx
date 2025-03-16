@@ -1,21 +1,13 @@
 import React, { useState } from "react";
-import VerifiedIcon from "@mui/icons-material/Verified";
-import DangerousIcon from "@mui/icons-material/Dangerous";
-import CommentIcon from "@mui/icons-material/Comment";
-import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import ReactPlayer from "react-player";
-import CropFreeIcon from "@mui/icons-material/CropFree";
-import demoVid from "../../../../../c67709a90da30368a6affd37061b576443636818-480p.mp4";
+import demoVid from "../../../../../00b16493dc977a745b7207f06d8a159a59064958-480p.mp4";
 // import demoVid from "../../../../../7a8b6f0c8380f98a7dda22d44ad180496804185-720p.mp4";
-import demoVid2 from "../../../../../u-65320-1736910450676.mp4";
+import demoVid2 from "../../../../../24973359cdff3b2ea4d251b3dc1a919611425919-360p.mp4";
 // import demoVid2 from "../../../../../94a745b99ad43a85eca5cba6d7447b6445773251-720p.mp4";
 import Comments from "../../common/Comments";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Mousewheel, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import rank1 from "../../assets/img/rank10.webp";
 import rank2 from "../../assets/img/rank3.webp";
 import rank3 from "../../assets/img/rank5.webp";
@@ -73,7 +65,7 @@ const dubleVideos = [
   },
 ];
 
-const Home = () => {
+const Home: React.FC = () => {
   const [expandedVideo, setExpandedVideo] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const [closingComments, setClosingComments] = useState(false);
@@ -111,10 +103,10 @@ const Home = () => {
         direction={"vertical"}
         slidesPerView={1}
         mousewheel={true}
-        className="mySwiper h-screen "
+        className="mySwiper h-screen mt-14"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 justify-centerbg-white">
-          <div className="h-screen">
+        <div className="grid grid-cols-1  md:grid-cols-3 justify-centerbg-white">
+          <div className="h-screen ">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-center bg-white h-[80%]">
               {dubleVideos.map((profile, index) => (
                 <SwiperSlide
@@ -122,7 +114,7 @@ const Home = () => {
                   className="bg-white relative flex flex-col"
                 >
                   <OptionHomes result profile={profile} />
-                  <div className="w-[100%] h-[31vh]">
+                  <div className="w-[100%] h-[30vh]">
                     <Video
                       loop
                       handleVideo={handleVideoTop}
@@ -131,7 +123,7 @@ const Home = () => {
                     />
                   </div>
                   <OptionHomes useFollow profile={profile} />
-                  <div className="w-[100%] h-[31vh]">
+                  <div className="w-[100%] h-[30vh]">
                     <Video
                       loop
                       handleVideo={handleVideoBottom}
@@ -145,11 +137,26 @@ const Home = () => {
                     </span>
                     <span className="text-black"> 1,529 </span>
                   </div>
-                  <div className="flex bg-white items-center gap-1 m-2">
-                    this jdsk hg sjdgnbbsbhd thdkdj htishg gj ht where is op
-                    ndhthis jdsk hg sjdgnbbsbhd thdkdj htishg gj ht where is op
-                    ndhthis jdsk hg sjdgnbbsbhd thdkdj htishg gj ht where is op
-                    ndh tnd
+                  <div className="flex bg-white items-center gap-1 m-2 max-h-[60px] overflow-hidden text-ellipsis line-clamp-2">
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test this is a test
+                    this is a test this is a test this is a test
                   </div>
                 </SwiperSlide>
               ))}

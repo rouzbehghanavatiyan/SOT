@@ -6,7 +6,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReactPlayer from "react-player";
 import CropFreeIcon from "@mui/icons-material/CropFree";
-// import demoVid from "../../../../../u-35446-1731760254601.mp4";
+  import demoVid from "../../../../../../24973359cdff3b2ea4d251b3dc1a919611425919-360p.mp4";
 import Comments from "../../../common/Comments";
 import userProfile from "../../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 
@@ -234,7 +234,7 @@ const VideosProfile = () => {
                     controls
                     width="100%"
                     height="100%"
-                    // url={demoVid}
+                    url={demoVid}
                   />
                 </div>
                 <div className="w-full h-[450px] flex justify-center items-center">

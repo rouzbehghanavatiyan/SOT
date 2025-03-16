@@ -745,12 +745,12 @@ br {
 }
 
 .bg_profile_watch {
-  background: rgb(0, 0, 0);
+  background: rgb(168, 168, 168);
   background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
 }
 
 .bg_profile {
-  background: rgb(0, 0, 0);
+  background: rgb(126, 126, 126);
   background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #e0e0e0 100%);
 }
 
@@ -853,4 +853,9 @@ br {
   100% {
     transform: scale(1);
   }
+}
+
+.bg_video_progress {
+  background: rgb(167, 167, 167);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #6e6e6e 100%);
 }
