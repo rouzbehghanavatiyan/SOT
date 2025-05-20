@@ -21,7 +21,6 @@ const StepOne: React.FC = () => {
   const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState(() => {
-    // بازیابی زمان باقیمانده از localStorage
     const savedProgress = localStorage.getItem("timerProgress");
     return savedProgress ? parseInt(savedProgress, 10) : 0;
   });
@@ -78,8 +77,8 @@ const StepOne: React.FC = () => {
 
   const videoGroupsWithOwnership = useMemo(() => {
     return videoGroups.map((group) => {
-      const isMyVideo = checkIsMy(group);
-      return { ...group, isMyVideo };
+      const itsMyVideo = checkIsMy(group);
+      return { ...group, itsMyVideo };
     });
   }, [videoGroups, userIdFromSStorage]);
 
@@ -98,7 +97,7 @@ const StepOne: React.FC = () => {
 
   useEffect(() => {
     const hasMyVideo = videoGroupsWithOwnership.some(
-      (group) => group.isMyVideo
+      (group) => group.itsMyVideo
     );
     setIsTimerActive(hasMyVideo);
   }, [videoGroupsWithOwnership, dispatch]);
@@ -112,7 +111,7 @@ const StepOne: React.FC = () => {
       <Loading isLoading={isLoading} />
       <div className="grid grid-cols-2 bg-white gap-[5px] mt-12 p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
-          const { parent, child, isMyVideo } = group;
+          const { parent, child, itsMyVideo } = group;
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
@@ -122,7 +121,7 @@ const StepOne: React.FC = () => {
               <div
                 onClick={() => handleShowMatch({ group, index })}
                 className={`flex-1 flex flex-col ${
-                  isMyVideo ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
+                  itsMyVideo ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
                 }`}
               >
                 <div className="flex-1">
@@ -131,10 +130,10 @@ const StepOne: React.FC = () => {
                       src={fixImg1}
                       alt={parent?.alt || "Parent Image"}
                       className={`w-full ${
-                        isMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
-                      } object-cover ${isMyVideo ? "max-h-[40vh]" : ""}`} // اضافه کردن max-height برای isMyVideo
+                        itsMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
+                      } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`}
                     />
-                    {isMyVideo && (
+                    {itsMyVideo && (
                       <span className="absolute top-0 w-full bg_profile_watch">
                         <div className="flex justify-between items-center mx-2">
                           <ImageRank
@@ -159,17 +158,17 @@ const StepOne: React.FC = () => {
                 {child && (
                   <div className="flex-1 bg-white">
                     <div className="flex-1">
-                      <figure className=" relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                      <figure className=" relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
                         <img
                           src={fixImg2}
                           alt={child?.alt || "Profile image"}
                           className={`w-full ${
-                            isMyVideo
+                            itsMyVideo
                               ? "min-h-88 max-h-88"
                               : "min-h-44 max-h-44"
-                          } object-cover ${isMyVideo ? "max-h-[40vh]" : ""}`} // اضافه کردن max-height برای isMyVideo
+                          } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`} // اضافه کردن max-height برای itsMyVideo
                         />
-                        {isMyVideo && (
+                        {itsMyVideo && (
                           <span className=" absolute top-0 w-full bg_profile_watch">
                             <div className="flex justify-between items-center mx-2">
                               <ImageRank
@@ -192,18 +191,24 @@ const StepOne: React.FC = () => {
                         <figcaption className=" sr-only">
                           {child?.userName}
                         </figcaption>
-                        {isMyVideo && (
-                          <div className="absolute bottom-0 left-0 right-0 mx-5 text-white font25 flex items-center justify-center">
-                            <HourglassTopIcon className="font20" />
-                            <Timer
-                              className="text-white font20"
-                              active={isTimerActive}
-                            />
-                            <div className="w-full h-1 bg-gray-700 rounded-full ml-4 relative text-white bg-gray-800">
-                              <div
-                                className="h-1 bg-blue-500 rounded-full text-green bg-white"
-                                style={{ width: `${(progress / 6000) * 100}%` }}
-                              ></div>
+                        {itsMyVideo && (
+                          <div className="">
+                            <div className="absolute w-full bottom-0 bg_timer">
+                              <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
+                                <HourglassTopIcon className="font20" />
+                                <Timer
+                                  className="text-white  font20"
+                                  active={isTimerActive}
+                                />
+                                <div className="w-full h-1 bg-gray-700 rounded-full ml-4 relative text-white bg-gray-800">
+                                  <div
+                                    className="h-1 bg-blue-500 rounded-full text-green bg-white"
+                                    style={{
+                                      width: `${(progress / 6000) * 100}%`,
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}

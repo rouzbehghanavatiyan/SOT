@@ -22,12 +22,12 @@ const PhoneHeader = () => {
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
       {!itsShowWatchRoute && (
-        <div className="fixed z-40 top-0 left-0 w-full bg_phone_header shadow-md px-2 py-1 text-center text-white font-bold flex">
+        <div className="fixed z-40 top-0 left-0 w-full bg_phone_header shadow-md px-1 py-1 text-center text-white font-bold flex">
           <div className="grid grid-cols-5 w-full items-center">
             {itsWatchRoute ? (
               <span className="col-span-3 relative">
                 <Input
-                  className="ms-1 border-none text-green"
+                  className="ms-1 rounded-lg border-none text-green"
                   placeholder="Searching . . ."
                   value={searching}
                   onChange={(e) => setSearching(e.target.value)}

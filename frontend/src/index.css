@@ -728,7 +728,7 @@ br {
   z-index: 9999;
   /* برای نمایش در بالای سایر عناصر */
 }
-
+  
 .video-slide {
   position: relative;
   width: 100%;
@@ -747,6 +747,11 @@ br {
 .bg_profile_watch {
   background: rgb(168, 168, 168);
   background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+}
+
+.bg_timer {
+  background: rgb(168, 168, 168);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
 }
 
 .bg_profile {

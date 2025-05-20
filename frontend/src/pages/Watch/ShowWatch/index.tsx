@@ -15,6 +15,7 @@ import ImageRank from "../../../components/ImageRank";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { Mousewheel } from "swiper/modules";
+import Follows from "../../../components/Fallows";
 
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = sessionStorage.getItem("userId");
@@ -25,7 +26,7 @@ const ShowWatch = ({}) => {
   const [closingComments, setClosingComments] = useState<boolean>(false);
   const [videos, setVideos] = useState<any[]>([]);
   const socket = main?.socketConfig;
-  const [isPlaying, setIsPlaying] = useState<{ [key: string]: boolean }>({}); 
+  const [isPlaying, setIsPlaying] = useState<{ [key: string]: boolean }>({});
   const [likedVideoId, setLikedVideoId] = useState<string | null>(null);
   const [fallowedVideos, setFallowedVideos] = useState<{
     [key: string]: boolean;
@@ -89,18 +90,17 @@ const ShowWatch = ({}) => {
     const { data, status } = res?.data;
     console.log(data);
 
-    // اگر ویدیوی فعلی قبلاً لایک شده بود، لایک آن را بردارید
     if (likedVideoId === video.id) {
-      setLikedVideoId(null); // لایک را بردارید
+      setLikedVideoId(null);
     } else {
-      setLikedVideoId(video.id); // ویدیوی جدید را لایک کنید
+      setLikedVideoId(video.id);
     }
   });
 
   const handleVideoPlay = (videoId: string) => {
     setIsPlaying((prev) => ({
       ...prev,
-      [videoId]: !prev[videoId], // تغییر وضعیت پخش ویدیوی خاص
+      [videoId]: !prev[videoId],
     }));
   };
 
@@ -137,26 +137,24 @@ const ShowWatch = ({}) => {
           {videoPair.map((video, subIndex) => {
             const isLiked = likedVideoId === video.id;
             const isFallowed = fallowedVideos[video.id] || false;
-            const isVideoPlaying = isPlaying[video.id] || false; // وضعیت پخش ویدیوی فعلی
+            const isVideoPlaying = isPlaying[video.id] || false;
             return (
               <div className="mb-12 flex-1 relative" key={subIndex}>
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center p-2">
                     <ImageRank profileName={video?.userName} />
                     {isFallowed ? (
-                      <span
-                        className="border px-3 py-1 bg-white text-black"
+                      <Follows
+                        bgColor="bg-white"
+                        title="Unfallow"
                         onClick={() => handleFallowClick(video)}
-                      >
-                        Unfollow
-                      </span>
+                      />
                     ) : (
-                      <span
-                        className="border px-3 py-1 text-white"
+                      <Follows
+                        bgColor="bg-white"
+                        title="Fallow"
                         onClick={() => handleFallowClick(video)}
-                      >
-                        Follow
-                      </span>
+                      />
                     )}
                     {isLiked ? (
                       <ThumbUpIcon
@@ -173,9 +171,9 @@ const ShowWatch = ({}) => {
                   <div className="flex-1">
                     <Video
                       loop
-                      handleVideo={() => handleVideoPlay(video.id)} // تغییر وضعیت پخش ویدیوی خاص
+                      handleVideo={() => handleVideoPlay(video.id)}
                       url={video.url}
-                      playing={isVideoPlaying} // وضعیت پخش ویدیوی فعلی
+                      playing={isVideoPlaying}
                     />
                   </div>
                 </div>

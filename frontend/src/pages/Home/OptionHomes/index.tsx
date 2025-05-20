@@ -2,6 +2,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ImageRank from "../../../components/ImageRank";
+import Follows from "../../../components/Fallows";
 
 const OptionHomes = ({ result, profile, useFollow }: any) => {
   return (
@@ -37,11 +38,7 @@ const OptionHomes = ({ result, profile, useFollow }: any) => {
               )}
             </div>
           ) : (
-            <div className="flex justify-center items-center">
-              <span className="p-1 px-3 bg-white text-dark border cursor-pointer">
-                Follow
-              </span>
-            </div>
+            <Follows title="Fallow" />
           )}
         </div>
         <div className="col-span-1 flex justify-end items-center">
