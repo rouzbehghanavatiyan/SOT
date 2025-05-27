@@ -1,4 +1,3 @@
-import React from "react";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 
 const products = [
@@ -41,7 +40,7 @@ const products = [
 
 const Store = () => {
   return (
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col justify-center mt-10">
       {products.map((product) => (
         <div
           key={product.id}
@@ -53,8 +52,12 @@ const Store = () => {
             </div>
             <ConfirmationNumberIcon className="font25  text-gray-800" />
           </div>
-          <p className="bg-gray-100 text-gray-800 flex
-           p-2">{product.des}</p>
+          <p
+            className="bg-gray-100 text-gray-800 flex
+           p-2"
+          >
+            {product.des}
+          </p>
           <div>${product.price}</div>
         </div>
       ))}

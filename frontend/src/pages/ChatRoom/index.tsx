@@ -1,30 +1,62 @@
-import React, { useState } from "react";
-import Chat from "./Fields";
-import Messages from "./Messages";
-import { io } from "socket.io-client";
-import Room from "./Room";
-import Fields from "./Fields";
+// src/components/ChatRoom.tsx
+import React, { useState, useEffect } from "react";
+import { io, Socket } from "socket.io-client";
+import UserList from "./UserList";
+import PrivateChat from "./PrivateChat";
+import { useAppSelector } from "../../hooks/hook";
+
+interface User {
+  id: string;
+  name: string;
+  avatar?: string;
+}
 
 const ChatRoom: React.FC = () => {
-  const socket = io(import.meta.env.VITE_NODE_SOCKET);
-  const [userInfo, setUserInfo] = useState({});
+  const { main } = useAppSelector((state) => state);
+  const newSocket = io(import.meta.env.VITE_NODE_SOCKET);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    setSocket(newSocket);
+    newSocket.on("users", (usersList: User[]) => {
+      setUsers(usersList);
+    });
+  }, []);
+
+  const handleGiveUsersOnline = (data) => {
+    console.log("Helllllllllllll", data);
+    // setUsers(usersList);
+  };
+
+  console.log("main?.userOnlines", main?.userOnlines);
 
   return (
-    <>
-      <p className="w-full font15 font-bold bg-white flex justify-between border-b-2 px-3 py-3">
-        <span className="text-white">Chat</span>
-      </p>
-      <div className="flex flex-row mx-1 pb-3">
-        {/* <Messages userInfo={userInfo} socket={socket} /> */}
-        <Room socket={socket} />
-        <Fields />
+    <div>
+      <div className="w-full absolute top-0 bg-white border-gray-200">
+        <div className="p-4 border-b border-gray-200">User online</div>
+        <UserList
+          users={users}
+          currentUser={currentUser}
+          onSelectUser={setSelectedUser}
+        />
       </div>
-      {/* <div className="w-screen h-screen flex justify-center items-center">
-        <span className="text-gray-200 font40 font-bold select-none">
-          Empay messages
-        </span>
-      </div> */}
-    </>
+      <div className="flex-1 flex flex-col">
+        {selectedUser ? (
+          <PrivateChat
+            socket={socket}
+            currentUser={currentUser}
+            selectedUser={{ id: 3212, name: "test" }}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500">Empty messages</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

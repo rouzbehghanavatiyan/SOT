@@ -73,3 +73,20 @@ export const userList = async () => {
   const url = `${baseURL}/userList`;
   return await axios.get(url);
 };
+
+export const addFollower = async () => {
+  const url = `${baseURL}/addFollower`;
+  return await axios.post(url);
+};
+
+// get profile
+export const profileAttachmentList = async (userId: number) => {
+  const url = `${baseURL}/profileAttachmentList?userId=${userId}`;
+  return await axios.get(url);
+};
+
+// get videos home
+export const userAttachmentList = async (userId: number) => {
+  const url = `${baseURL}/userAttachmentList?userId=${userId}`;
+  return await axios.get(url);
+};

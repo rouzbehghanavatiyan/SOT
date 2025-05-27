@@ -1,17 +1,32 @@
+@font-face {
+  font-family: "logoFont";
+  src: url("./assets/fonts/DancingScript-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "roundedFont";
+  src: url("./assets/fonts/MPLUSRounded1c-Medium.ttf") format("truetype");
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+p {
+  color: #272343;
+}
+
 body * {
+  font-family: roundedFont;
+  font-size: 14px !important;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-size: 15px !important;
-  font-family: 'Courier New', monospace;
 }
 
-p {
-  color: #272343;
+.logoFont {
+  font-family: logoFont;
 }
 
 br {
@@ -22,28 +37,8 @@ br {
   display: none !important;
 }
 
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
 
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
-  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
-  src: url("./assets/fonts/LexendGiga-Black.ttf") format("ttf");
-}
 
-body * {
-  font-family: Vazirmatn;
-  font-size: 14px;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 br {
   user-select: none;
@@ -728,7 +723,7 @@ br {
   z-index: 9999;
   /* برای نمایش در بالای سایر عناصر */
 }
-  
+
 .video-slide {
   position: relative;
   width: 100%;
@@ -863,4 +858,32 @@ br {
 .bg_video_progress {
   background: rgb(167, 167, 167);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #6e6e6e 100%);
+}
+
+
+/* stickers */
+.sticker-container {
+  position: absolute;
+  left: 0;
+  bottom: 60px;
+  /* فاصله از پایین */
+  width: 100%;
+  /* عرض کامل */
+  z-index: 1000;
+  /* بالاترین سطح */
+  background: white;
+  /* پس‌زمینه سفید */
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  animation: slide-up 0.3s ease-in-out;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }

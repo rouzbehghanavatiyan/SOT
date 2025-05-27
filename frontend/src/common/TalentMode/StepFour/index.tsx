@@ -11,7 +11,6 @@ const StepFour: React.FC = () => {
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [showEditMovie, setShowEditMovie] = useState<boolean>(false);
-  const [showOperational, setShowOperational] = useState<boolean>(false);
   const [allFormData, setAllFormData] = useState<any>(null);
   const [mode, setMode] = useState<any>({});
 
@@ -90,40 +89,47 @@ const StepFour: React.FC = () => {
   };
 
   return (
-    <div className="w-full mt-12 flex-col h-screen justify-center ">
+    <div className="grid grid-cols-2  justify-center ">
       <video ref={videoRef} style={{ display: "none" }} />
-      <div className="grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
-          <NetworkCheckIcon className="font100 flex justify-center text-green-dark" />
-        </span>
-        <span className="text-gray-800 flex items-center col-span-2 font20 font-bold">
-          Turbo
-        </span>
-      </div>
-      <div className="grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
-          <RadioButtonCheckedIcon className="font100 flex justify-center text-green-dark" />
-        </span>
-        <span className="text-gray-800 flex items-center col-span-2 font20 font-bold">
-          Live
-        </span>
-      </div>
-      <div onClick={handleOffline} className="grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
+      <div
+        onClick={handleOffline}
+        className="bg-orange-disabled rounded-xl mt-4 mx-2"
+      >
+        <span className="flex justify-center  ">
           <WifiOffIcon className="font100 flex justify-center text-green-dark" />
         </span>
-        <span className="text-gray-800 flex items-center col-span-2 font20 font-bold">
+        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
           Offline
         </span>
       </div>
-      <div onClick={handleOptional} className="grid grid-cols-3">
-        <span className="flex justify-center col-span-1">
+      <div
+        onClick={handleOptional}
+        className="bg-orange-disabled rounded-xl mt-4 mx-2"
+      >
+        <span className="flex justify-center  ">
           <AltRouteIcon className="font100 flex justify-center text-green-dark" />
         </span>
-        <span className="text-gray-800 flex items-center col-span-2 font20 font-bold">
+        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
           Optional
         </span>
       </div>
+      <div className="bg-orange-disabled rounded-xl mt-4 mx-2 ">
+        <span className="flex justify-center  ">
+          <NetworkCheckIcon className="font100 flex justify-center text-green-dark" />
+        </span>
+        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
+          Turbo
+        </span>
+      </div>
+      <div className="bg-orange-disabled rounded-xl mt-4 mx-2 ">
+        <span className="flex justify-center">
+          <RadioButtonCheckedIcon className="font100 flex justify-center text-green-dark" />
+        </span>
+        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
+          Live
+        </span>
+      </div>
+
       {showEditMovie && (
         <EditVideo
           mode={mode}

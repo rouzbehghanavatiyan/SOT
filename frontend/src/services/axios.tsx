@@ -12,8 +12,6 @@ axios.interceptors.request.use(
     // } else {
     //   config.headers["Content-Type"] = "application/json";
     // }
-    console.log(config.url.toLowerCase());
-
     if (config.url.toLowerCase().includes("/attachmentplay")) {
       console.log(config.url.toLowerCase().includes("/attachmentplay"));
       config.headers["Content-Type"] = "video/mp4";

@@ -11,14 +11,13 @@ import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import Loading from "../../../components/Loading";
+import SoftLink from "../../../hoc/SoftLinks";
 
 const StepThree: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState<boolean>();
   const [allSubSubCategory, setAllSubSubCategory] = useState<any>();
-
-  console.log(location?.state?.subCategory?.id);
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
@@ -42,16 +41,20 @@ const StepThree: React.FC = () => {
   };
 
   const handleAcceptCategory = (category: any) => {
-    console.log(category);
     const newPath = `${location.pathname}/${category?.name}`;
     navigate(newPath);
   };
 
+  const categoriesWithIcons = allSubSubCategory?.map((category: any) => ({
+    ...category,
+    icon: category.icon || category.name.toLowerCase(),
+  }));
+
   return (
     <>
-      <Loading isLoading={isLoading ? true : false} />
+      {/* <Loading isLoading={isLoading ? true : false} />
       <div className="grid mt-10 justify-center">
-        <div className="w-screen md:w-full h-screen md:h-full ">
+        <div className="w-screen md:w-full h-screen md:h-full bg-orange ">
           {allSubSubCategory?.map((category: any) => (
             <span
               key={category.id}
@@ -63,7 +66,13 @@ const StepThree: React.FC = () => {
             </span>
           ))}
         </div>
-      </div>
+      </div> */}
+      <SoftLink
+        iconMap={iconMap}
+        handleAcceptCategory={handleAcceptCategory}
+        categories={categoriesWithIcons || []}
+        isLoading={false}
+      />
     </>
   );
 };

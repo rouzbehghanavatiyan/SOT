@@ -13,17 +13,13 @@ import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import LocalSeeIcon from "@mui/icons-material/LocalSee";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import SoftLink from "../../../hoc/SoftLinks";
 
 const StepTwo: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState<boolean>();
   const [allSubCategory, setAllSubCategory] = useState<any>();
-
-  const handleChoiceMode = (data: string) => {
-    const newPath = `${location.pathname}/${data}`;
-    navigate(newPath);
-  };
+  const [isLoading, setIsLoading] = useState<any>(false);
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
@@ -55,23 +51,19 @@ const StepTwo: React.FC = () => {
     game: <SportsEsportsIcon className="text-2xl mx-3 font25" />,
   };
 
+  const categoriesWithIcons = allSubCategory?.map((category: any) => ({
+    ...category,
+    icon: category.icon || category.name.toLowerCase(),
+  }));
+
   return (
     <>
-      <Loading isLoading={isLoading ? true : false} />
-      <div className="grid mt-10 justify-center">
-        <div className="w-screen md:w-full h-screen md:h-full ">
-          {allSubCategory?.map((category: any) => (
-            <span
-              key={category.id}
-              onClick={() => handleAcceptCategory(category)}
-              className="bg-green-dark w-full md:min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
-            >
-              {iconMap[category.name.toLowerCase()]}{" "}
-              <span className="font20 py-2">{category.name}</span>
-            </span>
-          ))}
-        </div>
-      </div>
+      <SoftLink
+        iconMap={iconMap}
+        handleAcceptCategory={handleAcceptCategory}
+        categories={categoriesWithIcons || []}
+        isLoading={isLoading}
+      />
     </>
   );
 };

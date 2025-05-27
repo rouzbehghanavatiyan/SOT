@@ -22,42 +22,42 @@ const PhoneHeader = () => {
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
       {!itsShowWatchRoute && (
-        <div className="fixed z-40 top-0 left-0 w-full bg_phone_header shadow-md px-1 py-1 text-center text-white font-bold flex">
-          <div className="grid grid-cols-5 w-full items-center">
+        <div className="fixed z-40 top-0 left-0 w-full bg-white shadow-md px-1 py-1 text-center text-white font-bold flex">
+          <div className="grid grid-cols-5 w-full items-center ">
             {itsWatchRoute ? (
               <span className="col-span-3 relative">
                 <Input
-                  className="ms-1 rounded-lg border-none text-green"
+                  className="ms-1 rounded-lg border-none text-gray-800"
                   placeholder="Searching . . ."
                   value={searching}
                   onChange={(e) => setSearching(e.target.value)}
                 />
-                <SearchIcon className="text-green absolute top-2 right-1 font23" />
+                <SearchIcon className="text-gray-800 absolute top-2 right-1 font23" />
               </span>
             ) : itsNotificationRoute ? (
-              <span className="icon_size col-span-3 flex justify-start text-green">
+              <span className="icon_size col-span-3 flex justify-start  text-gray-800">
                 Notification
               </span>
             ) : itsStoreRoute ? (
-              <span className="icon_size col-span-3 flex justify-start text-green">
+              <span className="icon_size col-span-3 flex justify-start text-gray-800">
                 Store
               </span>
             ) : (
-              <span className=" icon_size col-span-3 flex justify-start text-green">
+              <span className=" icon_size col-span-3 flex justify-start logoFont text-green">
                 Star Of Talent
               </span>
             )}
             {itsProfileRoute ? (
               <Link to="/setting" className="col-span-2">
                 <span className="flex justify-end">
-                  <SettingsIcon className=" icon_size items-start text-green" />
+                  <SettingsIcon className=" icon_size items-start text-gray-800" />
                 </span>
               </Link>
             ) : (
               <div className="col-span-2 flex justify-end gap-4">
                 <Link to="/store">
                   <span className="relative col-span-1">
-                    <ConfirmationNumberIcon className="flex icon_size items-center text-green" />
+                    <ConfirmationNumberIcon className="flex icon_size items-center text-gray-800" />
                     <span className="absolute top-0 right-4 text-white bg-red w-full rounded-sm font8">
                       124
                     </span>
@@ -65,7 +65,7 @@ const PhoneHeader = () => {
                 </Link>
                 <Link to="/messages">
                   <span className="col-span-1 ">
-                    <EmailIcon className="flex icon_size items-center text-green" />
+                    <EmailIcon className="flex icon_size items-center text-gray-800" />
                   </span>
                 </Link>
               </div>

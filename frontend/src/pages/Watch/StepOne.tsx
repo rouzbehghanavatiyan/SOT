@@ -102,14 +102,10 @@ const StepOne: React.FC = () => {
     setIsTimerActive(hasMyVideo);
   }, [videoGroupsWithOwnership, dispatch]);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("timerProgress");
-  };
-
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid grid-cols-2 bg-white gap-[5px] mt-12 p-[1px]">
+      <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, itsMyVideo } = group;
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;

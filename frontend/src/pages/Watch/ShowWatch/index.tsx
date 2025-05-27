@@ -16,8 +16,8 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { Mousewheel } from "swiper/modules";
 import Follows from "../../../components/Fallows";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
-const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const ShowWatch = ({}) => {
@@ -79,13 +79,15 @@ const ShowWatch = ({}) => {
   });
 
   const handleLikeClick = asyncWrapper(async (video: any) => {
+    console.log(video);
+
     const postData = {
       userId: Number(userIdFromSStorage) || main?.userLogin?.userId || null,
       movieId: video?.id,
     };
+    console.log("socccccccccccc");
 
     socket.emit("add_liked", postData);
-
     const res = await addLike(postData);
     const { data, status } = res?.data;
     console.log(data);
@@ -130,16 +132,16 @@ const ShowWatch = ({}) => {
       slidesPerView={1}
       mousewheel={true}
       modules={[Mousewheel]}
-      className="mySwiper h-screen"
+      className="mySwiper h-[calc(100vh-47px)]"
     >
       {chunkedVideos.map((videoPair, index: number) => (
-        <SwiperSlide className="bg-black flex flex-col h-screen" key={index}>
+        <SwiperSlide className="bg-black flex flex-col space-y-4" key={index}>
           {videoPair.map((video, subIndex) => {
             const isLiked = likedVideoId === video.id;
             const isFallowed = fallowedVideos[video.id] || false;
             const isVideoPlaying = isPlaying[video.id] || false;
             return (
-              <div className="mb-12 flex-1 relative" key={subIndex}>
+              <div className="flex-1 relative h-[48vh]" key={subIndex}>
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center p-2">
                     <ImageRank profileName={video?.userName} />
@@ -168,8 +170,10 @@ const ShowWatch = ({}) => {
                       />
                     )}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 flex justify-center items-center">
+                    <ChatBubbleOutlineIcon className="z-50 absolute left-2 bottom-10 font30 text-white" />
                     <Video
+                      className="max-w-full max-h-[35vh] w-auto h-[50vh] object-contain"
                       loop
                       handleVideo={() => handleVideoPlay(video.id)}
                       url={video.url}

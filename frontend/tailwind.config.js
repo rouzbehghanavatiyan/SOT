@@ -58,6 +58,10 @@ const config = {
       blue: {
         DEFAULT: "#00bbf0",
       },
+      dark_blue: {
+        DEFAULT: "#0000FF",
+      },
+
       green: {
         DEFAULT: "#17b794",
         dark: "#1f6f78",
@@ -190,7 +194,7 @@ const config = {
       boxShadow: {
         "2xl": "0px 4px 64px 0px rgba(0, 0, 0, 0.09)",
         xl: "0px 4px 64.2px  0px rgba(0, 0, 0, 0.09)",
-        card: "0 4px 23.1px 0px rgba(0 ,0 ,0 , 0.08)",
+        card: "2px 4px 23.1px 0px rgba(0 ,0 ,0 , 0.08)",
         play: "0 4px 4px 0 rgba(0, 0, 0, 0.07)",
       },
       transitionProperty: {

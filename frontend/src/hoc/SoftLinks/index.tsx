@@ -4,12 +4,11 @@ import Loading from "../../components/Loading";
 import PersonIcon from "@mui/icons-material/Person";
 
 interface Category {
-  id: string;
+  id: string | number;
   name: string;
   icon?: string;
   label?: string;
 }
-
 
 interface TalentModeProps {
   categories: Array<{
@@ -24,7 +23,7 @@ interface TalentModeProps {
   itemClass?: string;
   iconClass?: string;
   textClass?: string;
-  handleAcceptCategory?:(data: Category) => void;
+  handleAcceptCategory?: (data: Category) => void;
   iconMap?: Record<string, JSX.Element>;
 }
 
@@ -34,14 +33,14 @@ const SoftLink: FC<TalentModeProps> = ({
   handleAcceptCategory = () => {},
   isLoading = false,
   defaultIcon = <PersonIcon className="text-2xl mx-3" />,
-  containerClass = "w-screen md:w-full bg-orange-ghost mt-2 h-screen md:h-full",
+  containerClass = "w-screen md:w-full bg-white mt-2 md:h-full",
   itemClass = "bg-orange-hover rounded-lg md:min-w-52 m-3 flex justify-start items-center text-white cursor-pointer",
   textClass = "font20 py-2",
 }) => {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid justify-center mt-12">
+      <div className="grid justify-center">
         <div className={containerClass}>
           {categories.map((category) => (
             <span

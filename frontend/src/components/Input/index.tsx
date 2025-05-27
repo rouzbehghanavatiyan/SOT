@@ -34,7 +34,6 @@ const Input: FC<InputProps> = ({
   rules,
   ref,
   errors,
-  //   control,
   onChange,
   guidMessage,
   maxLength,

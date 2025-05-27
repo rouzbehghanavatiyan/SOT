@@ -3,9 +3,14 @@ import { Link } from "react-router-dom";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import MultiOptions from "../MultiOptions";
 
-const Header: React.FC = ({ openMessage, setOpenMessage }: any) => {
+interface PropsType {
+  openMessage: boolean;
+  setOpenMessage: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Header: React.FC<PropsType> = ({ openMessage, setOpenMessage }) => {
   return (
-    <header className="w-full grid grid-cols-7 z-50 sticky top-0 bg_logo">
+    <header className="w-full grid grid-cols-7 z-50 fixed top-0 bg_logo">
       <div className="bg_logo_circle col-span-2 flex ps-3 justify-start items-center">
         <span style={{ color: "rgb(0 115 25)" }} className=" font30 font-bold ">
           Star Of Talent

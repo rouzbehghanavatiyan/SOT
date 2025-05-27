@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import demoVid from "../../../../../00b16493dc977a745b7207f06d8a159a59064958-480p.mp4";
-// import demoVid from "../../../../../7a8b6f0c8380f98a7dda22d44ad180496804185-720p.mp4";
 import demoVid2 from "../../../../../24973359cdff3b2ea4d251b3dc1a919611425919-360p.mp4";
-// import demoVid2 from "../../../../../94a745b99ad43a85eca5cba6d7447b6445773251-720p.mp4";
 import Comments from "../../common/Comments";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -16,6 +14,8 @@ import cook3 from "../../assets/img/cook3.jpg";
 import cook4 from "../../assets/img/cook4.jpg";
 import inv5 from "../../assets/img/inv5.jpg";
 import Video from "../../components/Video";
+import { userAttachmentList } from "../../services/dotNet";
+import { useAppSelector } from "../../hooks/hook";
 
 const dubleVideos = [
   {
@@ -66,6 +66,7 @@ const dubleVideos = [
 ];
 
 const Home: React.FC = () => {
+  const { main } = useAppSelector((state) => state);
   const [expandedVideo, setExpandedVideo] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const [closingComments, setClosingComments] = useState(false);
@@ -97,16 +98,30 @@ const Home: React.FC = () => {
     setIsPlayingTop(!isPlayingTop);
   };
 
+  const handleGiveVideos = async () => {
+    try {
+      const res = await userAttachmentList(main?.userLogin?.userId);
+      const { status, data } = res?.data;
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGiveVideos();
+  }, [main?.userLogin?.userId]);
+
   return (
     <>
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
         mousewheel={true}
-        className="mySwiper h-screen mt-14"
+        className="mySwiper h-screen"
       >
         <div className="grid grid-cols-1  md:grid-cols-3 justify-centerbg-white">
-          <div className="h-screen ">
+          <div className="h-screen">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-center bg-white h-[80%]">
               {dubleVideos.map((profile, index) => (
                 <SwiperSlide
@@ -137,7 +152,7 @@ const Home: React.FC = () => {
                     </span>
                     <span className="text-black"> 1,529 </span>
                   </div>
-                  <div className="flex bg-white items-center gap-1 m-2 max-h-[60px] overflow-hidden text-ellipsis line-clamp-2">
+                  <div className="flex bg-white items-center gap-1 m-2 max-h-[50px] overflow-hidden text-ellipsis line-clamp-2">
                     this is a test this is a test this is a test this is a test
                     this is a test this is a test this is a test this is a test
                     this is a test this is a test this is a test this is a test

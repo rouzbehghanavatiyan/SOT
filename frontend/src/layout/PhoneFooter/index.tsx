@@ -7,18 +7,26 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
-import CircleIcon from "@mui/icons-material/Circle";
+import { useAppSelector } from "../../hooks/hook";
 
 const PhoneFooter: React.FC = () => {
+  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
+  const { main } = useAppSelector((state) => state);
 
   const handleWatchClick = () => {
     setActiveIcon("watch");
   };
 
+  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
+  console.log(getProfileImage);
+  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
+
+  console.log("profileImage", getProfileImage);
+
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
-      <div className="fixed mt-10 z-50 bottom-0 w-full bg-white shadow-card text-center">
+      <div className="fixed mt-10 z-50 bottom-0 w-full shadow-card text-center bg-white">
         <div className="flex gap-5 justify-center">
           <NavLink
             to={"/home"}
@@ -29,7 +37,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <HomeIcon className="icon_size text-orange-hover" />
+            <HomeIcon className="icon_size text-gray-800" />
           </NavLink>
           <NavLink
             to={"/watch"}
@@ -41,7 +49,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <PlayArrowIcon className={`icon_size text-orange-hover `} />
+            <PlayArrowIcon className={`icon_size text-gray-800 `} />
           </NavLink>
           <NavLink
             to={"/sot"}
@@ -69,7 +77,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <NotificationsIcon className="icon_size text-orange-hover" />
+            <NotificationsIcon className="icon_size text-gray-800" />
             {/* <CircleIcon className="text-red absolute top-2 right-2 font10" /> */}
           </NavLink>
           <NavLink
@@ -81,7 +89,16 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <AccountCircleIcon className="icon_size text-orange-hover" />
+            {!!findImg ? (
+              <img
+                src={findImg}
+                className="border-2 rounded-full"
+                width={60}
+                height={60}
+              />
+            ) : (
+              <AccountCircleIcon className="icon_size text-gray-800" />
+            )}
           </NavLink>
         </div>
       </div>

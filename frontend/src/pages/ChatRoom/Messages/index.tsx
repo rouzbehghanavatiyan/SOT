@@ -1,54 +1,80 @@
-import React, { useEffect, useState } from "react";
-import Loading from "../../../components/Loading";
+import React from "react";
+import { useAppSelector } from "../../../hooks/hook";
 
-interface Message {
-  text: string;
-}
-
-interface MessagesProps {
-  socket: any;
-  userInfo: {
-    userId?: string;
-  };
-}
-
-const Messages: React.FC<MessagesProps> = ({ socket, userInfo }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [showLoading, setShowLoading] = useState(false);
-
-  const fetchChatHistory = async () => {
-    try {
-      setShowLoading(true);
-      const res = await getMessageQuery(userInfo?.userId);
-      setMessages(res?.data?.data || []);
-    } catch (error) {
-      console.error("Error fetching chat history:", error);
-    } finally {
-      setShowLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchChatHistory();
-    // if (userInfo?.userId) {
-    //   socket.emit("join_home", userInfo?.userId);
-    // }
-    // return () => {
-    //   socket.off("update_online_users");
-    //   socket.disconnect();
-    // };
-  }, [userInfo?.userId]);
+const Messages: React.FC = ({ messages, messagesEndRef }) => {
+  const { main } = useAppSelector((state) => state);
+  const numberUserId = Number(main?.userLogin?.userId);
 
   return (
     <>
-      <Loading isLoading={showLoading} />
-      <div className="w-full">
-        {messages.map((message, index) => (
-          <div key={index} className="bg-red">
-            {message.text}
+      {messages?.map((msg: any, index: number) => {
+        const numberServerUserId = Number(msg?.userId);
+        return (
+          <div
+            ref={messagesEndRef}
+            key={index}
+            className={`flex w-100 align-center justify-${
+              numberUserId === numberServerUserId ? "start" : "end"
+            }`}
+          >
+            {numberUserId === numberServerUserId && (
+              <span className="text-secondary font-bold mx-1">
+                {msg?.username}
+              </span>
+            )}
+            {numberUserId === numberServerUserId && (
+              <div
+                className={`rounded-xl my-2 p-3 ${
+                  numberUserId === numberServerUserId
+                    ? "bg-mainGray-dark"
+                    : "bg-orange-ghost"
+                } `}
+                style={{
+                  maxWidth: "50%",
+                  wordWrap: "break-word",
+                }}
+              >
+                <div className="flex justify-between">
+                  <span className="ms-2">{msg?.title}</span>
+                </div>
+              </div>
+            )}
+            {numberUserId === numberServerUserId && (
+              <span className="text-secondary font-light font13 mx-2">
+                {msg?.time}
+              </span>
+            )}
+            {numberUserId !== numberServerUserId && (
+              <span className="text-secondary font-light font13 mx-2">
+                {msg?.time}
+              </span>
+            )}
+            {numberUserId !== numberServerUserId && (
+              <div
+                className={`rounded-xl my-2 p-3 ${
+                  numberUserId === numberServerUserId ? "bg-orange" : "bg-pink"
+                }`}
+                style={{
+                  maxWidth: "50%",
+                  wordWrap: "break-word",
+                }}
+              >
+                <div className="flex justify-between">
+                  <span className="ms-2">{msg?.title}</span>
+                </div>
+              </div>
+            )}
+            {numberUserId !== numberServerUserId && (
+              <div className="flex fw-thin font10 justify-center align-center text-secondary">
+                <div className="gap-2">
+                  <i className="font35" />
+                  <span className="">{msg?.username}</span>
+                </div>
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+        );
+      })}
     </>
   );
 };

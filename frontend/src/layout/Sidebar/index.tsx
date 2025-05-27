@@ -13,7 +13,7 @@ type Props = PropTypes;
 
 const SidebarLinks: React.FC<Props> = () => {
   return (
-    <div className="bg-gray-100 shadow- sticky top-20 px-3 h-screen ">
+    <div className="bg-gray-100 shadow sticky top-20 px-3">
       <Link to={"/solo"}>
         <div className="my-4 flex justify-center">
           <img

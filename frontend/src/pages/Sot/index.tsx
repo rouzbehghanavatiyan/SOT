@@ -12,7 +12,6 @@ const TalentMode = () => {
   const { main } = useAppSelector((state) => state);
   const navigate = useNavigate();
   const location = useLocation();
-
   const iconMap: Record<string, JSX.Element> = {
     cup: <EmojiEventsIcon className={iconClass} />,
     friendly: <HandshakeIcon className={iconClass} />,
@@ -36,7 +35,6 @@ const TalentMode = () => {
       iconMap={iconMap}
       handleAcceptCategory={handleAcceptCategory}
       categories={categoriesWithIcons || []}
-      isLoading={false}
     />
   );
 };

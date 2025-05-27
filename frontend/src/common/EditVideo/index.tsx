@@ -76,7 +76,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
             inviteId: inviteData,
           }));
           if (inviteStatus === 0) {
-            console.log("sooooooooooocket", inviteData);
             socket.emit("add_invite_offline", inviteData);
             setShowEditMovie(false);
             navigate(`/watch`);
@@ -153,6 +152,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
             ? "Optional"
             : ""
       }
+      className="rounded-2xl"
       padding={0}
       isOpen={showEditMovie}
       onClose={setShowEditMovie}

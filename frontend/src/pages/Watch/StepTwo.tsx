@@ -22,7 +22,7 @@ const StepTwo = () => {
   const [likedVideos, setLikedVideos] = useState<boolean[]>([]);
 
   const handleLiked = asyncWrapper(async (movieId: number) => {
-    console.log(movieId);
+    console.log("movieId movieId movieId",movieId);
     const postData = {
       userId: userIdFromSStorage,
       movieId: movieId,
@@ -101,7 +101,7 @@ const StepTwo = () => {
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
           return (
-            <SwiperSlide key={index} className="flex bg-black gap-10 flex-col">
+            <SwiperSlide key={index} className="flex  gap-10 flex-col">
               <div className="flex-shrink-0 h-[40vh]">
                 <OptionWatchs
                   handleLiked={handleLiked}

@@ -29,6 +29,8 @@ interface MainType {
   category: any;
   socketConfig: any;
   userLogin: any;
+  userOnlines: any;
+  profileImage: any;
 }
 const initialState: MainType = {
   messageModal: { title: "", show: false },
@@ -41,6 +43,8 @@ const initialState: MainType = {
   category: [],
   socketConfig: null,
   userLogin: {},
+  userOnlines: null,
+  profileImage: null,
 };
 
 // -> handle get user menu list
@@ -94,6 +98,12 @@ const mainSlice = createSlice({
     RsetSocketConfig: (state, actions: PayloadAction<any>) => {
       return { ...state, socketConfig: actions.payload };
     },
+    RsetGiveUserOnlines: (state, actions: PayloadAction<any>) => {
+      return { ...state, userOnlines: actions.payload };
+    },
+    RsetGetImageProfile: (state, actions: PayloadAction<any>) => {
+      return { ...state, profileImage: actions.payload };
+    },
   },
   //   extraReducers: (builder) => {
   //     builder
@@ -132,5 +142,7 @@ export const {
   RsetSocketConfig,
   RsetProgress,
   RsetUserLogin,
+  RsetGiveUserOnlines,
+  RsetGetImageProfile,
 } = mainSlice.actions;
 export default mainSlice.reducer;

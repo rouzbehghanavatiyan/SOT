@@ -22,7 +22,12 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import CircleIcon from "@mui/icons-material/Circle";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 
-const MultiOptions: React.FC = ({ setOpenMessage, openMessage }: any) => {
+interface PropsType {
+  openMessage: boolean;
+  setOpenMessage: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
   return (
     <div className=" flex justify-center items-center gap-3 col-span-2">
       <IconButton className="text-white relative">
