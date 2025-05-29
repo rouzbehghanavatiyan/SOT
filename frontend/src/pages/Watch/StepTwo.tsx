@@ -22,7 +22,6 @@ const StepTwo = () => {
   const [likedVideos, setLikedVideos] = useState<boolean[]>([]);
 
   const handleLiked = asyncWrapper(async (movieId: number) => {
-    console.log("movieId movieId movieId",movieId);
     const postData = {
       userId: userIdFromSStorage,
       movieId: movieId,

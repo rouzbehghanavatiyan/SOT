@@ -21,6 +21,7 @@ import {
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
 import { useLocation } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 type PropsType = any;
 
@@ -55,7 +56,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       if (status === 0) {
         dispatch(RsetGetImageProfile(data));
       }
-
       console.log("Profile Data:", {
         attachments: resAttachList?.data,
         profileImage: resImageProfile?.data,
@@ -75,9 +75,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     const userId = sessionStorage.getItem("userId");
 
     if (token && userId) {
-      console.log();
-
-      dispatch(RsetUserLogin({ token, userId }));
+      const fixUser: any = jwtDecode(token);
+      const userInfo = Object.values(fixUser);
+      const userName = userInfo[0];
+      dispatch(RsetUserLogin({ token, userId, userName }));
 
       handleGetProfile(userId);
       handleGetCategory();
@@ -86,7 +87,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   useEffect(() => {
     if (!main?.userLogin?.userId) return;
-
+    handleSocketConfig();
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);

@@ -14,7 +14,7 @@ import { RsetDobuleVideo, RsetProgress } from "../../common/Slices/main";
 import Timer from "../../components/Timer";
 
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-const userIdFromSStorage = sessionStorage.getItem("userId");
+const userIdFromSStorage = Number(sessionStorage.getItem("userId"));
 
 const StepOne: React.FC = () => {
   const [lastTap, setLastTap] = useState<number>(0);
@@ -70,8 +70,7 @@ const StepOne: React.FC = () => {
 
   const checkIsMy = (group: any) => {
     return (
-      (group?.parent?.userId || group?.child?.userId) ===
-      Number(userIdFromSStorage)
+      (group?.parent?.userId || group?.child?.userId) === userIdFromSStorage
     );
   };
 
@@ -87,10 +86,10 @@ const StepOne: React.FC = () => {
     if (progress < 60 && isTimerActive) {
       interval = setInterval(() => {
         dispatch(RsetProgress(progress + 1));
-      }, 1000);
+      }, 100000);
     } else if (progress >= 60) {
       clearInterval(interval);
-      dispatch(RsetResetTimer());
+      // dispatch(RsetResetTimer());
     }
     return () => clearInterval(interval);
   }, [progress, isTimerActive, dispatch]);
@@ -108,6 +107,8 @@ const StepOne: React.FC = () => {
       <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, itsMyVideo } = group;
+          const fixInsertTime = parent?.insertDate;
+          console.log(fixInsertTime);
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
@@ -140,11 +141,13 @@ const StepOne: React.FC = () => {
                             starWidth={6}
                             className="absolute bottom-0"
                           />
-                          <div className="flex gap-2">
-                            <span className="font20 font-bold text-white">
-                              24K
+                          <div className="flex gap-1 justify-center items-end align-middle">
+                            <span className="font15 font-bold text-white">
+                              {parent?.like}
                             </span>
-                            <ThumbUpOffAltIcon className="font25 text-white" />
+                            <span>
+                              <ThumbUpOffAltIcon className="font25 text-white" />
+                            </span>
                           </div>
                         </div>
                       </span>
@@ -162,22 +165,22 @@ const StepOne: React.FC = () => {
                             itsMyVideo
                               ? "min-h-88 max-h-88"
                               : "min-h-44 max-h-44"
-                          } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`} // اضافه کردن max-height برای itsMyVideo
+                          } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`}
                         />
                         {itsMyVideo && (
                           <span className=" absolute top-0 w-full bg_profile_watch">
                             <div className="flex justify-between items-center mx-2">
                               <ImageRank
-                                profileName={parent?.userName || "Unknown"}
+                                profileName={child?.userName || "Unknown"}
                                 profileFontColor="white"
                                 score={parent?.score || 0}
                                 rankWidth={45}
                                 starWidth={6}
                                 className="absolute bottom-0"
                               />
-                              <div className="flex gap-2">
-                                <span className="font20 font-bold text-white">
-                                  350
+                              <div className="flex gap-1 justify-center items-center align-middle">
+                                <span className="font15 font-bold text-white">
+                                  {child?.like}
                                 </span>
                                 <ThumbUpOffAltIcon className="font25 text-white" />
                               </div>
@@ -188,23 +191,20 @@ const StepOne: React.FC = () => {
                           {child?.userName}
                         </figcaption>
                         {itsMyVideo && (
-                          <div className="">
-                            <div className="absolute w-full bottom-0 bg_timer">
-                              <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
-                                <HourglassTopIcon className="font20" />
-                                <Timer
-                                  className="text-white  font20"
-                                  active={isTimerActive}
-                                />
-                                <div className="w-full h-1 bg-gray-700 rounded-full ml-4 relative text-white bg-gray-800">
-                                  <div
-                                    className="h-1 bg-blue-500 rounded-full text-green bg-white"
-                                    style={{
-                                      width: `${(progress / 6000) * 100}%`,
-                                    }}
-                                  ></div>
-                                </div>
-                              </div>
+                          <div className="absolute w-full bottom-0 bg_timer">
+                            <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
+                              <HourglassTopIcon className="font20" />
+                              <Timer
+                                startTime={fixInsertTime}
+                                duration={3600} // 60 دقیقه = 3600 ثانیه
+                                active={true}
+                                className="text-white font20 ml-2"
+                                onComplete={() => {
+                                  // این تابع زمانی اجرا می‌شود که تایمر به صفر برسد
+                                  console.log("تایمر به پایان رسید!");
+                                  // مثلاً می‌توانید یک اکشن dispatch کنید یا state را آپدیت کنید
+                                }}
+                              />
                             </div>
                           </div>
                         )}

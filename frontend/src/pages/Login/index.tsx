@@ -32,16 +32,17 @@ const LogInForm: FC = () => {
     };
     setIsLoadingBtn(true);
     const res = await login(postData);
-    console.log(res);
     const { status, data } = res?.data;
     if (status === 0) {
       navigate("/home");
+      // navigate("/learningSot");
       const fixUser: any = jwtDecode(data?.token);
       const userId =
         fixUser[
           "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
         ];
-      sessionStorage.setItem("token", data?.token);
+      let Vals = Object.values(fixUser);
+       sessionStorage.setItem("token", data?.token);
       sessionStorage.setItem("userId", userId);
     } else {
       alert("User has been not register");

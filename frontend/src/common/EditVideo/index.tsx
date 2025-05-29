@@ -75,10 +75,13 @@ const EditVideo: React.FC<EditVideoProps> = ({
             movieId: Number(resMovieData?.id),
             inviteId: inviteData,
           }));
+          console.log(resInvite);
           if (inviteStatus === 0) {
             socket.emit("add_invite_offline", inviteData);
             setShowEditMovie(false);
             navigate(`/watch`);
+          } else {
+            setIsLoadingBtn(true);
           }
         }
       } catch (error) {
@@ -102,7 +105,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
 
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
-      setIsLoadingBtn(true);
       const postData: AddMovieType = {
         userId: Number(sessionStorage?.getItem("userId") as null) || null,
         description: movieData?.desc ?? "",
@@ -114,7 +116,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
       const { status: movieStatus, data: resMovieData }: GetServices =
         res?.data;
       if (movieStatus === 0) {
-        setIsLoadingBtn(false);
         if (mode?.typeMode === 3) {
           handleFixVideo(resMovieData);
         } else if (mode?.typeMode === 4) {
@@ -135,6 +136,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
 
   useEffect(() => {
     socket.on("add_invite_offline_response", (data: any) => {
+      setIsLoadingBtn(false);
       setShowEditMovie(false);
       navigate(`/watch`);
     });

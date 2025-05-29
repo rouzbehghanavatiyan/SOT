@@ -4,6 +4,7 @@ import PublicRoutes from "./routes/PublicRoutes";
 import Login from "./pages/Login";
 import SignUpForm from "./pages/SignUp";
 import EditVideo from "./common/EditVideo";
+import LearningSot from "./pages/LearningSot";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/*" element={<PublicRoutes />} />
       <Route path="/editVideos" element={<EditVideo />} />
       <Route path="/" element={<Login />} />
+      <Route path="/learningSot" element={<LearningSot />} />
       <Route path="/signUp" element={<SignUpForm />} />
     </Routes>
   );

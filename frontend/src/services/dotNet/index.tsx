@@ -25,6 +25,11 @@ export const addLike = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
+export const removeLike = async (postData: any) => {
+  const url = `${baseURL}/removeLike`;
+  return await axios.post(url, postData);
+};
+
 export const categoryList = async () => {
   const url = `${baseURL}/categoryList`;
   return await axios.get(url);
@@ -74,9 +79,11 @@ export const userList = async () => {
   return await axios.get(url);
 };
 
-export const addFollower = async () => {
+export const addFollower = async (postData: any) => {
+  console.log(postData);
+
   const url = `${baseURL}/addFollower`;
-  return await axios.post(url);
+  return await axios.post(url, postData);
 };
 
 // get profile

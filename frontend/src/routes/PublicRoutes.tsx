@@ -18,6 +18,7 @@ import StepFour from "../common/TalentMode/StepFour";
 import ShowWatch from "../pages/Watch/ShowWatch";
 import Setting from "../pages/Setting";
 import ChatRoom from "../pages/ChatRoom";
+import LearningSot from "../pages/LearningSot";
 
 const PublicRoutes = () => {
   return (

@@ -19,10 +19,7 @@ const PhoneFooter: React.FC = () => {
   };
 
   const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
-  console.log(getProfileImage);
   const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
-
-  console.log("profileImage", getProfileImage);
 
   return (
     <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
@@ -92,9 +89,9 @@ const PhoneFooter: React.FC = () => {
             {!!findImg ? (
               <img
                 src={findImg}
-                className="border-2 rounded-full"
-                width={60}
-                height={60}
+                className="rounded-full"
+                width={45}
+                height={45}
               />
             ) : (
               <AccountCircleIcon className="icon_size text-gray-800" />

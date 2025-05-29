@@ -1,3 +1,4 @@
+// Profile.tsx
 import React, { useCallback, useRef, useState } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
@@ -7,32 +8,44 @@ import cupLevel from "../../assets/img/cupLevel.webp";
 import cup3 from "../../assets/img/cup5.png";
 import cup4 from "../../assets/img/cup3.png";
 import VideosProfile from "./VideosProfile";
-import asyncWrapper from "../../common/AsyncWrapper";
-import { useAppSelector } from "../../hooks/hook";
-import { addAttachment } from "../../services/dotNet";
+import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { addAttachment, profileAttachmentList } from "../../services/dotNet";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import EditImage from "../../components/EditImage";
+import { RsetGetImageProfile } from "../../common/Slices/main";
 
 const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const userId = sessionStorage.getItem("userId");
   const { main } = useAppSelector((state) => state);
   const [profileImage, setProfileImage] = useState(userProfile);
+  const [editingImage, setEditingImage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const dispatch = useAppDispatch();
+  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
+  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
+  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
 
-  const handleImageProfileUpload = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.files?.[0]) return;
-
-      const file = event.target.files[0];
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setProfileImage(e.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+  const uploadProfileImage = useCallback(
+    async (croppedImage: string) => {
+      setProfileImage(croppedImage);
+      setEditingImage(false);
 
       try {
+        // تبدیل base64 به فایل
+        const base64Data = croppedImage.split(",")[1];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const file = new File([byteArray], "profile.jpg", {
+          type: "image/jpeg",
+        });
+
         const formData = new FormData();
         formData.append("formFile", file);
         formData.append(
@@ -46,13 +59,15 @@ const Profile: React.FC = () => {
         const { status: attachmentStatus, data: attachmentData } =
           resAttachment?.data;
         if (attachmentStatus === 0) {
-          console.log("Profile image uploaded successfully", attachmentData);
+          const resProfileAttachmentList = await profileAttachmentList(userId);
+          const { status, data } = resProfileAttachmentList?.data;
+          if (status === 0) {
+            dispatch(RsetGetImageProfile(data));
+          }
         }
-
         return { attachmentStatus, attachmentData };
       } catch (error) {
         console.error("Error uploading profile image:", error);
-        // Revert to previous image if upload fails
         setProfileImage(userProfile);
         throw error;
       }
@@ -60,24 +75,49 @@ const Profile: React.FC = () => {
     [userId, main?.userLogin?.userId]
   );
 
+  const handleImageProfileUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.files?.[0]) return;
+
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          const imageData = e.target.result as string;
+          setProfileImage(imageData);
+          setSelectedImage(imageData);
+          setEditingImage(true);
+        }
+      };
+      reader.readAsDataURL(file);
+    },
+    []
+  );
+
   const handleProfile = () => {
-    const input = document.createElement("input");
+    const input: any = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
-    input.onchange = (e) =>
-      handleImageProfileUpload(
-        e as unknown as React.ChangeEvent<HTMLInputElement>
-      );
+    input.onchange = handleImageProfileUpload;
     input.click();
   };
 
   return (
     <>
+      {editingImage && (
+        <EditImage
+          src={selectedImage}
+          onCropComplete={uploadProfileImage}
+          onCancel={() => setEditingImage(false)}
+          circularCrop={true}
+        />
+      )}
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="grid  justify-center">
+        <section className="grid justify-center">
           <div className="w-screen md:w-full md:h-full bg-gray-100">
             <div className="m-3 border-b-2">
-              <div className=" grid grid-cols-6 relative">
+              <div className="grid grid-cols-6 relative">
                 <div className="col-span-5 flex h-32">
                   <span
                     ref={imageRef}
@@ -86,7 +126,7 @@ const Profile: React.FC = () => {
                   >
                     <img
                       className="rounded-full h-24 w-24 object-cover border-2 border-green shadow-md"
-                      src={profileImage}
+                      src={findImg}
                       alt="Profile"
                     />
                   </span>
@@ -107,8 +147,10 @@ const Profile: React.FC = () => {
                       ))}
                     </div>
                   </span>
-                  <div className=" flex flex-col ms-2">
-                    <span className="font20 font-bold">jenifer240_2</span>
+                  <div className="flex flex-col ms-2">
+                    <span className="font20 font-bold">
+                      {main?.userLogin?.userName}
+                    </span>
                     <div className="">
                       <span className="text-lg text-gray-800">15k</span>
                       <span className="bg-gray-200 text-gray-700 py-1 px-2 rounded text-xs ml-2">
@@ -117,7 +159,7 @@ const Profile: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className=" items-start flex justify-end col-span-1">
+                <div className="items-start flex justify-end col-span-1">
                   <ModeEditIcon className="text-gray-800 font25" />
                 </div>
               </div>

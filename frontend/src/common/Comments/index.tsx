@@ -1,6 +1,4 @@
-import React from "react";
 import ChatFields from "../ChatFields";
-import Input from "../../components/Input";
 
 const image =
   "https://writestylesonline.com/wp-content/uploads/2018/11/Three-Statistics-That-Will-Make-You-Rethink-Your-Professional-Profile-Picture-1024x1024.jpg";
@@ -13,10 +11,10 @@ const Comments = ({ handleShowCMT, closingComments }) => {
         onClick={handleShowCMT}
       >
         <div
-          className={`bg-white shadow-2xl w-full h-[80vh] rounded-t-lg overflow-hidden ${closingComments ? "animate-slideDown" : "animate-slideUp"}`}
+          className={`bg-white shadow-2xl shadow-card w-full h-[80vh] rounded-t-lg overflow-hidden ${closingComments ? "animate-slideDown" : "animate-slideUp"}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="h-full overflow-y-auto">
+          <div className="h-full overflow-y-auto ">
             <h2 className="text-center p-4">Comments</h2>
             {[...Array(10)].map((_, index) => (
               <div key={index}>

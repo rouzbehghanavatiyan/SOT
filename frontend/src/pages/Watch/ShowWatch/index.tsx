@@ -3,6 +3,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
+  addFollower,
   addLike,
   attachmentListByInviteId,
   attachmentPlay,
@@ -23,6 +24,10 @@ const userIdFromSStorage = sessionStorage.getItem("userId");
 const ShowWatch = ({}) => {
   const { main } = useAppSelector((state: any) => state);
   const [showComments, setShowComments] = useState<boolean>(false);
+  const [followTitle, setFollowTitle] = useState<any>({
+    title: "Follow",
+    userId: 0,
+  });
   const [closingComments, setClosingComments] = useState<boolean>(false);
   const [videos, setVideos] = useState<any[]>([]);
   const socket = main?.socketConfig;
@@ -31,6 +36,8 @@ const ShowWatch = ({}) => {
   const [fallowedVideos, setFallowedVideos] = useState<{
     [key: string]: boolean;
   }>({});
+
+  console.log(socket);
 
   const handleShowCMT = () => {
     if (showComments) {
@@ -60,6 +67,7 @@ const ShowWatch = ({}) => {
           const res = await attachmentPlay(fixVideo);
           return {
             url: res,
+            videoUser: item?.userId,
             like: item?.like,
             score: item?.score,
             id: item?.movieId,
@@ -72,21 +80,37 @@ const ShowWatch = ({}) => {
   });
 
   const handleFallowClick = asyncWrapper(async (video: any) => {
-    setFallowedVideos((prev) => ({
-      ...prev,
-      [video.id]: !prev[video.id],
-    }));
+    try {
+      setFallowedVideos((prev) => ({
+        ...prev,
+        [video.id]: !prev[video.id],
+      }));
+      const postData: any = {
+        userId: Number(main?.userLogin?.userId),
+        followerId: video?.videoUser,
+      };
+      const res = await addFollower(postData);
+      const { status, data } = res?.data;
+      if (status === 0) {
+        setFollowTitle({ title: "Unfollow", userId: data?.userId });
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   });
+
+  //const postData = {
+  //      UserId =1
+  //       MovieId =1
+  //   }
 
   const handleLikeClick = asyncWrapper(async (video: any) => {
     console.log(video);
-
     const postData = {
       userId: Number(userIdFromSStorage) || main?.userLogin?.userId || null,
       movieId: video?.id,
     };
-    console.log("socccccccccccc");
-
     socket.emit("add_liked", postData);
     const res = await addLike(postData);
     const { data, status } = res?.data;
@@ -113,7 +137,7 @@ const ShowWatch = ({}) => {
   const handleGiveLiked = () => {};
 
   useEffect(() => {
-    socket.on("add_liked_response", handleGiveLiked);
+    // socket.on("add_liked_response", handleGiveLiked);
     return () => {
       if (socket) {
         socket.off("add_liked_response", handleGiveLiked);
@@ -140,6 +164,8 @@ const ShowWatch = ({}) => {
             const isLiked = likedVideoId === video.id;
             const isFallowed = fallowedVideos[video.id] || false;
             const isVideoPlaying = isPlaying[video.id] || false;
+            console.log(video);
+
             return (
               <div className="flex-1 relative h-[48vh]" key={subIndex}>
                 <div className="h-full flex flex-col">
@@ -148,13 +174,13 @@ const ShowWatch = ({}) => {
                     {isFallowed ? (
                       <Follows
                         bgColor="bg-white"
-                        title="Unfallow"
+                        title={followTitle?.title}
                         onClick={() => handleFallowClick(video)}
                       />
                     ) : (
                       <Follows
                         bgColor="bg-white"
-                        title="Fallow"
+                        title={followTitle?.title}
                         onClick={() => handleFallowClick(video)}
                       />
                     )}
