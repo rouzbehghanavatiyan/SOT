@@ -8,6 +8,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
 import { useAppSelector } from "../../hooks/hook";
+import ImageRank from "../../components/ImageRank";
 
 const PhoneFooter: React.FC = () => {
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -86,16 +87,13 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            {!!findImg ? (
-              <img
-                src={findImg}
-                className="rounded-full"
-                width={45}
-                height={45}
-              />
-            ) : (
-              <AccountCircleIcon className="icon_size text-gray-800" />
-            )}
+            <ImageRank
+              imgSrc={findImg}
+              imgSize={10}
+              iconProfileStyle="font40 text-gray-800"
+              classUserName="text-gray-800 font-bold"
+              className="rounded-full h-24 w-24 object-cover border-2 shadow-md"
+            />
           </NavLink>
         </div>
       </div>

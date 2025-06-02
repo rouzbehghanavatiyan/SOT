@@ -1,12 +1,40 @@
 import React from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
-import ImageRank from "../../components/ImageRank";
+import { useServiceWorker } from "../../hooks/useServiceWorker";
+import {
+  requestNotificationPermission,
+  subscribeToPushNotifications,
+} from "../../utils/notifications";
 
 const Notification: React.FC = () => {
+  useServiceWorker();
+
+  const handleSubscribe = async () => {
+    try {
+      const permissionResult = await requestNotificationPermission();
+
+      if (permissionResult.status === "granted") {
+        const subscription = await subscribeToPushNotifications();
+        // Send subscription to your backend
+        console.log("Subscription successful:", subscription);
+      } else if (permissionResult.status === "blocked") {
+        // Show instructions to unblock notifications
+        console.warn("Notifications are blocked by browser settings");
+      }
+    } catch (error) {
+      console.error("Notification setup failed:", error);
+      // Show user-friendly error message
+      alert("Failed to set up notifications. Please try again later.");
+    }
+  };
+
   return (
     <>
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="grid justify-center">
+        <div>
+          <button onClick={handleSubscribe}>Enable Notifications</button>
+        </div>
+        {/* <section className="grid justify-center">
           <div className="w-screen p-2 md:w-full md:h-full">
             <div className=" flex items-center justify-between">
               <ImageRank profileFontColor="black" profileName="rabert_igo" />
@@ -42,7 +70,7 @@ const Notification: React.FC = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </ResponsiveMaker>
     </>
   );

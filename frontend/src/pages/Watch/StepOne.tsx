@@ -69,9 +69,12 @@ const StepOne: React.FC = () => {
   const videoGroups = getVideosForDisplay(allDableWatch);
 
   const checkIsMy = (group: any) => {
-    return (
-      (group?.parent?.userId || group?.child?.userId) === userIdFromSStorage
-    );
+    if (group?.child?.userId === userIdFromSStorage) {
+      return true;
+    }
+    if (group?.parent?.userId === userIdFromSStorage) {
+      return true;
+    }
   };
 
   const videoGroupsWithOwnership = useMemo(() => {
@@ -104,11 +107,10 @@ const StepOne: React.FC = () => {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid grid-cols-2 bg-white gap-[5px] p-[1px]">
+      <div className="grid grid-cols-2  gap-[5px] p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, itsMyVideo } = group;
           const fixInsertTime = parent?.insertDate;
-          console.log(fixInsertTime);
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
@@ -117,7 +119,7 @@ const StepOne: React.FC = () => {
             <>
               <div
                 onClick={() => handleShowMatch({ group, index })}
-                className={`flex-1 flex flex-col ${
+                className={`flex-1  flex flex-col ${
                   itsMyVideo ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
                 }`}
               >
@@ -126,7 +128,7 @@ const StepOne: React.FC = () => {
                     <img
                       src={fixImg1}
                       alt={parent?.alt || "Parent Image"}
-                      className={`w-full ${
+                      className={`w-full rounded-tr-lg ${
                         itsMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
                       } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`}
                     />
@@ -134,8 +136,10 @@ const StepOne: React.FC = () => {
                       <span className="absolute top-0 w-full bg_profile_watch">
                         <div className="flex justify-between items-center mx-2">
                           <ImageRank
-                            profileName={parent?.userName || "Unknown"}
-                            profileFontColor="white"
+                            imgSize={60}
+                            iconProfileStyle="text-gray-200 font50"
+                            userName={parent?.userName || "User"}
+                            classUserName="text-white"
                             score={parent?.score || 0}
                             rankWidth={45}
                             starWidth={6}
@@ -161,7 +165,7 @@ const StepOne: React.FC = () => {
                         <img
                           src={fixImg2}
                           alt={child?.alt || "Profile image"}
-                          className={`w-full ${
+                          className={`w-full rounded-bl-xl ${
                             itsMyVideo
                               ? "min-h-88 max-h-88"
                               : "min-h-44 max-h-44"
@@ -169,16 +173,18 @@ const StepOne: React.FC = () => {
                         />
                         {itsMyVideo && (
                           <span className=" absolute top-0 w-full bg_profile_watch">
-                            <div className="flex justify-between items-center mx-2">
+                            <div className="flex  justify-between items-center mx-2">
                               <ImageRank
-                                profileName={child?.userName || "Unknown"}
-                                profileFontColor="white"
+                                imgSize={60}
+                                iconProfileStyle="text-gray-200 font50"
+                                userName={child?.userName || "User"}
+                                classUserName="text-white"
                                 score={parent?.score || 0}
                                 rankWidth={45}
                                 starWidth={6}
                                 className="absolute bottom-0"
                               />
-                              <div className="flex gap-1 justify-center items-center align-middle">
+                              <div className="flex  gap-1 justify-center items-center align-middle">
                                 <span className="font15 font-bold text-white">
                                   {child?.like}
                                 </span>

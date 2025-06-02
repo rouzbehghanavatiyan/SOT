@@ -107,7 +107,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
       <div
-        className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-12"} `}
+        className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-11"} `}
       >
         <ResponsiveMaker visibleWidth={768}>
           <SidebarLinks open={open} />

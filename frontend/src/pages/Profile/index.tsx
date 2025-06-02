@@ -1,5 +1,5 @@
 // Profile.tsx
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 import myRank from "../../assets/img/rank6.webp";
@@ -9,10 +9,16 @@ import cup3 from "../../assets/img/cup5.png";
 import cup4 from "../../assets/img/cup3.png";
 import VideosProfile from "./VideosProfile";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
-import { addAttachment, profileAttachmentList } from "../../services/dotNet";
+import {
+  addAttachment,
+  profileAttachmentList,
+  userAttachmentList,
+} from "../../services/dotNet";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ImageRank from "../../components/ImageRank";
 
 const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -103,6 +109,21 @@ const Profile: React.FC = () => {
     input.click();
   };
 
+  const handleUserVideo = async () => {
+    try {
+      const res = await userAttachmentList(main?.userLogin?.userId);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleUserVideo();
+  }, []);
+
+  console.log(findImg);
+
   return (
     <>
       {editingImage && (
@@ -124,28 +145,13 @@ const Profile: React.FC = () => {
                     onClick={handleProfile}
                     className="cursor-pointer"
                   >
-                    <img
-                      className="rounded-full h-24 w-24 object-cover border-2 border-green shadow-md"
-                      src={findImg}
-                      alt="Profile"
+                    <ImageRank
+                      imgSrc={findImg}
+                      imgSize={100}
+                      iconProfileStyle="font100 text-gray-800"
+                      classUserName="text-gray-800 font-bold"
+                      className="rounded-full h-24 w-24 object-cover border-2 shadow-md"
                     />
-                  </span>
-                  <span className="absolute left-0 bottom-6">
-                    <img
-                      className="rounded-full w-8"
-                      src={myRank}
-                      alt="My Rank"
-                    />
-                    <div className="flex mt-1 justify-around gap-1">
-                      {[1, 2, 3].map((star) => (
-                        <img
-                          key={star}
-                          className="rounded-full shadow-lg w-4 h-4"
-                          src={goldStar}
-                          alt="Star"
-                        />
-                      ))}
-                    </div>
                   </span>
                   <div className="flex flex-col ms-2">
                     <span className="font20 font-bold">
@@ -153,7 +159,7 @@ const Profile: React.FC = () => {
                     </span>
                     <div className="">
                       <span className="text-lg text-gray-800">15k</span>
-                      <span className="bg-gray-200 text-gray-700 py-1 px-2 rounded text-xs ml-2">
+                      <span className="bg-gray-800 text-white py-1 px-2 rounded text-xs ml-2">
                         Followers
                       </span>
                     </div>

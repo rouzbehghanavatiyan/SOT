@@ -7,6 +7,8 @@ import {
   addLike,
   attachmentListByInviteId,
   attachmentPlay,
+  removeFollower,
+  removeLike,
 } from "../../../services/dotNet";
 import asyncWrapper from "../../../common/AsyncWrapper";
 import Video from "../../../components/Video";
@@ -23,21 +25,30 @@ const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const ShowWatch = ({}) => {
   const { main } = useAppSelector((state: any) => state);
+  const socket = main?.socketConfig;
+  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
+    null
+  );
   const [showComments, setShowComments] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<{ [key: string]: boolean }>({});
   const [followTitle, setFollowTitle] = useState<any>({
     title: "Follow",
     userId: 0,
   });
   const [closingComments, setClosingComments] = useState<boolean>(false);
-  const [videos, setVideos] = useState<any[]>([]);
-  const socket = main?.socketConfig;
-  const [isPlaying, setIsPlaying] = useState<{ [key: string]: boolean }>({});
-  const [likedVideoId, setLikedVideoId] = useState<string | null>(null);
-  const [fallowedVideos, setFallowedVideos] = useState<{
-    [key: string]: boolean;
-  }>({});
-
-  console.log(socket);
+  const [videos, setVideos] = useState<
+    Array<{
+      url: string;
+      videoUser: number;
+      like: number;
+      score: number;
+      id: string;
+      userName: string;
+      isLikedFromMe?: boolean;
+      isFollowedFromMe?: boolean;
+    }>
+  >([]);
 
   const handleShowCMT = () => {
     if (showComments) {
@@ -51,27 +62,34 @@ const ShowWatch = ({}) => {
     }
   };
 
+  // تغییر تابع handleAttachmentListByInviteId برای اضافه کردن فیلدهای جدید
   const handleAttachmentListByInviteId = asyncWrapper(async () => {
     const inviteId = main?.dobuleVideo?.child?.parentId;
     const res = await attachmentListByInviteId(inviteId);
 
     const { status, data } = res?.data;
-    console.log(data);
     const allDataMap = data?.map((item: any) => {
       return item;
     });
+
     if (status === 0 && allDataMap.length >= 2) {
       const videoData = await Promise.all(
         allDataMap.map(async (item: any) => {
-          const fixVideo = `wwwroot/${item?.attachmentType}/${item?.fileName}${item?.ext}`;
+          const fixVideo = `${baseURL}/${item?.attachmentType}/${item?.fileName}${item?.ext}`;
+
           const res = await attachmentPlay(fixVideo);
+          const fixRes = res.split("path=")[1];
+          console.log(fixRes);
+
           return {
-            url: res,
+            url: fixRes,
             videoUser: item?.userId,
             like: item?.like,
             score: item?.score,
             id: item?.movieId,
             userName: item?.userName,
+            isLikedFromMe: false, // مقدار پیش‌فرض
+            isFollowedFromMe: false, // مقدار پیش‌فرض
           };
         })
       );
@@ -79,71 +97,96 @@ const ShowWatch = ({}) => {
     }
   });
 
-  const handleFallowClick = asyncWrapper(async (video: any) => {
-    try {
-      setFallowedVideos((prev) => ({
-        ...prev,
-        [video.id]: !prev[video.id],
-      }));
-      const postData: any = {
-        userId: Number(main?.userLogin?.userId),
-        followerId: video?.videoUser,
-      };
-      const res = await addFollower(postData);
-      const { status, data } = res?.data;
-      if (status === 0) {
-        setFollowTitle({ title: "Unfollow", userId: data?.userId });
+  const handleVideoPlay = (videoId: string) => {
+    setCurrentlyPlayingId((prevId) => {
+      // اگر ویدیوی در حال پخش همان ویدیوی کلیک شده باشد، آن را متوقف کن
+      if (prevId === videoId) {
+        return null;
       }
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  //const postData = {
-  //      UserId =1
-  //       MovieId =1
-  //   }
+      // در غیر این صورت ویدیوی جدید را پخش کن
+      return videoId;
+    });
+  };
 
   const handleLikeClick = asyncWrapper(async (video: any) => {
-    console.log(video);
     const postData = {
       userId: Number(userIdFromSStorage) || main?.userLogin?.userId || null,
       movieId: video?.id,
     };
-    socket.emit("add_liked", postData);
-    const res = await addLike(postData);
-    const { data, status } = res?.data;
-    console.log(data);
 
-    if (likedVideoId === video.id) {
-      setLikedVideoId(null);
-    } else {
-      setLikedVideoId(video.id);
+    socket.emit("add_liked", postData);
+
+    // آپدیت موقت وضعیت لایک در state (برای UX بهتر)
+    setVideos((prevVideos) =>
+      prevVideos.map((v) =>
+        v.id === video.id ? { ...v, isLikedFromMe: !v.isLikedFromMe } : v
+      )
+    );
+
+    try {
+      if (video.isLikedFromMe) {
+        // اگر قبلاً لایک شده بود، removeLike را فراخوانی کن
+        await removeLike(postData);
+      } else {
+        // اگر لایک نشده بود، addLike را فراخوانی کن
+        const resAddLike = await addLike(postData);
+        console.log(resAddLike?.data);
+      }
+    } catch (error) {
+      console.error("Error in like operation:", error);
+      // بازگرداندن وضعیت قبلی در صورت خطا
+      setVideos((prevVideos) =>
+        prevVideos.map((v) =>
+          v.id === video.id ? { ...v, isLikedFromMe: !v.isLikedFromMe } : v
+        )
+      );
     }
   });
 
-  const handleVideoPlay = (videoId: string) => {
-    setIsPlaying((prev) => ({
-      ...prev,
-      [videoId]: !prev[videoId],
-    }));
-  };
+  const handleFallowClick = asyncWrapper(async (video: any) => {
+    const postData: any = {
+      userId: Number(main?.userLogin?.userId),
+      followerId: video?.videoUser,
+    };
 
+    setVideos((prevVideos) =>
+      prevVideos.map((v) =>
+        v.id === video.id ? { ...v, isFollowedFromMe: !v.isFollowedFromMe } : v
+      )
+    );
+
+    console.log(video);
+    try {
+      if (video.isFollowedFromMe) {
+        const res = await removeFollower(postData);
+        const { status, data } = res?.data;
+        if (status === 0) {
+          setFollowTitle({ title: "Follow", userId: video?.videoUser });
+        }
+      } else {
+        console.log(video);
+        const res = await addFollower(postData);
+        const { status, data } = res?.data;
+        if (status === 0) {
+          setFollowTitle({ title: "Unfollow", userId: data?.userId });
+        }
+      }
+    } catch (error) {
+      console.error("Error in follow operation:", error);
+      setVideos((prevVideos) =>
+        prevVideos.map((v) =>
+          v.id === video.id
+            ? { ...v, isFollowedFromMe: !v.isFollowedFromMe }
+            : v
+        )
+      );
+    }
+  });
+
+  // تغییر در بخش رندر برای استفاده از مقادیر جدید
   useEffect(() => {
     handleAttachmentListByInviteId();
   }, []);
-
-  const handleGiveLiked = () => {};
-
-  useEffect(() => {
-    // socket.on("add_liked_response", handleGiveLiked);
-    return () => {
-      if (socket) {
-        socket.off("add_liked_response", handleGiveLiked);
-      }
-    };
-  }, [socket]);
 
   const chunkedVideos = [];
   for (let i = 0; i < videos.length; i += 2) {
@@ -161,29 +204,22 @@ const ShowWatch = ({}) => {
       {chunkedVideos.map((videoPair, index: number) => (
         <SwiperSlide className="bg-black flex flex-col space-y-4" key={index}>
           {videoPair.map((video, subIndex) => {
-            const isLiked = likedVideoId === video.id;
-            const isFallowed = fallowedVideos[video.id] || false;
-            const isVideoPlaying = isPlaying[video.id] || false;
-            console.log(video);
-
+            const isLiked = video.isLikedFromMe || false;
+            const isFollowed = video.isFollowedFromMe || false;
+            const isPlaying = currentlyPlayingId === video.id;
             return (
               <div className="flex-1 relative h-[48vh]" key={subIndex}>
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center p-2">
-                    <ImageRank profileName={video?.userName} />
-                    {isFallowed ? (
-                      <Follows
-                        bgColor="bg-white"
-                        title={followTitle?.title}
-                        onClick={() => handleFallowClick(video)}
-                      />
-                    ) : (
-                      <Follows
-                        bgColor="bg-white"
-                        title={followTitle?.title}
-                        onClick={() => handleFallowClick(video)}
-                      />
-                    )}
+                    <ImageRank
+                      classUserName="text-white"
+                      userName={video?.userName}
+                    />
+                    <Follows
+                      bgColor="bg-white"
+                      title={isFollowed ? "Unfollow" : "Follow"}
+                      onClick={() => handleFallowClick(video)}
+                    />
                     {isLiked ? (
                       <ThumbUpIcon
                         className="text-white font35 unlike_animation cursor-pointer"
@@ -203,7 +239,7 @@ const ShowWatch = ({}) => {
                       loop
                       handleVideo={() => handleVideoPlay(video.id)}
                       url={video.url}
-                      playing={isVideoPlaying}
+                      playing={isPlaying}
                     />
                   </div>
                 </div>

@@ -64,7 +64,6 @@ export const attachmentListByInviteId = async (id: number) => {
 // 2نمایش فیلم
 export const attachmentPlay = async (path: string) => {
   const url = `${baseURL}/attachmentPlay?path=${path}`;
-  // console.log(url);
   return url;
 };
 
@@ -80,10 +79,18 @@ export const userList = async () => {
 };
 
 export const addFollower = async (postData: any) => {
-  console.log(postData);
-
   const url = `${baseURL}/addFollower`;
   return await axios.post(url, postData);
+};
+
+export const followerList = async (userId: any) => {
+  const url = `${baseURL}/FollowerList?userId=${userId}`;
+  return await axios.get(url);
+};
+
+export const removeFollower = async (postData: any) => {
+  const url = `${baseURL}/removeFollower`;
+  return await axios.delete(url, postData);
 };
 
 // get profile
@@ -95,5 +102,10 @@ export const profileAttachmentList = async (userId: number) => {
 // get videos home
 export const userAttachmentList = async (userId: number) => {
   const url = `${baseURL}/userAttachmentList?userId=${userId}`;
+  return await axios.get(url);
+};
+
+export const followerAttachmentList = async (userId: number) => {
+  const url = `${baseURL}/followerAttachmentList?userId=${userId}`;
   return await axios.get(url);
 };
