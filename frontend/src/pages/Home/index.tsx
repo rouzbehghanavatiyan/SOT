@@ -33,6 +33,7 @@ const Home: React.FC = () => {
   const handleGiveVideos = async () => {
     try {
       const res = await followerAttachmentList(main?.userLogin?.userId);
+      console.log(res);
       const { data, status } = res?.data;
       if (status === 0) {
         setAllDableWatch(data);
@@ -81,7 +82,7 @@ const Home: React.FC = () => {
   }, [main?.userLogin?.userId]);
 
   return (
-    <div className="relative h-screen w-full bg-black overflow-hidden">
+    <div className="relative h-screen md:mt-10 w-full bg-black overflow-hidden">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}

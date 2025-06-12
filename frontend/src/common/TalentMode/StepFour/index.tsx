@@ -89,43 +89,43 @@ const StepFour: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-2  justify-center ">
+    <div className="grid  grid-cols-4 gap-4 md:mt-10 justify-center ">
       <video ref={videoRef} style={{ display: "none" }} />
       <div
         onClick={handleOffline}
-        className="bg-orange-disabled rounded-xl mt-4 mx-2"
+        className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4"
       >
         <span className="flex justify-center  ">
-          <WifiOffIcon className="font100 flex justify-center text-green-dark" />
+          <WifiOffIcon className="font100 flex justify-center text-primary" />
         </span>
-        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
+        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
           Offline
         </span>
       </div>
       <div
         onClick={handleOptional}
-        className="bg-orange-disabled rounded-xl mt-4 mx-2"
+        className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4"
       >
         <span className="flex justify-center  ">
-          <AltRouteIcon className="font100 flex justify-center text-green-dark" />
+          <AltRouteIcon className="font100 flex justify-center text-primary" />
         </span>
-        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
+        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
           Optional
         </span>
       </div>
-      <div className="bg-orange-disabled rounded-xl mt-4 mx-2 ">
+      <div className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4 ">
         <span className="flex justify-center  ">
-          <NetworkCheckIcon className="font100 flex justify-center text-green-dark" />
+          <NetworkCheckIcon className="font100 flex justify-center text-primary" />
         </span>
-        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
+        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
           Turbo
         </span>
       </div>
-      <div className="bg-orange-disabled rounded-xl mt-4 mx-2 ">
+      <div className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4 ">
         <span className="flex justify-center">
-          <RadioButtonCheckedIcon className="font100 flex justify-center text-green-dark" />
+          <RadioButtonCheckedIcon className="font100 flex justify-center text-primary" />
         </span>
-        <span className="text-gray-800 flex items-center text-center justify-center font20 font-bold">
+        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
           Live
         </span>
       </div>

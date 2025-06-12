@@ -151,7 +151,7 @@ const Live = () => {
   }, [seconds]);
 
   return (
-    <div className="border my-10 flex max-h-full min-h-full bg-white p-4">
+    <div className="border my-10 rounded-xl flex max-h-full min-h-full bg-white p-4">
       <div className="grid">
         {items.map((item, index) => (
           <div

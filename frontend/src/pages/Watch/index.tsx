@@ -1,9 +1,7 @@
-import StepOne from './StepOne'
+import StepOne from "./StepOne";
 
 const Watch = () => {
-  return (
-    <StepOne />
-  )
-}
+  return <StepOne />;
+};
 
 export default Watch;

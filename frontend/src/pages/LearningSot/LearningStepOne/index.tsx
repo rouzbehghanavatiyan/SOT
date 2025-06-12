@@ -8,7 +8,7 @@ const LearningStepOne: React.FC = () => {
         width={200}
         height={200}
         alt="Logo"
-        className="cursor-pointer rounded-full mb-4"
+        className="select-none cursor-pointer rounded-full mb-4"
         src={String(logo)}
       />
       <h1 className="font25 flex justify-center font-bold text-center ">

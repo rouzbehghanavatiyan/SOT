@@ -38,7 +38,6 @@ const Profile: React.FC = () => {
       setEditingImage(false);
 
       try {
-        // تبدیل base64 به فایل
         const base64Data = croppedImage.split(",")[1];
         const byteCharacters = atob(base64Data);
         const byteNumbers = new Array(byteCharacters.length);
@@ -122,8 +121,6 @@ const Profile: React.FC = () => {
     handleUserVideo();
   }, []);
 
-  console.log(findImg);
-
   return (
     <>
       {editingImage && (
@@ -148,9 +145,10 @@ const Profile: React.FC = () => {
                     <ImageRank
                       imgSrc={findImg}
                       imgSize={100}
+                      rankStyle="w-14 h-14"
                       iconProfileStyle="font100 text-gray-800"
                       classUserName="text-gray-800 font-bold"
-                      className="rounded-full h-24 w-24 object-cover border-2 shadow-md"
+                      className="rounded-full object-cover border-2 shadow-md"
                     />
                   </span>
                   <div className="flex flex-col ms-2">

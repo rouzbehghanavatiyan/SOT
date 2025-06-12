@@ -35,6 +35,7 @@ const PublicRoutes = () => {
         <Route path="/friendly" element={<Friendly />} />
         <Route path="/cup" element={<Cup />} />
         <Route path="/watch" element={<Watch />} />
+        <Route path="/learn" element={<LearningSot />} />
         <Route path="/live" element={<Live />} />
         <Route path="/robot" element={<Robot />} />
         <Route path="/store" element={<Store />} />

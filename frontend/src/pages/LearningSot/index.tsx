@@ -41,22 +41,28 @@ const LearningSot: React.FC = () => {
   };
 
   return (
-    <section className="w-full gap-10 flex flex-col items-center pt-8">
+    <section className=" w-full gap-10 flex flex-col items-center pt-8">
       {renderCurrentStep()}
       <div className="flex gap-2">
         {[1, 2, 3, 4, 5].map((step) => (
           <div
             key={step}
             className={`w-3 h-3 rounded-full ${
-              step <= currentStep ? "bg-green" : "bg-gray-300"
+              step <= currentStep ? "bg-green" : "bg-gray-200"
             }`}
           />
         ))}
       </div>
 
       <div className="flex gap-3">
-        <Button variant="ghost" label="Skip" onClick={handleSkip} />
         <Button
+          className="select-none"
+          variant="ghost"
+          label="Skip"
+          onClick={handleSkip}
+        />
+        <Button
+          className="select-none"
           variant="green"
           label={currentStep === 5 ? "Finish" : "Next"}
           onClick={handleNext}

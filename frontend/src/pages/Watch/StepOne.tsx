@@ -31,8 +31,10 @@ const StepOne: React.FC = () => {
   const location = useLocation();
 
   const handleShowMatch = (item: any) => {
+    console.log("item?.group", item?.group);
+
     dispatch(RsetDobuleVideo(item?.group));
-    const newPath = `${location.pathname}/show`;
+    const newPath = `${location.pathname}/show?id=${item?.group?.child?.parentId}`;
     navigate(newPath);
     setLastTap(0);
   };
@@ -107,7 +109,7 @@ const StepOne: React.FC = () => {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid grid-cols-2  gap-[5px] p-[1px]">
+      <div className="grid grid-cols-2 mt-0 md:mt-10 shadow-card gap-[5px] p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, itsMyVideo } = group;
           const fixInsertTime = parent?.insertDate;

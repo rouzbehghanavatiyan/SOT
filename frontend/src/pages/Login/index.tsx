@@ -42,7 +42,7 @@ const LogInForm: FC = () => {
           "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
         ];
       let Vals = Object.values(fixUser);
-       sessionStorage.setItem("token", data?.token);
+      sessionStorage.setItem("token", data?.token);
       sessionStorage.setItem("userId", userId);
     } else {
       alert("User has been not register");
@@ -51,8 +51,8 @@ const LogInForm: FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg mx-auto p-8 w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg_tusi">
+      <div className="  rounded-lg mx-auto p-8 w-full max-w-md">
         <form className="space-y-6">
           <div className="flex justify-center">
             <Link to="/">
@@ -60,13 +60,13 @@ const LogInForm: FC = () => {
                 width={100}
                 height={100}
                 alt="Logo"
-                className="cursor-pointer"
+                className="rounded-full cursor-pointer"
                 src={String(logo)}
               />
             </Link>
           </div>
           <Input
-            className="w-full bg-gray-100 border border-gray-300 rounded p-2"
+            className="w-full bg-gray-100 border border-gray-300 rounded-lg py-5 p-2"
             onChange={(e: any) =>
               setInputs((prev: any) => ({ ...prev, userName: e.target.value }))
             }
@@ -74,7 +74,7 @@ const LogInForm: FC = () => {
             aria-label="Room name input"
           />
           <Input
-            className="w-full bg-gray-100 border border-gray-300 rounded p-2"
+            className="w-full bg-gray-100 border border-gray-300 rounded-lg py-5 p-2"
             onChange={(e: any) =>
               setInputs((prev: any) => ({ ...prev, password: e.target.value }))
             }
@@ -86,7 +86,7 @@ const LogInForm: FC = () => {
             loading={isLoadingBtn}
             onClick={handleAccept}
             type="button"
-            variant="green"
+            variant="dark_primary"
             label="login"
             className="w-full"
           />

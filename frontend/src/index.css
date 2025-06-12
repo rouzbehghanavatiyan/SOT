@@ -366,14 +366,14 @@ br {
 .halo::before {
   content: "";
   position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
+  top: -15px;
+  left: -15px;
+  right: -15px;
+  bottom: -15px;
   border-radius: 50%;
-  background-color: rgba(250, 0, 0, 0.137);
+  background-color: rgba(255, 255, 255, 0.137);
   /* رنگ نورانی */
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
   animation: pulsate 1.5s ease-in-out infinite;
   /* انیمیشن تابش */
 }
@@ -618,6 +618,42 @@ br {
   animation: prixClipFix 2s linear infinite;
 }
 
+.lds-dual-ring,
+.lds-dual-ring:after {
+  box-sizing: border-box;
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring:after {
+  color: white;
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 3.4px solid currentColor;
+  border-color: currentColor transparent currentColor transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
 .loader-text {
   width: 25px;
   height: 25px;
@@ -802,7 +838,7 @@ br {
 }
 
 .border_phone_footer {
-  border-top: 1px solid rgba(0, 128, 0, 0.404);
+  border-top: 1px solid #10153D
 }
 
 
@@ -886,4 +922,36 @@ br {
   to {
     transform: translateY(0);
   }
+}
+
+
+.bg_sormei {
+  background: #10153D;
+}
+
+.text_sormei {
+  color: #10153D !important;
+}
+
+
+.bg_sormei_hover {
+  background: #010205;
+}
+
+
+.bg_tusi {
+  background-color: #F8F9FD
+}
+
+.text_gray_200 {
+  color: #BCBBBE
+}
+
+.text_gray_300 {
+  background-color: #6D6B84
+}
+
+.text_logo {
+  background: #2c399c;
+  background: linear-gradient(90deg, rgba(44, 57, 156, 1) 0%, rgba(110, 199, 255, 1) 50%, rgba(43, 36, 143, 1) 100%);
 }

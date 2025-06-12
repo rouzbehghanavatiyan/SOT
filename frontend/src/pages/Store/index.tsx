@@ -40,7 +40,7 @@ const products = [
 
 const Store = () => {
   return (
-    <div className="flex flex-col justify-center mt-10">
+    <div className="flex flex-col justify-center mt-2">
       {products.map((product) => (
         <div
           key={product.id}

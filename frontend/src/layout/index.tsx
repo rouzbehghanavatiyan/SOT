@@ -103,13 +103,13 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   return (
     <main className="relative">
-      <ResponsiveMaker visibleWidth={768}>
+      <ResponsiveMaker visibleWidth={900}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
       <div
         className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-11"} `}
       >
-        <ResponsiveMaker visibleWidth={768}>
+        <ResponsiveMaker visibleWidth={900}>
           <SidebarLinks open={open} />
         </ResponsiveMaker>
         <div className="flex flex-grow justify-center items-center">

@@ -60,14 +60,12 @@ const buttonVariants = cva(
           "bg-primary text-white text-md shadow hover:bg-primary-hover hover:text-white",
         green:
           "bg-green text-white text-md shadow hover:bg-gray hover:text-white",
-        secondary:
-          "bg-secondary !text-white shadow-sm hover:bg-secondary-hover",
+        dark_primary: "bg_sormei !text-white shadow-sm hover:bg_sormei",
         ghost: "text-mainBlack hover:text-mainGray-dark",
         link: "text-mainBlack text-lg underline-offset-4 px-3 hover:text-mainGray-dark",
         white:
           "bg-white border border-gray-300 text-gray-700 shadow-sm hover:bg-gray-100",
-        outLine_default:
-          "col-span-3 mt-8 border border-primary !text-primary hover:text-primary-hover",
+        outLine_default: "col-span-3 mt-8 border border-primary bg_tusi",
         outLine: "col-span-3 mt-8 !text-primary hover:text-primary-hover !px-0",
 
         outLine_secondary: "bg-white !text-secondary shadow-sm",

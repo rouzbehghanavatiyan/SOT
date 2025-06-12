@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import goldPer1 from "../../assets/img/rank10.webp";
-import goldStar2 from "../../assets/img/Silver.png";
+import goldStar2 from "../../assets/img/rank11.webp";
 import silverRank from "../../assets/img/rank8.webp";
-import ranktest from "../../assets/img/Silver.png";
-
+import ranktest from "../../assets/img/rank9.webp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-
-import { useAppSelector } from "../../hooks/hook";
-
 interface ProfileWithRankProps {
   imgSrc?: string | any;
   classUserName?: string;
@@ -18,28 +14,24 @@ interface ProfileWithRankProps {
   starHeight?: number;
   rankWidth?: number;
   rankHeight?: number;
-  showRank?: boolean;
   iconProfileStyle?: string;
-  imgSize?: number; // New prop for base image size
+  imgSize?: number;
+  rankStyle?: string | boolean;
 }
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
   imgSrc,
-  showRank = true,
+  rankStyle,
   userName,
   iconProfileStyle,
   classUserName = "white",
   score = 1,
   starWidth = 10,
   starHeight = 10,
-  imgSize = 40, // Default base size for the profile image
+  imgSize = 40,
 }) => {
   const [stars, setStars] = useState<JSX.Element[]>([]);
   const [rankSrc, setRankSrc] = useState<string>(goldPer1);
-
-  // Calculate proportional sizes
-  const userNameWidth = imgSize / 3;
-  const rankSize = imgSize / 2;
 
   const fixScore = () => {
     let newRankSrc: string;
@@ -86,7 +78,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
 
   return (
     <div className="flex relative" style={{ height: `${imgSize}px` }}>
-      <div className="flex ms-1 items-center">
+      <div className="flex items-center">
         {!imgSrc || imgSrc.includes("undefined") || imgSrc === "" ? (
           <AccountCircleIcon className={iconProfileStyle} />
         ) : (
@@ -101,34 +93,15 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
           />
         )}
         {userName && (
-          <span
-            className={`ms-1 ${classUserName}`}
-            style={{
-              fontSize: `${userNameWidth * 0.7}px`, // Adjust font size proportionally
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {userName}
-          </span>
+          <span className={`ms-1 ${classUserName}`}>{userName}</span>
         )}
       </div>
-        <div
-          className="absolute bottom-0 left-0 z-10 justify-center"
-          style={{ width: `${rankSize}px` }}
-        >
-          <img
-            // style={{
-            //   width: `${rankSize}px`,
-            //   height: `${rankSize}px`,
-            // }}
-            className="h-10 w-10"
-            src={ranktest}
-            alt="My Rank"
-          />
+      {!!rankStyle && (
+        <div className={`absolute h-2 bottom-3 left-0 z-10 justify-center`}>
+          <img className={rankStyle} src={ranktest} alt="My Rank" />
           {/* <span className="flex gap-1 justify-center">{stars}</span> */}
         </div>
+      )}
     </div>
   );
 };

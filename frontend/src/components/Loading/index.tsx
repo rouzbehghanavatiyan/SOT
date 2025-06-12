@@ -11,8 +11,8 @@ const Loading: React.FC<LoadingProps> = ({ isLoading }) => {
         isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div className="bg-green-dark border w-24 h-24 flex justify-center items-center shadow-xl rounded-lg">
-        <div className="loader-wrapper w-16 h-16 "></div>
+      <div className="bg-primary border w-24 h-24 flex justify-center items-center shadow-xl rounded-lg">
+        <div className="lds-dual-ring w-16 h-16 "></div>
       </div>
     </div>
   );

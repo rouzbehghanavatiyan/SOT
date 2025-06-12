@@ -27,7 +27,12 @@ export const addLike = async (postData: any) => {
 
 export const removeLike = async (postData: any) => {
   const url = `${baseURL}/removeLike`;
-  return await axios.post(url, postData);
+  return await axios.delete(url, { data: postData });
+};
+
+export const removeFollower = async (postData: any) => {
+  const url = `${baseURL}/removeFollower`;
+  return await axios.delete(url, { data: postData });
 };
 
 export const categoryList = async () => {
@@ -56,7 +61,7 @@ export const addAttachment = async (data: FormData) => {
 };
 
 // نمایش فیلم
-export const attachmentListByInviteId = async (id: number) => {
+export const attachmentListByInviteId = async (id: number | string) => {
   const url = `${baseURL}/attachmentListByInviteId?inviteId=${id}`;
   return await axios.get(url);
 };
@@ -86,11 +91,6 @@ export const addFollower = async (postData: any) => {
 export const followerList = async (userId: any) => {
   const url = `${baseURL}/FollowerList?userId=${userId}`;
   return await axios.get(url);
-};
-
-export const removeFollower = async (postData: any) => {
-  const url = `${baseURL}/removeFollower`;
-  return await axios.delete(url, postData);
 };
 
 // get profile

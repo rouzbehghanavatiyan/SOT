@@ -3,7 +3,6 @@ import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import HomeIcon from "@mui/icons-material/Home";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LogoTC from "../../assets/img/1724181984017.jpg";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
@@ -23,76 +22,73 @@ const PhoneFooter: React.FC = () => {
   const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
 
   return (
-    <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
+    <ResponsiveMaker hiddenWidth={900}>
       <div className="fixed mt-10 z-50 bottom-0 w-full shadow-card text-center bg-white">
-        <div className="flex gap-5 justify-center">
+        <div className="flex gap-5 justify-center items-center col-span-3">
           <NavLink
-            to={"/home"}
+            to="/home"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? " border_phone_footer " : ""
+                "flex w-14 py-2 items-center justify-center",
+                isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
-            <HomeIcon className="icon_size text-gray-800" />
+            <HomeIcon className="icon_size" />
           </NavLink>
           <NavLink
-            to={"/watch"}
+            to="/watch"
             onClick={handleWatchClick}
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? " border_phone_footer " : ""
+                "flex w-14 py-2 items-center justify-center",
+                isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
-            <PlayArrowIcon className={`icon_size text-gray-800 `} />
+            <PlayArrowIcon className="icon_size" />
           </NavLink>
           <NavLink
-            to={"/sot"}
+            to="/sot"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? " border_phone_footer " : ""
+                "flex w-14 py-2 items-center justify-center",
+                isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
             <img
               src={LogoTC}
               alt="Logo"
-              className="rounded-full"
+              className={`rounded-full `}
               width={30}
               height={30}
             />
           </NavLink>
           <NavLink
-            to={"/notification"}
+            to="/notification"
             className={({ isActive }) =>
               cn(
                 "flex w-14 py-2 items-center relative justify-center",
-                isActive ? " border_phone_footer " : ""
+                isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
-            <NotificationsIcon className="icon_size text-gray-800" />
-            {/* <CircleIcon className="text-red absolute top-2 right-2 font10" /> */}
+            <NotificationsIcon className="icon_size" />
           </NavLink>
           <NavLink
-            to={"/profile"}
+            to="/profile"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center  justify-center",
-                isActive ? "border_phone_footer " : ""
+                "flex w-14 py-2 items-center justify-center",
+                isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
             <ImageRank
+              iconProfileStyle="font40 text-gray-200"
               imgSrc={findImg}
-              imgSize={10}
-              iconProfileStyle="font40 text-gray-800"
-              classUserName="text-gray-800 font-bold"
-              className="rounded-full h-24 w-24 object-cover border-2 shadow-md"
+              className={`rounded-full h-[34px] w-[34px] object-cover `}
             />
           </NavLink>
         </div>

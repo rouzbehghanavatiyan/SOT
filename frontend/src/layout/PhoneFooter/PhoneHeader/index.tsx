@@ -20,17 +20,17 @@ const PhoneHeader = () => {
   const itsStoreRoute = location?.pathname?.toLocaleLowerCase() === "/store";
 
   return (
-    <ResponsiveMaker hiddenWidth={768} visibleWidth={300}>
+    <ResponsiveMaker hiddenWidth={900} visibleWidth={300}>
       {!itsShowWatchRoute && (
         <div className="fixed z-40 top-0 left-0 w-full bg-white shadow-md px-1 py-1 text-center text-white font-bold flex">
           <div className="grid grid-cols-5 w-full items-center ">
             {itsWatchRoute ? (
               <span className="col-span-3 relative">
                 <Input
-                  className="ms-1 rounded-lg border-none text-gray-800"
+                  className="ms-1 rounded-lg border-gray-200 text-gray-800"
                   placeholder="Searching . . ."
                   value={searching}
-                  onChange={(e) => setSearching(e.target.value)}
+                  onChange={(e: any) => setSearching(e.target.value)}
                 />
                 <SearchIcon className="text-gray-800 absolute top-2 right-1 font23" />
               </span>
@@ -43,7 +43,7 @@ const PhoneHeader = () => {
                 Store
               </span>
             ) : (
-              <span className=" icon_size col-span-3 flex justify-start logoFont text-green">
+              <span className=" icon_size col-span-3 flex justify-start logoFont text-primary">
                 Star Of Talent
               </span>
             )}

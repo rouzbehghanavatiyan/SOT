@@ -40,6 +40,7 @@ const config = {
         dark: "#A0A0A0",
       },
       pink: "#ff347f",
+      primary: "#10153D",
       gray: {
         100: "#F8F8F8",
         200: "#CAC9C9",

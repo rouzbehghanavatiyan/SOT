@@ -11,8 +11,6 @@ import SettingSolo from "./SettingSolo/index.tsx";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link, useNavigate } from "react-router-dom";
-import { categoryList } from "../../services/dotNet/index.tsx";
-import asyncWrapper from "../AsyncWrapper/index.ts";
 
 type Props = {};
 
