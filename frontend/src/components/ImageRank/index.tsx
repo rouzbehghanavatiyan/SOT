@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import goldPer1 from "../../assets/img/rank10.webp";
-import goldStar2 from "../../assets/img/rank11.webp";
-import silverRank from "../../assets/img/rank8.webp";
-import ranktest from "../../assets/img/rank9.webp";
+import per_bronze_3 from "../../assets/ranks/per_bronze_3.webp";
+import normal_silver_1 from "../../assets/ranks/normal_silver_1.webp";
+import normal_silver_2 from "../../assets/ranks/normal_silver_2.webp";
+import per_gold_1 from "../../assets/ranks/per_gold_1.webp";
+import normal_gold_3 from "../../assets/ranks/normal_gold_3.png";
+import silverRank from "../../assets/img/rank5.webp";
+import goldRank1 from "../../assets/img/rank7.webp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 interface ProfileWithRankProps {
   imgSrc?: string | any;
@@ -16,7 +19,7 @@ interface ProfileWithRankProps {
   rankHeight?: number;
   iconProfileStyle?: string;
   imgSize?: number;
-  rankStyle?: string | boolean;
+  rankStyle?: any;
 }
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
@@ -31,18 +34,18 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   imgSize = 40,
 }) => {
   const [stars, setStars] = useState<JSX.Element[]>([]);
-  const [rankSrc, setRankSrc] = useState<string>(goldPer1);
+  const [rankSrc, setRankSrc] = useState<string>(per_bronze_3);
 
   const fixScore = () => {
     let newRankSrc: string;
     let newStars: JSX.Element[];
     if (score >= 0 && score < 10) {
-      newRankSrc = goldPer1;
+      newRankSrc = per_bronze_3;
       newStars = Array(1).fill(
         <img
           className="rounded-full  shadow-lg"
           style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={goldStar2}
+          src={per_bronze_3}
           alt="Star"
         />
       );
@@ -52,17 +55,27 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
         <img
           className="rounded-full  shadow-lg"
           style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={goldStar2}
+          src={normal_silver_1}
+          alt="Star"
+        />
+      );
+    } else if (score >= 20 && score < 30) {
+      newRankSrc = goldRank1;
+      newStars = Array(2).fill(
+        <img
+          className="rounded-full  shadow-lg"
+          style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
+          src={normal_silver_2}
           alt="Star"
         />
       );
     } else {
-      newRankSrc = goldPer1;
+      newRankSrc = normal_gold_3;
       newStars = Array(3).fill(
         <img
           className="rounded-full  shadow-lg"
           style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={goldStar2}
+          src={per_gold_1}
           alt="Star"
         />
       );
@@ -97,8 +110,8 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
         )}
       </div>
       {!!rankStyle && (
-        <div className={`absolute h-2 bottom-3 left-0 z-10 justify-center`}>
-          <img className={rankStyle} src={ranktest} alt="My Rank" />
+        <div className={`absolute h-4 bottom-0 left-0 z-10 justify-center`}>
+          <img className={rankStyle} src={rankSrc} alt="My Rank" />
           {/* <span className="flex gap-1 justify-center">{stars}</span> */}
         </div>
       )}

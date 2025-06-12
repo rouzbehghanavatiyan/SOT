@@ -34,7 +34,7 @@ const SoftLink: FC<TalentModeProps> = ({
   isLoading = false,
   defaultIcon = <PersonIcon className=" text-2xl mx-3" />,
   containerClass = "w-screen md:w-[500px] md:mt-10 bg-white mt-2 md:h-full",
-  itemClass = "text_logo rounded-lg md:min-w-52 m-3 flex justify-start items-center text-white cursor-pointer",
+  itemClass = " rounded-lg md:min-w-52 m-3 flex justify-start items-center text-primary cursor-pointer",
   textClass = "font20 py-2",
 }) => {
   return (

@@ -154,7 +154,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
             ? "Optional"
             : ""
       }
-      className="rounded-2xl"
+      className="rounded-2xl "
       padding={0}
       isOpen={showEditMovie}
       onClose={setShowEditMovie}
@@ -209,7 +209,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
           </>
         )}
       </div>
-      <div className="sticky bottom-0 z-50 bg-white w-full p-3  ">
+      <div className="sticky bottom-0 z-50 bg-white w-full">
         <div className="flex justify-around">
           {currentStep === 1 && (
             <Button

@@ -27,7 +27,7 @@ const PhoneHeader = () => {
             {itsWatchRoute ? (
               <span className="col-span-3 relative">
                 <Input
-                  className="ms-1 rounded-lg border-gray-200 text-gray-800"
+                  className="ms-1 bg-gray-100 rounded-lg border-none text-gray-900"
                   placeholder="Searching . . ."
                   value={searching}
                   onChange={(e: any) => setSearching(e.target.value)}

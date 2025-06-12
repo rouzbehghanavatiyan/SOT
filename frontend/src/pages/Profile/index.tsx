@@ -19,12 +19,15 @@ import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ImageRank from "../../components/ImageRank";
+import EditProfile from "./EditProfile";
 
 const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const userId = sessionStorage.getItem("userId");
   const { main } = useAppSelector((state) => state);
   const [profileImage, setProfileImage] = useState(userProfile);
+  const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
+
   const [editingImage, setEditingImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const dispatch = useAppDispatch();
@@ -132,10 +135,10 @@ const Profile: React.FC = () => {
         />
       )}
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="grid justify-center">
+        <section className="mt-2 grid justify-center">
           <div className="w-screen md:w-full md:h-full bg-gray-100">
             <div className="m-3 border-b-2">
-              <div className="grid grid-cols-6 relative">
+              <div className="grid grid-cols-6 relative ">
                 <div className="col-span-5 flex h-32">
                   <span
                     ref={imageRef}
@@ -146,7 +149,7 @@ const Profile: React.FC = () => {
                       imgSrc={findImg}
                       imgSize={100}
                       rankStyle="w-14 h-14"
-                      iconProfileStyle="font100 text-gray-800"
+                      iconProfileStyle="font100 rounded-full text-gray-800"
                       classUserName="text-gray-800 font-bold"
                       className="rounded-full object-cover border-2 shadow-md"
                     />
@@ -163,8 +166,13 @@ const Profile: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="items-start flex justify-end col-span-1">
-                  <ModeEditIcon className="text-gray-800 font25" />
+                <div className="items-start flex justify-end  col-span-1">
+                  <ModeEditIcon
+                    onClick={() => {
+                      setShowEditProfile(true);
+                    }}
+                    className="text-gray-800 font25"
+                  />
                 </div>
               </div>
               <div className="mb-4">
@@ -206,6 +214,12 @@ const Profile: React.FC = () => {
             </div>
           </div>
           <VideosProfile />
+          {showEditProfile && (
+            <EditProfile
+              showEditProfile={showEditProfile}
+              setShowEditProfile={setShowEditProfile}
+            />
+          )}
         </section>
       </ResponsiveMaker>
     </>

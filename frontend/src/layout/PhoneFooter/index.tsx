@@ -23,13 +23,13 @@ const PhoneFooter: React.FC = () => {
 
   return (
     <ResponsiveMaker hiddenWidth={900}>
-      <div className="fixed mt-10 z-50 bottom-0 w-full shadow-card text-center bg-white">
+      <div className="fixed z-50 bottom-0 w-full shadow-card text-center bg-white">
         <div className="flex gap-5 justify-center items-center col-span-3">
           <NavLink
             to="/home"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -41,7 +41,7 @@ const PhoneFooter: React.FC = () => {
             onClick={handleWatchClick}
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -52,7 +52,7 @@ const PhoneFooter: React.FC = () => {
             to="/sot"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -69,7 +69,7 @@ const PhoneFooter: React.FC = () => {
             to="/notification"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center relative justify-center",
+                "flex w-14 py-1 items-center relative justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -80,15 +80,16 @@ const PhoneFooter: React.FC = () => {
             to="/profile"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-2 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
             <ImageRank
-              iconProfileStyle="font40 text-gray-200"
+              iconProfileStyle="font35 text-gray-200"
               imgSrc={findImg}
-              className={`rounded-full h-[34px] w-[34px] object-cover `}
+              imgSize={35}
+              className={`rounded-full h-[10px] w-[10px] object-cover `}
             />
           </NavLink>
         </div>

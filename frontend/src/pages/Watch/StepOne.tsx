@@ -109,7 +109,7 @@ const StepOne: React.FC = () => {
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid grid-cols-2 mt-0 md:mt-10 shadow-card gap-[5px] p-[1px]">
+      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10 shadow-card gap-[5px] p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, itsMyVideo } = group;
           const fixInsertTime = parent?.insertDate;
@@ -125,8 +125,8 @@ const StepOne: React.FC = () => {
                   itsMyVideo ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
                 }`}
               >
-                <div className="flex-1">
-                  <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                <div className="flex-1 ">
+                  <span className="relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
                     <img
                       src={fixImg1}
                       alt={parent?.alt || "Parent Image"}
@@ -161,8 +161,8 @@ const StepOne: React.FC = () => {
                   </span>
                 </div>
                 {child && (
-                  <div className="flex-1 bg-white">
-                    <div className="flex-1">
+                  <div className="flex-1  bg-white">
+                    <div className="flex-1 ">
                       <figure className=" relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
                         <img
                           src={fixImg2}

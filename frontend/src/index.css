@@ -4,10 +4,9 @@
 }
 
 @font-face {
-  font-family: "roundedFont";
-  src: url("./assets/fonts/MPLUSRounded1c-Medium.ttf") format("truetype");
+  font-family: "playFair";
+  src: url("./assets/fonts/Playfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf") format("truetype");
 }
-
 
 @tailwind base;
 @tailwind components;
@@ -18,7 +17,7 @@ p {
 }
 
 body * {
-  font-family: roundedFont;
+  font-family: playFair;
   font-size: 14px !important;
   box-sizing: border-box;
   margin: 0;
@@ -109,7 +108,11 @@ br {
 }
 
 .font100 {
-  font-size: 100px !important;
+  font-size: 120px !important;
+}
+
+.font150 {
+  font-size: 150px !important;
 }
 
 .font200 {
@@ -673,50 +676,31 @@ br {
 }
 
 .loader-userFinding {
-  width: 25px;
-  height: 25px;
-  border-radius: 50px;
-  position: relative;
-  animation: rotate 1s linear infinite
+  display: inline-block;
+  width: 40px;
+  height: 40px;
 }
 
 .loader-userFinding::before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  inset: 0px;
-  border-radius: 50px;
-  border: 5px solid #4d4d4d;
-  animation: prixClipFix 2s linear infinite;
+  color: black;
+  content: " ";
+  display: block;
+  width: 25px;
+  height: 25px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 3.4px solid currentColor;
+  border-color: currentColor transparent currentColor transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
 }
 
-
-
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg)
-  }
-}
-
-@keyframes prixClipFix {
+@keyframes loader-userFinding {
   0% {
-    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
-  }
-
-  25% {
-    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
-  }
-
-  50% {
-    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
-  }
-
-  75% {
-    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+    transform: rotate(0deg);
   }
 
   100% {
-    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+    transform: rotate(360deg);
   }
 }
 

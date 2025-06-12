@@ -68,7 +68,6 @@ const Input: FC<InputProps> = ({
     }
   };
 
-  //  format value
   const formatValue = (val: string) => {
     if (!val) return ""; // در صورت خالی بودن مقدار
     const parts = val.toString().split("."); // جداسازی قبل و بعد از ممیز

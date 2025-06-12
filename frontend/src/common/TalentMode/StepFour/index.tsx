@@ -5,6 +5,7 @@ import WifiOffIcon from "@mui/icons-material/WifiOff";
 import AltRouteIcon from "@mui/icons-material/AltRoute";
 import EditVideo from "../../EditVideo";
 import Operational from "./Operational";
+import MainTitle from "../../../components/MainTitle";
 
 const StepFour: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -89,57 +90,60 @@ const StepFour: React.FC = () => {
   };
 
   return (
-    <div className="grid  grid-cols-4 gap-4 md:mt-10 justify-center ">
-      <video ref={videoRef} style={{ display: "none" }} />
-      <div
-        onClick={handleOffline}
-        className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4"
-      >
-        <span className="flex justify-center  ">
-          <WifiOffIcon className="font100 flex justify-center text-primary" />
-        </span>
-        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
-          Offline
-        </span>
-      </div>
-      <div
-        onClick={handleOptional}
-        className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4"
-      >
-        <span className="flex justify-center  ">
-          <AltRouteIcon className="font100 flex justify-center text-primary" />
-        </span>
-        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
-          Optional
-        </span>
-      </div>
-      <div className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4 ">
-        <span className="flex justify-center  ">
-          <NetworkCheckIcon className="font100 flex justify-center text-primary" />
-        </span>
-        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
-          Turbo
-        </span>
-      </div>
-      <div className="bg-gray-100 cursor-pointer rounded-xl py-4 mt-4 ">
-        <span className="flex justify-center">
-          <RadioButtonCheckedIcon className="font100 flex justify-center text-primary" />
-        </span>
-        <span className="text-primary flex items-center text-center justify-center font20 font-bold">
-          Live
-        </span>
-      </div>
+    <section className="mt-8">
+      <MainTitle title="Talent mode" />
+      <div className="mx-4 grid grid-cols-4 gap-4 md:mt-10 justify-center ">
+        <video ref={videoRef} style={{ display: "none" }} />
+        <div
+          onClick={handleOffline}
+          className="border-b-2 border-gray-200 cursor-pointer  p-2 mt-4"
+        >
+          <span className="flex justify-center  ">
+            <WifiOffIcon className="font100 flex px-3 justify-center text-green" />
+          </span>
+          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+            Offline
+          </span>
+        </div>
+        <div
+          onClick={handleOptional}
+          className="border-b-2 border-gray-200 cursor-pointer  py-4 mt-4"
+        >
+          <span className="flex justify-center  ">
+            <AltRouteIcon className="font100 flex px-3 justify-center text-green" />
+          </span>
+          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+            Optional
+          </span>
+        </div>
+        <div className="border-b-2 border-gray-200 cursor-pointer  py-4 mt-4 ">
+          <span className="flex justify-center  ">
+            <NetworkCheckIcon className="font100 flex px-3 justify-center text-green" />
+          </span>
+          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+            Turbo
+          </span>
+        </div>
+        <div className="border-b-2 border-gray-200 cursor-pointer  py-4 mt-4 ">
+          <span className="flex justify-center">
+            <RadioButtonCheckedIcon className="font100 flex px-3 justify-center text-green" />
+          </span>
+          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+            Live
+          </span>
+        </div>
 
-      {showEditMovie && (
-        <EditVideo
-          mode={mode}
-          allFormData={allFormData}
-          showEditMovie={showEditMovie}
-          setShowEditMovie={setShowEditMovie}
-          coverImage={coverImage}
-        />
-      )}
-    </div>
+        {showEditMovie && (
+          <EditVideo
+            mode={mode}
+            allFormData={allFormData}
+            showEditMovie={showEditMovie}
+            setShowEditMovie={setShowEditMovie}
+            coverImage={coverImage}
+          />
+        )}
+      </div>
+    </section>
   );
 };
 
