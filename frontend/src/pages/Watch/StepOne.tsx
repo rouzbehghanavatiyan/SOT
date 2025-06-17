@@ -209,7 +209,6 @@ const StepOne: React.FC = () => {
                                 className="text-white font20 ml-2"
                                 onComplete={() => {
                                   // این تابع زمانی اجرا می‌شود که تایمر به صفر برسد
-                                  console.log("تایمر به پایان رسید!");
                                   // مثلاً می‌توانید یک اکشن dispatch کنید یا state را آپدیت کنید
                                 }}
                               />

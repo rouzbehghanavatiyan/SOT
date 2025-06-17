@@ -105,6 +105,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
 
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
+      setIsLoadingBtn(true);
       const postData: AddMovieType = {
         userId: Number(sessionStorage?.getItem("userId") as null) || null,
         description: movieData?.desc ?? "",
@@ -210,7 +211,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
         )}
       </div>
       <div className="sticky bottom-0 z-50 bg-white w-full">
-        <div className="flex justify-around">
+        <div className="flex mb-4 justify-around">
           {currentStep === 1 && (
             <Button
               loading={isLoadingBtn}

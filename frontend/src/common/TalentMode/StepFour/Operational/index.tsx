@@ -103,14 +103,18 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
 
   return (
     <>
-      <div className="p-2">
+      <div className="px-4">
         <div className={`flex flex-col`}>
           {filteredFindUser?.map((item: any, index: number) => {
             console.log(item);
             return (
               <div key={index} className="flex  flex-col items-center w-full">
-                <span className="w-full " onClick={() => handlePick(index)}>
-                  <div className="flex  justify-between my-2">
+                <span
+                  className="w-full 
+                  "
+                  onClick={() => handlePick(index)}
+                >
+                  <div className="flex  justify-between items-center my-2">
                     <ImageRank
                       imgSize={60}
                       rankStyle="w-8 h-8"
