@@ -41,6 +41,8 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
+  console.log("PPPPPPPPPP");
+
   const payload = event.data?.json() || { title: "New Notification", body: "" };
   console.log("payload payload", payload);
 
@@ -54,10 +56,35 @@ self.addEventListener("push", (event) => {
 });
 
 self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  event.waitUntil(clients.openWindow(event.notification.data.url));
-});
-self.addEventListener("notificationclick", function (event) {
-  event.notification.close();
-  event.waitUntil(clients.openWindow(event.notification.data.url || "/"));
+  event.notification.close(); // بستن نوتیفیکیشن پس از کلیک
+
+  if (event.action === "accept") {
+    console.log("User accepted notifications");
+    // باز کردن یک پنجره یا انجام عملیات مورد نظر
+    event.waitUntil(
+      self.registration.showNotification("Thank you!", {
+        body: "You have enabled notifications.",
+        icon: "/path/to/icon.png",
+      })
+    );
+    // درخواست مجوز از کاربر (اگر نیاز باشد)
+    event.waitUntil(
+      Notification.requestPermission().then((permission) => {
+        console.log("Notification permission after accept:", permission);
+      })
+    );
+  } else if (event.action === "reject") {
+    console.log("User rejected notifications");
+    // انجام عملیات مورد نظر در صورت رد
+    event.waitUntil(
+      self.registration.showNotification("Notifications disabled", {
+        body: "You have chosen to disable notifications.",
+        icon: "/path/to/icon.png",
+      })
+    );
+  } else {
+    // کلیک روی خود نوتیفیکیشن (بدون انتخاب اکشن)
+    console.log("Notification clicked");
+    event.waitUntil(clients.openWindow(event.notification.data?.url || "/"));
+  }
 });

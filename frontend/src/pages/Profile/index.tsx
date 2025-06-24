@@ -2,8 +2,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
-import myRank from "../../assets/img/rank6.webp";
-import goldStar from "../../assets/img/goldStar.webp";
 import cupLevel from "../../assets/img/cupLevel.webp";
 import cup3 from "../../assets/img/cup5.png";
 import cup4 from "../../assets/img/cup3.png";
@@ -17,7 +15,6 @@ import {
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ImageRank from "../../components/ImageRank";
 import EditProfile from "./EditProfile";
 
@@ -137,7 +134,7 @@ const Profile: React.FC = () => {
       <ResponsiveMaker hiddenWidth={975}>
         <section className="mt-2 grid justify-center">
           <div className="w-screen md:w-full md:h-full bg-gray-100">
-            <div className="m-3 border-b-2">
+            <div className="m-3 border-b-2 ">
               <div className="grid grid-cols-6 relative ">
                 <div className="col-span-5 flex h-32">
                   <span

@@ -22,6 +22,9 @@ import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
 import { useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { useServiceWorker } from "../hooks/useServiceWorker";
+import SotLogo from "../assets/img/logocircle.png";
+import { Button } from "../components/Button";
 
 type PropsType = any;
 
@@ -31,7 +34,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
   const { main } = useAppSelector((state) => state);
-
+  const { showPrompt, handleAllow, handleBlock } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
 
   const handleGetCategory = asyncWrapper(async () => {
@@ -115,7 +118,35 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
             <PhoneHeader />
-            <div>{children}</div>
+            <div>
+              {children}
+              {showPrompt && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                  <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full">
+                    <div className="text-center ">
+                      <div className="flex items-center justify-center">
+                        <img src={SotLogo} className="w-10 h-10" />
+                      </div>
+                      <p className=" text-sm text-gray-600 my-10">
+                        Would you like to receive notifications?
+                      </p>
+                      <div className="mt-6 flex justify-center gap-3">
+                        <Button
+                          onClick={handleAllow}
+                          variant={"default"}
+                          label="Accept"
+                        />
+                        <Button
+                          onClick={handleBlock}
+                          variant={"outLine_secondary"}
+                          label="Reject"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <PhoneFooter />
           </div>
         </div>

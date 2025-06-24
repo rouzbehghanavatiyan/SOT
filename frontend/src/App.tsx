@@ -5,11 +5,10 @@ import Login from "./pages/Login";
 import SignUpForm from "./pages/SignUp";
 import EditVideo from "./common/EditVideo";
 import LearningSot from "./pages/LearningSot";
-import { useServiceWorker } from "./hooks/useServiceWorker";
+import GeneralLayout from "./layout/GeneralLayout";
 const publicKey: string | undefined = import.meta.env.VITE_PUBLIC_KEY;
 
 function App() {
-  useServiceWorker();
   const handleSubscribe = async () => {
     try {
       const permission = await Notification.requestPermission();
@@ -37,7 +36,6 @@ function App() {
           Enable Notifications
         </button>
       </div> */}
-
       <Routes>
         <Route path="/*" element={<PublicRoutes />} />
         {/* <Route path="/editVideos" element={<EditVideo />} /> */}

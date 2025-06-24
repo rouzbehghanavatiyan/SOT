@@ -7,7 +7,6 @@ import asyncWrapper from "../AsyncWrapper";
 import { addAttachment, addInvite, addMovie } from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
 import Operational from "../TalentMode/StepFour/Operational";
-import Timer from "../../components/Timer";
 import { redirect, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/hook";
 import { AddMovieType, EditVideoProps, MovieDataType } from "./type";

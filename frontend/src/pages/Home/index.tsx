@@ -33,7 +33,6 @@ const Home: React.FC = () => {
   const handleGiveVideos = async () => {
     try {
       const res = await followerAttachmentList(main?.userLogin?.userId);
-      console.log(res);
       const { data, status } = res?.data;
       if (status === 0) {
         setAllDableWatch(data);

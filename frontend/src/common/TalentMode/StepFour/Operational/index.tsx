@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import asyncWrapper from "../../../AsyncWrapper";
 import { useAppSelector } from "../../../../hooks/hook";
-import { userList } from "../../../../services/dotNet";
+import RequestModal from "./RequestModal";
 
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
@@ -18,9 +18,12 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
   const { main } = useAppSelector((state) => state);
   const socket = main?.socketConfig;
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [allUsers, setAllUsers] = useState<any>([]);
   const [findUser, setFindUser] = useState<any>([]);
+  const [dataUserRequestInfo, setDataUserRequestInfo] = useState<any>({});
+
   const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
+  const [isLoadingSearchUser, setIsLoadingSearchUser] = useState<boolean>(true);
+  const [showRequestModal, setShowRequestModal] = useState<boolean>(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
   const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
@@ -29,64 +32,60 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
     setSelectedId(id);
   };
 
-  const handleConfirmUser = asyncWrapper(async (item: any) => {
-    const postInvite = {
-      parentId: item?.id,
-      userId: userIdFromSStorage,
-      movieId: movieData?.movieId,
+  const handleSendInviteUser = asyncWrapper(async (item: any) => {
+    const postUserInfo = {
+      userIdSender:
+        Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+      userName: main?.userLogin?.userName,
+      userImage: findImg,
+      userAnswer: null,
+      userIdReciever: item?.userIdJoin,
     };
+
     setIsLoadingBtn(true);
-    socket.emit("add_invite", postInvite);
-    // setIsLoadingBtn(false);
+    socket.emit("add_invite_optional", postUserInfo);
   });
 
   const handleGetUsers = (dataList: any[]) => {
-    // dataList.forEach((data: any) => {
-    //   // if (data.userId === main?.userLogin?.userId) {
-    //   //   return;
-    //   // }
-
-    // });
     const filterMe = dataList?.filter(
-      (item) => Number(item?.userId) !== Number(main?.userLogin?.userId)
+      (item) => Number(item?.userIdJoin) !== Number(main?.userLogin?.userId)
     );
     setFindUser(filterMe);
   };
 
-  const handleFindUsers = asyncWrapper(async () => {
-    if (socket) {
-      const res = await userList();
-      const { data, message, status } = res?.data;
-      if (status === 0) {
-        setAllUsers(data);
-      }
+  const handleGetRequestUsers = (data: any) => {
+    console.log(data);
+    if (
+      data?.userIdSender !== Number(userIdFromSStorage) &&
+      data?.userIdReciever === Number(userIdFromSStorage)
+    ) {
+      setDataUserRequestInfo(data);
+      setShowRequestModal(true);
     }
-  });
+    if (data?.userAnswer === false) {
+      setIsLoadingBtn(false);
+    }
+  };
 
   useEffect(() => {
-    handleFindUsers();
-  }, []);
-
-  // console.log(main);
-
-  useEffect(() => {
-    if (allUsers.length > 0 && socket) {
-      socket.emit("user_entered_optional", {
-        userId: Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
-        userName: main?.userLogin?.userName,
-        userImage: findImg,
-      });
-
+    const postUserInfo = {
+      userIdJoin: Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+      userName: main?.userLogin?.userName,
+      userImage: findImg,
+      userAnswer: null,
+    };
+    if (socket) {
+      socket.emit("user_entered_optional", postUserInfo);
       socket.on("user_entered_optional_response", handleGetUsers);
-      // socket.on("add_invite", handleReceiveUsers);
+      socket.on("add_invite_optional_response", handleGetRequestUsers);
     }
     return () => {
       if (socket) {
         socket.off("user_entered_optional_response", handleGetUsers);
-        // socket.off("add_invite", handleReceiveUsers);
+        socket.off("add_invite_optional_response", handleGetRequestUsers);
       }
     };
-  }, [allUsers, socket]);
+  }, [socket]);
 
   const filteredFindUser = findUser.filter(
     (user: any) => user.id !== Number(userIdFromSStorage)
@@ -106,14 +105,9 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
       <div className="px-4">
         <div className={`flex flex-col`}>
           {filteredFindUser?.map((item: any, index: number) => {
-            console.log(item);
             return (
               <div key={index} className="flex  flex-col items-center w-full">
-                <span
-                  className="w-full 
-                  "
-                  onClick={() => handlePick(index)}
-                >
+                <span className="w-full " onClick={() => handlePick(index)}>
                   <div className="flex  justify-between items-center my-2">
                     <ImageRank
                       imgSize={60}
@@ -123,15 +117,13 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
                       iconProfileStyle="font60 text-gray-800"
                     />
                     {selectedId === index && (
-                      <div className=" ">
-                        <Button
-                          loading={isLoadingBtn}
-                          onClick={() => handleConfirmUser(item)}
-                          className=""
-                          variant={"white"}
-                          label="Send invite"
-                        />
-                      </div>
+                      <Button
+                        loading={isLoadingBtn}
+                        onClick={() => handleSendInviteUser(item)}
+                        className=""
+                        variant={"green"}
+                        label="Send invite"
+                      />
                     )}
                   </div>
                 </span>
@@ -142,7 +134,7 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
         <div
           className={`inset-0 flex my-4 justify-center items-center transition-opacity h-11 w-full gap-2 z-50`}
         >
-          {!isLoadingBtn && (
+          {isLoadingSearchUser && (
             <>
               <div className=" w-10 h-10  flex justify-center items-center shadow-xl rounded-lg">
                 <div className="loader-userFinding w-16 h-16"> </div>
@@ -163,6 +155,15 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
           />
         </div>
       </div>
+      {showRequestModal && (
+        <RequestModal
+          setIsLoadingBtn={setIsLoadingBtn}
+          socket={socket}
+          showRequestModal={showRequestModal}
+          setShowRequestModal={setShowRequestModal}
+          dataUserRequestInfo={dataUserRequestInfo}
+        />
+      )}
     </>
   );
 };

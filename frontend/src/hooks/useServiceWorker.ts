@@ -1,32 +1,81 @@
-// src/hooks/useServiceWorker.js
-import { useEffect } from "react";
+// hooks/useServiceWorker.ts
+import { useEffect, useState } from "react";
 
 export const useServiceWorker = () => {
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      const registerServiceWorker = async () => {
-        try {
-          const registration = await navigator.serviceWorker.register("/sw.js", {
-            scope: "/",
-            updateViaCache: "none" // اضافه کردن این خط
-          });
-          
-          console.log("SW registered with scope: ", registration.scope);
-          
-          // چک کردن وضعیت permission
-          if (Notification.permission === "default") {
-            const permission = await Notification.requestPermission();
-            console.log("Notification permission: ", permission);
-          }
-          
-          return registration;
-        } catch (error) {
-          console.error("SW registration failed: ", error);
-        }
-      };
+  const notificationPreference = localStorage.getItem("notifications");
+  const [showPrompt, setShowPrompt] = useState(false);
 
-      // حذف event listener برای load و مستقیما فراخوانی تابع
+  const registerServiceWorker = async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
+      });
+
+      if (Notification.permission === "default") {
+        setShowPrompt(true);
+      }
+    } catch (error) {
+      console.error("SW registration failed:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(
+      notificationPreference,
+      "notificationPreferencenotificationPreferencenotificationPreferencenotificationPreference"
+    );
+
+    if (notificationPreference !== "denied" && "serviceWorker" in navigator) {
       registerServiceWorker();
     }
   }, []);
+
+  const handleAllow = async () => {
+    const permission = await Notification.requestPermission();
+    console.log(permission);
+
+    if (permission === "granted") {
+      new Notification("Notifications Enabled!", {
+        body: "You have successfully enabled notifications.",
+      });
+    } else {
+      console.warn("Notifications permission denied.");
+    }
+
+    setShowPrompt(false);
+  };
+
+  const handleBlock = () => {
+    console.log("User blocked notifications");
+    localStorage.setItem("notifications", "denied");
+    setShowPrompt(false);
+  };
+
+  const canSendNotification = () => {
+    return (
+      Notification.permission === "granted" &&
+      localStorage.getItem("notifications") !== "denied"
+    );
+  };
+
+  const sendTestNotification = () => {
+    if (canSendNotification()) {
+      new Notification("تست نوتیفیکیشن", {
+        body: "این یک پیام تستی است!",
+        icon: "/assets/img/logocircle.png",
+      });
+    } else {
+      console.warn("نمیتوان نوتیفیکیشن فرستاد: دسترسی داده نشده است.");
+      alert("لطفاً ابتدا اجازهٔ نوتیفیکیشن را فعال کنید!");
+    }
+  };
+
+  return {
+    showPrompt,
+    handleAllow,
+    handleBlock,
+    canSendNotification,
+    sendTestNotification,
+  };
 };

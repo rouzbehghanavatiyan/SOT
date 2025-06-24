@@ -12,23 +12,24 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { RsetDobuleVideo, RsetProgress } from "../../common/Slices/main";
 import Timer from "../../components/Timer";
-
 const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = Number(sessionStorage.getItem("userId"));
 
 const StepOne: React.FC = () => {
+  const { main } = useAppSelector((state) => state);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const socket = main?.socketConfig;
   const [lastTap, setLastTap] = useState<number>(0);
   const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const [progress, setProgress] = useState(() => {
     const savedProgress = localStorage.getItem("timerProgress");
     return savedProgress ? parseInt(savedProgress, 10) : 0;
   });
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { main } = useAppSelector((state) => state);
-  const location = useLocation();
 
   const handleShowMatch = (item: any) => {
     console.log("item?.group", item?.group);
@@ -48,10 +49,6 @@ const StepOne: React.FC = () => {
       setAllDableWatch(data);
     }
   });
-
-  useEffect(() => {
-    handleAttachmentList();
-  }, []);
 
   const getVideosForDisplay = (allDableWatch: any[]) => {
     return allDableWatch
@@ -106,6 +103,39 @@ const StepOne: React.FC = () => {
     setIsTimerActive(hasMyVideo);
   }, [videoGroupsWithOwnership, dispatch]);
 
+  const handleGetAddLike = (data: any) => {
+    console.log("Received like data:", data);
+    setVideoLikes((prev) => ({
+      ...prev,
+      [data.movieId]: (prev[data.movieId] || 0) + 1,
+    }));
+  };
+
+  const handleGetRemoveLike = (data: any) => {
+    console.log("datadatadatadata", data);
+    setVideoLikes((prev) => ({
+      ...prev,
+      [data.movieId]: (prev[data.movieId] || 0) - 1,
+    }));
+  };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("add_liked_response", handleGetAddLike);
+      socket.on("remove_liked_response", handleGetRemoveLike);
+    }
+    return () => {
+      if (socket) {
+        socket.off("add_liked_response", handleGetAddLike);
+        socket.off("remove_liked_response", handleGetRemoveLike);
+      }
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    handleAttachmentList();
+  }, []);
+
   return (
     <>
       <Loading isLoading={isLoading} />
@@ -117,9 +147,17 @@ const StepOne: React.FC = () => {
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
+          console.log(group);
+
+          const parentLikes = (videoLikes[parent.movieId] || 0) + parent.like;
+          const childLikes = child
+            ? (videoLikes[child.movieId] || 0) + child.like
+            : 0;
+
           return (
             <>
               <div
+                key={index}
                 onClick={() => handleShowMatch({ group, index })}
                 className={`flex-1  flex flex-col ${
                   itsMyVideo ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
@@ -149,7 +187,7 @@ const StepOne: React.FC = () => {
                           />
                           <div className="flex gap-1 justify-center items-end align-middle">
                             <span className="font15 font-bold text-white">
-                              {parent?.like}
+                              {parentLikes}
                             </span>
                             <span>
                               <ThumbUpOffAltIcon className="font25 text-white" />
@@ -188,7 +226,7 @@ const StepOne: React.FC = () => {
                               />
                               <div className="flex  gap-1 justify-center items-center align-middle">
                                 <span className="font15 font-bold text-white">
-                                  {child?.like}
+                                  {childLikes}
                                 </span>
                                 <ThumbUpOffAltIcon className="font25 text-white" />
                               </div>

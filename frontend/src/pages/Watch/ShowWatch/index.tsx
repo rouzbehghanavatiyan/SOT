@@ -36,7 +36,11 @@ const ShowWatch: React.FC = ({}) => {
     null
   );
   const [showComments, setShowComments] = useState<boolean>(false);
-
+  // const fixTitle = isFollowed === null ? "Unfollow" : isFollowed === null ? "Follow"
+  const [followTitle, setFollowTitle] = useState<any>({
+    title: "Follow",
+    userId: 0,
+  });
   const [closingComments, setClosingComments] = useState<boolean>(false);
   const [videos, setVideos] = useState<
     Array<{
@@ -107,9 +111,11 @@ const ShowWatch: React.FC = ({}) => {
       userId: Number(userIdFromSStorage) || main?.userLogin?.userId || null,
       movieId: video.id,
     };
+
     try {
       if (video.isLikedFromMe) {
         await removeLike(postData);
+        socket.emit("remove_liked", postData);
         setVideos((prevVideos) =>
           prevVideos.map((v) =>
             v.id === video.id
@@ -132,6 +138,7 @@ const ShowWatch: React.FC = ({}) => {
       console.error("Error in like operation:", error);
     }
   });
+
   const handleFallowClick = asyncWrapper(async (video: any) => {
     const postData = {
       userId: Number(main?.userLogin?.userId),
@@ -177,11 +184,6 @@ const ShowWatch: React.FC = ({}) => {
     chunkedVideos.push(videos.slice(i, i + 2));
   }
 
-  const handleCommented = (video: any) => {
-    console.log(video);
-    setShowComments(true);
-  };
-
   return (
     <Swiper
       direction={"vertical"}
@@ -205,10 +207,9 @@ const ShowWatch: React.FC = ({}) => {
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center p-2">
                     <ImageRank
-                      iconProfileStyle="font50 text-gray-100"
                       rankStyle="w-8 h-8"
                       imgSize={50}
-                      score={50}
+                      score={10}
                       imgSrc={getProfile}
                       classUserName="text-white"
                       userName={video?.userName}
@@ -233,10 +234,7 @@ const ShowWatch: React.FC = ({}) => {
                     )}
                   </div>
                   <div className="flex-1 flex justify-center items-center">
-                    <ChatBubbleOutlineIcon
-                      onClick={() => handleCommented(video)}
-                      className="z-50 absolute left-2 bottom-10 font30 text-white"
-                    />
+                    <ChatBubbleOutlineIcon className="z-50 absolute left-2 bottom-10 font30 text-white" />
                     <Video
                       className="max-w-full max-h-[35vh] w-auto h-[50vh] object-contain"
                       loop

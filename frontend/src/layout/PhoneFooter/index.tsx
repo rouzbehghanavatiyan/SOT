@@ -23,7 +23,7 @@ const PhoneFooter: React.FC = () => {
 
   return (
     <ResponsiveMaker hiddenWidth={900}>
-      <div className="fixed z-50 bottom-0 w-full shadow-card text-center bg-white">
+      <div className="fixed z-40 bottom-0 w-full shadow-card text-center bg-white">
         <div className="flex gap-5 justify-center items-center col-span-3">
           <NavLink
             to="/home"

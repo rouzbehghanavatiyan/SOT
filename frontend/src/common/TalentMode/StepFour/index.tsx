@@ -29,10 +29,13 @@ const StepFour: React.FC = () => {
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
       setVideoFile(file);
       const url = URL.createObjectURL(file);
       if (videoRef.current) {
+        videoRef.current.volume = 0;
+        videoRef.current.muted = true;
         videoRef.current.src = url;
         videoRef.current.load();
         videoRef.current.play();

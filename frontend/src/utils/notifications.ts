@@ -4,7 +4,6 @@ export async function requestNotificationPermission() {
     return { status: "unsupported" };
   }
 
-  // Check if permission was previously denied
   if (Notification.permission === "denied") {
     return { status: "blocked" };
   }
