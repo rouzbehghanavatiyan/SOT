@@ -59,17 +59,12 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       if (status === 0) {
         dispatch(RsetGetImageProfile(data));
       }
-      console.log("Profile Data:", {
-        attachments: resAttachList?.data,
-        profileImage: resImageProfile?.data,
-      });
     } catch (error) {
       console.error("Failed to fetch profile:", error);
     }
   };
 
   const handleGiveUsersOnline = useCallback((data: any) => {
-    console.log("Received online users:", data);
     dispatch(RsetGiveUserOnlines(data));
   }, []);
 

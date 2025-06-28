@@ -1,4 +1,3 @@
-// Profile.tsx
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";

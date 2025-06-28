@@ -19,8 +19,8 @@ const UserList: React.FC<UserListProps> = ({
   currentUser,
   onSelectUser,
 }) => {
-  console.log(users);
 
+  
   return (
     <div className="overflow-y-auto">
       {users

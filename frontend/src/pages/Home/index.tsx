@@ -43,18 +43,15 @@ const Home: React.FC = () => {
   };
 
   const getVideosForDisplay = (allDableWatch: any[]) => {
-    return allDableWatch
-      .filter((item: any) => item.parentId === null)
-      .map((parentItem: any) => {
-        const childItem = allDableWatch.find(
-          (child: any) => child.parentId === parentItem.inviteId
-        );
-        return {
-          parent: parentItem,
-          child: childItem || null,
-        };
-      })
-      .filter((group: any) => group.child !== null);
+    return allDableWatch.map((parentItem: any) => {
+      const childItem = allDableWatch.find(
+        (child: any) => child.parentId === parentItem.inviteId
+      );
+      return {
+        parent: parentItem,
+        child: childItem || null,
+      };
+    });
   };
 
   const videoGroups = getVideosForDisplay(allDableWatch);

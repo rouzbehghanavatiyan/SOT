@@ -32,54 +32,39 @@ const PrivateChat: React.FC<PrivateChatProps> = ({
 }) => {
   const { main } = useAppSelector((state) => state);
   const titleInputRef = useRef();
+  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
+  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
+  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!socket) return;
-
-    const handlePrivateMessage = (message: Message) => {
-      setMessages((prev) => [...prev, message]);
-    };
-
-    socket.on("receive_message", handleReciveMessage);
-
-    socket.on(`private-message-${currentUser?.id}`, handlePrivateMessage);
-
-    return () => {
-      socket.off(`private-message-${currentUser?.id}`, handlePrivateMessage);
-    };
-  }, [socket, currentUser]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  const handlePrivateMessage = (message: Message) => {
+    setMessages((prev) => [...prev, message]);
+  };
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     const date = new Date().toString();
     const timeString = date.split(" ")[4];
-
     console.log(e);
+
     const message = {
-      id: Date.now().toString(),
+      userProfile: findImg,
       sender: main?.userLogin?.userId,
+      recieveId: 1,
       text: title,
       recipient: selectedUser.id,
       time: timeString,
     };
 
+    console.log(message);
     socket.emit("send_message", message);
-    // setMessages((prev) => [...prev, message]);
     setTitle("");
-    console.log(titleInputRef);
-
     titleInputRef.current.focus();
   };
-
-  console.log(main?.userLogin);
 
   const handleReciveMessage = (data: any) => {
     console.log(data);
@@ -90,6 +75,7 @@ const PrivateChat: React.FC<PrivateChatProps> = ({
     setMessages((prev: any) => [
       ...prev,
       {
+        userProfile: data?.userProfile,
         recipient: data.recipient,
         sender: data.sender,
         title: data?.text,
@@ -106,21 +92,35 @@ const PrivateChat: React.FC<PrivateChatProps> = ({
     setShowStickers(false);
   };
 
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("receive_message", handleReciveMessage);
+    socket.on(`private-message-${currentUser?.id}`, handlePrivateMessage);
+
+    return () => {
+      socket.off(`private-message-${currentUser?.id}`, handlePrivateMessage);
+    };
+  }, [socket, currentUser]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
-    <div className="grid grid-cols-6">
+    <div className="grid grid-cols-1">
       <div className="w-full">
-        <div className="overflow-y-auto h-[calc(100vh-9rem)] bg-gray-50">
+        <div className="overflow-y-auto sm:mt-52 md:mt-10 lg:mt-10 mt-3 mx-2  h-[calc(100vh-9rem)] bg-gray-50">
           <Messages messages={messages} />
           <div ref={messagesEndRef} />
         </div>
       </div>
       <form className="justify-center grid grid-cols-1 bg-white z-50 items-center align-middle col-span-6 relative">
-        <div className="grid grid-cols-8 justify-center shadow-card bg-white ">
+        <div className="grid grid-cols-8 justify-center shadow-card bg-white">
           <div className="col-span-6 justify-center items-center gap-3 p-2">
             <Input
               ref={titleInputRef}
               className="ms-1 rounded-lg text-gray-900"
-              placeholder="Searching . . ."
+              placeholder="message . . ."
               value={title}
               onChange={(e: any) => setTitle(e.target.value)}
             />

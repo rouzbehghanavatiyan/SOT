@@ -1,4 +1,3 @@
-// src/components/ChatRoom.tsx
 import React, { useState, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import UserList from "./UserList";
@@ -26,25 +25,18 @@ const ChatRoom: React.FC = () => {
     });
   }, []);
 
-  const handleGiveUsersOnline = (data) => {
-    console.log("Helllllllllllll", data);
-    // setUsers(usersList);
-  };
-
-  console.log("main?.userOnlines", main?.userOnlines);
-
   return (
     <div>
-      <div className="w-full absolute top-0 bg-white border-gray-200">
+      {/* <div className="w-full absolute top-0 bg-white border-gray-200">
         <div className="p-4 border-b border-gray-200">User online</div>
         <UserList
           users={users}
           currentUser={currentUser}
           onSelectUser={setSelectedUser}
         />
-      </div>
+      </div> */}
       <div className="flex-1 flex flex-col">
-        {selectedUser ? (
+        {true ? (
           <PrivateChat
             socket={socket}
             currentUser={currentUser}

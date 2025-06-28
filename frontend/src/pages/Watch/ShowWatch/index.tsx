@@ -22,6 +22,7 @@ import Follows from "../../../components/Fallows";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { useLocation } from "react-router-dom";
 import StringHelpers from "../../../utils/helpers/StringHelper";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const userIdFromSStorage = sessionStorage.getItem("userId");
 
@@ -56,6 +57,8 @@ const ShowWatch: React.FC = ({}) => {
       profile: string;
     }>
   >([]);
+
+  const handleUseDropDown = () => {};
 
   const handleShowCMT = () => {
     if (showComments) {
@@ -190,7 +193,7 @@ const ShowWatch: React.FC = ({}) => {
       slidesPerView={1}
       mousewheel={true}
       modules={[Mousewheel]}
-      className="mySwiper h-[calc(100vh-47px)]"
+      className="mySwiper mt-10 h-[calc(100vh-47px)]"
     >
       {chunkedVideos.map((videoPair, index: number) => (
         <SwiperSlide className="bg-black flex  flex-col space-y-4" key={index}>
@@ -206,14 +209,16 @@ const ShowWatch: React.FC = ({}) => {
               <div className="flex-1 relative h-[48vh]" key={subIndex}>
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center p-2">
-                    <ImageRank
-                      rankStyle="w-8 h-8"
-                      imgSize={50}
-                      score={10}
-                      imgSrc={getProfile}
-                      classUserName="text-white"
-                      userName={video?.userName}
-                    />
+                    <span onClick={handleUseDropDown}>
+                      <ImageRank
+                        rankStyle="w-8 h-8"
+                        imgSize={50}
+                        score={10}
+                        imgSrc={getProfile}
+                        classUserName="text-white"
+                        userName={video?.userName}
+                      />
+                    </span>
                     {checkMyVideo && (
                       <Follows
                         bgColor="bg-white"
@@ -233,8 +238,23 @@ const ShowWatch: React.FC = ({}) => {
                       />
                     )}
                   </div>
-                  <div className="flex-1 flex justify-center items-center">
-                    <ChatBubbleOutlineIcon className="z-50 absolute left-2 bottom-10 font30 text-white" />
+                  <div className="flex-1 flex  justify-center items-center">
+                    <div className="absolute  left-2 bottom-10 z-50">
+                      <span className="bg-blue flex justify-between items-center">
+                        <ChatBubbleOutlineIcon className="font30 text-white" />
+                        {isLiked ? (
+                          <ThumbUpIcon
+                            className="text-white font35 unlike_animation cursor-pointer"
+                            onClick={() => handleLikeClick(video)}
+                          />
+                        ) : (
+                          <ThumbUpOffAltIcon
+                            className="text-white font35 cursor-pointer"
+                            onClick={() => handleLikeClick(video)}
+                          />
+                        )}
+                      </span>
+                    </div>
                     <Video
                       className="max-w-full max-h-[35vh] w-auto h-[50vh] object-contain"
                       loop

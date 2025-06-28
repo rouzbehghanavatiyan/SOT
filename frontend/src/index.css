@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "logoFont";
   src: url("./assets/fonts/DancingScript-Bold.ttf") format("truetype");
@@ -8,16 +12,20 @@
   src: url("./assets/fonts/Playfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf") format("truetype");
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@font-face {
+  font-family: "PlusJakartaSans";
+  src: url("./assets/fonts/static/PlusJakartaSans-Bold.ttf") format("truetype");
+  src: url("./assets/fonts/static/PlusJakartaSans-BoldItalic.ttf") format("truetype");
+  src: url("./assets/fonts/static/PlusJakartaSans-ExtraBold.ttf") format("truetype");
+}
+
 
 p {
   color: #272343;
 }
 
 body * {
-  font-family: playFair;
+  font-family: PlusJakartaSans;
   font-size: 14px !important;
   box-sizing: border-box;
   margin: 0;

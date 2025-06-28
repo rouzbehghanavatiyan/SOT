@@ -21,11 +21,6 @@ export const useServiceWorker = () => {
   };
 
   useEffect(() => {
-    console.log(
-      notificationPreference,
-      "notificationPreferencenotificationPreferencenotificationPreferencenotificationPreference"
-    );
-
     if (notificationPreference !== "denied" && "serviceWorker" in navigator) {
       registerServiceWorker();
     }
