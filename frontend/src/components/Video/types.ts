@@ -1,4 +1,5 @@
 export interface VideoProps {
+  videoId?: string;
   loop?: boolean;
   playing?: boolean;
   playbackRate?: number;

@@ -35,7 +35,7 @@ const StepOne: React.FC = () => {
     console.log("item?.group", item?.group);
 
     dispatch(RsetDobuleVideo(item?.group));
-    const newPath = `${location.pathname}/show?id=${item?.group?.child?.parentId}`;
+    const newPath = `${location.pathname}/show?id=${item?.group?.inviteMatched?.parentId}`;
     navigate(newPath);
     setLastTap(0);
   };
@@ -52,14 +52,15 @@ const StepOne: React.FC = () => {
 
   const getVideosForDisplay = (allDableWatch: any[]) => {
     return allDableWatch
-      .filter((item: any) => item.parentId === null)
-      .map((parentItem: any) => {
-        const childItem = allDableWatch.find(
-          (child: any) => child.parentId === parentItem.inviteId
-        );
+      .map((item: any) => {
         return {
-          parent: parentItem,
-          child: childItem || null,
+          inviteMatched: item?.inviteMatched,
+          parent: item?.attachmentInserted,
+          likeInserted: item?.likeInserted,
+          likeMatched: item?.likeMatched,
+          userInfoParent: item?.userInserted,
+          child: item?.attachmentMatched,
+          userInfoChild: item?.userMatched,
         };
       })
       .filter((group: any) => group.child !== null);
@@ -68,10 +69,10 @@ const StepOne: React.FC = () => {
   const videoGroups = getVideosForDisplay(allDableWatch);
 
   const checkIsMy = (group: any) => {
-    if (group?.child?.userId === userIdFromSStorage) {
+    if (group?.userInfoParent?.id === userIdFromSStorage) {
       return true;
     }
-    if (group?.parent?.userId === userIdFromSStorage) {
+    if (group?.userInfoChild?.id === userIdFromSStorage) {
       return true;
     }
   };
@@ -107,7 +108,7 @@ const StepOne: React.FC = () => {
     console.log("Received like data:", data);
     setVideoLikes((prev) => ({
       ...prev,
-      [data.movieId]: (prev[data.movieId] || 0) + 1,
+      [data.id]: (prev[data.id] || 0) + 1,
     }));
   };
 
@@ -141,18 +142,15 @@ const StepOne: React.FC = () => {
       <Loading isLoading={isLoading} />
       <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10 shadow-card gap-[5px] p-[1px]">
         {videoGroupsWithOwnership.map((group, index) => {
-          const { parent, child, itsMyVideo } = group;
+          const { parent, child, itsMyVideo, likeInserted, likeMatched } =
+            group;
           const fixInsertTime = parent?.insertDate;
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
-          console.log(group);
-
-          const parentLikes = (videoLikes[parent.movieId] || 0) + parent.like;
-          const childLikes = child
-            ? (videoLikes[child.movieId] || 0) + child.like
-            : 0;
+          const parentLikes = (videoLikes?.like || 0) + likeInserted;
+          const childLikes = (videoLikes?.like || 0) + likeMatched;
 
           return (
             <>
@@ -178,20 +176,16 @@ const StepOne: React.FC = () => {
                           <ImageRank
                             imgSize={60}
                             iconProfileStyle="text-gray-200 font50"
-                            userName={parent?.userName || "User"}
+                            userName={group?.userInfoParent?.userName || "User"}
                             classUserName="text-white"
                             score={parent?.score || 0}
                             rankWidth={45}
                             starWidth={6}
                             className="absolute bottom-0"
                           />
-                          <div className="flex gap-1 justify-center items-end align-middle">
-                            <span className="font15 font-bold text-white">
-                              {parentLikes}
-                            </span>
-                            <span>
-                              <ThumbUpOffAltIcon className="font25 text-white" />
-                            </span>
+                          <div className="flex gap-1 justify-center text-white items-end">
+                            {parentLikes}
+                            <ThumbUpOffAltIcon className="font25 text-white" />
                           </div>
                         </div>
                       </span>
@@ -217,17 +211,17 @@ const StepOne: React.FC = () => {
                               <ImageRank
                                 imgSize={60}
                                 iconProfileStyle="text-gray-200 font50"
-                                userName={child?.userName || "User"}
+                                userName={
+                                  group?.userInfoChild?.userName || "User"
+                                }
                                 classUserName="text-white"
                                 score={parent?.score || 0}
                                 rankWidth={45}
                                 starWidth={6}
                                 className="absolute bottom-0"
                               />
-                              <div className="flex  gap-1 justify-center items-center align-middle">
-                                <span className="font15 font-bold text-white">
-                                  {childLikes}
-                                </span>
+                              <div className="flex gap-1 text-white justify-center items-end">
+                                {childLikes}
                                 <ThumbUpOffAltIcon className="font25 text-white" />
                               </div>
                             </div>
@@ -245,10 +239,7 @@ const StepOne: React.FC = () => {
                                 duration={3600} // 60 دقیقه = 3600 ثانیه
                                 active={true}
                                 className="text-white font20 ml-2"
-                                onComplete={() => {
-                                  // این تابع زمانی اجرا می‌شود که تایمر به صفر برسد
-                                  // مثلاً می‌توانید یک اکشن dispatch کنید یا state را آپدیت کنید
-                                }}
+                                onComplete={() => {}}
                               />
                             </div>
                           </div>

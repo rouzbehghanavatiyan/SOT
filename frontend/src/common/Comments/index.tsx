@@ -1,9 +1,10 @@
+import ImageRank from "../../components/ImageRank";
 import ChatFields from "../ChatFields";
 
 const image =
   "https://writestylesonline.com/wp-content/uploads/2018/11/Three-Statistics-That-Will-Make-You-Rethink-Your-Professional-Profile-Picture-1024x1024.jpg";
 
-const Comments = ({ handleShowCMT, closingComments }) => {
+const Comments: React.FC = ({ handleShowCMT, closingComments }) => {
   return (
     <div>
       <div
@@ -15,18 +16,18 @@ const Comments = ({ handleShowCMT, closingComments }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="h-full overflow-y-auto ">
-            <h2 className="text-center p-4">Comments</h2>
+            <h2 className="text-center bg-gray-100 p-4">Comments</h2>
             {[...Array(10)].map((_, index) => (
               <div key={index}>
                 <div className="grid-cols-6 grid p-2">
-                  <img
-                    className="rounded-full ms-2"
-                    src={image}
-                    width={50}
-                    height={50}
-                    alt="Rank"
+                  <ImageRank
+                    userName={"ddd"}
+                    className={`rounded-full h-[10px] w-[10px] object-cover `}
+                    imgSize={35}
+                    iconProfileStyle="font35 text-gray-200"
+                    score={20}
+                    imgSrc={image}
                   />
-                  <span className="font-bold">Sara510</span>
                   <p className="col-span-6 m-2 ">
                     test test test test test test test test test test test test
                     test test test test test test test test test test test test

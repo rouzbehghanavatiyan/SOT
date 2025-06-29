@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -6,7 +6,6 @@ import {
   addFollower,
   addLike,
   attachmentListByInviteId,
-  attachmentPlay,
   removeFollower,
   removeLike,
 } from "../../../services/dotNet";
@@ -28,20 +27,18 @@ const userIdFromSStorage = sessionStorage.getItem("userId");
 
 const ShowWatch: React.FC = ({}) => {
   const { main } = useAppSelector((state: any) => state);
+  const swiperRef = useRef<any>(null);
   const location = useLocation();
-
+  const chunkedVideos: any = [];
   const getInvitedId = location?.search?.split("id=")?.[1];
   const socket = main?.socketConfig;
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
     null
   );
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [showComments, setShowComments] = useState<boolean>(false);
   // const fixTitle = isFollowed === null ? "Unfollow" : isFollowed === null ? "Follow"
-  const [followTitle, setFollowTitle] = useState<any>({
-    title: "Follow",
-    userId: 0,
-  });
   const [closingComments, setClosingComments] = useState<boolean>(false);
   const [videos, setVideos] = useState<
     Array<{
@@ -60,6 +57,16 @@ const ShowWatch: React.FC = ({}) => {
 
   const handleUseDropDown = () => {};
 
+  const handleSlideChange = (swiper: any) => {
+    const realIndex = swiper.realIndex;
+    setActiveSlideIndex(realIndex);
+    setCurrentlyPlayingId(null);
+    if (chunkedVideos[realIndex] && chunkedVideos[realIndex].length > 0) {
+      const topVideo = chunkedVideos[realIndex][0];
+      setCurrentlyPlayingId(topVideo.id);
+    }
+  };
+
   const handleShowCMT = () => {
     if (showComments) {
       setClosingComments(true);
@@ -77,25 +84,32 @@ const ShowWatch: React.FC = ({}) => {
     const { status, data } = res?.data;
 
     if (status === 0 && data?.length >= 2) {
-      const videoData = await Promise.all(
-        data.map(async (item: any) => {
-          const fixVideo = `${baseURL}/${item?.attachmentType}/${item?.fileName}${item?.ext}`;
-          const res = await attachmentPlay(fixVideo);
-          const fixRes = res.split("path=")[1];
-          return {
-            url: fixRes,
-            profile: item?.profile,
-            followerId: item?.followerId,
-            videoUser: item?.userId,
-            like: item?.like,
-            score: item?.score,
-            id: item?.movieId,
-            userName: item?.userName,
-            isLikedFromMe: item?.isLikedFromMe || false,
-            isFollowedFromMe: item?.followerId !== null,
-          };
-        })
-      );
+      const videoData = data.map((item: any, index: number) => {
+        const attachment =
+          index === 0 ? item.attachmentInserted : item.attachmentMatched;
+        const fixVideo = `${baseURL}/${attachment?.attachmentType}/${attachment?.fileName}${attachment?.ext}`;
+
+        const fixProfile =
+          index === 0 ? item.profileInserted : item.profileMatched;
+
+        const fixUsername =
+          index === 0
+            ? item.userInserted?.userName
+            : item.userMatched?.userName;
+
+        return {
+          url: fixVideo,
+          profile: fixProfile,
+          followerId: item?.followerId,
+          videoUser: item?.userId,
+          like: index === 0 ? item.likeInserted : item.likeMatched,
+          score: item?.score,
+          id: attachment?.attachmentId,
+          userName: fixUsername,
+          isLikedFromMe: item?.isLikedFromMe || false,
+          isFollowedFromMe: item?.followerId !== null,
+        };
+      });
       setVideos(videoData);
     }
   });
@@ -182,7 +196,12 @@ const ShowWatch: React.FC = ({}) => {
     handleAttachmentListByInviteId();
   }, [getInvitedId]);
 
-  const chunkedVideos = [];
+  useEffect(() => {
+    if (videos.length > 0) {
+      setCurrentlyPlayingId(videos[0].id);
+    }
+  }, [videos]); // وابسته به تغییرات videos
+
   for (let i = 0; i < videos.length; i += 2) {
     chunkedVideos.push(videos.slice(i, i + 2));
   }
@@ -192,19 +211,26 @@ const ShowWatch: React.FC = ({}) => {
       direction={"vertical"}
       slidesPerView={1}
       mousewheel={true}
+      onSlideChange={handleSlideChange}
       modules={[Mousewheel]}
-      className="mySwiper mt-10 h-[calc(100vh-47px)]"
+      onInit={(swiper) => {
+        if (videos.length > 0) {
+          setCurrentlyPlayingId(videos[0].id);
+        }
+      }}
+      className="mySwiper   h-[calc(100vh-47px)]"
     >
-      {chunkedVideos.map((videoPair, index: number) => (
-        <SwiperSlide className="bg-black flex  flex-col space-y-4" key={index}>
-          {videoPair.map((video, subIndex) => {
+      {chunkedVideos.map((videoPair: any, index: number) => (
+        <SwiperSlide className="bg-black flex  flex-col" key={index}>
+          {videoPair.map((video: any, subIndex: any) => {
             const isLiked = video.isLikedFromMe;
             const isPlaying = currentlyPlayingId === video.id;
             const isFollowed = video.isFollowedFromMe;
             const checkMyVideo =
               video?.videoUser !== Number(main?.userLogin?.userId);
             const getProfile = StringHelpers?.getProfile(video.profile);
-
+            const isTopVideo = subIndex === 0;
+            const shouldAutoPlay = isTopVideo && index === activeSlideIndex;
             return (
               <div className="flex-1 relative h-[48vh]" key={subIndex}>
                 <div className="h-full flex flex-col">
@@ -213,7 +239,7 @@ const ShowWatch: React.FC = ({}) => {
                       <ImageRank
                         rankStyle="w-8 h-8"
                         imgSize={50}
-                        score={10}
+                        score={40}
                         imgSrc={getProfile}
                         classUserName="text-white"
                         userName={video?.userName}
@@ -227,21 +253,24 @@ const ShowWatch: React.FC = ({}) => {
                       />
                     )}
                     {isLiked ? (
-                      <ThumbUpIcon
-                        className="text-white font35 unlike_animation cursor-pointer"
+                      <MoreVertIcon
+                        className="text-white font35 cursor-pointer"
                         onClick={() => handleLikeClick(video)}
                       />
                     ) : (
-                      <ThumbUpOffAltIcon
+                      <MoreVertIcon
                         className="text-white font35 cursor-pointer"
                         onClick={() => handleLikeClick(video)}
                       />
                     )}
                   </div>
                   <div className="flex-1 flex  justify-center items-center">
-                    <div className="absolute  left-2 bottom-10 z-50">
-                      <span className="bg-blue flex justify-between items-center">
-                        <ChatBubbleOutlineIcon className="font30 text-white" />
+                    <div className="absolute left-0 right-0 bottom-10 z-50">
+                      <div className="flex justify-between items-center w-full px-4 py-2">
+                        <ChatBubbleOutlineIcon
+                          onClick={() => setShowComments(true)}
+                          className="font30 text-white"
+                        />
                         {isLiked ? (
                           <ThumbUpIcon
                             className="text-white font35 unlike_animation cursor-pointer"
@@ -253,14 +282,16 @@ const ShowWatch: React.FC = ({}) => {
                             onClick={() => handleLikeClick(video)}
                           />
                         )}
-                      </span>
+                      </div>
                     </div>
                     <Video
+                      key={video.id}
+                      videoId={video.id}
                       className="max-w-full max-h-[35vh] w-auto h-[50vh] object-contain"
                       loop
+                      playing={isPlaying}
                       handleVideo={() => handleVideoPlay(video.id)}
                       url={video.url}
-                      playing={isPlaying}
                     />
                   </div>
                 </div>
