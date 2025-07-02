@@ -1,108 +1,155 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
-interface DropdownItem {
+interface DropdownItem<T = any> {
   label: string;
   icon?: React.ReactNode;
-  onClick?: () => void;
-  href?: string;
+  onClick?: (data?: T) => void;
+  href?: string | ((data?: T) => string);
   className?: string;
   divider?: boolean;
 }
 
 interface DropdownProps {
   items: DropdownItem[];
-  switchIcon: boolean;
+  switchIcon?: boolean;
   label?: string;
   buttonIcon?: React.ReactNode;
   position?: "left" | "right";
   className?: string;
+  iconOnly?: boolean;
+  setIsOpenOptions: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenOptions?: boolean;
+  itemData?: any;
+  openDropdowns: boolean;
+  setOpenDropdowns: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   items = [],
+  setIsOpenOptions,
+  isOpenOptions,
   switchIcon = false,
-  label = "Options",
+  label,
   buttonIcon,
   position = "right",
   className = "",
+  itemData,
+  iconOnly = false,
+  openDropdowns,
+  setOpenDropdowns,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
-  const closeDropdown = () => setIsOpen(false);
+  const closeAllDropdowns = () => {
+    // setOpenDropdowns({});
+  };
+
+  const handleItemClick = (item: DropdownItem) => {
+    if (item.onClick) {
+      item.onClick(itemData);
+    }
+    setIsOpenOptions(false);
+  };
+
+  const getHref = (item: DropdownItem) => {
+    return typeof item.href === "function" ? item.href(itemData) : item.href;
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpenOptions(false);
+      }
+    };
+
+    if (isOpenOptions) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpenOptions]);
+
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (Object.values(openDropdowns).some((isOpen) => isOpen)) {
+  //       closeAllDropdowns();
+  //     }
+  //   };
+
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [openDropdowns]);
 
   return (
-    <div className={`relative inline-block text-left ${className}`}>
+    <div
+      className={`relative inline-block text-left ${className}`}
+      ref={dropdownRef}
+    >
       <div>
-        <button
-          type="button"
-          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
-          id="menu-button"
-          aria-expanded={isOpen}
+        <span
+          aria-expanded={isOpenOptions}
           aria-haspopup="true"
-          onClick={toggleDropdown}
+          onClick={() => setIsOpenOptions(!isOpenOptions)}
+          aria-label={label || "Dropdown menu"}
         >
-          {buttonIcon && <span className="mr-1">{buttonIcon}</span>}
-          {label}
-
-          {!!switchIcon && (
-            <svg
-              className={`-mr-1 size-5 text-gray-400 transition-transform bg-red ${isOpen ? "rotate-180" : ""}`}
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                clipRule="evenodd"
-              />
-            </svg>
+          {buttonIcon && (
+            <span className={label || iconOnly ? "mr-1" : ""}>
+              {buttonIcon}
+            </span>
           )}
-        </button>
+
+          {!iconOnly && label}
+        </span>
       </div>
 
-      {isOpen && (
+      {isOpenOptions && (
         <div
-          className={`absolute ${position === "right" ? "right-0" : "left-0"} z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none`}
+          className={`absolute ${
+            position === "right" ? "right-0" : "left-0"
+          } z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none`}
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
           tabIndex={-1}
         >
-          <div className="py-1" role="none">
+          <div className="py-1 " role="none">
             {items.map((item, index) => (
               <div key={index}>
                 {item.divider ? (
                   <div className=" my-1" />
                 ) : item.href ? (
-                  <a
-                    href={item.href}
-                    className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${item.className || ""}`}
+                  <Link
+                    to={item.href}
+                    className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                      item.className || ""
+                    }`}
                     role="menuitem"
                     tabIndex={-1}
-                    onClick={(e) => {
-                      item.onClick?.();
-                      closeDropdown();
-                    }}
+                    onClick={() => handleItemClick(item)}
                   >
                     {item.icon && <span className="mr-2">{item.icon}</span>}
                     {item.label}
-                  </a>
+                  </Link>
                 ) : (
-                  <button
-                    type="button"
-                    className={`flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 ${item.className || ""}`}
+                  <span
+                    className={`flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 ${
+                      item.className || ""
+                    }`}
                     role="menuitem"
                     tabIndex={-1}
-                    onClick={() => {
-                      item.onClick?.();
-                      closeDropdown();
-                    }}
+                    onClick={() => handleItemClick(item)}
                   >
                     {item.icon && <span className="mr-2">{item.icon}</span>}
                     {item.label}
-                  </button>
+                  </span>
                 )}
               </div>
             ))}

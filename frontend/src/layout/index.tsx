@@ -4,8 +4,9 @@ import SidebarLinks from "./Sidebar";
 import Header from "./Header";
 import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
-import PhoneHeader from "./PhoneFooter/PhoneHeader";
+import PhoneHeader from "./PhoneHeader";
 import {
+  RsetAllFollowerList,
   RsetCategory,
   RsetGetImageProfile,
   RsetGiveUserOnlines,
@@ -16,6 +17,8 @@ import { useAppDispatch, useAppSelector } from "../hooks/hook";
 import {
   attachmentList,
   categoryList,
+  followerList,
+  followingList,
   profileAttachmentList,
 } from "../services/dotNet";
 import asyncWrapper from "../common/AsyncWrapper";
@@ -68,6 +71,23 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     dispatch(RsetGiveUserOnlines(data));
   }, []);
 
+  const handleAllFollower = async () => {
+    try {
+      const res = await followingList(main?.userLogin?.userId);
+      const { status, data } = res?.data;
+      console.log("followingListvfollowingListfollowingList", data);
+
+      if (status === 0) {
+        const getMapFollowerId = data?.map(
+          (item: any) => item?.attachment?.attachmentId
+        );
+        dispatch(RsetAllFollowerList(getMapFollowerId));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const userId = sessionStorage.getItem("userId");
@@ -86,6 +106,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   useEffect(() => {
     if (!main?.userLogin?.userId) return;
     handleSocketConfig();
+    handleAllFollower();
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);
@@ -105,7 +126,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
       <div
-        className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-11"} `}
+        className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-12"} `}
       >
         <ResponsiveMaker visibleWidth={900}>
           <SidebarLinks open={open} />

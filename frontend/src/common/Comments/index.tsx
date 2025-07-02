@@ -21,10 +21,10 @@ const Comments: React.FC = ({ handleShowCMT, closingComments }) => {
               <div key={index}>
                 <div className="grid-cols-6 grid p-2">
                   <ImageRank
-                    userName={"ddd"}
                     className={`rounded-full h-[10px] w-[10px] object-cover `}
+                    rankStyle="w-7 h-7"
                     imgSize={35}
-                    iconProfileStyle="font35 text-gray-200"
+                    iconProfileStyle="font20 text-gray-200"
                     score={20}
                     imgSrc={image}
                   />

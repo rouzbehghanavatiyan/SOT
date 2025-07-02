@@ -8,6 +8,7 @@ import VideosProfile from "./VideosProfile";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import {
   addAttachment,
+  followerList,
   profileAttachmentList,
   userAttachmentList,
 } from "../../services/dotNet";
@@ -16,15 +17,21 @@ import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
 import ImageRank from "../../components/ImageRank";
 import EditProfile from "./EditProfile";
+import { redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const userId = sessionStorage.getItem("userId");
   const { main } = useAppSelector((state) => state);
+  const [match, setMatch] = useState<any>([]);
+
   const [profileImage, setProfileImage] = useState(userProfile);
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
 
   const [editingImage, setEditingImage] = useState(false);
+  const [allFollower, setAllFollower] = useState([]);
+
   const [selectedImage, setSelectedImage] = useState("");
   const dispatch = useAppDispatch();
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -110,6 +117,10 @@ const Profile: React.FC = () => {
   const handleUserVideo = async () => {
     try {
       const res = await userAttachmentList(main?.userLogin?.userId);
+      const { data, status } = res?.data;
+      if (status === 0) {
+        setMatch(data);
+      }
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -117,8 +128,8 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    handleUserVideo();
-  }, []);
+    if (!!main?.userLogin?.userId) handleUserVideo();
+  }, [main?.userLogin?.userId]);
 
   return (
     <>
@@ -131,9 +142,9 @@ const Profile: React.FC = () => {
         />
       )}
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="mt-2 grid justify-center">
-          <div className="w-screen md:w-full md:h-full bg-gray-100">
-            <div className="m-3 border-b-2 ">
+        <section className="mt-2 grid justify-center ">
+          <div className="w-screen p-3 md:w-full md:h-full bg-gray-100">
+            <div className="mb-1 border-b-[1px] ">
               <div className="grid grid-cols-6 relative ">
                 <div className="col-span-5 flex h-32">
                   <span
@@ -144,7 +155,8 @@ const Profile: React.FC = () => {
                     <ImageRank
                       imgSrc={findImg}
                       imgSize={100}
-                      rankStyle="w-14 h-14"
+                      score={0}
+                      rankStyle="w-14 h-14 d-none"
                       iconProfileStyle="font100 rounded-full text-gray-800"
                       classUserName="text-gray-800 font-bold"
                       className="rounded-full object-cover border-2 shadow-md"
@@ -154,11 +166,12 @@ const Profile: React.FC = () => {
                     <span className="font20 font-bold">
                       {main?.userLogin?.userName}
                     </span>
-                    <div className="">
-                      <span className="text-lg text-gray-800">15k</span>
-                      <span className="bg-gray-800 text-white py-1 px-2 rounded text-xs ml-2">
-                        Followers
-                      </span>
+                    <div className="m-2">
+                      <Link to={"/followers"}>
+                        <span className="bg-gray-800 text-white py-1 px-2 rounded text-xs ml-2">
+                          Followers
+                        </span>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -209,7 +222,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
-          <VideosProfile />
+          <VideosProfile match={match} />
           {showEditProfile && (
             <EditProfile
               showEditProfile={showEditProfile}

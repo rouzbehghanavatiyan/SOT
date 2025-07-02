@@ -5,6 +5,9 @@ import Stickers from "../../../components/Stickers";
 import Messages from "../Messages";
 import MoodIcon from "@mui/icons-material/Mood";
 import { useAppSelector } from "../../../hooks/hook";
+import { useLocation, useNavigate } from "react-router-dom";
+import ImageRank from "../../../components/ImageRank";
+import { sendNotify } from "../../../services/dotNet";
 
 interface PrivateChatProps {
   socket: any;
@@ -26,15 +29,31 @@ interface Message {
 }
 
 const PrivateChat: React.FC<PrivateChatProps> = ({
-  socket,
   currentUser,
   selectedUser,
 }) => {
   const { main } = useAppSelector((state) => state);
+  const socket = main?.socketConfig;
   const titleInputRef = useRef();
+  const location = useLocation();
+
+  // Add safe destructuring with fallbacks
+  const profile = location?.state?.userInfo?.profile || {};
+  const { attachmentType = "", fileName = "", ext = "" } = profile;
+
+  console.log(profile);
+  const userInfo = location?.state?.userInfo || {};
+
+  const { reciverUserName: reciverUserName = "", userId: reciveUserId = "" } =
+    userInfo;
+
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
-  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
+  const getProfileImage =
+    main?.profileImage?.[main?.profileImage?.length - 1] || {};
+  const findImg = `${baseURL}/${getProfileImage?.attachmentType || ""}/${getProfileImage?.fileName || ""}${getProfileImage?.ext || ""}`;
+  const reciverImg = `${baseURL}/${attachmentType}/${fileName}${ext}`;
+  console.log(location?.state?.userInfo);
+  const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [title, setTitle] = useState("");
@@ -45,30 +64,36 @@ const PrivateChat: React.FC<PrivateChatProps> = ({
     setMessages((prev) => [...prev, message]);
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    const date = new Date().toString();
-    const timeString = date.split(" ")[4];
-    console.log(e);
-
-    const message = {
-      userProfile: findImg,
-      sender: main?.userLogin?.userId,
-      recieveId: 1,
-      text: title,
-      recipient: selectedUser.id,
-      time: timeString,
-    };
-
-    console.log(message);
-    socket.emit("send_message", message);
-    setTitle("");
-    titleInputRef.current.focus();
+    const res = await sendNotify(title, 14);
+    console.log(res);
   };
+
+  //  const handleSendMessage = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const date = new Date().toString();
+  //   const timeString = date.split(" ")[4];
+  //   console.log(e);
+
+  //   const message = {
+  //     userProfile: findImg,
+  //     sender: main?.userLogin?.userId,
+  //     recieveId: 1,
+  //     text: title,
+  //     recipient: reciveUserId,
+  //     time: timeString,
+  //     userNameSender: main?.userLogin?.userName,
+  //   };
+
+  //   console.log(message);
+  //   socket.emit("send_message", message);
+  //   setTitle("");
+  //   titleInputRef.current.focus();
+  // };
 
   const handleReciveMessage = (data: any) => {
     console.log(data);
-    const fixUserId = Number(main?.userLogin?.userId);
     const fixServerUserId = Number(data?.userId);
     const reciveId = data?.recieverId;
 
@@ -106,39 +131,61 @@ const PrivateChat: React.FC<PrivateChatProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  console.log(reciverImg);
+
   return (
-    <div className="grid grid-cols-1">
-      <div className="w-full">
-        <div className="overflow-y-auto sm:mt-52 md:mt-10 lg:mt-10 mt-3 mx-2  h-[calc(100vh-9rem)] bg-gray-50">
-          <Messages messages={messages} />
-          <div ref={messagesEndRef} />
+    <div className="flex flex-col h-[calc(100vh-50px)]">
+      <div className="w-full bg-white border-b-[1px] border-gray-200 py-3 px-4 sticky top-0 z-10">
+        <ImageRank
+          className="w-80 h-80"
+          imgSize={60}
+          classUserName="text-black"
+          userName={reciverUserName || "Unknown User"}
+          imgSrc={reciverImg || "default-profile-image.png"}
+        />
+      </div>
+      <div className="flex-1 overflow-hidden bg-gray-50">
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-4 h-full flex flex-col">
+          <div className="flex-1 overflow-y-auto">
+            <Messages messages={messages} messagesEndRef={messagesEndRef} />
+          </div>
         </div>
       </div>
-      <form className="justify-center grid grid-cols-1 bg-white z-50 items-center align-middle col-span-6 relative">
-        <div className="grid grid-cols-8 justify-center shadow-card bg-white">
-          <div className="col-span-6 justify-center items-center gap-3 p-2">
-            <Input
-              ref={titleInputRef}
-              className="ms-1 rounded-lg text-gray-900"
-              placeholder="message . . ."
-              value={title}
-              onChange={(e: any) => setTitle(e.target.value)}
-            />
-          </div>
-          <span className="flex justify-center items-center">
-            <MoodIcon
+      <div className="w-full bg-white sticky border-t-[1px] border-gray-200 bottom-0 z-10 pb-2 px-3">
+        <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex-1 mb-10">
+              <Input
+                ref={titleInputRef}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none"
+                placeholder="Type your message..."
+                value={title}
+                onChange={(e: any) => setTitle(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage(e);
+                  }
+                }}
+              />
+            </div>
+            <button
+              type="button"
               onClick={() => setShowStickers(!showStickers)}
-              className="col-span-1 cursor-pointer text-gray-900 font25"
-            />
-          </span>
-          <span className="flex justify-center items-center">
-            <SendIcon
-              onClick={handleSendMessage}
-              className="cursor-pointer col-span-1 text-gray-900 font25 justify-center items-center"
-            />
-          </span>
-        </div>
-      </form>
+              className="p-2 flex text-gray-600 hover:text-gray-800 mb-9"
+            >
+              <MoodIcon className="col-span-1 cursor-pointer text-gray-900 font25" />
+            </button>
+            <button
+              type="submit"
+              className="text-blue-600 hover:text-blue-800 mb-9"
+            >
+              <SendIcon className="cursor-pointer col-span-1 text-gray-900 font25 justify-center items-center" />
+            </button>
+          </div>
+        </form>
+      </div>
+
       {showStickers && (
         <div className="fixed inset-0 z-40 flex items-end justify-center">
           <div

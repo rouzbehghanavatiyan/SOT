@@ -28,18 +28,20 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   userName,
   iconProfileStyle,
   classUserName = "white",
-  score = 1,
+  score = -1,
   starWidth = 10,
   starHeight = 10,
   imgSize = 40,
 }) => {
   const [stars, setStars] = useState<JSX.Element[]>([]);
-  const [rankSrc, setRankSrc] = useState<string>(per_bronze_3);
+  const [rankSrc, setRankSrc] = useState<string>("");
 
   const fixScore = () => {
     let newRankSrc: string;
     let newStars: JSX.Element[];
-    if (score >= 0 && score < 10) {
+    if (score === 0) {
+      console.log(score);
+
       newRankSrc = per_bronze_3;
       newStars = Array(1).fill(
         <img
@@ -80,7 +82,6 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
         />
       );
     }
-
     setRankSrc(newRankSrc);
     setStars(newStars);
   };
@@ -92,7 +93,10 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   return (
     <div className="flex relative" style={{ height: `${imgSize}px` }}>
       <div className="flex items-center">
-        {!imgSrc || imgSrc.includes("undefined") || imgSrc === "" ? (
+        {!imgSrc ||
+        imgSrc.includes("undefined") ||
+        imgSrc === "" ||
+        imgSrc === null ? (
           <AccountCircleIcon className={iconProfileStyle} />
         ) : (
           <img
@@ -109,10 +113,13 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
           <span className={`ms-1 ${classUserName}`}>{userName}</span>
         )}
       </div>
-      {!!rankStyle && (
+      {score >= 0 && (
         <div className={`absolute h-4 bottom-0 left-0 z-10 justify-center`}>
-          <img className={rankStyle} src={rankSrc} alt="My Rank" />
-          {/* <span className="flex gap-1 justify-center">{stars}</span> */}
+          <img
+            className={rankStyle !== "" ? rankStyle : "w-8 h-8"}
+            src={rankSrc}
+            alt="My Rank"
+          />
         </div>
       )}
     </div>

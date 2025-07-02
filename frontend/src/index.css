@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "logoFont";
-  src: url("./assets/fonts/DancingScript-Bold.ttf") format("truetype");
+  src: url("./assets/fonts/DancingScript-Regular.ttf") format("truetype");
 }
 
 @font-face {
@@ -14,11 +14,10 @@
 
 @font-face {
   font-family: "PlusJakartaSans";
-  src: url("./assets/fonts/static/PlusJakartaSans-Bold.ttf") format("truetype");
-  src: url("./assets/fonts/static/PlusJakartaSans-BoldItalic.ttf") format("truetype");
-  src: url("./assets/fonts/static/PlusJakartaSans-ExtraBold.ttf") format("truetype");
+  src: url("./assets/fonts/static/PlusJakartaSans-ExtraLight.ttf") format("truetype");
+  src: url("./assets/fonts/static/PlusJakartaSans-ExtraLightItalic.ttf") format("truetype");
+  src: url("./assets/fonts/static/PlusJakartaSans-Regular.ttf") format("truetype");
 }
-
 
 p {
   color: #272343;
@@ -878,6 +877,7 @@ br {
   background: rgb(167, 167, 167);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #6e6e6e 100%);
 }
+
 
 
 /* stickers */

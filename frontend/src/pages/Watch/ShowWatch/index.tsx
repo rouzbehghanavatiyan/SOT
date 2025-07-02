@@ -19,14 +19,18 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { Mousewheel } from "swiper/modules";
 import Follows from "../../../components/Fallows";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Dropdown from "../../../components/Dropdown";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import EmailIcon from "@mui/icons-material/Email";
 
-const userIdFromSStorage = sessionStorage.getItem("userId");
+const userIdFromSStorage = Number(sessionStorage.getItem("userId"));
 
 const ShowWatch: React.FC = ({}) => {
   const { main } = useAppSelector((state: any) => state);
+  const navigate = useNavigate();
   const swiperRef = useRef<any>(null);
   const location = useLocation();
   const chunkedVideos: any = [];
@@ -36,6 +40,10 @@ const ShowWatch: React.FC = ({}) => {
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
     null
   );
+  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [isOpenOptions, setIsOpenOptions] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [showComments, setShowComments] = useState<boolean>(false);
   // const fixTitle = isFollowed === null ? "Unfollow" : isFollowed === null ? "Follow"
@@ -55,9 +63,8 @@ const ShowWatch: React.FC = ({}) => {
     }>
   >([]);
 
-  const handleUseDropDown = () => {};
-
   const handleSlideChange = (swiper: any) => {
+    setOpenDropdowns({});
     const realIndex = swiper.realIndex;
     setActiveSlideIndex(realIndex);
     setCurrentlyPlayingId(null);
@@ -79,42 +86,49 @@ const ShowWatch: React.FC = ({}) => {
     }
   };
 
+  console.log(main?.allFollowerList);
+
   const handleAttachmentListByInviteId = asyncWrapper(async () => {
     const res = await attachmentListByInviteId(getInvitedId);
     const { status, data } = res?.data;
 
     if (status === 0 && data?.length >= 2) {
-      const videoData = data.map((item: any, index: number) => {
-        const attachment =
-          index === 0 ? item.attachmentInserted : item.attachmentMatched;
-        const fixVideo = `${baseURL}/${attachment?.attachmentType}/${attachment?.fileName}${attachment?.ext}`;
+      const currentUserId =
+        Number(userIdFromSStorage) || main?.userLogin?.userId;
 
-        const fixProfile =
-          index === 0 ? item.profileInserted : item.profileMatched;
+      const processedVideos = data.map((video: any) => {
+        const isFollowedFromMeTop = main?.allFollowerList?.some((following) => {
+          return following === video?.userInserted?.id;
+        });
+        console.log(isFollowedFromMeTop);
 
-        const fixUsername =
-          index === 0
-            ? item.userInserted?.userName
-            : item.userMatched?.userName;
+        const isFollowedFromMeBott = main?.allFollowerList?.some(
+          (follower: any) => follower === video?.userMatched?.id
+        );
+
+        console.log();
 
         return {
-          url: fixVideo,
-          profile: fixProfile,
-          followerId: item?.followerId,
-          videoUser: item?.userId,
-          like: index === 0 ? item.likeInserted : item.likeMatched,
-          score: item?.score,
-          id: attachment?.attachmentId,
-          userName: fixUsername,
-          isLikedFromMe: item?.isLikedFromMe || false,
-          isFollowedFromMe: item?.followerId !== null,
+          ...video,
+          isFollowedFromMeTop,
+          isFollowedFromMeBott,
+          urlTop: `${baseURL}/${video?.attachmentInserted?.attachmentType}/${video?.attachmentInserted?.fileName}${video?.attachmentInserted?.ext}`,
+          urlBott: `${baseURL}/${video?.attachmentMatched?.attachmentType}/${video?.attachmentMatched?.fileName}${video?.attachmentMatched?.ext}`,
+          profileTop: `${baseURL}/${video?.profileInserted?.attachmentType}/${video?.profileInserted?.fileName}${video?.profileInserted?.ext}`,
+          profileBott: `${baseURL}/${video?.profileMatched?.attachmentType}/${video?.profileMatched?.fileName}${video?.profileMatched?.ext}`,
+          userInfoTop: video?.userInserted,
+          userInfoBott: video?.userMatched,
+          isLikedInserted: video?.isLikedInserted || false,
+          isLikedMatched: video?.isLikedMatched || false,
         };
       });
-      setVideos(videoData);
+
+      setVideos(processedVideos);
     }
   });
-
   const handleVideoPlay = (videoId: string) => {
+    setOpenDropdowns({});
+    setIsOpenOptions(false);
     setCurrentlyPlayingId((prevId) => {
       if (prevId === videoId) {
         return null;
@@ -128,7 +142,6 @@ const ShowWatch: React.FC = ({}) => {
       userId: Number(userIdFromSStorage) || main?.userLogin?.userId || null,
       movieId: video.id,
     };
-
     try {
       if (video.isLikedFromMe) {
         await removeLike(postData);
@@ -156,32 +169,34 @@ const ShowWatch: React.FC = ({}) => {
     }
   });
 
-  const handleFallowClick = asyncWrapper(async (video: any) => {
+  const handleFallowClickTop = asyncWrapper(async (video, videoUserId: any) => {
     const postData = {
       userId: Number(main?.userLogin?.userId),
-      movieId: video.id, // اضافه کردن movieId
-      followerId: video.videoUser,
+      followerId: videoUserId,
     };
+    console.log(video);
 
     try {
-      if (video.isFollowedFromMe) {
-        // اگر قبلا فالو شده، آنفالو کن
+      if (video.isFollowedFromMeTop) {
         await removeFollower(postData);
         setVideos((prevVideos) =>
           prevVideos.map((v) =>
             v.id === video.id
-              ? { ...v, isFollowedFromMe: false, followerId: null }
+              ? { ...v, isFollowedFromMeTop: false, followerId: null }
               : v
           )
         );
       } else {
-        // اگر فالو نشده، فالو کن
         const res = await addFollower(postData);
         if (res.data.status === 0) {
           setVideos((prevVideos) =>
             prevVideos.map((v) =>
               v.id === video.id
-                ? { ...v, isFollowedFromMe: true, followerId: postData.userId }
+                ? {
+                    ...v,
+                    isFollowedFromMeTop: true,
+                    followerId: postData.userId,
+                  }
                 : v
             )
           );
@@ -192,6 +207,46 @@ const ShowWatch: React.FC = ({}) => {
     }
   });
 
+  const handleFallowClickBott = asyncWrapper(
+    async (video, videoUserId: any) => {
+      const postData = {
+        userId: Number(main?.userLogin?.userId),
+        followerId: videoUserId,
+      };
+      console.log(video);
+
+      try {
+        if (video.isFollowedFromMeBott) {
+          await removeFollower(postData);
+          setVideos((prevVideos) =>
+            prevVideos.map((v) =>
+              v.id === video.id
+                ? { ...v, isFollowedFromMeBott: false, followerId: null }
+                : v
+            )
+          );
+        } else {
+          const res = await addFollower(postData);
+          if (res.data.status === 0) {
+            setVideos((prevVideos) =>
+              prevVideos.map((v) =>
+                v.id === video.id
+                  ? {
+                      ...v,
+                      isFollowedFromMeBott: true,
+                      followerId: postData.userId,
+                    }
+                  : v
+              )
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error in follow operation:", error);
+      }
+    }
+  );
+
   useEffect(() => {
     handleAttachmentListByInviteId();
   }, [getInvitedId]);
@@ -200,12 +255,64 @@ const ShowWatch: React.FC = ({}) => {
     if (videos.length > 0) {
       setCurrentlyPlayingId(videos[0].id);
     }
-  }, [videos]); // وابسته به تغییرات videos
+  }, [videos]);
 
-  for (let i = 0; i < videos.length; i += 2) {
-    chunkedVideos.push(videos.slice(i, i + 2));
-  }
+  const dropdownItems = (data: any) => [
+    {
+      label: "Save",
+      icon: <NotificationsIcon className="h-5 w-5" />,
+      onClick: () => console.log(data),
+    },
+    {
+      label: "Send message",
+      icon: <EmailIcon className="text-gray-800 font20" />,
+      onClick: () =>
+        navigate(`/privateMessage?id=${data?.userId}`, {
+          state: {
+            userInfo: data,
+          },
+        }),
+    },
+    {
+      label: "Notification",
+      icon: <NotificationsIcon className="h-5 w-5" />,
+      onClick: () => alert("اعلان‌ها"),
+    },
+    { divider: true },
+  ];
 
+  const toggleDropdown = (video: any, index: string) => {
+    setOpenDropdowns((prev) => {
+      if (index === "0" || index === "1") {
+        return {
+          ...prev,
+          [index]: !prev[index],
+        };
+      }
+      return prev;
+    });
+  };
+
+  // useEffect(() => {
+  //   if (videos.length > 0 && main?.allFollowerList) {
+  //     const currentUserId =
+  //       Number(userIdFromSStorage) || main?.userLogin?.userId;
+  //     setVideos((prevVideos) =>
+  //       prevVideos.map((video) => {
+  //         const isFollowing = main.allFollowerList.some(
+  //           (follower: any) =>
+  //             follower.followerId === currentUserId &&
+  //             follower.userId === video.videoUser
+  //         );
+  //         return {
+  //           ...video,
+  //           isFollowedFromMe: isFollowing,
+  //           followerId: isFollowing ? currentUserId : null,
+  //         };
+  //       })
+  //     );
+  //   }
+  // }, [main?.allFollowerList]);
   return (
     <Swiper
       direction={"vertical"}
@@ -213,93 +320,213 @@ const ShowWatch: React.FC = ({}) => {
       mousewheel={true}
       onSlideChange={handleSlideChange}
       modules={[Mousewheel]}
-      onInit={(swiper) => {
+      onInit={() => {
         if (videos.length > 0) {
           setCurrentlyPlayingId(videos[0].id);
         }
       }}
-      className="mySwiper   h-[calc(100vh-47px)]"
+      className="mySwiper md:mt-20 md:h-[calc(100vh-100px)] h-[calc(100vh-43px)]"
     >
-      {chunkedVideos.map((videoPair: any, index: number) => (
-        <SwiperSlide className="bg-black flex  flex-col" key={index}>
-          {videoPair.map((video: any, subIndex: any) => {
-            const isLiked = video.isLikedFromMe;
-            const isPlaying = currentlyPlayingId === video.id;
-            const isFollowed = video.isFollowedFromMe;
-            const checkMyVideo =
-              video?.videoUser !== Number(main?.userLogin?.userId);
-            const getProfile = StringHelpers?.getProfile(video.profile);
-            const isTopVideo = subIndex === 0;
-            const shouldAutoPlay = isTopVideo && index === activeSlideIndex;
-            return (
-              <div className="flex-1 relative h-[48vh]" key={subIndex}>
-                <div className="h-full flex flex-col">
-                  <div className="flex justify-between items-center p-2">
-                    <span onClick={handleUseDropDown}>
-                      <ImageRank
-                        rankStyle="w-8 h-8"
-                        imgSize={50}
-                        score={40}
-                        imgSrc={getProfile}
-                        classUserName="text-white"
-                        userName={video?.userName}
-                      />
-                    </span>
-                    {checkMyVideo && (
+      {videos.map((video: any, subIndex: any) => {
+        const isPlaying = currentlyPlayingId === video.id;
+        const profileTop = `${baseURL}/${video?.profileInserted?.attachmentType}/${video?.profileInserted?.fileName}${video?.profileInserted?.ext}`;
+        const profileBott = `${baseURL}/${video?.profileMatched?.attachmentType}/${video?.profileMatched?.fileName}${video?.profileMatched?.ext}`;
+        const videoTop = `${baseURL}/${video?.attachmentInserted?.attachmentType}/${video?.attachmentInserted?.fileName}${video?.attachmentInserted?.ext}`;
+        const videoBott = `${baseURL}/${video?.attachmentMatched?.attachmentType}/${video?.attachmentMatched?.fileName}${video?.attachmentMatched?.ext}`;
+        const userInfoTop = video?.userInserted;
+        const userInfoBott = video?.userMatched;
+
+        const checkMyVideoTop =
+          userInfoTop?.id !== Number(main?.userLogin?.userId);
+        const checkMyVideoBott =
+          userInfoBott?.id !== Number(main?.userLogin?.userId);
+        console.log(video);
+
+        return (
+          <SwiperSlide className="h-full w-full bg-black flex flex-col">
+            <div
+              className="h-1/2 w-full relative flex flex-col border-b border-gray-800"
+              key={`top-${subIndex}`}
+            >
+              <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
+                <div className="grid grid-cols-3 items-center w-full ">
+                  <div className="flex justify-start">
+                    <ImageRank
+                      rankStyle="w-8 h-8"
+                      classUserName="text-white"
+                      iconProfileStyle="font50"
+                      userName={userInfoTop?.userName}
+                      imgSize={50}
+                      imgSrc={profileTop}
+                      // score={group?.score || 0}
+                    />
+                  </div>
+                  <div className="flex justify-center">
+                    {checkMyVideoTop && (
                       <Follows
                         bgColor="bg-white"
-                        title={isFollowed ? "Unfollow" : "Follow"}
-                        onClick={() => handleFallowClick(video)}
-                      />
-                    )}
-                    {isLiked ? (
-                      <MoreVertIcon
-                        className="text-white font35 cursor-pointer"
-                        onClick={() => handleLikeClick(video)}
-                      />
-                    ) : (
-                      <MoreVertIcon
-                        className="text-white font35 cursor-pointer"
-                        onClick={() => handleLikeClick(video)}
+                        title={
+                          video.isFollowedFromMeTop ? "Unfollow" : "Follow"
+                        }
+                        onClick={() =>
+                          handleFallowClickTop(video, video?.userInserted?.id)
+                        }
                       />
                     )}
                   </div>
-                  <div className="flex-1 flex  justify-center items-center">
-                    <div className="absolute left-0 right-0 bottom-10 z-50">
-                      <div className="flex justify-between items-center w-full px-4 py-2">
-                        <ChatBubbleOutlineIcon
-                          onClick={() => setShowComments(true)}
-                          className="font30 text-white"
-                        />
-                        {isLiked ? (
-                          <ThumbUpIcon
-                            className="text-white font35 unlike_animation cursor-pointer"
-                            onClick={() => handleLikeClick(video)}
-                          />
-                        ) : (
-                          <ThumbUpOffAltIcon
+                  <div className="flex justify-end">
+                    {checkMyVideoTop && (
+                      <Dropdown
+                        isOpenOptions={openDropdowns[subIndex]}
+                        setIsOpenOptions={(isOpen) => {
+                          setOpenDropdowns((prev) => ({
+                            ...prev,
+                            [subIndex]: isOpen,
+                          }));
+                        }}
+                        buttonIcon={
+                          <MoreVertIcon
                             className="text-white font35 cursor-pointer"
-                            onClick={() => handleLikeClick(video)}
+                            onClick={() =>
+                              toggleDropdown(video, subIndex.toString())
+                            }
                           />
-                        )}
-                      </div>
-                    </div>
-                    <Video
-                      key={video.id}
-                      videoId={video.id}
-                      className="max-w-full max-h-[35vh] w-auto h-[50vh] object-contain"
-                      loop
-                      playing={isPlaying}
-                      handleVideo={() => handleVideoPlay(video.id)}
-                      url={video.url}
-                    />
+                        }
+                        items={dropdownItems(video)}
+                        position="right"
+                        className="ml-4"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </SwiperSlide>
-      ))}
+              <div className="flex-1 relative">
+                <Video
+                  key={`video-top-${video?.attachmentInserted?.id}`}
+                  videoId={video?.attachmentInserted?.id}
+                  className="max-w-full max-h-[35vh] min-h-[430px] w-auto h-[70vh] object-contain"
+                  loop
+                  playing={isPlaying}
+                  handleVideo={() =>
+                    handleVideoPlay(video?.attachmentInserted?.id)
+                  }
+                  url={videoTop}
+                />
+                <div className="absolute left-0 right-0 bottom-10 z-50">
+                  <div className="flex justify-between items-center w-full px-4">
+                    <ChatBubbleOutlineIcon
+                      onClick={() => setShowComments(true)}
+                      className="font30 text-white"
+                    />
+                    {video?.isLikedInserted ? (
+                      // isLikedFromMe?.
+                      <ThumbUpIcon
+                        className="text-white font35 unlike_animation cursor-pointer"
+                        onClick={() => handleLikeClick(video)}
+                      />
+                    ) : (
+                      <ThumbUpOffAltIcon
+                        className="text-white font35 cursor-pointer"
+                        onClick={() => handleLikeClick(video)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="h-1/2 w-full relative flex flex-col"
+              key={`bottom-${subIndex}`}
+            >
+              <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
+                <div className="grid grid-cols-3 items-center w-full ">
+                  <div className="flex justify-start">
+                    <ImageRank
+                      rankStyle="w-8 h-8"
+                      classUserName="text-white"
+                      iconProfileStyle="font50"
+                      userName={userInfoBott?.userName}
+                      imgSize={50}
+                      imgSrc={profileBott}
+                      // score={group?.score || 0}
+                    />
+                  </div>
+                  <div className="flex justify-center">
+                    {checkMyVideoBott && (
+                      <Follows
+                        bgColor="bg-white"
+                        title={
+                          video.isFollowedFromMeBott ? "Unfollow" : "Follow"
+                        }
+                        onClick={() =>
+                          handleFallowClickBott(video, video?.userMatched?.id)
+                        }
+                      />
+                    )}
+                  </div>
+                  <div className="flex justify-end">
+                    {checkMyVideoBott && (
+                      <Dropdown
+                        isOpenOptions={openDropdowns[subIndex]}
+                        setIsOpenOptions={(isOpen) => {
+                          setOpenDropdowns((prev) => ({
+                            ...prev,
+                            [subIndex]: isOpen,
+                          }));
+                        }}
+                        buttonIcon={
+                          <MoreVertIcon
+                            className="text-white font35 cursor-pointer"
+                            onClick={() =>
+                              toggleDropdown(video, subIndex.toString())
+                            }
+                          />
+                        }
+                        items={dropdownItems(video)}
+                        position="right"
+                        className="ml-4"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 relative">
+                <Video
+                  key={video?.attachmentMatched?.id}
+                  videoId={video?.attachmentMatched?.id}
+                  className="max-w-full max-h-[35vh] min-h-[430px] w-auto h-[70vh] object-contain"
+                  loop
+                  playing={isPlaying}
+                  handleVideo={() =>
+                    handleVideoPlay(video?.attachmentMatched?.id)
+                  }
+                  url={videoBott}
+                />
+                <div className="absolute left-0 right-0 bottom-10 z-50">
+                  <div className="flex justify-between items-center w-full px-4">
+                    <ChatBubbleOutlineIcon
+                      onClick={() => setShowComments(true)}
+                      className="font30 text-white"
+                    />
+                    {video?.isLikedMatched ? (
+                      // isLikedFromMe?.
+                      <ThumbUpIcon
+                        className="text-white font35 unlike_animation cursor-pointer"
+                        onClick={() => handleLikeClick(video)}
+                      />
+                    ) : (
+                      <ThumbUpOffAltIcon
+                        className="text-white font35 cursor-pointer"
+                        onClick={() => handleLikeClick(video)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+        );
+      })}
       {showComments && (
         <Comments
           handleShowCMT={handleShowCMT}

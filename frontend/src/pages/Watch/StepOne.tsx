@@ -33,9 +33,8 @@ const StepOne: React.FC = () => {
 
   const handleShowMatch = (item: any) => {
     console.log("item?.group", item?.group);
-
     dispatch(RsetDobuleVideo(item?.group));
-    const newPath = `${location.pathname}/show?id=${item?.group?.inviteMatched?.parentId}`;
+    const newPath = `${location.pathname}/show?id=${item?.group?.inviteInserted?.id}`;
     navigate(newPath);
     setLastTap(0);
   };
@@ -52,15 +51,16 @@ const StepOne: React.FC = () => {
 
   const getVideosForDisplay = (allDableWatch: any[]) => {
     return allDableWatch
-      .map((item: any) => {
+      .map((match: any) => {
         return {
-          inviteMatched: item?.inviteMatched,
-          parent: item?.attachmentInserted,
-          likeInserted: item?.likeInserted,
-          likeMatched: item?.likeMatched,
-          userInfoParent: item?.userInserted,
-          child: item?.attachmentMatched,
-          userInfoChild: item?.userMatched,
+          inviteMatched: match?.inviteMatched,
+          inviteInserted: match?.inviteInserted,
+          parent: match?.attachmentInserted,
+          likeInserted: match?.likeInserted,
+          likeMatched: match?.likeMatched,
+          userInfoParent: match?.userInserted,
+          child: match?.attachmentMatched,
+          userInfoChild: match?.userMatched,
         };
       })
       .filter((group: any) => group.child !== null);
@@ -141,6 +141,7 @@ const StepOne: React.FC = () => {
     <>
       <Loading isLoading={isLoading} />
       <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10 shadow-card gap-[5px] p-[1px]">
+        <div className=""></div>
         {videoGroupsWithOwnership.map((group, index) => {
           const { parent, child, itsMyVideo, likeInserted, likeMatched } =
             group;
@@ -162,12 +163,12 @@ const StepOne: React.FC = () => {
                 }`}
               >
                 <div className="flex-1 ">
-                  <span className="relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                  <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
                     <img
                       src={fixImg1}
                       alt={parent?.alt || "Parent Image"}
                       className={`w-full rounded-tr-lg ${
-                        itsMyVideo ? "min-h-88 max-h-88" : "min-h-44 max-h-44"
+                        itsMyVideo ? "min-h-88 max-h-60" : "min-h-44 max-h-44"
                       } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`}
                     />
                     {itsMyVideo && (
@@ -179,7 +180,7 @@ const StepOne: React.FC = () => {
                             userName={group?.userInfoParent?.userName || "User"}
                             classUserName="text-white"
                             score={parent?.score || 0}
-                            rankWidth={45}
+                            rankStyle="w-7 h-7"
                             starWidth={6}
                             className="absolute bottom-0"
                           />
@@ -201,7 +202,7 @@ const StepOne: React.FC = () => {
                           alt={child?.alt || "Profile image"}
                           className={`w-full rounded-bl-xl ${
                             itsMyVideo
-                              ? "min-h-88 max-h-88"
+                              ? "min-h-88 max-h-60"
                               : "min-h-44 max-h-44"
                           } object-cover ${itsMyVideo ? "max-h-[40vh]" : ""}`}
                         />
@@ -210,6 +211,7 @@ const StepOne: React.FC = () => {
                             <div className="flex  justify-between items-center mx-2">
                               <ImageRank
                                 imgSize={60}
+                                rankStyle="w-7 h-7"
                                 iconProfileStyle="text-gray-200 font50"
                                 userName={
                                   group?.userInfoChild?.userName || "User"

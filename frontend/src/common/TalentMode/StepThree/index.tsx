@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-import NetworkCheckIcon from "@mui/icons-material/NetworkCheck";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import WifiOffIcon from "@mui/icons-material/WifiOff";
-import AltRouteIcon from "@mui/icons-material/AltRoute";
 import { useLocation, useNavigate } from "react-router-dom";
 import asyncWrapper from "../../AsyncWrapper";
 import { subSubCategoryList } from "../../../services/dotNet";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
-import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
-import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
-import Loading from "../../../components/Loading";
 import SoftLink from "../../../hoc/SoftLinks";
 
 const StepThree: React.FC = () => {

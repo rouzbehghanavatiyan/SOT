@@ -19,6 +19,8 @@ import ShowWatch from "../pages/Watch/ShowWatch";
 import Setting from "../pages/Setting";
 import ChatRoom from "../pages/ChatRoom";
 import LearningSot from "../pages/LearningSot";
+import PrivateChat from "../pages/ChatRoom/PrivateChat";
+import Followers from "../pages/Followers";
 
 const PublicRoutes = () => {
   return (
@@ -43,6 +45,9 @@ const PublicRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/messages" element={<ChatRoom />} />
+        <Route path="/privateMessage" element={<PrivateChat />} />
+        <Route path="/followers" element={<Followers />} />
+
         {/* <Route path="/messages" element={<Setting />} /> */}
       </Routes>
     </Layout>

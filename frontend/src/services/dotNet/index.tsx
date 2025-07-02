@@ -88,8 +88,9 @@ export const addFollower = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
+// all follower
 export const followerList = async (userId: any) => {
-  const url = `${baseURL}/FollowerList?userId=${userId}`;
+  const url = `${baseURL}/followerList?userId=${userId}`;
   return await axios.get(url);
 };
 
@@ -107,5 +108,16 @@ export const userAttachmentList = async (userId: number) => {
 
 export const followerAttachmentList = async (userId: number) => {
   const url = `${baseURL}/followerAttachmentList?userId=${userId}`;
+  return await axios.get(url);
+};
+
+// sent notif
+export const sendNotify = async (data: string, userId: number | string) => {
+  const url = `${baseURL}/notify?notification=${data}&userId=${userId}`;
+  return await axios.get(url);
+};
+
+export const followingList = async (userId: number | string) => {
+  const url = `${baseURL}/followingList?userId=${userId}`;
   return await axios.get(url);
 };

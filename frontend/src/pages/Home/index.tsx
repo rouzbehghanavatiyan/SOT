@@ -8,6 +8,10 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { followerAttachmentList } from "../../services/dotNet";
 import { Mousewheel } from "swiper/modules";
 import Video from "../../components/Video";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const Home: React.FC = () => {
   const { main } = useAppSelector((state) => state);
@@ -33,39 +37,50 @@ const Home: React.FC = () => {
   const handleGiveVideos = async () => {
     try {
       const res = await followerAttachmentList(main?.userLogin?.userId);
-      const { data, status } = res?.data;
+      const { status, data } = res?.data;
       if (status === 0) {
-        setAllDableWatch(data);
+        const videoData = data.map((item: any, index: number) => {
+          const attachment =
+            index === 0 ? item.attachmentInserted : item.attachmentMatched;
+          const fixVideo = `${baseURL}/${attachment?.attachmentType}/${attachment?.fileName}${attachment?.ext}`;
+
+          const fixProfile =
+            index === 0 ? item.profileInserted : item.profileMatched;
+
+          const fixUsername =
+            index === 0
+              ? item.userInserted?.userName
+              : item.userMatched?.userName;
+          const fixUserId =
+            index === 0 ? item.userInserted?.id : item.userMatched?.id;
+
+          console.log(item);
+          return {
+            videoInserted: item?.attachmentInserted,
+            videoMatched: item?.attachmentMatched,
+            profileInserted: item?.profileInserted,
+            profileMatched: item?.profileMatched,
+            userInfoInserted: item?.userInserted,
+            userInfoMatched: item?.userMatched,
+            url: fixVideo,
+            userId: fixUserId,
+            followerId: item?.followerId,
+            videoUser: item?.userId,
+            likeInserted: item?.likeInserted,
+            likeMatched: item?.likeMatched,
+            score: item?.score,
+            id: attachment?.attachmentId,
+            userName: fixUsername,
+            isLikedFromMe: item?.isLikedFromMe || false,
+            isFollowedFromMe: item?.followerId !== null,
+          };
+        });
+        setAllDableWatch(videoData);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
-  const getVideosForDisplay = (allDableWatch: any[]) => {
-    return allDableWatch.map((parentItem: any) => {
-      const childItem = allDableWatch.find(
-        (child: any) => child.parentId === parentItem.inviteId
-      );
-      return {
-        parent: parentItem,
-        child: childItem || null,
-      };
-    });
-  };
-
-  const videoGroups = getVideosForDisplay(allDableWatch);
-
-  const checkIsMy = (group: any) => {
-    return (group?.parent?.userId || group?.child?.userId) === Number(userId);
-  };
-
-  const videoGroupsWithOwnership = useMemo(() => {
-    return videoGroups.map((group) => {
-      const itsMyVideo = checkIsMy(group);
-      return { ...group, itsMyVideo };
-    });
-  }, [videoGroups, userId]);
 
   const handleVideoPlay = (index: number) => {
     setPlayingIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -78,76 +93,106 @@ const Home: React.FC = () => {
   }, [main?.userLogin?.userId]);
 
   return (
-    <div className="relative h-screen md:mt-10 w-full bg-black overflow-hidden">
+    <div className="relative h-screen w-full bg-black overflow-hidden">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
         mousewheel={true}
         modules={[Mousewheel]}
-        className="h-full w-full"
+        className="mySwiper md:mt-20 md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]"
         onSlideChange={(swiper) => handleVideoPlay(swiper.activeIndex)}
       >
-        {videoGroupsWithOwnership.map((group, index) => {
-          const { parent, child } = group;
-          const videoUrl1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
-          const videoUrl2 = `${baseURL}/${child?.attachmentType}/${child?.fileName}${child?.ext}`;
-          const fixProfileImageParent = `${baseURL}/${parent?.profile?.attachmentType}/${parent?.profile?.fileName}${parent?.profile?.ext}`;
-          const fixProfileImageChild = `${baseURL}/${child?.profile?.attachmentType}/${child?.profile?.fileName}${child?.profile?.ext}`;
+        {allDableWatch.map((group, index) => {
+          const videoUrl1 = `${baseURL}/${group?.videoInserted?.attachmentType}/${group?.videoInserted?.fileName}${group?.videoInserted?.ext}`;
+          const videoUrl2 = `${baseURL}/${group?.videoMatched?.attachmentType}/${group?.videoMatched?.fileName}${group?.videoMatched?.ext}`;
+          const profile1 = `${baseURL}/${group?.profileInserted?.attachmentType}/${group?.profileInserted?.fileName}${group?.profileInserted?.ext}`;
+          const profile2 = `${baseURL}/${group?.profileMatched?.attachmentType}/${group?.profileMatched?.fileName}${group?.profileMatched?.ext}`;
           const isPlaying = playingIndex === index;
+          console.log(group);
 
           return (
-            <SwiperSlide key={index} className="h-full w-full">
-              <div className="h-1/2 w-full flex flex-col">
-                <div className="flex-shrink-0 p-2">
+            <SwiperSlide
+              key={index}
+              className="h-full w-full bg-black flex flex-col"
+            >
+              <div className="h-1/2 w-full relative flex flex-col">
+                <div className="flex-shrink-0 p-2 z-10 absolute bg_profile_watch">
                   <ImageRank
-                    userName={parent?.userName}
-                    classUserName="text-white font-bold"
+                    rankStyle="w-8 h-8"
+                    classUserName="text-white"
+                    iconProfileStyle="font50"
+                    userName={group?.userInfoInserted?.userName}
                     imgSize={50}
-                    imgSrc={fixProfileImageParent}
-                    score={parent?.score || 0}
-                    rankWidth={40}
-                    starWidth={5}
+                    imgSrc={profile1}
+                    score={group?.score || 0}
                   />
                 </div>
                 <div className="flex-1 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black overflow-hidden">
                     <Video
                       url={videoUrl1}
                       playing={isPlaying}
-                      loop={true}
-                      muted={false}
-                      handleVideo={() => handleVideoPlay(index)}
-                      width="100%"
-                      height="100%"
+                      className="w-full h-full object-contain"
+                      style={{ maxHeight: "100%", maxWidth: "100%" }}
                     />
+                    <div className="absolute left-0 right-0 bottom-10 z-50">
+                      <div className="flex justify-between items-center w-full px-4">
+                        <ChatBubbleOutlineIcon
+                          onClick={() => setShowComments(true)}
+                          className="font30 text-white"
+                        />
+                        <div className="flex text-green justify-center  gap-1 items-center py-1">
+                          <span className="flex items-center ">
+                            <CheckCircleIcon className="text-green font20" />
+                          </span>
+                          <span className="font-bold font20">Win</span>
+                        </div>
+                        <div className="flex items-center text-gray-200 font18 justify-center">
+                          {group?.likeInserted}
+                          <ThumbUpIcon className="ms-1 font25 cursor-pointer" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="h-1/2 w-full flex flex-col">
-                <div className="flex-shrink-0 p-2">
+              <div className="h-1/2 w-full flex flex-col relative">
+                <div className="flex-shrink-0 p-2 z-10 absolute bg_profile_watch">
                   <ImageRank
-                    userName={child?.userName}
+                    rankStyle="w-8 h-8"
+                    userName={group?.userInfoMatched?.userName}
                     classUserName="text-white font-bold"
                     imgSize={50}
-                    imgSrc={fixProfileImageChild}
-                    score={child?.score || 0}
-                    rankWidth={40}
-                    starWidth={5}
+                    imgSrc={profile2}
+                    score={group?.score || 0}
                   />
                 </div>
-
-                {/* Video برای نیمه پایینی */}
                 <div className="flex-1 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black overflow-hidden">
                     <Video
                       url={videoUrl2}
                       playing={isPlaying}
-                      loop={true}
-                      muted={false}
-                      handleVideo={() => handleVideoPlay(index)}
-                      width="100%"
-                      height="100%"
+                      className="w-full h-full object-contain"
+                      style={{ maxHeight: "100%", maxWidth: "100%" }}
                     />
+                    <div className="absolute left-0 right-0 bottom-10 z-50">
+                      <div className="flex justify-between items-center w-full px-4">
+                        <ChatBubbleOutlineIcon
+                          onClick={() => setShowComments(true)}
+                          className="font30 text-white"
+                        />
+                        <div className="flex text-red justify-center gap-1 items-center py-1 ">
+                          <span className="flex items-center">
+                            <CancelIcon className="text-red font20" />
+                          </span>
+                          <span className="font-bold font20">Loss</span>
+                        </div>
+                        <div className="flex items-center text-gray-200 font18 justify-center">
+                          {group?.likeMatched}
+                          <ThumbUpIcon className="ms-1 font25 cursor-pointer" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

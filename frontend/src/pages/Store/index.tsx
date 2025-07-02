@@ -50,15 +50,15 @@ const Store = () => {
             <div className="text-gray-800 text-lg flex justify-between font-semibold">
               <span>{product.name}</span>
             </div>
-            <ConfirmationNumberIcon className="font25  text-gray-800" />
+            <ConfirmationNumberIcon className="font25  text-green-dark" />
           </div>
           <p
-            className="bg-gray-100 text-gray-800 flex
+            className="bg-orange-ghost text-gray-800 flex
            p-2"
           >
             {product.des}
           </p>
-          <div>${product.price}</div>
+          <div className="text-gray-900">${product.price}</div>
         </div>
       ))}
     </div>
