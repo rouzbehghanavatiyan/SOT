@@ -6,10 +6,10 @@ import SendIcon from "@mui/icons-material/Send";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
-const nodeIp = import.meta.env.VITE_NODE_IP;
+import { useAppSelector } from "../../../hooks/hook";
 
 const Fields: React.FC = () => {
-  const socket = io(nodeIp);
+  const { main } = useAppSelector((state) => state);
   const [title, setTitle] = useState<string>("");
   const [messages, setMessages] = useState<{ title: string; from: string }[]>(
     []
@@ -23,11 +23,11 @@ const Fields: React.FC = () => {
   };
 
   useEffect(() => {
-    socket.on("receive_Message", handleReceiveMessage);
+    main?.socketConfig?.socket.on("receive_Message", handleReceiveMessage);
     return () => {
-      socket.off("receive_Message", handleReceiveMessage);
+      main?.socketConfig?.socket.off("receive_Message", handleReceiveMessage);
     };
-  }, [socket]);
+  }, [main?.socketConfig?.socket]);
 
   return (
     <div className="w-full bg-blue">

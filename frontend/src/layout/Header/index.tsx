@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import MultiOptions from "../MultiOptions";
-import { useAppSelector } from "../../hooks/hook";
-
 interface PropsType {
   openMessage: boolean;
   setOpenMessage: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Header: React.FC<PropsType> = ({ openMessage, setOpenMessage }) => {
-
   return (
     <header className="w-full grid grid-cols-7 z-50 fixed top-0 bg-primary">
       <div className="col-span-2 flex ps-3 justify-start items-center">

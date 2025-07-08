@@ -1,94 +1,108 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppSelector } from "../../../hooks/hook";
+import { userMessages } from "../../../services/nest";
+import { useLocation } from "react-router-dom";
 
-const Messages: React.FC = ({ messages, messagesEndRef }) => {
+const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
   const { main } = useAppSelector((state) => state);
-  const numberUserId = Number(main?.userLogin?.userId);
+  const location = useLocation();
+  const userReciver = Number(location?.search?.split("=")?.[1]);
+
+  const userIdLogin = Number(main?.userLogin?.userId);
+
+  const handleGetMessages = async () => {
+    const res = await userMessages(userIdLogin, userReciver);
+    setMessages(res?.data?.data);
+  };
+
+  useEffect(() => {
+    if (!!userIdLogin && !!userReciver) handleGetMessages();
+  }, [userIdLogin, userReciver]);
 
   return (
     <>
-      {messages?.map((msg: any, index: number) => {
-        const numberServerUserId = Number(msg?.userId);
-        const displayTime = msg?.time.slice(0, 5);
+      {messages
+        ?.filter(
+          (item: any) =>
+            item?.sender === userIdLogin ||
+            (item?.recieveId === userIdLogin && item?.sender === userReciver)
+        )
+        ?.map((msg: any, index: number) => {
+          const numberServerUserId = Number(msg?.recieveId);
+          const displayTime = msg?.time.slice(0, 5);
 
-        return (
-          <div
-            ref={messagesEndRef}
-            key={index}
-            className={`flex w-100 align-center mt-2 justify-${
-              numberUserId === numberServerUserId ? "start" : "end"
-            }`}
-          >
-            {numberUserId === numberServerUserId && (
-              <span className="text-secondary font-bold mx-1">
-                {msg?.username}
-              </span>
-            )}
-            {numberUserId === numberServerUserId && (
-              <div
-                className={`rounded-xl my-2 p-3 ${
-                  numberUserId === numberServerUserId
-                    ? "bg-mainGray-dark"
-                    : "border-orange-hover bg-white"
-                } `}
-                style={{
-                  maxWidth: "50%",
-                  wordWrap: "break-word",
-                }}
-              >
-                <div className="flex justify-between">
-                  <span className="ms-2">{msg?.title}</span>
+          return (
+            <div
+              ref={messagesEndRef}
+              key={index}
+              className={`flex w-100 align-center mt-2 justify-${
+                userIdLogin === numberServerUserId ? "start" : "end"
+              }`}
+            >
+              {userIdLogin === numberServerUserId && (
+                <span>
+                  <img
+                    src={msg?.userProfile}
+                    className="w-8 ms-2 h-8 rounded-full"
+                  />
+                </span>
+              )}
+              {userIdLogin === numberServerUserId && (
+                <div
+                  className={`rounded-e-xl  rounded-b-lg my-2 ms-2 relative p-3 ${
+                    userIdLogin === numberServerUserId
+                      ? " bg-green text-white  "
+                      : "  bg-white"
+                  }`}
+                  style={{
+                    maxWidth: "70%",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <div className="flex mb-4  justify-between">
+                    {userIdLogin === numberServerUserId && (
+                      <span className="text-gray-200 right-1 bottom-1 absolute font9">
+                        {displayTime}
+                      </span>
+                    )}
+                    <span className="ms-2 font18">{msg?.title}</span>
+                  </div>
                 </div>
-              </div>
-            )}
-            {numberUserId === numberServerUserId && (
-              <span className="text-secondary font-light font13 mx-2">
-                {msg?.time}
-              </span>
-            )}
-            {numberUserId !== numberServerUserId && (
-              <div
-                className={`rounded-s-xl rounded-b-lg my-2 relative p-3 ${
-                  numberUserId === numberServerUserId
-                    ? "bg-orange"
-                    : "border-orange-disabled border-[1px] bg-white"
-                }`}
-                style={{
-                  maxWidth: "50%",
-                  wordWrap: "break-word",
-                }}
-              >
-                <div className="flex mb-4  justify-between">
-                  {numberUserId !== numberServerUserId && (
-                    <span className="text-gray-200 left-1 bottom-1 absolute font9">
-                      {displayTime}
-                    </span>
-                  )}
-                  <span className="ms-2">{msg?.title}</span>
-                </div>
-              </div>
-            )}
+              )}
 
-            {
-              <span>
-                <img
-                  src={msg?.userProfile}
-                  className="w-8 ms-2 h-8 rounded-full"
-                />
-              </span>
-            }
-
-            {numberUserId !== numberServerUserId && (
-              <div className="flex fw-thin font10 justify-center align-center text-secondary">
-                <div className="gap-2">
-                  <i className="font35" />
-                  <span className="">{msg?.username}</span>
+              {userIdLogin !== numberServerUserId && (
+                <div
+                  className={`rounded-s-xl  rounded-b-lg my-2 relative p-3 ${
+                    userIdLogin === numberServerUserId
+                      ? " "
+                      : "border-l-orange-disabled border-[1px] bg-white"
+                  }`}
+                  style={{
+                    maxWidth: "70%",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <div className="flex mb-4   justify-between">
+                    {userIdLogin !== numberServerUserId && (
+                      <span className="text-gray-200 left-1 bottom-1 absolute font9">
+                        {displayTime}
+                      </span>
+                    )}
+                    <span className="ms-2 font18">{msg?.title}</span>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              )}
+              {userIdLogin !== numberServerUserId && (
+                <span>
+                  <img
+                    src={msg?.userProfile}
+                    className="w-8 ms-2 h-8 rounded-full"
+                  />
+                </span>
+              )}
+            </div>
+          );
+        })}
     </>
   );
 };

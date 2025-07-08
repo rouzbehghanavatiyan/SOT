@@ -12,7 +12,7 @@ const Stickers: React.FC<PropsType> = ({ onEmojiSelect }) => {
         <EmojiPicker
           height="100%"
           width="100%"
-          onEmojiSelect={onEmojiSelect}
+          onEmojiClick={(emojiObject) => onEmojiSelect(emojiObject)} // اصلاح این بخش
           previewConfig={{ showPreview: false }}
         />
       </div>

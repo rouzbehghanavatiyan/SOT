@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Input from "../../components/Input";
 
-const ChatFields: React.FC = () => {
+const ChatFields: React.FC<any> = ({ handleSendCommented }) => {
   const [inputs, setInputs] = useState<string>("");
   return (
+    
     <Input
       value={inputs}
       onChange={(e: any) =>

@@ -50,10 +50,17 @@ const LogInForm: FC = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // جلوگیری از رفتار پیش‌فرض فرم
+      handleAccept();
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg_tusi">
       <div className="  rounded-lg mx-auto p-8 w-full max-w-md">
-        <form className="space-y-6">
+        <form className="space-y-6" onKeyDown={handleKeyDown}>
           <div className="flex justify-center">
             <Link to="/">
               <img
@@ -66,6 +73,7 @@ const LogInForm: FC = () => {
             </Link>
           </div>
           <Input
+            onKeyDown={(e: any) => e.key === "Enter" && handleAccept()}
             className="w-full bg-gray-100 border border-gray-300 rounded-lg py-5 p-2"
             onChange={(e: any) =>
               setInputs((prev: any) => ({ ...prev, userName: e.target.value }))
@@ -74,6 +82,7 @@ const LogInForm: FC = () => {
             aria-label="Room name input"
           />
           <Input
+            onKeyDown={(e: any) => e.key === "Enter" && handleAccept()}
             className="w-full bg-gray-100 border border-gray-300 rounded-lg py-5 p-2"
             onChange={(e: any) =>
               setInputs((prev: any) => ({ ...prev, password: e.target.value }))
@@ -89,6 +98,8 @@ const LogInForm: FC = () => {
             variant="dark_primary"
             label="login"
             className="w-full"
+            aria-label="Login button"
+            tabIndex={0}
           />
           <div className="text-center">
             <p className="text-sm">

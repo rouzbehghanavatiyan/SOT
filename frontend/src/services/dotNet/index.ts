@@ -10,8 +10,8 @@ export const getTableFields = async () => {
   return response?.data;
 };
 
-export const attachmentList = async () => {
-  const url = `${baseURL}/attachmentList`;
+export const attachmentList = async ({ skip, take }: any) => {
+  const url = `${baseURL}/attachmentList?skip=${skip}&take=${take}`;
   return await axios.get(url);
 };
 
@@ -119,5 +119,20 @@ export const sendNotify = async (data: string, userId: number | string) => {
 
 export const followingList = async (userId: number | string) => {
   const url = `${baseURL}/followingList?userId=${userId}`;
+  return await axios.get(url);
+};
+
+export const addComment = async (postData: any) => {
+  const url = `${baseURL}/addComment`;
+  return await axios.post(url, postData);
+};
+
+export const removeComment = async (postData: number | string) => {
+  const url = `${baseURL}/removeComment`;
+  return await axios.delete(url, { data: postData });
+};
+
+export const commentList = async () => {
+  const url = `${baseURL}/commentList`;
   return await axios.get(url);
 };

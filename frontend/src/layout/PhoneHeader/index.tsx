@@ -27,7 +27,8 @@ const PhoneHeader = () => {
 
   const handleGetAlert = React.useCallback(
     (data: any) => {
-      if (Number(main?.userLogin?.userId) === data?.recipient) {
+      if (Number(main?.userLogin?.userId) === data?.recieveId) {
+        console.log(data);
         setAlertMsg((prev: any) => [...prev, data]);
       }
     },

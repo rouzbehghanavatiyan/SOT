@@ -110,7 +110,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
           />
         )}
         {userName && (
-          <span className={`ms-1 ${classUserName}`}>{userName}</span>
+          <span className={`ms-1 font-bold ${classUserName}`}>{userName}</span>
         )}
       </div>
       {score >= 0 && (

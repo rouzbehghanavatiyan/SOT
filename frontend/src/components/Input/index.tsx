@@ -19,12 +19,16 @@ interface InputProps {
   disabled?: boolean;
   value?: any;
   className?: string;
+  onKeyDown?: any;
+  onFocus?: any;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       name,
+      onFocus,
+      onKeyDown,
       value,
       label,
       className,
@@ -87,8 +91,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             disabled={disabled}
             maxLength={maxLength}
+            onFocus={onFocus}
             type={type}
             id={name}
+            onKeyDown={onKeyDown}
             name={name}
             placeholder={placeholder}
             onChange={onChange}

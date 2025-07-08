@@ -32,6 +32,7 @@ interface MainType {
   userOnlines: any;
   profileImage: any;
   allFollowerList: any;
+  allFollingList: any;
 }
 const initialState: MainType = {
   messageModal: { title: "", show: false },
@@ -47,6 +48,7 @@ const initialState: MainType = {
   userOnlines: null,
   profileImage: null,
   allFollowerList: [],
+  allFollingList: [],
 };
 
 // -> handle get user menu list
@@ -109,6 +111,9 @@ const mainSlice = createSlice({
     RsetAllFollowerList: (state, actions: PayloadAction<any>) => {
       return { ...state, allFollowerList: actions.payload };
     },
+    RsetAllFollingList: (state, actions: PayloadAction<any>) => {
+      return { ...state, allFollingList: actions.payload };
+    },
   },
   //   extraReducers: (builder) => {
   //     builder
@@ -148,6 +153,7 @@ export const {
   RsetProgress,
   RsetUserLogin,
   RsetAllFollowerList,
+  RsetAllFollingList,
   RsetGiveUserOnlines,
   RsetGetImageProfile,
 } = mainSlice.actions;

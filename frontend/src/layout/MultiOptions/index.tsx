@@ -20,6 +20,7 @@ import ImageRank from "../../components/ImageRank";
 import { useAppSelector } from "../../hooks/hook";
 import goldStar2 from "../../assets/img/rank11.webp";
 import SettingsIcon from "@mui/icons-material/Settings";
+import StringHelpers from "../../utils/helpers/StringHelper";
 
 interface PropsType {
   openMessage: boolean;
@@ -39,9 +40,8 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
   };
 
   const { main } = useAppSelector((state) => state);
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
-  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
+  const findImg = StringHelpers?.getProfile(getProfileImage);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
@@ -90,9 +90,9 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
           </div>
         </IconButton>
       </ResponsiveMaker>
-      <div className="fixed top-7 right-10 bg-white rounded-full p-1">
+      <div className="fixed top-0 right-10 bg-white rounded-full p-1">
         <ImageRank
-          imgSize={85}
+          imgSize={60}
           rankStyle={isVisible && "w-14 h-14"}
           iconProfileStyle="bg-white rounded-full text-gray-200 font80"
           imgSrc={findImg}

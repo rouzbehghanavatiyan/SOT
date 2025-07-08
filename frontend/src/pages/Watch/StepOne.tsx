@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -24,12 +24,33 @@ const StepOne: React.FC = () => {
   const [lastTap, setLastTap] = useState<number>(0);
   const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
+  const [pagination, setPagination] = useState({
+    skip: 0,
+    take: 5,
+    hasMore: true,
+  });
+
+  const loadingRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(() => {
     const savedProgress = localStorage.getItem("timerProgress");
     return savedProgress ? parseInt(savedProgress, 10) : 0;
   });
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+
+  const calculateInitialLikes = (data: any[]) => {
+    const initialLikes: Record<string, number> = {};
+    data.forEach((match) => {
+      if (match.likeInserted && match.attachmentInserted?.movieId) {
+        initialLikes[match.attachmentInserted.movieId] = match.likeInserted;
+      }
+      if (match.likeMatched && match.attachmentMatched?.movieId) {
+        initialLikes[match.attachmentMatched.movieId] = match.likeMatched;
+      }
+    });
+    return initialLikes;
+  };
 
   const handleShowMatch = (item: any) => {
     console.log("item?.group", item?.group);
@@ -40,12 +61,30 @@ const StepOne: React.FC = () => {
   };
 
   const handleAttachmentList = asyncWrapper(async () => {
-    setIsLoading(true);
-    const res = await attachmentList();
-    setIsLoading(false);
-    const { data, status } = res?.data;
-    if (status === 0) {
-      setAllDableWatch(data);
+    try {
+      if (!pagination.hasMore || isLoading) return;
+      setIsLoading(true);
+      const res = await attachmentList({
+        skip: pagination.skip,
+        take: pagination.take,
+      });
+      setIsLoading(false);
+
+      const { data, status } = res?.data;
+      if (status === 0) {
+        setAllDableWatch((prev) => [...prev, ...data]);
+        setVideoLikes((prev) => ({ ...prev, ...calculateInitialLikes(data) }));
+
+        setPagination((prev) => ({
+          ...prev,
+          hasMore: data.length === prev.take,
+          skip: prev.skip + prev.take,
+        }));
+      }
+    } catch (error) {
+      console.error("Error loading data:", error);
+    } finally {
+      setIsLoading(false);
     }
   });
 
@@ -53,6 +92,8 @@ const StepOne: React.FC = () => {
     return allDableWatch
       .map((match: any) => {
         return {
+          parentMovieId: match?.attachmentInserted?.attachmentId,
+          childMovieId: match?.attachmentMatched?.attachmentId,
           inviteMatched: match?.inviteMatched,
           inviteInserted: match?.inviteInserted,
           parent: match?.attachmentInserted,
@@ -84,36 +125,16 @@ const StepOne: React.FC = () => {
     });
   }, [videoGroups, userIdFromSStorage]);
 
-  useEffect(() => {
-    let interval: any;
-    if (progress < 60 && isTimerActive) {
-      interval = setInterval(() => {
-        dispatch(RsetProgress(progress + 1));
-      }, 100000);
-    } else if (progress >= 60) {
-      clearInterval(interval);
-      // dispatch(RsetResetTimer());
-    }
-    return () => clearInterval(interval);
-  }, [progress, isTimerActive, dispatch]);
-
-  useEffect(() => {
-    const hasMyVideo = videoGroupsWithOwnership.some(
-      (group) => group.itsMyVideo
-    );
-    setIsTimerActive(hasMyVideo);
-  }, [videoGroupsWithOwnership, dispatch]);
-
-  const handleGetAddLike = (data: any) => {
-    console.log("Received like data:", data);
+  const handleGetAddLike = (data: { userId: number; movieId: number }) => {
     setVideoLikes((prev) => ({
       ...prev,
-      [data.id]: (prev[data.id] || 0) + 1,
+      [data.movieId]: (prev[data.movieId] || 0) + 1,
     }));
   };
 
-  const handleGetRemoveLike = (data: any) => {
-    console.log("datadatadatadata", data);
+  const handleGetRemoveLike = (data: { userId: number; movieId: number }) => {
+    console.log(videoLikes, data);
+
     setVideoLikes((prev) => ({
       ...prev,
       [data.movieId]: (prev[data.movieId] || 0) - 1,
@@ -137,21 +158,101 @@ const StepOne: React.FC = () => {
     handleAttachmentList();
   }, []);
 
+  useEffect(() => {
+    let interval: any;
+    if (progress < 60 && isTimerActive) {
+      interval = setInterval(() => {
+        dispatch(RsetProgress(progress + 1));
+      }, 100000);
+    } else if (progress >= 60) {
+      clearInterval(interval);
+      // dispatch(RsetResetTimer());
+    }
+    return () => clearInterval(interval);
+  }, [progress, isTimerActive, dispatch]);
+
+  useEffect(() => {
+    const hasMyVideo = videoGroupsWithOwnership.some(
+      (group) => group.itsMyVideo
+    );
+    setIsTimerActive(hasMyVideo);
+  }, [videoGroupsWithOwnership, dispatch]);
+
+  const videoGroupsWithLikes = useMemo(() => {
+    return videoGroupsWithOwnership.map((group) => {
+      const parentLikes =
+        (videoLikes[group.parent?.movieId] || 0) + (group.likeInserted || 0);
+      const childLikes = group.child
+        ? (videoLikes[group.child?.movieId] || 0) + (group.likeMatched || 0)
+        : 0;
+
+      return {
+        ...group,
+        parentLikes,
+        childLikes,
+      };
+    });
+  }, [videoGroupsWithOwnership, videoLikes]);
+
+  console.log(pagination);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && pagination.hasMore && !isLoading) {
+          handleAttachmentList();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentRef = loadingRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [pagination.hasMore, isLoading]);
+
+  console.log(videoGroupsWithLikes);
+
   return (
     <>
       <Loading isLoading={isLoading} />
-      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10 shadow-card gap-[5px] p-[1px]">
-        <div className=""></div>
-        {videoGroupsWithOwnership.map((group, index) => {
-          const { parent, child, itsMyVideo, likeInserted, likeMatched } =
-            group;
+      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10   gap-[5px] p-[1px]">
+        {/* <div className="graid grid-cols-2 overflow-x-auto my-10">
+          <ImageRank
+            iconProfileStyle="font60"
+            // imgSrc={}
+          />
+          <ImageRank
+            iconProfileStyle="font60"
+            // imgSrc={}
+          />
+        </div> */}
+        {videoGroupsWithLikes.map((group, index) => {
+          const {
+            parent,
+            child,
+            itsMyVideo,
+            likeInserted,
+            likeMatched,
+            parentMovieId,
+            childMovieId,
+          } = group;
           const fixInsertTime = parent?.insertDate;
           const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
           const fixImg2 = child
             ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
             : "";
-          const parentLikes = (videoLikes?.like || 0) + likeInserted;
-          const childLikes = (videoLikes?.like || 0) + likeMatched;
+          const parentLikes =
+            (videoLikes[parentMovieId] || 0) + (likeInserted || 0);
+          const childLikes =
+            (videoLikes[childMovieId] || 0) + (likeMatched || 0);
 
           return (
             <>
@@ -254,6 +355,12 @@ const StepOne: React.FC = () => {
             </>
           );
         })}
+      </div>
+      <div
+        ref={loadingRef}
+        className=" bg-white w-full h-24 flex justify-center items-center"
+      >
+        <div className="mb-20 loader-userFinding w-12 h-12"></div>
       </div>
     </>
   );

@@ -6,6 +6,7 @@ import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
 import PhoneHeader from "./PhoneHeader";
 import {
+  RsetAllFollingList,
   RsetAllFollowerList,
   RsetCategory,
   RsetGetImageProfile,
@@ -71,7 +72,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     dispatch(RsetGiveUserOnlines(data));
   }, []);
 
-  const handleAllFollower = async () => {
+  const handleAllFolling = async () => {
     try {
       const res = await followingList(main?.userLogin?.userId);
       const { status, data } = res?.data;
@@ -81,7 +82,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         const getMapFollowerId = data?.map(
           (item: any) => item?.attachment?.attachmentId
         );
-        dispatch(RsetAllFollowerList(getMapFollowerId));
+        dispatch(RsetAllFollingList(getMapFollowerId));
       }
     } catch (error) {
       console.log(error);
@@ -106,7 +107,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   useEffect(() => {
     if (!main?.userLogin?.userId) return;
     handleSocketConfig();
-    handleAllFollower();
+    handleAllFolling();
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);
