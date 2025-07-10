@@ -52,7 +52,7 @@ const LogInForm: FC = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // جلوگیری از رفتار پیش‌فرض فرم
+      e.preventDefault(); 
       handleAccept();
     }
   };

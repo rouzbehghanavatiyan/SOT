@@ -7,7 +7,7 @@ import asyncWrapper from "../../common/AsyncWrapper";
 import { addAttachment } from "../../services/dotNet";
 
 const Setting: React.FC = () => {
-  const { main } = useAppSelector((state) => state);
+  const  main  = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("userId");
 

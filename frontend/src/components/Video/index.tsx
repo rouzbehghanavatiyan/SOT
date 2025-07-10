@@ -8,23 +8,16 @@ const Video: React.FC<VideoProps> = ({
   playbackRate,
   muted = false,
   url,
-  onDuration,
   onEnded,
   className,
   handleVideo,
   width = "100%",
   height = "100%",
-  videoId, // اضافه کردن prop جدید برای شناسایی ویدیو
 }) => {
   const playerRef = useRef<any>(null);
   const [showControls, setShowControls] = useState(false);
   const [played, setPlayed] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(playing);
-
-  useEffect(() => {
-    setIsPlaying(playing);
-  }, [playing]);
 
   const handleVideoClick = () => {
     setShowControls((prev) => !prev);
@@ -60,7 +53,7 @@ const Video: React.FC<VideoProps> = ({
           className={className}
           width={width}
           height={height}
-          playing={isPlaying}
+          playing={playing}
           loop={loop}
           playbackRate={playbackRate}
           muted={muted}

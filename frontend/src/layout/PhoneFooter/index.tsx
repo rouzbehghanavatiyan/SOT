@@ -12,7 +12,7 @@ import ImageRank from "../../components/ImageRank";
 const PhoneFooter: React.FC = () => {
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state.main);
 
   const handleWatchClick = () => {
     setActiveIcon("watch");

@@ -17,13 +17,12 @@ import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
 import ImageRank from "../../components/ImageRank";
 import EditProfile from "./EditProfile";
-import { redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const userId = sessionStorage.getItem("userId");
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
   const [match, setMatch] = useState<any>([]);
 
   const [profileImage, setProfileImage] = useState(userProfile);
@@ -142,7 +141,7 @@ const Profile: React.FC = () => {
         />
       )}
       <ResponsiveMaker hiddenWidth={975}>
-        <section className="mt-2 grid justify-center ">
+        <section className="grid justify-center ">
           <div className="w-screen p-3 md:w-full md:h-full bg-gray-100">
             <div className="mb-1 border-b-[1px] ">
               <div className="grid grid-cols-6 relative ">

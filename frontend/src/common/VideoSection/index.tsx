@@ -69,17 +69,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
       <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
-        <div
-          //   onClick={(e: any) => {
-          //     e.stopPropagation();
-          //     setOpenDropdowns({});
-          //   }}
-          className="grid grid-cols-3 items-center w-full"
-        >
-          <div
-            // onClick={() => setOpenDropdowns({})}
-            className="flex justify-start"
-          >
+        <div className="grid grid-cols-3 items-center w-full">
+          <div className="flex justify-start">
             <ImageRank
               rankStyle="w-8 h-8"
               classUserName="text-white"
@@ -89,19 +80,16 @@ const VideoSection: React.FC<VideoSectionProps> = ({
               imgSrc={profile}
             />
           </div>
-          <div
-            // onClick={() => setOpenDropdowns({})}
-            className="flex justify-center"
-          >
+          <div className="flex justify-center">
             {checkMyVideo && (
               <Follows
-                bgColor="bg-white"
+                bgColor=" "
                 title={isFollowed ? "Unfollow" : "Follow"}
                 onClick={() => onFollowClick(video, positionVideo)}
               />
             )}
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end ">
             {checkMyVideo && (
               <Dropdown
                 isOpenOptions={openDropdowns[positionVideo]}
@@ -127,14 +115,14 @@ const VideoSection: React.FC<VideoSectionProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex-1 relative flex items-center justify-center">
-        <div className="w-full h-full flex items-center justify-center">
+      <div className="flex-1 relative">
+        <div className="absolute inset-0 flex items-center justify-center bg-black overflow-hidden">
           <Video
-            videoId={video?.id}
+            videoId={video}
             className="max-w-full max-h-[35vh] min-h-[430px] w-auto h-[70vh] object-contain"
             loop
             playing={isPlaying}
-            handleVideo={() => onVideoPlay(video?.id)}
+            handleVideo={() => onVideoPlay(video)}
             url={videoUrl}
           />
           <div className="absolute left-0 right-0 bottom-10 z-50">

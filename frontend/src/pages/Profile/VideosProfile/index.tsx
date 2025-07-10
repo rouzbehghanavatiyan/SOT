@@ -18,7 +18,7 @@ const VideosProfile: React.FC<any> = ({ match }) => {
 
   return (
     <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12">
-      <div className="grid grid-cols-1 gap-8 w-full">
+      <div className="grid grid-cols-1 gap-2 w-full">
         {match.map((video: any, index: number) => {
           const videoUrl1 = `${baseURL}/${video?.attachmentInserted?.attachmentType}/${video?.attachmentInserted?.fileName}${video?.attachmentInserted?.ext}`;
           const videoUrl2 = `${baseURL}/${video?.attachmentMatched?.attachmentType}/${video?.attachmentMatched?.fileName}${video?.attachmentMatched?.ext}`;

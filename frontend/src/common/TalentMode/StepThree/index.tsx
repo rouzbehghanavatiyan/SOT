@@ -5,6 +5,7 @@ import { subSubCategoryList } from "../../../services/dotNet";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import SoftLink from "../../../hoc/SoftLinks";
+import MainTitle from "../../../components/MainTitle";
 
 const StepThree: React.FC = () => {
   const navigate = useNavigate();
@@ -43,6 +44,10 @@ const StepThree: React.FC = () => {
     icon: category.icon || category.name.toLowerCase(),
   }));
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       {/* <Loading isLoading={isLoading ? true : false} />
@@ -60,6 +65,7 @@ const StepThree: React.FC = () => {
           ))}
         </div>
       </div> */}
+      <MainTitle handleBack={handleBack} title="Choice talent" />
       <SoftLink
         iconMap={iconMap}
         handleAcceptCategory={handleAcceptCategory}

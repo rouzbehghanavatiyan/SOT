@@ -9,7 +9,7 @@ import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import { useAppSelector } from "../../../hooks/hook";
 
 const Fields: React.FC = () => {
-  const { main } = useAppSelector((state) => state);
+  const  main  = useAppSelector((state) => state?.main);
   const [title, setTitle] = useState<string>("");
   const [messages, setMessages] = useState<{ title: string; from: string }[]>(
     []

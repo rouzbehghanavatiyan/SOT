@@ -15,7 +15,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import StringHelpers from "../../utils/helpers/StringHelper";
 
 const Home: React.FC = () => {
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
+
   const [showComments, setShowComments] = useState(false);
   const [closingComments, setClosingComments] = useState(false);
   const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
@@ -35,7 +36,7 @@ const Home: React.FC = () => {
       setTimeout(() => {
         setShowComments(false);
         setClosingComments(false);
-      }, 200);
+      }, 150);
     } else {
       setShowComments(true);
     }
@@ -104,7 +105,10 @@ const Home: React.FC = () => {
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
-        mousewheel={true}
+        mousewheel={{
+          forceToAxis: true,
+          releaseOnEdges: true,
+        }}
         modules={[Mousewheel]}
         className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]"
         onSlideChange={(swiper) => handleVideoPlay(swiper.activeIndex)}

@@ -16,7 +16,7 @@ const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 const userIdFromSStorage = Number(sessionStorage.getItem("userId"));
 
 const StepOne: React.FC = () => {
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -28,7 +28,7 @@ const StepOne: React.FC = () => {
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const [pagination, setPagination] = useState({
     skip: 0,
-    take: 5,
+    take: 6,
     hasMore: true,
   });
 
@@ -194,8 +194,6 @@ const StepOne: React.FC = () => {
     });
   }, [videoGroupsWithOwnership, videoLikes]);
 
-  console.log(pagination);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -218,22 +216,10 @@ const StepOne: React.FC = () => {
     };
   }, [pagination.hasMore, isLoading]);
 
-  console.log(videoGroupsWithLikes);
-
   return (
     <>
-      <Loading isLoading={isLoading} />
-      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10   gap-[5px] p-[1px]">
-        {/* <div className="graid grid-cols-2 overflow-x-auto my-10">
-          <ImageRank
-            iconProfileStyle="font60"
-            // imgSrc={}
-          />
-          <ImageRank
-            iconProfileStyle="font60"
-            // imgSrc={}
-          />
-        </div> */}
+      {/* <Loading isLoading={isLoading} /> */}
+      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10  gap-[5px] p-[1px]">
         {videoGroupsWithLikes.map((group, index) => {
           const {
             parent,

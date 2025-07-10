@@ -39,7 +39,7 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
     setIsVisible(window.innerWidth <= 1390);
   };
 
-  const { main } = useAppSelector((state) => state);
+  const  main  = useAppSelector((state) => state?.main);
   const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
   const findImg = StringHelpers?.getProfile(getProfileImage);
 

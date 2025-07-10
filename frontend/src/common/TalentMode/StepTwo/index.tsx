@@ -14,6 +14,7 @@ import LocalSeeIcon from "@mui/icons-material/LocalSee";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SoftLink from "../../../hoc/SoftLinks";
+import MainTitle from "../../../components/MainTitle";
 
 const StepTwo: React.FC = () => {
   const navigate = useNavigate();
@@ -51,6 +52,10 @@ const StepTwo: React.FC = () => {
     game: <SportsEsportsIcon className="text-2xl mx-3 font25" />,
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const categoriesWithIcons = allSubCategory?.map((category: any) => ({
     ...category,
     icon: category.icon || category.name.toLowerCase(),
@@ -58,7 +63,9 @@ const StepTwo: React.FC = () => {
 
   return (
     <>
+      <MainTitle title="Talent mode" handleBack={handleBack} />
       <SoftLink
+        handleBack={handleBack}
         iconMap={iconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}

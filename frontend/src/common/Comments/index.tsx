@@ -4,13 +4,15 @@ import ChatFields from "../ChatFields";
 import { addComment, commentList } from "../../services/dotNet";
 import { useAppSelector } from "../../hooks/hook";
 import MessageInput from "../../pages/ChatRoom/PrivateChat/MessageInput";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Comments: React.FC<any> = ({
   handleShowCMT,
   closingComments,
   movieInfo,
 }) => {
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
   const [title, setTitle] = useState<any>("");
   const [allComments, setAllComments] = useState<any>([]);
   const [showStickers, setShowStickers] = useState(false);
@@ -58,21 +60,9 @@ const Comments: React.FC<any> = ({
     e.stopPropagation();
   };
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (
-      titleInputRef.current &&
-      !titleInputRef.current.contains(e.target as Node)
-    ) {
-      // handleShowCMT();
-    }
+  const handleClose = () => {
+    handleShowCMT();
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <div className="">
@@ -86,8 +76,14 @@ const Comments: React.FC<any> = ({
         >
           <div className="h-full  overflow-y-auto  ">
             <div className="text-center fixed w-full z-20 border-b-[1px] mb-4 font-bold font15 bg-gray-100 p-4">
-              <div className=" ">
-                <span className=" ">Comments</span>
+              <div className="grid grid-cols-6 ">
+                <span className="col-span-5">Comments</span>
+                <span className="col-span-1">
+                  <CloseIcon
+                    onClick={() => handleClose()}
+                    className="text-primary font20"
+                  />
+                </span>
               </div>
             </div>
             {allComments > 0 &&

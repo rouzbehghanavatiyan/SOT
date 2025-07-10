@@ -2,6 +2,7 @@ import axios from "axios";
 import { AddMovieType } from "../../common/EditVideo/type";
 
 const baseURL: string | undefined = import.meta.env.VITE_URL;
+const urlNotif: string | undefined = import.meta.env.VITE_TEST_NOTIF;
 
 export const getTableFields = async () => {
   const url = `${baseURL}/logins`;
@@ -134,5 +135,11 @@ export const removeComment = async (postData: number | string) => {
 
 export const commentList = async () => {
   const url = `${baseURL}/commentList`;
+  return await axios.get(url);
+};
+
+// -> notif
+export const createSubscription = async () => {
+  const url = `${urlNotif}/notifications/public-key`;
   return await axios.get(url);
 };

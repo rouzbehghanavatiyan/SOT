@@ -20,7 +20,7 @@ const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
   const userIdLogin = Number(main?.userLogin?.userId);
   const socket = main?.socketConfig;
   const [userSender, setUserSender] = useState<MessageData[]>([]);
@@ -28,11 +28,9 @@ const ChatRoom: React.FC = () => {
     {}
   );
   const checkMessageReadStatus = useCallback((senderId: number) => {
-    // می‌توانید این اطلاعات را از localStorage یا سرور دریافت کنید
     return localStorage.getItem(`message_read_${senderId}`) === "true";
   }, []);
   const handleRedirect = (data: any) => {
-    // ذخیره وضعیت خوانده شدن در localStorage
     localStorage.setItem(`message_read_${data.sender}`, "true");
     setUnreadMessages((prev) => ({ ...prev, [data.sender]: false }));
     navigate(`/privateMessage?id=${data?.sender}`, {
@@ -101,41 +99,38 @@ const ChatRoom: React.FC = () => {
   console.log(unreadMessages);
 
   return (
-    <div>
-      <div className="">
-        {userSender.length >= 0 ? (
-          userSender?.map((user: any) => {
-            console.log(user);
-            const fixImage = StringHelpers.getProfile(user);
+    <div className="md:mt-10 mt-0">
+      {userSender.length >= 0 ? (
+        userSender?.map((user: any) => {
+          const fixImage = StringHelpers.getProfile(user);
 
-            return (
-              <div
-                onClick={() => handleRedirect(user)}
-                className="relative border-b-[1px] flex items-center mt-2 border-gray-100 bg-gray-100"
-              >
-                <div className="m-2 ">
-                  <ImageRank
-                    userName={user?.userNameSender}
-                    className="w-80 h-80"
-                    imgSize={60}
-                    score={user?.score || 0}
-                    rankStyle="w-9 h-9"
-                    classUserName="text-black"
-                    imgSrc={fixImage || "default-profile-image.png"}
-                  />
-                </div>
-                {unreadMessages[user.sender] && (
-                  <span className="bg-red p-2 absolute rounded-full right-4" />
-                )}
+          return (
+            <div
+              onClick={() => handleRedirect(user)}
+              className="relative border-b-[1px]  flex items-center py-2 border-gray-100 bg-gray-100"
+            >
+              <div className="m-2 ">
+                <ImageRank
+                  userName={user?.userNameSender}
+                  className="w-80 h-80"
+                  imgSize={60}
+                  score={user?.score || 0}
+                  rankStyle="w-9 h-9"
+                  classUserName="text-black"
+                  imgSrc={fixImage || "default-profile-image.png"}
+                />
               </div>
-            );
-          })
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="mt-10 text-gray-500">Empty messages</p>
-          </div>
-        )}
-      </div>
+              {unreadMessages[user.sender] && (
+                <span className="bg-red p-2 absolute rounded-full right-4" />
+              )}
+            </div>
+          );
+        })
+      ) : (
+        <div className="flex items-center justify-center h-full">
+          <p className="mt-10 text-gray-500">Empty messages</p>
+        </div>
+      )}
     </div>
   );
 };

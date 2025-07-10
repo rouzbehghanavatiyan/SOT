@@ -4,7 +4,7 @@ import { userMessages } from "../../../services/nest";
 import { useLocation } from "react-router-dom";
 
 const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
-  const { main } = useAppSelector((state) => state);
+  const  main  = useAppSelector((state) => state?.main);
   const location = useLocation();
   const userReciver = Number(location?.search?.split("=")?.[1]);
 

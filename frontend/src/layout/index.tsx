@@ -29,6 +29,7 @@ import { jwtDecode } from "jwt-decode";
 import { useServiceWorker } from "../hooks/useServiceWorker";
 import SotLogo from "../assets/img/logocircle.png";
 import { Button } from "../components/Button";
+import CloseIcon from "@mui/icons-material/Close";
 
 type PropsType = any;
 
@@ -37,8 +38,8 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const locationUrl = useLocation();
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
-  const { main } = useAppSelector((state) => state);
-  const { showPrompt, handleAllow, handleBlock } = useServiceWorker();
+  const  main  = useAppSelector((state) => state?.main);
+  const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
 
   const handleGetCategory = asyncWrapper(async () => {
@@ -53,10 +54,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     dispatch(RsetSocketConfig(socket));
   }, [dispatch, socket]);
 
-  const handleGetProfile = async (userId: string) => {
+  const handleGetProfile = async (userId: number) => {
     try {
-      const [resAttachList, resImageProfile] = await Promise.all([
-        attachmentList(),
+      const [resImageProfile] = await Promise.all([
+        // attachmentList(),
         profileAttachmentList(userId),
       ]);
       const { status, data } = resImageProfile?.data;
@@ -76,7 +77,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     try {
       const res = await followingList(main?.userLogin?.userId);
       const { status, data } = res?.data;
-      console.log("followingListvfollowingListfollowingList", data);
 
       if (status === 0) {
         const getMapFollowerId = data?.map(
@@ -138,29 +138,33 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
             <div>
               {children}
               {showPrompt && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                  <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full">
-                    <div className="text-center ">
-                      <div className="flex items-center justify-center">
-                        <img src={SotLogo} className="w-10 h-10" />
-                      </div>
-                      <p className=" text-sm text-gray-600 my-10">
-                        Would you like to receive notifications?
-                      </p>
-                      <div className="mt-6 flex justify-center gap-3">
-                        <Button
-                          onClick={handleAllow}
-                          variant={"default"}
-                          label="Accept"
-                        />
-                        <Button
-                          onClick={handleBlock}
-                          variant={"outLine_secondary"}
-                          label="Reject"
-                        />
+                <div className="fixed inset-0  bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
+                  <header className="bg-white  p-4 rounded-xl">
+                    <div className=" flex  justify-end">
+                      <CloseIcon
+                        onClick={() => setShowPrompt(false)}
+                        className="text-primary  font20"
+                      />
+                    </div>
+                    <div className=" flex justify-center rounded-xl p-4 bg-white max-w-md w-full">
+                      <div className="text-center">
+                        <div className="flex  items-center justify-center">
+                          <img src={SotLogo} className="w-10 h-10" />
+                        </div>
+                        <div className="text-sm text-gray-600 my-10">
+                          <p>Notifications are disabled for you.</p>
+                          <p>Do you want to enable them?</p>
+                        </div>
+                        <div className="mt-6 flex justify-center gap-3">
+                          <Button
+                            onClick={handleAllow}
+                            variant={"default"}
+                            label="Accept"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </header>
                 </div>
               )}
             </div>

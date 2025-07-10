@@ -14,7 +14,7 @@
 
 // const ShowWatch = () => {
 //   const [videoSrc, setVideoSrc] = useState("");
-//   const { main } = useAppSelector((state) => state);
+//   const  main  = useAppSelector((state) => state?.main);
 //   const [isPlayingBottom, setIsPlayingBottom] = useState(false);
 //   const handleBinaryData = (binaryData: string) => {
 //     const blob = new Blob([binaryData], { type: "video/mp4" });

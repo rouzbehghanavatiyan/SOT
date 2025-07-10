@@ -15,7 +15,7 @@ interface PropsType {
 }
 
 const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
-  const { main } = useAppSelector((state) => state);
+  const  main  = useAppSelector((state) => state?.main);
   const socket = main?.socketConfig;
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [findUser, setFindUser] = useState<any>([]);

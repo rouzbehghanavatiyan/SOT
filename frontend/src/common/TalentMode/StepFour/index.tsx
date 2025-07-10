@@ -4,11 +4,13 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import WifiOffIcon from "@mui/icons-material/WifiOff";
 import AltRouteIcon from "@mui/icons-material/AltRoute";
 import EditVideo from "../../EditVideo";
-import Operational from "./Operational";
 import MainTitle from "../../../components/MainTitle";
+import SoftLink from "../../../hoc/SoftLinks";
+import { useNavigate } from "react-router-dom";
 
 const StepFour: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const navigate = useNavigate();
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [showEditMovie, setShowEditMovie] = useState<boolean>(false);
@@ -92,47 +94,73 @@ const StepFour: React.FC = () => {
     input.click();
   };
 
+  const handleCategoryClick = (category: {
+    name: string;
+    id: string | number;
+  }) => {
+    if (category.name === "Offline") {
+      handleOffline();
+    } else if (category.name === "Optional") {
+      handleOptional();
+    } else if (category.name === "Turbo") {
+      // handleProfile();
+    } else if (category.name === "Live") {
+      // handleProfile();
+    }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const iconMap: { [key: string]: JSX.Element } = {
+    Offline: <WifiOffIcon className="text-2xl mx-3 font25" />,
+    Optional: <AltRouteIcon className="text-2xl mx-3 font25" />,
+    Turbo: <NetworkCheckIcon className="text-2xl mx-3 font25" />,
+    Live: <RadioButtonCheckedIcon className="text-2xl mx-3 font25" />,
+  };
+
   return (
-    <section className="mt-8">
+    <section className=" ">
       <MainTitle title="Talent mode" />
-      <div className="mx-4 grid grid-cols-4 gap-4 md:mt-10 justify-center ">
+      <div className="mx-4 grid grid-cols-1 md:mt-10 justify-center ">
         <video ref={videoRef} style={{ display: "none" }} />
         <div
           onClick={handleOffline}
-          className="border-b-2 border-gray-200 cursor-pointer  p-2 mt-4"
+          className=" cursor-pointer grid grid-cols-5 mt-4"
         >
-          <span className="flex justify-center  ">
-            <WifiOffIcon className="font100 flex px-3 justify-center text-green" />
-          </span>
-          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Offline
+          </span>
+          <span className="flex col-span-3 justify-start  ">
+            <WifiOffIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
         </div>
         <div
           onClick={handleOptional}
-          className="border-b-2 border-gray-200 cursor-pointer  py-4 mt-4"
+          className=" cursor-pointer grid grid-cols-5  py-4 mt-4 "
         >
-          <span className="flex justify-center  ">
-            <AltRouteIcon className="font100 flex px-3 justify-center text-green" />
-          </span>
-          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Optional
           </span>
-        </div>
-        <div className="border-b-2 border-gray-200 cursor-pointer  py-4 mt-4 ">
-          <span className="flex justify-center  ">
-            <NetworkCheckIcon className="font100 flex px-3 justify-center text-green" />
+          <span className="flex col-span-3 justify-start  ">
+            <AltRouteIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
-          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+        </div>
+        <div className=" cursor-pointer grid grid-cols-5  py-4 mt-4  ">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Turbo
           </span>
-        </div>
-        <div className="border-b-2 border-gray-200 cursor-pointer  py-4 mt-4 ">
-          <span className="flex justify-center">
-            <RadioButtonCheckedIcon className="font100 flex px-3 justify-center text-green" />
+          <span className="flex col-span-3 justify-start  ">
+            <NetworkCheckIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
-          <span className="text-green flex items-center text-center justify-center font20 font-bold">
+        </div>
+        <div className=" cursor-pointer grid grid-cols-5  py-4 mt-4  ">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Live
+          </span>
+          <span className="flex col-span-3 justify-start">
+            <RadioButtonCheckedIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
         </div>
 
@@ -146,6 +174,27 @@ const StepFour: React.FC = () => {
           />
         )}
       </div>
+      {/* <MainTitle handleBack={handleBack} title="Mode" />
+      <SoftLink
+        iconMap={iconMap}
+        handleAcceptCategory={handleCategoryClick}
+        isLoading={false}
+        categories={[
+          { name: "Offline", id: 1 },
+          { name: "Optional", id: 2 },
+          { name: "Turbo", id: 3 },
+          { name: "Live", id: 4 },
+        ]}
+      />
+      {showEditMovie && (
+        <EditVideo
+          mode={mode}
+          allFormData={allFormData}
+          showEditMovie={showEditMovie}
+          setShowEditMovie={setShowEditMovie}
+          coverImage={coverImage}
+        />
+      )} */}
     </section>
   );
 };

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import ShareIcon from "@mui/icons-material/Share";
+import ReportIcon from "@mui/icons-material/Report";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import {
@@ -24,17 +26,21 @@ const ShowWatch: React.FC = () => {
   const { main } = useAppSelector((state) => state);
   const getInvitedId = location?.search?.split("id=")?.[1];
   const [videos, setVideos] = useState<Video[]>([]);
+  const [allMatch, setAllMatch] = useState<Video[]>([]);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [openDropdowns, setOpenDropdowns] = useState({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
+  const [playingStates, setPlayingStates] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [showComments, setShowComments] = useState<boolean>(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const chunkedVideos: any = [];
   const socket = main?.socketConfig;
 
   const handleAttachmentListByInviteId = asyncWrapper(async () => {
     const res = await attachmentListByInviteId(getInvitedId);
     const { status, data } = res?.data;
+    setAllMatch(data);
     if (status === 0) {
       const processedVideos = data.map((video: any) => {
         const isFollowedFromMeTop = main?.allFollingList?.some(
@@ -76,12 +82,12 @@ const ShowWatch: React.FC = () => {
     }
   });
 
-  const handleVideoPlay = (videoId: string) => {
-    setOpenDropdowns({});
-    setCurrentlyPlayingId((prevId: any) =>
-      prevId === videoId ? null : videoId
-    );
-  };
+  // const handleVideoPlay = (videoId: string) => {
+  //   setOpenDropdowns({});
+  //   setCurrentlyPlayingId((prevId: any) =>
+  //     prevId === videoId ? null : videoId
+  //   );
+  // };
 
   // const handleVideoPlay = (videoId: string) => {
   //   setIsOpenOptions(false);
@@ -154,15 +160,29 @@ const ShowWatch: React.FC = () => {
   };
 
   const handleSlideChange = (swiper: any) => {
-    setOpenDropdowns({});
+    console.log(swiper);
+
     const realIndex = swiper.realIndex;
     setActiveSlideIndex(realIndex);
-    setCurrentlyPlayingId(null);
-    if (chunkedVideos[realIndex] && chunkedVideos[realIndex].length > 0) {
-      const topVideo = chunkedVideos[realIndex][0];
-      setCurrentlyPlayingId(topVideo.id);
-    }
+
+    // تنظیم currentlyPlayingId به ویدیوی بالا
+    const topVideoId = videos[realIndex]?.attachmentInserted?.attachmentId;
+    setCurrentlyPlayingId(topVideoId);
   };
+
+  const handleVideoPlay = (videoId: string) => {
+    setOpenDropdowns({});
+    console.log(videoId);
+
+    setCurrentlyPlayingId((prevId: any) => {
+      if (prevId === videoId) {
+        return null;
+      }
+      return videoId;
+    });
+  };
+
+  console.log(currentlyPlayingId);
 
   const handleLikeClick = asyncWrapper(
     async (video: any, position: number, movieId: any) => {
@@ -224,8 +244,6 @@ const ShowWatch: React.FC = () => {
   );
 
   const toggleDropdown = (video: Video, index: number) => {
-    console.log(video);
-
     setOpenDropdowns((prev: any) => {
       if (index === 0 || index === 1) {
         return {
@@ -249,11 +267,6 @@ const ShowWatch: React.FC = () => {
 
     return [
       {
-        label: "Save",
-        icon: <NotificationsIcon className="h-5 w-5" />,
-        onClick: () => console.log(data),
-      },
-      {
         label: "Send message",
         icon: <EmailIcon className="text-gray-800 font20" />,
         onClick: () =>
@@ -264,8 +277,14 @@ const ShowWatch: React.FC = () => {
           }),
       },
       {
-        label: "Notification",
-        icon: <NotificationsIcon className="h-5 w-5" />,
+        label: "Share via",
+        icon: <ShareIcon className="text-gray-800 font20" />,
+
+        onClick: () => console.log(data),
+      },
+      {
+        label: "Report",
+        icon: <ReportIcon className="text-gray-800 font20" />,
         onClick: () => alert("اعلان‌ها"),
       },
       { divider: true },
@@ -276,29 +295,47 @@ const ShowWatch: React.FC = () => {
     handleAttachmentListByInviteId();
   }, [getInvitedId, main?.allFollingList]);
 
+  useEffect(() => {
+    if (allMatch.length > 0) {
+      setCurrentlyPlayingId(allMatch[0]?.attachmentInserted?.attachmentId);
+    }
+  }, [allMatch]);
+
+  console.log(videos);
+
   return (
-    <Swiper
-      direction={"vertical"}
-      slidesPerView={1}
-      mousewheel={true}
-      onSlideChange={handleSlideChange}
-      modules={[Mousewheel]}
-      onInit={() => {
-        if (videos.length > 0) {
-          setCurrentlyPlayingId(videos[0].id);
-        }
-      }}
-      className="mySwiper md:mt-20 md:h-[calc(100vh-100px)] h-[calc(100vh-43px)] bg-black"
-    >
-      {videos.map((video: any, index) => {
-        return (
-          <SwiperSlide key={index}>
-            <div className="h-full flex flex-col">
-              <div className="flex-1 flex items-center justify-center">
+    <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
+      <Swiper
+        direction={"vertical"}
+        slidesPerView={1}
+        mousewheel={true}
+        onSlideChange={handleSlideChange}
+        modules={[Mousewheel]}
+        onInit={() => {
+          if (allMatch.length > 0) {
+            setCurrentlyPlayingId(
+              allMatch[0]?.attachmentInserted?.attachmentId
+            );
+          }
+        }}
+        className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-42px)] "
+      >
+        {videos.map((video: any, index) => {
+          return (
+            <SwiperSlide
+              className="h-full w-full bg-black flex flex-col"
+              key={index}
+            >
+              <div className="h-1/2 w-full relative flex flex-col">
                 <VideoSection
                   video={video}
-                  isPlaying={currentlyPlayingId === video.id}
-                  onVideoPlay={handleVideoPlay}
+                  isPlaying={
+                    currentlyPlayingId ===
+                    video?.attachmentInserted?.attachmentId
+                  }
+                  onVideoPlay={() =>
+                    handleVideoPlay(video?.attachmentInserted?.attachmentId)
+                  }
                   onLikeClick={() =>
                     handleLikeClick(
                       video,
@@ -320,11 +357,16 @@ const ShowWatch: React.FC = () => {
                   showComments={handleShowComments}
                 />
               </div>
-              <div className="flex-1 flex items-center justify-center">
+              <div className="h-1/2 w-full relative flex flex-col">
                 <VideoSection
                   video={video}
-                  isPlaying={currentlyPlayingId === video.id}
-                  onVideoPlay={handleVideoPlay}
+                  isPlaying={
+                    currentlyPlayingId ===
+                    video?.attachmentMatched?.attachmentId
+                  }
+                  onVideoPlay={() =>
+                    handleVideoPlay(video?.attachmentMatched?.attachmentId)
+                  }
                   onLikeClick={() =>
                     handleLikeClick(
                       video,
@@ -346,12 +388,12 @@ const ShowWatch: React.FC = () => {
                   showComments={handleShowComments}
                 />
               </div>
-            </div>
-          </SwiperSlide>
-        );
-      })}
-      {/* {showComments && <Comments handleShowCMT={handleShowComments} />} */}
-    </Swiper>
+            </SwiperSlide>
+          );
+        })}
+        {/* {showComments && <Comments handleShowCMT={handleShowComments} />} */}
+      </Swiper>
+    </div>
   );
 };
 

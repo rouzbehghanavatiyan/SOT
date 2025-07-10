@@ -28,7 +28,7 @@ interface Message {
 }
 
 const PrivateChat: React.FC<PrivateChatProps> = () => {
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
   const location = useLocation();
   const socket = main?.socketConfig;
@@ -116,12 +116,18 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
     }
   }, [reciveUserId, markMessagesAsRead, hasMarkedAsRead]);
 
-  const fixImage = `${baseURL}/${location?.state?.userInfo?.attachmentType}/${location?.state?.userInfo?.fileName}${location?.state?.userInfo?.ext}`;
+  const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
+  console.log(fixImage);
+
   return (
     <div className="flex flex-col h-[calc(100vh-50px)]">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
-        userProfile={fixImage}
+        userProfile={
+          !fixImage?.includes("undefined")
+            ? fixImage
+            : location?.state?.userInfo?.userProfile
+        }
         score={location?.state?.userInfo?.score || 20}
       />
       <div className="flex-1 overflow-y-auto p-2 bg-gray-100">

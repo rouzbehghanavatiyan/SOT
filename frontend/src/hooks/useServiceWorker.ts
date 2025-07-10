@@ -1,5 +1,5 @@
-// hooks/useServiceWorker.ts
 import { useEffect, useState } from "react";
+import { createSubscription } from "../services/dotNet";
 
 export const useServiceWorker = () => {
   const notificationPreference = localStorage.getItem("notifications");
@@ -7,38 +7,34 @@ export const useServiceWorker = () => {
 
   const registerServiceWorker = async () => {
     try {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
+      await navigator.serviceWorker.register("/sw.js", {
         scope: "/",
         updateViaCache: "none",
       });
-
-      if (Notification.permission === "default") {
-        setShowPrompt(true);
-      }
+      setShowPrompt(true);
     } catch (error) {
       console.error("SW registration failed:", error);
     }
   };
 
   useEffect(() => {
-    if (notificationPreference !== "denied" && "serviceWorker" in navigator) {
+    if ("serviceWorker" in navigator && Notification.permission === "default") {
       registerServiceWorker();
     }
   }, []);
 
   const handleAllow = async () => {
+    setShowPrompt(false);
     const permission = await Notification.requestPermission();
-    console.log(permission);
-
     if (permission === "granted") {
       new Notification("Notifications Enabled!", {
         body: "You have successfully enabled notifications.",
       });
+      const res = await createSubscription();
+      console.log(res);
     } else {
       console.warn("Notifications permission denied.");
     }
-
-    setShowPrompt(false);
   };
 
   const handleBlock = () => {
@@ -68,6 +64,7 @@ export const useServiceWorker = () => {
 
   return {
     showPrompt,
+    setShowPrompt,
     handleAllow,
     handleBlock,
     canSendNotification,

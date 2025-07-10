@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import Loading from "../../components/Loading";
-
 import PersonIcon from "@mui/icons-material/Person";
 
 interface Category {
@@ -30,16 +29,18 @@ interface TalentModeProps {
 const SoftLink: FC<TalentModeProps> = ({
   iconMap = {},
   categories = [],
+
   handleAcceptCategory = () => {},
   isLoading = false,
-  defaultIcon = <PersonIcon className=" text-2xl mx-3" />,
-  containerClass = "w-screen md:w-[500px] md:mt-10 bg-white mt-2 md:h-full",
+  defaultIcon = <PersonIcon className=" font25 mx-3" />,
+  containerClass = "w-screen md:w-[500px] md:mt-10 bg-white md:h-full",
   itemClass = " rounded-lg md:min-w-52 m-3 flex justify-start items-center text-primary cursor-pointer",
   textClass = "font20 py-2",
 }) => {
   return (
     <>
       <Loading isLoading={isLoading} />
+
       <div className="grid justify-center">
         <div className={containerClass}>
           {categories.map((category) => (
@@ -48,9 +49,8 @@ const SoftLink: FC<TalentModeProps> = ({
               onClick={() => handleAcceptCategory(category)}
               className={itemClass}
             >
-              {category.icon
-                ? iconMap[category.icon.toLowerCase()] || defaultIcon
-                : defaultIcon}
+              {(category.icon && iconMap[category.icon.toLowerCase()]) ||
+                defaultIcon}
               <span className={textClass}>
                 {category.label || category.name}
               </span>

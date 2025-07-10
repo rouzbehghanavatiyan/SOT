@@ -26,7 +26,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
     status: null,
   });
 
-  const { main } = useAppSelector((state) => state);
+  const main = useAppSelector((state) => state?.main);
   const socket = main?.socketConfig;
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
