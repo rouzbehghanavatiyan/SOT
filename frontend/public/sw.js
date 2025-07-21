@@ -3,8 +3,9 @@ const CACHE_NAME = "my-app-cache-v1";
 const urlsToCache = [
   "/",
   "/index.html",
-  "/assets/*", // همه فایل‌های assets را cache کنید
-  "/src/*", // فایل‌های src را هم اضافه کنید
+  "/assets/*",
+  "/src/*",
+  "/assets/img/logocircle.png",
 ];
 
 self.addEventListener("install", (event) => {
@@ -49,7 +50,7 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.title, {
       body: payload.body,
-      icon: "/icon.png",
+      icon: "/assets/img/logocircle.png",
       data: { url: payload.url || "/" },
     })
   );

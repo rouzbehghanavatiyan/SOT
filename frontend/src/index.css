@@ -31,6 +31,7 @@ body * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 p {
@@ -43,6 +44,17 @@ p {
 
 br {
   user-select: none;
+}
+
+.input {
+  height: 2rem;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.input.overflow-visible {
+  height: calc(20px + 2rem);
+  overflow: visible;
 }
 
 .css-1u9des2-indicatorSeparator {
@@ -941,4 +953,9 @@ br {
 .text_logo {
   background: #2c399c;
   background: linear-gradient(90deg, rgba(44, 57, 156, 1) 0%, rgba(110, 199, 255, 1) 50%, rgba(43, 36, 143, 1) 100%);
+}
+
+.container_message {
+  max-width: 70%;
+  word-wrap: break-word;
 }

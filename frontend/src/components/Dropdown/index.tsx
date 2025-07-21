@@ -21,8 +21,8 @@ interface DropdownProps {
   setIsOpenOptions: React.Dispatch<React.SetStateAction<boolean>>;
   isOpenOptions?: boolean;
   itemData?: any;
-  openDropdowns: boolean;
-  setOpenDropdowns: React.Dispatch<React.SetStateAction<boolean>>;
+  openDropdowns?: boolean;
+  setOpenDropdowns?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -36,14 +36,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   className = "",
   itemData,
   iconOnly = false,
-  openDropdowns,
-  setOpenDropdowns,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const closeAllDropdowns = () => {
-    // setOpenDropdowns({});
-  };
 
   const handleItemClick = (item: DropdownItem) => {
     if (item.onClick) {
@@ -74,19 +68,6 @@ const Dropdown: React.FC<DropdownProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpenOptions]);
-
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if (Object.values(openDropdowns).some((isOpen) => isOpen)) {
-  //       closeAllDropdowns();
-  //     }
-  //   };
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [openDropdowns]);
 
   return (
     <div

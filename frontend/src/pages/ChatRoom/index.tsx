@@ -18,8 +18,6 @@ interface MessageData {
 
 const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-
   const main = useAppSelector((state) => state?.main);
   const userIdLogin = Number(main?.userLogin?.userId);
   const socket = main?.socketConfig;
@@ -31,6 +29,8 @@ const ChatRoom: React.FC = () => {
     return localStorage.getItem(`message_read_${senderId}`) === "true";
   }, []);
   const handleRedirect = (data: any) => {
+    console.log(data);
+
     localStorage.setItem(`message_read_${data.sender}`, "true");
     setUnreadMessages((prev) => ({ ...prev, [data.sender]: false }));
     navigate(`/privateMessage?id=${data?.sender}`, {
@@ -111,6 +111,7 @@ const ChatRoom: React.FC = () => {
             >
               <div className="m-2 ">
                 <ImageRank
+                  userNameStyle="text-gray-black"
                   userName={user?.userNameSender}
                   className="w-80 h-80"
                   imgSize={60}

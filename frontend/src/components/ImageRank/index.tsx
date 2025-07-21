@@ -1,126 +1,107 @@
 import React, { useEffect, useState } from "react";
 import per_bronze_3 from "../../assets/ranks/per_bronze_3.webp";
-import normal_silver_1 from "../../assets/ranks/normal_silver_1.webp";
-import normal_silver_2 from "../../assets/ranks/normal_silver_2.webp";
-import per_gold_1 from "../../assets/ranks/per_gold_1.webp";
 import normal_gold_3 from "../../assets/ranks/normal_gold_3.png";
 import silverRank from "../../assets/img/rank5.webp";
 import goldRank1 from "../../assets/img/rank7.webp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 interface ProfileWithRankProps {
   imgSrc?: string | any;
-  classUserName?: string;
-  userName?: any;
+  userName?: string;
   score?: number;
-  className?: string;
-  starWidth?: number;
-  starHeight?: number;
-  rankWidth?: number;
-  rankHeight?: number;
-  iconProfileStyle?: string;
   imgSize?: number;
-  rankStyle?: any;
+  userNameStyle?: string;
 }
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
   imgSrc,
-  rankStyle,
+  userNameStyle,
   userName,
-  iconProfileStyle,
-  classUserName = "white",
   score = -1,
-  starWidth = 10,
-  starHeight = 10,
   imgSize = 40,
 }) => {
-  const [stars, setStars] = useState<JSX.Element[]>([]);
   const [rankSrc, setRankSrc] = useState<string>("");
+  const rankSize = Math.floor(imgSize * 0.6);
 
-  const fixScore = () => {
-    let newRankSrc: string;
-    let newStars: JSX.Element[];
+  const determineRank = () => {
     if (score === 0) {
-      console.log(score);
-
-      newRankSrc = per_bronze_3;
-      newStars = Array(1).fill(
-        <img
-          className="rounded-full  shadow-lg"
-          style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={per_bronze_3}
-          alt="Star"
-        />
-      );
+      return per_bronze_3;
     } else if (score >= 10 && score < 20) {
-      newRankSrc = silverRank;
-      newStars = Array(2).fill(
-        <img
-          className="rounded-full  shadow-lg"
-          style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={normal_silver_1}
-          alt="Star"
-        />
-      );
+      return silverRank;
     } else if (score >= 20 && score < 30) {
-      newRankSrc = goldRank1;
-      newStars = Array(2).fill(
-        <img
-          className="rounded-full  shadow-lg"
-          style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={normal_silver_2}
-          alt="Star"
-        />
-      );
+      return goldRank1;
     } else {
-      newRankSrc = normal_gold_3;
-      newStars = Array(3).fill(
-        <img
-          className="rounded-full  shadow-lg"
-          style={{ width: `${starWidth}px`, height: `${starHeight}px` }}
-          src={per_gold_1}
-          alt="Star"
-        />
-      );
+      return normal_gold_3;
     }
-    setRankSrc(newRankSrc);
-    setStars(newStars);
   };
 
   useEffect(() => {
-    fixScore();
-  }, [score, starWidth, starHeight]);
+    setRankSrc(determineRank());
+  }, [score]);
 
   return (
-    <div className="flex relative" style={{ height: `${imgSize}px` }}>
-      <div className="flex items-center">
+    <div
+      className="flex items-center  m-1 relative"
+      style={{ height: `${imgSize}px` }}
+    >
+      <div
+        className="relative"
+        style={{ width: `${imgSize}px`, height: `${imgSize}px` }}
+      >
         {!imgSrc ||
-        imgSrc.includes("undefined") ||
+        imgSrc?.includes("undefined") ||
         imgSrc === "" ||
         imgSrc === null ? (
-          <AccountCircleIcon className={iconProfileStyle} />
+          <AccountCircleIcon
+            className="text-gray-200 w-full h-full"
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+            }}
+          />
         ) : (
           <img
-            className="rounded-full"
+            className="rounded-full object-cover"
             src={imgSrc}
             style={{
-              width: `${imgSize}px`,
-              height: `${imgSize}px`,
+              width: "100%",
+              height: "100%",
             }}
             alt="Profile"
           />
         )}
-        {userName && (
-          <span className={`ms-1 font-bold ${classUserName}`}>{userName}</span>
+
+        {score >= 0 && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: `-${rankSize * 0.3}px`,
+              left: `-${rankSize * 0.3}px`,
+              width: `${rankSize}px`,
+              height: `${rankSize}px`,
+              zIndex: 10,
+            }}
+          >
+            <img
+              className="rounded-full  object-cover"
+              src={rankSrc}
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              alt="Rank"
+            />
+          </div>
         )}
       </div>
-      {score >= 0 && (
-        <div className={`absolute h-4 bottom-0 left-0 z-10 justify-center`}>
-          <img
-            className={rankStyle !== "" ? rankStyle : "w-8 h-8"}
-            src={rankSrc}
-            alt="My Rank"
-          />
-        </div>
+      {userName && (
+        <span
+          className={`ms-2 font-bold ${!userNameStyle ? "text-gray-200" : userNameStyle}`}
+          style={{ fontSize: `${Math.max(12, imgSize * 0.35)}px` }}
+        >
+          {userName}
+        </span>
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import logo from "../../assets/img/1724181984017.jpg";
 import Input from "../../components/Input";
 import { login } from "../../services/dotNet";
 import { jwtDecode } from "jwt-decode";
+import { RsetUserLogin } from "../../common/Slices/main";
 
 const LogInForm: FC = () => {
   const [operatingSystem, setOperatingSystem] = useState<string | null>(null);
@@ -44,6 +45,7 @@ const LogInForm: FC = () => {
       let Vals = Object.values(fixUser);
       sessionStorage.setItem("token", data?.token);
       sessionStorage.setItem("userId", userId);
+      dispatch(RsetUserLogin({ token: data?.token, userId }));
     } else {
       alert("User has been not register");
       setIsLoadingBtn(false);
@@ -52,7 +54,7 @@ const LogInForm: FC = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault(); 
+      e.preventDefault();
       handleAccept();
     }
   };

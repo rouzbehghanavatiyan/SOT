@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TypeCategories } from "./mainType";
-import { categoryList } from "../../services/dotNet";
+import {
+  attachmentListByInviteId,
+  categoryList,
+  followerAttachmentList,
+} from "../../services/dotNet";
 
 type MessageModal = {
   title?: string;
@@ -25,15 +28,20 @@ interface MainType {
   showLoading?: { btnName?: string | number; value?: boolean };
   showLoadingBtn?: string;
   loading: boolean;
-  dobuleVideo: null;
-  category: any;
+  tornoment: any[];
+  category: any[];
   socketConfig: any;
   userLogin: any;
   userOnlines: any;
   profileImage: any;
-  allFollowerList: any;
+  allFollowerList: any[];
   allFollingList: any;
+  allTornoment: any[];
+  progress?: any;
+  allLoginMatch?: any[];
+  loginMatch?: any[];
 }
+
 const initialState: MainType = {
   messageModal: { title: "", show: false },
   showToast: { title: "", bg: "", show: false },
@@ -41,35 +49,51 @@ const initialState: MainType = {
   showQuestionModal: { show: false, answer: false },
   showLoading: { btnName: "", value: false },
   showLoadingBtn: "",
-  dobuleVideo: null,
+  tornoment: [],
+  allTornoment: [],
   category: [],
   socketConfig: null,
   userLogin: {},
   userOnlines: null,
   profileImage: null,
   allFollowerList: [],
-  allFollingList: [],
+  allFollingList: {},
+  allLoginMatch: [],
+  loginMatch: [],
 };
 
-// -> handle get user menu list
-export const handleCategories = createAsyncThunk(
-  "main/handleCategories",
-  async (data: TypeCategories, { dispatch, getState }: any) => {
-    const postData: TypeCategories = {};
-    console.log(data);
-    // dispatch(RsetShowLoading({ value: true, btnName: data?.loadingName }));
-    const resBuyerPersonList = await categoryList(data?.id);
-    // dispatch(RsetShowLoading({ value: false, btnName: "" }));
-    if (resBuyerPersonList.data.code === 0) {
-      dispatch(RsetPersonBuyerList(resBuyerPersonList?.data?.result));
-    } else {
-      dispatch(
-        RsetShowToast({
-          show: true,
-          title: resBuyerPersonList?.data?.message,
-          bg: "danger",
-        })
-      );
+export const handleAttachmentListByInviteId = createAsyncThunk(
+  "main/handleAttachmentListByInviteId",
+  async (inviteId: string, { rejectWithValue, getState }) => {
+    try {
+      const response = await attachmentListByInviteId(inviteId);
+      return {
+        getData: response,
+        state: getState(),
+      };
+    } catch (error: any) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const handleFollowerAttachmentList = createAsyncThunk(
+  "main/handleFollowerAttachmentList",
+  async (userIdLogin: number, { rejectWithValue, getState }) => {
+    try {
+      const response = await followerAttachmentList(userIdLogin);
+      return {
+        getData: response,
+        state: getState(),
+      };
+    } catch (error: any) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -78,76 +102,161 @@ const mainSlice = createSlice({
   name: "main",
   initialState,
   reducers: {
-    RsetMessageModal: (state, actions: PayloadAction<MessageModal>) => {
-      return { ...state, messageModal: actions.payload };
+    RsetMessageModal: (state, action: PayloadAction<MessageModal>) => {
+      state.messageModal = action.payload;
     },
-    RsetUserLogin: (state, actions: PayloadAction<any>) => {
-      return { ...state, userLogin: actions.payload };
+    RsetUserLogin: (state, action: PayloadAction<any>) => {
+      state.userLogin = action.payload;
     },
     RsetLoading: (
       state,
-      actions: PayloadAction<{ btnName?: string | number; value?: boolean }>
+      action: PayloadAction<{ btnName?: string | number; value?: boolean }>
     ) => {
-      return { ...state, showLoading: actions.payload };
+      state.showLoading = action.payload;
     },
-    RsetDobuleVideo: (state, actions: PayloadAction<any>) => {
-      return { ...state, dobuleVideo: actions.payload };
+    RsetTornoment: (state, action: PayloadAction<(videos: any[]) => any[]>) => {
+      state.tornoment = action.payload(state.tornoment);
     },
-    RsetCategory: (state, actions: PayloadAction<any>) => {
-      return { ...state, category: actions.payload };
+    RsetAllLoginMatch: (state, action: PayloadAction<any>) => {
+      const updatedTornoment = action.payload(state.allLoginMatch);
+      console.log(updatedTornoment);
+
+      state.allLoginMatch = updatedTornoment;
     },
-    RsetProgress: (state, actions: PayloadAction<any>) => {
-      return { ...state, progress: actions.payload };
+    RsetCategory: (state, action: PayloadAction<any[]>) => {
+      state.category = action.payload;
     },
-    RsetSocketConfig: (state, actions: PayloadAction<any>) => {
-      return { ...state, socketConfig: actions.payload };
+    RsetProgress: (state, action: PayloadAction<any>) => {
+      state.progress = action.payload;
     },
-    RsetGiveUserOnlines: (state, actions: PayloadAction<any>) => {
-      return { ...state, userOnlines: actions.payload };
+    RsetSocketConfig: (state, action: PayloadAction<any>) => {
+      state.socketConfig = action.payload;
     },
-    RsetGetImageProfile: (state, actions: PayloadAction<any>) => {
-      return { ...state, profileImage: actions.payload };
+    RsetGiveUserOnlines: (state, action: PayloadAction<any>) => {
+      state.userOnlines = action.payload;
     },
-    RsetAllFollowerList: (state, actions: PayloadAction<any>) => {
-      return { ...state, allFollowerList: actions.payload };
+    RsetGetImageProfile: (state, action: PayloadAction<any>) => {
+      state.profileImage = action.payload;
     },
-    RsetAllFollingList: (state, actions: PayloadAction<any>) => {
-      return { ...state, allFollingList: actions.payload };
+    RsetAllFollowerList: (state, action: PayloadAction<any[]>) => {
+      state.allFollowerList = action.payload;
+    },
+    RsetAllFollingList: (state, action: PayloadAction<any[]>) => {
+      state.allFollingList = action.payload;
     },
   },
-  //   extraReducers: (builder) => {
-  //     builder
-  //       .addCase(
-  //         handleGetUserMenuList.fulfilled,
-  //         (state, action: PayloadAction<any>) => {
-  //           try {
-  //             if (action.payload.code === 0) {
-  //               const filterMenu = action?.payload?.result?.sort(
-  //                 (a: any, b: any) => a.priority - b.priority
-  //               );
-  //               return { ...state, userMenu: filterMenu };
-  //             }
-  //           } catch (error) {
-  //             console.log(error);
-  //             throw Error;
-  //           }
-  //         }
-  //       )
-  //       .addCase(
-  //         handleUpdateAccount.fulfilled,
-  //         (state, action: PayloadAction<any>) => {
-  //           // if (action.payload.code === 0) {
-  //           // }
-  //           // return {}
-  //         }
-  //       );
-  //   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(handleAttachmentListByInviteId.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        handleAttachmentListByInviteId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          const { status, data } = action?.payload.getData?.data;
+          const getAllStateMain = action?.payload?.state?.main;
+
+          if (status === 0) {
+            const processedVideos = data.map((video: any) => {
+              const isFollowedFromMeTop =
+                getAllStateMain?.allFollingList?.getMapFollowingId?.some(
+                  (following: any) => following === video?.userInserted?.id
+                );
+
+              const isFollowedFromMeBott =
+                getAllStateMain?.allFollingList?.getMapFollowingId?.some(
+                  (following: any) => following === video?.userMatched?.id
+                );
+
+              return {
+                ...video,
+                urlTop: video?.attachmentInserted?.url,
+                urlBott: video?.attachmentMatched?.url,
+                profileTop: video?.profileInserted?.profileImage,
+                profileBott: video?.profileMatched?.profileImage,
+                isFollowedFromMeTop: isFollowedFromMeTop || false,
+                isFollowedFromMeBott: isFollowedFromMeBott || false,
+                likes: {
+                  [video?.attachmentInserted?.attachmentId]: {
+                    isLiked: video.isLikedInserted || false,
+                    count: video.likeInserted || 0,
+                  },
+                  [video?.attachmentMatched?.attachmentId]: {
+                    isLiked: video.isLikedMatched || false,
+                    count: video.likeMatched || 0,
+                  },
+                },
+                follows: {
+                  [video?.userInserted?.id]: {
+                    isFollowed: isFollowedFromMeTop || false,
+                  },
+                  [video?.userMatched?.id]: {
+                    isFollowed: isFollowedFromMeBott || false,
+                  },
+                },
+              };
+            });
+
+            state.tornoment = processedVideos;
+            state.allTornoment = data;
+          }
+        }
+      )
+      .addCase(handleAttachmentListByInviteId.rejected, (state, action) => {
+        state.loading = false;
+        console.error("Error fetching attachments:", action.payload);
+      })
+      .addCase(handleFollowerAttachmentList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        handleFollowerAttachmentList.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          const { status, data } = action.payload.getData?.data;
+          const getAllStateMain = action?.payload?.state?.main;
+
+          const processedVideos = data.map((video: any) => {
+            const isFollowedFromMeTop =
+              getAllStateMain?.allFollingList?.getMapFollowingId?.some(
+                (following: any) => following === video?.userInserted?.id
+              );
+            const isFollowedFromMeBott =
+              getAllStateMain?.allFollingList?.getMapFollowingId?.some(
+                (following: any) => following === video?.userMatched?.id
+              );
+            return {
+              ...video,
+              isFollowedFromMeTop: isFollowedFromMeTop || false,
+              isFollowedFromMeBott: isFollowedFromMeBott || false,
+              follows: {
+                [video?.userInserted?.id]: {
+                  isFollowed: isFollowedFromMeTop || false,
+                },
+                [video?.userMatched?.id]: {
+                  isFollowed: isFollowedFromMeBott || false,
+                },
+              },
+            };
+          });
+
+          if (status === 0) {
+            state.allLoginMatch = processedVideos;
+            // state.loginMatch = data;
+          }
+        }
+      )
+      .addCase(handleFollowerAttachmentList.rejected, (state, action) => {
+        state.loading = false;
+        console.error("Error fetching follower attachments:", action.payload);
+      });
+  },
 });
 
 export const {
   RsetMessageModal,
   RsetLoading,
-  RsetDobuleVideo,
+  RsetTornoment,
   RsetCategory,
   RsetSocketConfig,
   RsetProgress,
@@ -156,5 +265,6 @@ export const {
   RsetAllFollingList,
   RsetGiveUserOnlines,
   RsetGetImageProfile,
+  RsetAllLoginMatch,
 } = mainSlice.actions;
 export default mainSlice.reducer;

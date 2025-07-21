@@ -123,6 +123,7 @@ export const followingList = async (userId: number | string) => {
   return await axios.get(url);
 };
 
+// addComment
 export const addComment = async (postData: any) => {
   const url = `${baseURL}/addComment`;
   return await axios.post(url, postData);
@@ -130,16 +131,37 @@ export const addComment = async (postData: any) => {
 
 export const removeComment = async (postData: number | string) => {
   const url = `${baseURL}/removeComment`;
+  // commentId
   return await axios.delete(url, { data: postData });
 };
 
-export const commentList = async () => {
-  const url = `${baseURL}/commentList`;
+export const commentList = async (movieId: number) => {
+  const url = `${baseURL}/commentList?movieId=${movieId}`;
   return await axios.get(url);
 };
 
 // -> notif
 export const createSubscription = async () => {
-  const url = `${urlNotif}/notifications/public-key`;
+  const url = `${urlNotif}/api/notifications/public-key`;
   return await axios.get(url);
+};
+
+export const saveSubscription = async (postData: any) => {
+  const url = `${urlNotif}/api/notifications/subscribe`;
+  return await axios.post(url, postData);
+};
+
+export const sendAllNotif = async (postData: any) => {
+  const url = `${urlNotif}/api/Notifications/send-all`;
+  return await axios.post(url, postData);
+};
+
+export const sendUserNotif = async (postData: any) => {
+  const url = `${urlNotif}/api/Notifications/send`;
+  return await axios.post(url, postData);
+};
+
+export const addScoure = async (postData: any) => {
+  const url = `${urlNotif}/addScoure`;
+  return await axios.post(url, postData);
 };

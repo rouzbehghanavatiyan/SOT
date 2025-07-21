@@ -1,102 +1,99 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import Comments from "../../common/Comments";
-import ImageRank from "../../components/ImageRank";
-import { useAppSelector } from "../../hooks/hook";
-import { followerAttachmentList } from "../../services/dotNet";
+import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { Mousewheel } from "swiper/modules";
-import Video from "../../components/Video";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import VideoSection from "../../common/VideoSection";
+import { handleFollowerAttachmentList } from "../../common/Slices/main";
+import { useNavigate } from "react-router-dom";
+import ShareIcon from "@mui/icons-material/Share";
+import ReportIcon from "@mui/icons-material/Report";
+import EmailIcon from "@mui/icons-material/Email";
 import StringHelpers from "../../utils/helpers/StringHelper";
+import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 
 const Home: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
-
-  const [showComments, setShowComments] = useState(false);
-  const [closingComments, setClosingComments] = useState(false);
-  const [allDableWatch, setAllDableWatch] = useState<any[]>([]);
-  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
-  const [movieInfo, setMovieInfo] = useState<any>({});
-
-  const userId = sessionStorage.getItem("userId");
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const videos: any = main?.allLoginMatch;
+  const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
+  const userLogin = Number(main?.userLogin?.userId);
 
-  const handleShowCMT = (data: any) => {
-    console.log(data);
-
-    setShowComments(true);
-    setMovieInfo(data);
-    if (showComments) {
-      setClosingComments(true);
-      setTimeout(() => {
-        setShowComments(false);
-        setClosingComments(false);
-      }, 150);
-    } else {
-      setShowComments(true);
-    }
+  const handleSlideChange = (swiper: any) => {
+    const realIndex = swiper.realIndex;
+    const topVideoId = videos[realIndex]?.attachmentInserted?.attachmentId;
+    setCurrentlyPlayingId(topVideoId);
   };
 
-  const handleGiveVideos = async () => {
-    try {
-      const res = await followerAttachmentList(main?.userLogin?.userId);
-      const { status, data } = res?.data;
-      if (status === 0) {
-        const videoData = data.map((item: any, index: number) => {
-          const attachment =
-            index === 0 ? item.attachmentInserted : item.attachmentMatched;
-          const fixVideo = `${baseURL}/${attachment?.attachmentType}/${attachment?.fileName}${attachment?.ext}`;
-
-          const fixProfile =
-            index === 0 ? item.profileInserted : item.profileMatched;
-
-          const fixUsername =
-            index === 0
-              ? item.userInserted?.userName
-              : item.userMatched?.userName;
-          const fixUserId =
-            index === 0 ? item.userInserted?.id : item.userMatched?.id;
-
-          console.log(item);
-          return {
-            videoInserted: item?.attachmentInserted,
-            videoMatched: item?.attachmentMatched,
-            profileInserted: item?.profileInserted,
-            profileMatched: item?.profileMatched,
-            userInfoInserted: item?.userInserted,
-            userInfoMatched: item?.userMatched,
-            url: fixVideo,
-            userId: fixUserId,
-            followerId: item?.followerId,
-            videoUser: item?.userId,
-            likeInserted: item?.likeInserted,
-            likeMatched: item?.likeMatched,
-            score: item?.score,
-            id: attachment?.attachmentId,
-            userName: fixUsername,
-            isLikedFromMe: item?.isLikedFromMe || false,
-            isFollowedFromMe: item?.followerId !== null,
-          };
-        });
-        setAllDableWatch(videoData);
+  const handleVideoPlay = (videoId: string) => {
+    setOpenDropdowns({});
+    setCurrentlyPlayingId((prevId: any) => {
+      if (prevId === videoId) {
+        return null;
       }
-    } catch (error) {
-      console.log(error);
-    }
+      return videoId;
+    });
   };
 
-  const handleVideoPlay = (index: number) => {
-    setPlayingIndex((prevIndex) => (prevIndex === index ? null : index));
+  const dropdownItems = (data: any, position: number, userSenderId: any) => {
+    const temp = {
+      sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
+      userProfile:
+        position === 0
+          ? StringHelpers.getProfile(data?.profileInserted)
+          : StringHelpers.getProfile(data?.profileMatched),
+      userNameSender:
+        position === 0
+          ? data?.userInserted?.userName
+          : data?.userMatched?.userName,
+    };
+
+    return [
+      {
+        label: "Send message",
+        icon: <EmailIcon className="text-gray-800 font20" />,
+        onClick: () =>
+          navigate(`/privateMessage?id=${userSenderId?.id}`, {
+            state: {
+              userInfo: temp,
+            },
+          }),
+      },
+      {
+        label: "Share via",
+        icon: <ShareIcon className="text-gray-800 font20" />,
+
+        onClick: () => console.log(data),
+      },
+      {
+        label: "Report",
+        icon: <ReportIcon className="text-gray-800 font20" />,
+        onClick: () => alert("اعلان‌ها"),
+      },
+      {
+        label: "Save",
+        icon: <TurnedInNotIcon className="text-gray-800 font20" />,
+        onClick: () => alert("اعلان‌ها"),
+      },
+
+      { divider: true },
+    ];
   };
 
   useEffect(() => {
+    if (videos.length > 0) {
+      setCurrentlyPlayingId(videos[0]?.attachmentInserted?.attachmentId);
+    }
+  }, [videos]);
+
+  useEffect(() => {
     if (!!main?.userLogin?.userId) {
-      handleGiveVideos();
+      dispatch(handleFollowerAttachmentList(main?.userLogin?.userId));
     }
   }, [main?.userLogin?.userId]);
 
@@ -111,115 +108,65 @@ const Home: React.FC = () => {
         }}
         modules={[Mousewheel]}
         className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]"
-        onSlideChange={(swiper) => handleVideoPlay(swiper.activeIndex)}
+        onSlideChange={handleSlideChange}
       >
-        {allDableWatch.map((group, index) => {
-          const movieInfoTop = {
-            videoInserted: StringHelpers?.getProfile(group?.videoInserted),
-            movieId: group?.videoInserted?.attachmentId,
-            profileInserted: StringHelpers?.getProfile(group?.profileInserted),
-          };
-          const movieInfoBott = {
-            movieId: group?.videoMatched?.attachmentId,
-            videoMatched: StringHelpers?.getProfile(group?.videoMatched),
-            profileMatched: StringHelpers?.getProfile(group?.profileMatched),
-          };
-          const isPlaying = playingIndex === index;
-          return (
-            <SwiperSlide
-              key={index}
-              className="h-full w-full bg-black flex flex-col"
-            >
-              <div className="h-1/2 w-full relative flex flex-col">
-                <div className="flex-shrink-0 p-2 z-10 w-full absolute bg_profile_watch">
-                  <ImageRank
-                    rankStyle="w-8 h-8"
-                    classUserName="text-white"
-                    iconProfileStyle="font50"
-                    userName={group?.userInfoInserted?.userName}
-                    imgSize={50}
-                    imgSrc={movieInfoTop?.profileInserted}
-                    score={group?.score || 0}
-                  />
-                </div>
-                <div className="flex-1 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black overflow-hidden">
-                    <Video
-                      url={movieInfoTop?.videoInserted}
-                      playing={isPlaying}
-                      className="w-full h-full object-contain"
+        {videos?.length !== 0 &&
+          videos?.map((video: any, index: number) => {
+            console.log(video?.userInserted?.id, userLogin);
+            return (
+              <SwiperSlide
+                key={index}
+                className="h-full w-full bg-black flex flex-col"
+              >
+                <section className="flex flex-col h-screen">
+                  <div className="flex-1 min-h-0 relative">
+                    <VideoSection
+                      video={video}
+                      isPlaying={
+                        currentlyPlayingId ===
+                        video?.attachmentInserted?.attachmentId
+                      }
+                      onVideoPlay={() =>
+                        handleVideoPlay(video?.attachmentInserted?.attachmentId)
+                      }
+                      dropdownItems={() =>
+                        dropdownItems(video, 0, video?.userInserted)
+                      }
+                      setOpenDropdowns={setOpenDropdowns}
+                      openDropdowns={openDropdowns}
+                      baseURL={baseURL}
+                      positionVideo={0}
+                      countLiked={120}
                     />
-                    <div className="absolute left-0 right-0 bottom-10 z-50">
-                      <div className="flex justify-between items-center w-full px-4">
-                        <ChatBubbleOutlineIcon
-                          onClick={() => handleShowCMT(movieInfoTop)}
-                          className="font30 text-white"
-                        />
-                        <div className="flex text-green justify-center  gap-1 items-center py-1">
-                          <span className="flex items-center ">
-                            <CheckCircleIcon className="text-green font20" />
-                          </span>
-                          <span className="font-bold font20">Win</span>
-                        </div>
-                        <div className="flex items-center text-gray-200 font18 justify-center">
-                          {group?.likeInserted}
-                          <ThumbUpIcon className="ms-1 font25 cursor-pointer" />
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="h-1/2 w-full flex flex-col relative">
-                <div className="flex-shrink-0 p-2 w-full z-10 absolute bg_profile_watch">
-                  <ImageRank
-                    rankStyle="w-8 h-8"
-                    userName={group?.userInfoMatched?.userName}
-                    classUserName="text-white font-bold"
-                    imgSize={50}
-                    imgSrc={movieInfoBott?.profileMatched}
-                    score={group?.score || 0}
-                  />
-                </div>
-                <div className="flex-1 relative">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black overflow-hidden">
-                    <Video
-                      url={movieInfoBott?.videoMatched}
-                      playing={isPlaying}
-                      className="w-full h-full object-contain"
+                  <div className="flex-1 min-h-0 relative">
+                    <VideoSection
+                      video={video}
+                      isPlaying={
+                        currentlyPlayingId ===
+                        video?.attachmentMatched?.attachmentId
+                      }
+                      onVideoPlay={() =>
+                        handleVideoPlay(video?.attachmentMatched?.attachmentId)
+                      }
+                      onFollowClick={() =>
+                        handleFallowClick(video, 1, video?.userMatched?.id)
+                      }
+                      dropdownItems={() =>
+                        dropdownItems(video, 1, video?.userMatched)
+                      }
+                      openDropdowns={openDropdowns}
+                      setOpenDropdowns={setOpenDropdowns}
+                      baseURL={baseURL}
+                      positionVideo={1}
+                      countLiked={12}
                     />
-                    <div className="absolute left-0 right-0 bottom-10 z-50">
-                      <div className="flex justify-between items-center w-full px-4">
-                        <ChatBubbleOutlineIcon
-                          onClick={() => handleShowCMT(movieInfoBott)}
-                          className="font30 text-white"
-                        />
-                        <div className="flex text-red justify-center gap-1 items-center py-1 ">
-                          <span className="flex items-center">
-                            <CancelIcon className="text-red font20" />
-                          </span>
-                          <span className="font-bold font20">Loss</span>
-                        </div>
-                        <div className="flex items-center text-gray-200 font18 justify-center">
-                          {group?.likeMatched}
-                          <ThumbUpIcon className="ms-1 font25 cursor-pointer" />
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                </div>
-              </div>
-            </SwiperSlide>
-          );
-        })}
+                </section>
+              </SwiperSlide>
+            );
+          })}
       </Swiper>
-      {showComments && (
-        <Comments
-          movieInfo={movieInfo}
-          handleShowCMT={handleShowCMT}
-          closingComments={closingComments}
-        />
-      )}
     </div>
   );
 };

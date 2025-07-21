@@ -38,7 +38,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const locationUrl = useLocation();
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
-  const  main  = useAppSelector((state) => state?.main);
+  const main = useAppSelector((state) => state?.main);
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
 
@@ -79,10 +79,17 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       const { status, data } = res?.data;
 
       if (status === 0) {
-        const getMapFollowerId = data?.map(
+        const getMapFollowingId = data?.map(
           (item: any) => item?.attachment?.attachmentId
         );
-        dispatch(RsetAllFollingList(getMapFollowerId));
+        console.log(data);
+
+        dispatch(
+          RsetAllFollingList({
+            getMapFollowingId: getMapFollowingId,
+            allFollowing: data,
+          })
+        );
       }
     } catch (error) {
       console.log(error);
@@ -112,9 +119,11 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);
     };
-
     socket.on("connect", handleConnect);
 
+    if (Notification.permission === "default") {
+      setShowPrompt(true);
+    }
     return () => {
       socket.off("connect", handleConnect);
       socket.off("all_user_online", handleGiveUsersOnline);
@@ -138,8 +147,8 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
             <div>
               {children}
               {showPrompt && (
-                <div className="fixed inset-0  bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
-                  <header className="bg-white  p-4 rounded-xl">
+                <div className="fixed inset-0   bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
+                  <header className="bg-white  border-[1px] p-4 rounded-xl">
                     <div className=" flex  justify-end">
                       <CloseIcon
                         onClick={() => setShowPrompt(false)}

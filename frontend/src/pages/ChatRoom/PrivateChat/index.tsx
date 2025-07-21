@@ -4,30 +4,29 @@ import { useAppSelector } from "../../../hooks/hook";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
-import StickerOverlay from "./StickerOverlay";
 import StringHelpers from "../../../utils/helpers/StringHelper";
-import { allUserMessagese } from "../../../services/nest";
+import { sendUserNotif } from "../../../services/dotNet";
 
-interface PrivateChatProps {
-  socket: any;
-  currentUser: {
-    id: string;
-    name: string;
-  } | null;
-  selectedUser: {
-    id: string;
-    name: string;
-  };
-}
+// interface PrivateChatProps {
+//   socket: any;
+//   currentUser: {
+//     id: string;
+//     name: string;
+//   } | null;
+//   selectedUser: {
+//     id: string;
+//     name: string;
+//   };
+// }
 
-interface Message {
-  id: string;
-  sender: string;
-  text: string;
-  timestamp: Date;
-}
+// interface Message {
+//   id: string;
+//   sender: string;
+//   text: string;
+//   timestamp: Date;
+// }
 
-const PrivateChat: React.FC<PrivateChatProps> = () => {
+const PrivateChat: React.FC = ({}) => {
   const main = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,7 +42,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const findImg = StringHelpers?.getProfile(getProfileImage);
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<any>([]);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -61,7 +60,7 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
     [socket, userIdLogin, hasMarkedAsRead]
   );
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const date = new Date().toString();
     const timeString = date.split(" ")[4];
@@ -76,6 +75,13 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
       };
       socket.emit("send_message", message);
       setTitle("");
+    }
+    if (!location?.pathname?.includes("privateMessage")) {
+      const postData = {
+        message: title,
+      };
+      const resNotif = await sendUserNotif(postData);
+      console.log(resNotif);
     }
     titleInputRef.current?.focus();
   };
@@ -117,16 +123,15 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
   }, [reciveUserId, markMessagesAsRead, hasMarkedAsRead]);
 
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
-  console.log(fixImage);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-50px)]">
+    <div className="flex flex-col h-[calc(100vh-50px)] bg-white">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
         userProfile={
           !fixImage?.includes("undefined")
             ? fixImage
-            : location?.state?.userInfo?.userProfile
+            : StringHelpers?.getProfile(location?.state?.userInfo?.userProfile)
         }
         score={location?.state?.userInfo?.score || 20}
       />
@@ -143,7 +148,6 @@ const PrivateChat: React.FC<PrivateChatProps> = () => {
         handleSendMessage={handleSendMessage}
         titleInputRef={titleInputRef}
         setShowStickers={setShowStickers}
-        onEmojiSelect={handleEmojiSelect}
         showStickers={showStickers}
       />
     </div>

@@ -4,7 +4,7 @@ import { userMessages } from "../../../services/nest";
 import { useLocation } from "react-router-dom";
 
 const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
-  const  main  = useAppSelector((state) => state?.main);
+  const main = useAppSelector((state) => state?.main);
   const location = useLocation();
   const userReciver = Number(location?.search?.split("=")?.[1]);
 
@@ -49,15 +49,11 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
               )}
               {userIdLogin === numberServerUserId && (
                 <div
-                  className={`rounded-e-xl  rounded-b-lg my-2 ms-2 relative p-3 ${
+                  className={`rounded-e-xl container_message rounded-b-lg my-2 ms-2 relative p-3 ${
                     userIdLogin === numberServerUserId
                       ? " bg-green text-white  "
                       : "  bg-white"
                   }`}
-                  style={{
-                    maxWidth: "70%",
-                    wordWrap: "break-word",
-                  }}
                 >
                   <div className="flex mb-4  justify-between">
                     {userIdLogin === numberServerUserId && (
@@ -72,15 +68,11 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
 
               {userIdLogin !== numberServerUserId && (
                 <div
-                  className={`rounded-s-xl  rounded-b-lg my-2 relative p-3 ${
+                  className={`rounded-s-xl container_message rounded-b-lg my-2 relative p-3 ${
                     userIdLogin === numberServerUserId
                       ? " "
                       : "border-l-orange-disabled border-[1px] bg-white"
                   }`}
-                  style={{
-                    maxWidth: "70%",
-                    wordWrap: "break-word",
-                  }}
                 >
                   <div className="flex mb-4   justify-between">
                     {userIdLogin !== numberServerUserId && (

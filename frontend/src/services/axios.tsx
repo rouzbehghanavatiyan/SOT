@@ -4,7 +4,7 @@ import { store } from "../hooks/store";
 
 axios.interceptors.request.use(
   function (config: any) {
-    const state = store.getState();
+    // const state = store.getState();
     // if (config.url.toLowerCase().includes("/addattachment")) {
     //   config.headers["Content-Type"] = "multipart/form-data";
     // } else if (config.url.toLowerCase().includes("/attachmentplay")) {
@@ -31,12 +31,7 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   async function (response) {
-    // if (!!response?.headers?.authorization) {
-    //     console.log(!!response?.headers?.authorization, "This is set token");
-    //     const fixTokenId = response?.headers?.authorization?.split(" ")?.[1]
-    //     localStorage?.setItem("token", fixTokenId)
-    // }
-
+    // بررسی وضعیت پاسخ و نمایش پیام‌های مربوطه
     if (
       !!response?.data?.code &&
       response?.data?.code !== 0 &&
@@ -48,53 +43,55 @@ axios.interceptors.response.use(
       store.dispatch(
         RsetMessageModal({
           show: true,
-          title: "مشکلی در سرور به وجود آمده است.",
+          title: "Internal server error",
         })
       );
     }
     return response;
   },
-  function (error) {
-    if (error.response.status === 401) {
+  async function (error) {
+    // بررسی کد وضعیت 401
+    if (error.response?.status === 401) {
       store.dispatch(
         RsetMessageModal({
           show: true,
-          title:
-            error.response.data.message || "مشکلی در سرور به وجود آمده است.",
+          title: error.response?.data?.message || "Unauthorized access",
         })
       );
-      localStorage.clear();
-      //   window.location = "/login";
-    }
-    try {
-      const expectedErrors =
-        error.response &&
-        error.response.status !== 401 &&
-        error.response.status >= 400 &&
-        error.response.status < 500;
 
-      if (expectedErrors) {
-        store.dispatch(
-          RsetMessageModal({
-            show: true,
-            title:
-              error.response.data.message || "مشکلی در سرور به وجود آمده است.",
-          })
-        );
-        return;
-      }
-    } catch (error: any) {
-      const { message }: any = error;
-      // Do something with response error
+      // پاکسازی اطلاعات کاربر از localStorage
+      localStorage.clear();
+
+      // هدایت به صفحه لاگین
+      window.location.href = "/login"; // آدرس صفحه لاگین
+      return Promise.reject(error);
+    }
+
+    // بررسی خطاهای دیگر (4xx)
+    const expectedErrors =
+      error.response &&
+      error.response.status !== 401 &&
+      error.response.status >= 400 &&
+      error.response.status < 500;
+
+    if (expectedErrors) {
       store.dispatch(
         RsetMessageModal({
           show: true,
-          title:
-            error.response.data.message || "مشکلی در سرور به وجود آمده است.",
+          title: error.response?.data?.message || "Internal server error",
         })
       );
-      return Promise.reject(message);
+      return Promise.reject(error);
     }
+
+    // مدیریت خطاهای غیرمنتظره
+    store.dispatch(
+      RsetMessageModal({
+        show: true,
+        title: error.response?.data?.message || "Internal server error",
+      })
+    );
+    return Promise.reject(error);
   }
 );
 //   async function (error) {
@@ -108,7 +105,7 @@ axios.interceptors.response.use(
 //         RsetMessageModal({
 //           show: true,
 //           title:
-//             error.response.data.message || "مشکلی در سرور به وجود آمده است.",
+//             error.response.data.message || "Internal server error",
 //         })
 //       );
 //       return error;

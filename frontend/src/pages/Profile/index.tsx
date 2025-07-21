@@ -18,19 +18,18 @@ import { RsetGetImageProfile } from "../../common/Slices/main";
 import ImageRank from "../../components/ImageRank";
 import EditProfile from "./EditProfile";
 import { Link } from "react-router-dom";
+import ProgressBar from "../../components/ProgressBar";
 
 const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const userId = sessionStorage.getItem("userId");
   const main = useAppSelector((state) => state?.main);
   const [match, setMatch] = useState<any>([]);
-
+  const [allFollower, setAllFollower] = useState<any>([]);
+  const [percentage, setPercentage] = useState(100);
   const [profileImage, setProfileImage] = useState(userProfile);
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
-
   const [editingImage, setEditingImage] = useState(false);
-  const [allFollower, setAllFollower] = useState([]);
-
   const [selectedImage, setSelectedImage] = useState("");
   const dispatch = useAppDispatch();
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -126,9 +125,19 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleGetFollower = async () => {
+    const res = await followerList(Number(main?.userLogin?.userId));
+    const { data, status } = res?.data;
+    if (status === 0) {
+      setAllFollower(data);
+    }
+  };
+
   useEffect(() => {
     if (!!main?.userLogin?.userId) handleUserVideo();
+    handleGetFollower();
   }, [main?.userLogin?.userId]);
+  console.log(allFollower);
 
   return (
     <>
@@ -161,16 +170,31 @@ const Profile: React.FC = () => {
                       className="rounded-full object-cover border-2 shadow-md"
                     />
                   </span>
-                  <div className="flex flex-col ms-2">
+                  <div className="flex flex-col gap-2 ms-2">
                     <span className="font20 font-bold">
                       {main?.userLogin?.userName}
                     </span>
-                    <div className="m-2">
-                      <Link to={"/followers"}>
-                        <span className="bg-gray-800 text-white py-1 px-2 rounded text-xs ml-2">
-                          Followers
-                        </span>
-                      </Link>
+                    <div className="flex">
+                      <div className="m-2 bg-gray-150 p-2 rounded-2xl">
+                        <Link to={"/followers"}>
+                          <span className="font-bold text-gray-800">
+                            {allFollower?.length}
+                          </span>
+                          <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+                            Followers
+                          </span>
+                        </Link>
+                      </div>
+                      <div className="m-2 bg-gray-150 p-2 rounded-2xl">
+                        <Link to={"/following"}>
+                          <span className="font-bold text-gray-800">
+                            {main?.allFollingList?.getMapFollowingId?.length}
+                          </span>
+                          <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+                            Following
+                          </span>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -181,6 +205,18 @@ const Profile: React.FC = () => {
                     }}
                     className="text-gray-800 font25"
                   />
+                </div>
+              </div>
+              <div className="flex flex-col items-center mb-5">
+                <div className="font-bold mb-2 text-gray-800">Rank score</div>
+                <div className="w-full relative h-4 bg-gray-200 rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="font-bold font10 text-white text-xs z-10">
+                      <span className="font10  me-1">{percentage}</span>
+                      <span className="font10">%</span>
+                    </span>
+                  </div>
+                  <ProgressBar percentage={percentage} />
                 </div>
               </div>
               <div className="mb-4">

@@ -37,8 +37,6 @@ const PhoneHeader = () => {
 
   useEffect(() => {
     if (!socket) return;
-    console.log(socket.listeners("receive_message"));
-
     socket.on("receive_message", handleGetAlert);
 
     return () => {
@@ -51,29 +49,32 @@ const PhoneHeader = () => {
       {!itsShowWatchRoute && (
         <div className="fixed z-40 top-0 left-0 w-full bg-white shadow-md px-1 py-1 text-center text-white font-bold flex">
           <div className="grid grid-cols-5 w-full items-center ">
-            {itsWatchRoute ? (
-              <span className="col-span-3 relative">
-                <Input
-                  className="ms-1 bg-gray-100 rounded-lg border-none text-gray-900"
-                  placeholder="Searching . . ."
-                  value={searching}
-                  onChange={(e: any) => setSearching(e.target.value)}
-                />
-                <SearchIcon className="text-gray-800 absolute top-2 right-1 font23" />
-              </span>
-            ) : itsNotificationRoute ? (
-              <span className="icon_size col-span-3 flex justify-start  text-gray-800">
-                Notification
-              </span>
-            ) : itsStoreRoute ? (
-              <span className="icon_size col-span-3 flex justify-start text-gray-800">
-                Store
-              </span>
-            ) : (
-              <span className=" icon_size col-span-3 flex justify-start logoFont text-primary">
+            {
+              // itsWatchRoute ? (
+              //   <span className="icon_size col-span-3 flex justify-start relative">
+              //     <Input
+              //       className="ms-1 bg-gray-100 rounded-lg border-none my-[7px] text-gray-900"
+              //       placeholder="Searching . . ."
+              //       value={searching}
+              //       onChange={(e: any) => setSearching(e.target.value)}
+              //     />
+              //     <SearchIcon className="text-gray-800 absolute top-2 right-1 font23" />
+              //   </span>
+              // ) :
+              // itsNotificationRoute ? (
+              //   <span className="icon_size col-span-3 flex justify-start  text-gray-800">
+              //     Notification
+              //   </span>
+              // ) : itsStoreRoute ? (
+              //   <span className="icon_size col-span-3 flex justify-start text-gray-800">
+              //     Store
+              //   </span>
+              // ) : (
+              <span className="icon_size col-span-3 flex justify-start logoFont text-primary">
                 Star Of Talent
               </span>
-            )}
+              //   )
+            }
             {itsProfileRoute ? (
               <Link to="/setting" className="col-span-2">
                 <span className="flex justify-end">

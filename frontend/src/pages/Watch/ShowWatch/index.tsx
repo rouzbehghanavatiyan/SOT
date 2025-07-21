@@ -6,7 +6,6 @@ import "swiper/css";
 import {
   addFollower,
   addLike,
-  attachmentListByInviteId,
   removeFollower,
   removeLike,
 } from "../../../services/dotNet";
@@ -14,121 +13,55 @@ import asyncWrapper from "../../../common/AsyncWrapper";
 import { useLocation, useNavigate } from "react-router-dom";
 import VideoSection from "../../../common/VideoSection";
 import { Mousewheel } from "swiper/modules";
-import { useAppSelector } from "../../../hooks/hook";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hook";
 import EmailIcon from "@mui/icons-material/Email";
-import StringHelpers from "../../../utils/helpers/StringHelper";
 import { Video } from "../../../types/mainType";
+import {
+  handleAttachmentListByInviteId,
+  RsetTornoment,
+} from "../../../common/Slices/main";
 
 const ShowWatch: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { main } = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
+  const main = useAppSelector((state) => state?.main);
   const getInvitedId = location?.search?.split("id=")?.[1];
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [allMatch, setAllMatch] = useState<Video[]>([]);
-  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [openDropdowns, setOpenDropdowns] = useState({});
+  const videos: any = Array.isArray(main?.tornoment) ? main.tornoment : [];
+  const allMatch: any = main?.allTornoment;
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+  const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
-  const [playingStates, setPlayingStates] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [showComments, setShowComments] = useState<boolean>(false);
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const socket = main?.socketConfig;
-
-  const handleAttachmentListByInviteId = asyncWrapper(async () => {
-    const res = await attachmentListByInviteId(getInvitedId);
-    const { status, data } = res?.data;
-    setAllMatch(data);
-    if (status === 0) {
-      const processedVideos = data.map((video: any) => {
-        const isFollowedFromMeTop = main?.allFollingList?.some(
-          (following: any) => following === video?.userInserted?.id
-        );
-
-        const isFollowedFromMeBott = main?.allFollingList?.some(
-          (following: any) => following === video?.userMatched?.id
-        );
-        return {
-          ...video,
-          urlTop: StringHelpers?.getProfile(video?.attachmentInserted),
-          urlBott: StringHelpers?.getProfile(video?.attachmentMatched),
-          profileTop: StringHelpers?.getProfile(video?.profileInserted),
-          profileBott: StringHelpers?.getProfile(video?.profileMatched),
-          isFollowedFromMeTop: isFollowedFromMeTop || false,
-          isFollowedFromMeBott: isFollowedFromMeBott || false,
-          likes: {
-            [video?.attachmentInserted?.attachmentId]: {
-              isLiked: video.isLikedInserted || false,
-              count: video.likeInserted || 0,
-            },
-            [video?.attachmentMatched?.attachmentId]: {
-              isLiked: video.isLikedMatched || false,
-              count: video.likeMatched || 0,
-            },
-          },
-          follows: {
-            [video?.userInserted?.id]: {
-              isFollowed: isFollowedFromMeTop || false,
-            },
-            [video?.userMatched?.id]: {
-              isFollowed: isFollowedFromMeBott || false,
-            },
-          },
-        };
-      });
-      setVideos(processedVideos);
-    }
-  });
-
-  // const handleVideoPlay = (videoId: string) => {
-  //   setOpenDropdowns({});
-  //   setCurrentlyPlayingId((prevId: any) =>
-  //     prevId === videoId ? null : videoId
-  //   );
-  // };
-
-  // const handleVideoPlay = (videoId: string) => {
-  //   setIsOpenOptions(false);
-  //   setCurrentlyPlayingId((prevId) => {
-  //     if (prevId === videoId) {
-  //       return null;
-  //     }
-  //     return videoId;
-  //   });
-  // };
 
   const handleFallowClick = asyncWrapper(
     async (video: any, position: number) => {
       const userId =
         position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
-
       const postData = {
         userId: Number(main?.userLogin?.userId),
         followerId: userId,
       };
-
-      const currentFollowStatus = video.follows[userId]?.isFollowed || false;
+      const currentFollowStatus = video?.follows[userId]?.isFollowed || false;
       const shouldRemoveFollow = currentFollowStatus;
-
       try {
-        setVideos((prevVideos: any) =>
-          prevVideos.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  follows: {
-                    ...v.follows,
-                    [userId]: {
-                      isFollowed: !currentFollowStatus,
+        dispatch(
+          RsetTornoment((prevVideos: any) =>
+            prevVideos.map((v: any) =>
+              v.id === video.id
+                ? {
+                    ...v,
+                    follows: {
+                      ...v.follows,
+                      [userId]: {
+                        isFollowed: !currentFollowStatus,
+                      },
                     },
-                  },
-                }
-              : v
+                  }
+                : v
+            )
           )
         );
-
         if (shouldRemoveFollow) {
           await removeFollower(postData);
         } else {
@@ -136,36 +69,30 @@ const ShowWatch: React.FC = () => {
         }
       } catch (error) {
         console.error("Error in follow operation:", error);
-        setVideos((prevVideos: any) =>
-          prevVideos.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  follows: {
-                    ...v.follows,
-                    [userId]: {
-                      isFollowed: currentFollowStatus,
+        dispatch(
+          RsetTornoment((prevVideos: any) =>
+            prevVideos.map((v: any) =>
+              v.id === video.id
+                ? {
+                    ...v,
+                    follows: {
+                      ...v.follows,
+                      [userId]: {
+                        isFollowed: currentFollowStatus,
+                      },
                     },
-                  },
-                }
-              : v
+                  }
+                : v
+            )
           )
         );
       }
     }
   );
 
-  const handleShowComments = () => {
-    setShowComments((prev) => !prev);
-  };
-
   const handleSlideChange = (swiper: any) => {
-    console.log(swiper);
-
     const realIndex = swiper.realIndex;
     setActiveSlideIndex(realIndex);
-
-    // تنظیم currentlyPlayingId به ویدیوی بالا
     const topVideoId = videos[realIndex]?.attachmentInserted?.attachmentId;
     setCurrentlyPlayingId(topVideoId);
   };
@@ -173,7 +100,6 @@ const ShowWatch: React.FC = () => {
   const handleVideoPlay = (videoId: string) => {
     setOpenDropdowns({});
     console.log(videoId);
-
     setCurrentlyPlayingId((prevId: any) => {
       if (prevId === videoId) {
         return null;
@@ -182,35 +108,34 @@ const ShowWatch: React.FC = () => {
     });
   };
 
-  console.log(currentlyPlayingId);
-
   const handleLikeClick = asyncWrapper(
     async (video: any, position: number, movieId: any) => {
       const postData = {
         userId: Number(main?.userLogin?.userId) || null,
         movieId: movieId,
       };
-
-      const currentLikeStatus = video.likes[movieId]?.isLiked || false;
-
+      const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
       try {
-        setVideos((prevVideos: any) =>
-          prevVideos.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  likes: {
-                    ...v.likes,
-                    [movieId]: {
-                      isLiked: !currentLikeStatus,
-                      count: currentLikeStatus
-                        ? v.likes?.[movieId]?.count - 1
-                        : v.likes?.[movieId]?.count + 1,
+        console.log("prevVideosprevVideosprevVideosprevVideosprevVideos");
+        dispatch(
+          RsetTornoment((prevVideos: any) => {
+            return prevVideos.map((v: any) =>
+              v.id === video.id
+                ? {
+                    ...v,
+                    likes: {
+                      ...v.likes,
+                      [movieId]: {
+                        isLiked: !currentLikeStatus,
+                        count: currentLikeStatus
+                          ? v.likes?.[movieId]?.count - 1
+                          : v.likes?.[movieId]?.count + 1,
+                      },
                     },
-                  },
-                }
-              : v
-          )
+                  }
+                : v
+            );
+          })
         );
         if (currentLikeStatus) {
           await removeLike(postData);
@@ -221,22 +146,24 @@ const ShowWatch: React.FC = () => {
         }
       } catch (error) {
         console.error("Error in like operation:", error);
-        setVideos((prevVideos: any) =>
-          prevVideos.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  likes: {
-                    ...v.likes,
-                    [movieId]: {
-                      isLiked: currentLikeStatus,
-                      count: currentLikeStatus
-                        ? v.likes[movieId].count + 1
-                        : v.likes[movieId].count - 1,
+        dispatch(
+          RsetTornoment((prevVideos: any) =>
+            prevVideos.map((v: any) =>
+              v.id === video.id
+                ? {
+                    ...v,
+                    likes: {
+                      ...v.likes,
+                      [movieId]: {
+                        isLiked: currentLikeStatus,
+                        count: currentLikeStatus
+                          ? v.likes?.[movieId]?.count
+                          : v.likes?.[movieId]?.count,
+                      },
                     },
-                  },
-                }
-              : v
+                  }
+                : v
+            )
           )
         );
       }
@@ -256,9 +183,11 @@ const ShowWatch: React.FC = () => {
   };
 
   const dropdownItems = (data: any, position: number, userSenderId: any) => {
+    console.log(data);
     const temp = {
       sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
-      userProfile: position === 0 ? data?.profileTop : data?.profileBott,
+      userProfile:
+        position === 0 ? data?.profileInserted : data?.profileMatched,
       userNameSender:
         position === 0
           ? data?.userInserted?.userName
@@ -292,8 +221,8 @@ const ShowWatch: React.FC = () => {
   };
 
   useEffect(() => {
-    handleAttachmentListByInviteId();
-  }, [getInvitedId, main?.allFollingList]);
+    dispatch(handleAttachmentListByInviteId(getInvitedId));
+  }, [getInvitedId, main?.allFollingList?.getMapFollowingId]);
 
   useEffect(() => {
     if (allMatch.length > 0) {
@@ -312,85 +241,82 @@ const ShowWatch: React.FC = () => {
         onSlideChange={handleSlideChange}
         modules={[Mousewheel]}
         onInit={() => {
-          if (allMatch.length > 0) {
+          if (allMatch?.length > 0) {
             setCurrentlyPlayingId(
-              allMatch[0]?.attachmentInserted?.attachmentId
+              allMatch?.[0]?.attachmentInserted?.attachmentId
             );
           }
         }}
         className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-42px)] "
       >
-        {videos.map((video: any, index) => {
-          return (
-            <SwiperSlide
-              className="h-full w-full bg-black flex flex-col"
-              key={index}
-            >
-              <div className="h-1/2 w-full relative flex flex-col">
-                <VideoSection
-                  video={video}
-                  isPlaying={
-                    currentlyPlayingId ===
-                    video?.attachmentInserted?.attachmentId
-                  }
-                  onVideoPlay={() =>
-                    handleVideoPlay(video?.attachmentInserted?.attachmentId)
-                  }
-                  onLikeClick={() =>
-                    handleLikeClick(
-                      video,
-                      0,
+        {videos?.length !== 0 &&
+          videos?.map((video: any, index: number) => {
+            return (
+              <SwiperSlide
+                className="h-full w-full bg-black flex flex-col"
+                key={index}
+              >
+                <div className="h-1/2 w-full relative flex flex-col">
+                  <VideoSection
+                    video={video}
+                    isPlaying={
+                      currentlyPlayingId ===
                       video?.attachmentInserted?.attachmentId
-                    )
-                  }
-                  onFollowClick={() =>
-                    handleFallowClick(video, 0, video?.userInserted?.id)
-                  }
-                  toggleDropdown={() => toggleDropdown(video, 0)}
-                  dropdownItems={() =>
-                    dropdownItems(video, 0, video?.userInserted)
-                  }
-                  setOpenDropdowns={setOpenDropdowns}
-                  openDropdowns={openDropdowns}
-                  baseURL={baseURL}
-                  positionVideo={0}
-                  showComments={handleShowComments}
-                />
-              </div>
-              <div className="h-1/2 w-full relative flex flex-col">
-                <VideoSection
-                  video={video}
-                  isPlaying={
-                    currentlyPlayingId ===
-                    video?.attachmentMatched?.attachmentId
-                  }
-                  onVideoPlay={() =>
-                    handleVideoPlay(video?.attachmentMatched?.attachmentId)
-                  }
-                  onLikeClick={() =>
-                    handleLikeClick(
-                      video,
-                      1,
+                    }
+                    onVideoPlay={() =>
+                      handleVideoPlay(video?.attachmentInserted?.attachmentId)
+                    }
+                    onLikeClick={() =>
+                      handleLikeClick(
+                        video,
+                        0,
+                        video?.attachmentInserted?.attachmentId
+                      )
+                    }
+                    onFollowClick={() =>
+                      handleFallowClick(video, 0, video?.userInserted?.id)
+                    }
+                    toggleDropdown={() => toggleDropdown(video, 0)}
+                    dropdownItems={() =>
+                      dropdownItems(video, 0, video?.userInserted)
+                    }
+                    setOpenDropdowns={setOpenDropdowns}
+                    openDropdowns={openDropdowns}
+                    positionVideo={0}
+                  />
+                </div>
+                <div className="h-1/2 w-full relative flex flex-col">
+                  <VideoSection
+                    video={video}
+                    isPlaying={
+                      currentlyPlayingId ===
                       video?.attachmentMatched?.attachmentId
-                    )
-                  }
-                  onFollowClick={() =>
-                    handleFallowClick(video, 1, video?.userMatched?.id)
-                  }
-                  toggleDropdown={() => toggleDropdown(video, 1)}
-                  dropdownItems={() =>
-                    dropdownItems(video, 1, video?.userMatched)
-                  }
-                  openDropdowns={openDropdowns}
-                  setOpenDropdowns={setOpenDropdowns}
-                  baseURL={baseURL}
-                  positionVideo={1}
-                  showComments={handleShowComments}
-                />
-              </div>
-            </SwiperSlide>
-          );
-        })}
+                    }
+                    onVideoPlay={() =>
+                      handleVideoPlay(video?.attachmentMatched?.attachmentId)
+                    }
+                    onLikeClick={() =>
+                      handleLikeClick(
+                        video,
+                        1,
+                        video?.attachmentMatched?.attachmentId
+                      )
+                    }
+                    onFollowClick={() =>
+                      handleFallowClick(video, 1, video?.userMatched?.id)
+                    }
+                    toggleDropdown={() => toggleDropdown(video, 1)}
+                    dropdownItems={() =>
+                      dropdownItems(video, 1, video?.userMatched)
+                    }
+                    openDropdowns={openDropdowns}
+                    setOpenDropdowns={setOpenDropdowns}
+                    positionVideo={1}
+                  />
+                </div>
+              </SwiperSlide>
+            );
+          })}
         {/* {showComments && <Comments handleShowCMT={handleShowComments} />} */}
       </Swiper>
     </div>

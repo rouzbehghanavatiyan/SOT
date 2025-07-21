@@ -7,16 +7,15 @@ import { attachmentList } from "../../services/dotNet";
 import asyncWrapper from "../../common/AsyncWrapper";
 import "swiper/css";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
-import Loading from "../../components/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
-import { RsetDobuleVideo, RsetProgress } from "../../common/Slices/main";
+import { RsetProgress } from "../../common/Slices/main";
 import Timer from "../../components/Timer";
-const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-const userIdFromSStorage = Number(sessionStorage.getItem("userId"));
+import StringHelpers from "../../utils/helpers/StringHelper";
 
 const StepOne: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
+  const userId = Number(main?.userLogin?.userId);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -54,7 +53,6 @@ const StepOne: React.FC = () => {
 
   const handleShowMatch = (item: any) => {
     console.log("item?.group", item?.group);
-    dispatch(RsetDobuleVideo(item?.group));
     const newPath = `${location.pathname}/show?id=${item?.group?.inviteInserted?.id}`;
     navigate(newPath);
     setLastTap(0);
@@ -69,6 +67,7 @@ const StepOne: React.FC = () => {
         take: pagination.take,
       });
       setIsLoading(false);
+      console.log(res);
 
       const { data, status } = res?.data;
       if (status === 0) {
@@ -110,10 +109,10 @@ const StepOne: React.FC = () => {
   const videoGroups = getVideosForDisplay(allDableWatch);
 
   const checkIsMy = (group: any) => {
-    if (group?.userInfoParent?.id === userIdFromSStorage) {
-      return true;
-    }
-    if (group?.userInfoChild?.id === userIdFromSStorage) {
+    if (
+      group?.userInfoChild?.id === userId ||
+      group?.userInfoParent?.id === userId
+    ) {
       return true;
     }
   };
@@ -123,7 +122,7 @@ const StepOne: React.FC = () => {
       const itsMyVideo = checkIsMy(group);
       return { ...group, itsMyVideo };
     });
-  }, [videoGroups, userIdFromSStorage]);
+  }, [videoGroups, userId]);
 
   const handleGetAddLike = (data: { userId: number; movieId: number }) => {
     setVideoLikes((prev) => ({
@@ -218,7 +217,6 @@ const StepOne: React.FC = () => {
 
   return (
     <>
-      {/* <Loading isLoading={isLoading} /> */}
       <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10  gap-[5px] p-[1px]">
         {videoGroupsWithLikes.map((group, index) => {
           const {
@@ -231,10 +229,8 @@ const StepOne: React.FC = () => {
             childMovieId,
           } = group;
           const fixInsertTime = parent?.insertDate;
-          const fixImg1 = `${baseURL}/${parent?.attachmentType}/${parent?.fileName}${parent?.ext}`;
-          const fixImg2 = child
-            ? `${baseURL}/${child.attachmentType}/${child.fileName}${child.ext}`
-            : "";
+          const fixImg1 = StringHelpers.getProfile(parent);
+          const fixImg2 = child ? StringHelpers.getProfile(child) : "";
           const parentLikes =
             (videoLikes[parentMovieId] || 0) + (likeInserted || 0);
           const childLikes =
@@ -325,10 +321,12 @@ const StepOne: React.FC = () => {
                               <HourglassTopIcon className="font20" />
                               <Timer
                                 startTime={fixInsertTime}
-                                duration={3600} // 60 دقیقه = 3600 ثانیه
+                                duration={3600}
                                 active={true}
                                 className="text-white font20 ml-2"
-                                onComplete={() => {}}
+                                onComplete={() => {
+                                  console.log("Timer completed!");
+                                }}
                               />
                             </div>
                           </div>

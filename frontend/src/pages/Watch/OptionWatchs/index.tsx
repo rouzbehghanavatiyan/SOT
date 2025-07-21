@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import Image from "../../../components/Image";
 
-const OptionWatchs: React.FC = ({
+const OptionWatchs: React.FC<any> = ({
   parent,
   child,
   handleLiked,

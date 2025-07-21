@@ -12,7 +12,6 @@ import Sot from "../pages/Sot";
 import TalentMode from "../common/TalentMode";
 import StepTwo from "../common/TalentMode/StepTwo";
 import StepThree from "../common/TalentMode/StepThree";
-import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
 import StepFour from "../common/TalentMode/StepFour";
 import ShowWatch from "../pages/Watch/ShowWatch";
@@ -21,6 +20,8 @@ import ChatRoom from "../pages/ChatRoom";
 import LearningSot from "../pages/LearningSot";
 import PrivateChat from "../pages/ChatRoom/PrivateChat";
 import Followers from "../pages/Followers";
+import Notification from "../pages/Notification";
+import Following from "../pages/Following";
 
 const PublicRoutes = () => {
   return (
@@ -47,6 +48,7 @@ const PublicRoutes = () => {
         <Route path="/messages" element={<ChatRoom />} />
         <Route path="/privateMessage" element={<PrivateChat />} />
         <Route path="/followers" element={<Followers />} />
+        <Route path="/following" element={<Following />} />
 
         {/* <Route path="/messages" element={<Setting />} /> */}
       </Routes>

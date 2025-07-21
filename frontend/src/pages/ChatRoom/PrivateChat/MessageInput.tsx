@@ -10,8 +10,8 @@ const MessageInput: React.FC<{
   titleInputRef: React.RefObject<HTMLInputElement>;
   setShowStickers: React.Dispatch<React.SetStateAction<boolean>>;
   showStickers: boolean;
-  onEmojiSelect: any;
-  onInputFocus: (e: React.FocusEvent) => void;
+  onEmojiSelect?: any;
+  onInputFocus?: (e: React.FocusEvent) => void;
 }> = ({
   title,
   setTitle,
@@ -22,10 +22,10 @@ const MessageInput: React.FC<{
   showStickers,
   onInputFocus,
 }) => (
-  <div className="w-full bg-white sticky border-t-[1px] border-gray-200 bottom-0 z-10 pb-2 px-3">
+  <div className="w-full bg-white sticky border-t-[1px] border-gray-200 bottom-0 z-50 pb-2 px-3">
     <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
       <div className="flex items-center justify-center gap-2">
-        <div className="flex-1 mb-10">
+        <div className="flex-1">
           <Input
             onFocus={onInputFocus}
             ref={titleInputRef}
@@ -44,14 +44,11 @@ const MessageInput: React.FC<{
         <button
           type="button"
           onClick={() => setShowStickers(!showStickers)}
-          className="p-2 flex text-gray-600 hover:text-gray-800 mb-9"
+          className="p-2 flex text-gray-600 hover:text-gray-800"
         >
           <MoodIcon className="col-span-1 cursor-pointer text-gray-900 font25" />
         </button>
-        <button
-          type="submit"
-          className="text-blue-600 hover:text-blue-800 mb-9"
-        >
+        <button type="submit" className="text-blue-600 hover:text-blue-800">
           <SendIcon className="cursor-pointer col-span-1 text-gray-900 font25 justify-center items-center" />
         </button>
       </div>
