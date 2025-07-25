@@ -5,12 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { allUserMessagese } from "../../services/nest";
 import StringHelpers from "../../utils/helpers/StringHelper";
 
-interface User {
-  id: string;
-  name: string;
-  avatar?: string;
-}
-
 interface MessageData {
   recipient: number;
   [key: string]: any;
@@ -25,12 +19,14 @@ const ChatRoom: React.FC = () => {
   const [unreadMessages, setUnreadMessages] = useState<Record<number, boolean>>(
     {}
   );
+
   const checkMessageReadStatus = useCallback((senderId: number) => {
-    return localStorage.getItem(`message_read_${senderId}`) === "true";
+    console.log(senderId);
+    return localStorage.getItem(`message_read_${senderId}`) !== "true";
   }, []);
+
   const handleRedirect = (data: any) => {
     console.log(data);
-
     localStorage.setItem(`message_read_${data.sender}`, "true");
     setUnreadMessages((prev) => ({ ...prev, [data.sender]: false }));
     navigate(`/privateMessage?id=${data?.sender}`, {
@@ -40,24 +36,16 @@ const ChatRoom: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("receive_message", handleReciveMessage);
-    const handleMessagesReadConfirmation = (data: { sender: number }) => {
-      setUnreadMessages((prev) => ({ ...prev, [data.sender]: false }));
-    };
-
-    socket.on("messages_read_confirmation", handleMessagesReadConfirmation);
-    return () => {
-      socket.off("receive_message", handleReciveMessage);
-      socket.off("messages_read_confirmation", handleMessagesReadConfirmation);
-    };
-  }, [socket]);
+  const handleMessagesReadConfirmation = (data: { sender: number }) => {
+    setUnreadMessages((prev) => ({ ...prev, [data.sender]: false }));
+  };
 
   const handleGetUserMessages = async () => {
     const res = await allUserMessagese(userIdLogin);
     const { data, status } = res?.data;
     if (status === 0) {
+      console.log(data);
+
       setUserSender(data);
     }
   };
@@ -74,19 +62,6 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUnreadStatus();
-    handleGetUserMessages();
-  }, [userIdLogin]);
-
-  useEffect(() => {
-    const storedReadStatus: Record<number, boolean> = {};
-    userSender.forEach((user) => {
-      storedReadStatus[user.sender] = checkMessageReadStatus(user.sender);
-    });
-    setUnreadMessages(storedReadStatus);
-  }, [userSender, checkMessageReadStatus]);
-
   const handleReciveMessage = useCallback(
     (data: MessageData) => {
       if (userIdLogin === data?.recieveId) {
@@ -96,14 +71,37 @@ const ChatRoom: React.FC = () => {
     [userIdLogin]
   );
 
-  console.log(unreadMessages);
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("receive_message", handleReciveMessage);
+    socket.on("messages_read_confirmation", handleMessagesReadConfirmation);
+    return () => {
+      socket.off("receive_message", handleReciveMessage);
+      socket.off("messages_read_confirmation", handleMessagesReadConfirmation);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    fetchUnreadStatus();
+    handleGetUserMessages();
+  }, [userIdLogin]);
+
+  useEffect(() => {
+    const storedReadStatus: Record<number, boolean> = {};
+    userSender.forEach((user) => {
+      console.log(user);
+
+      storedReadStatus[user.sender] = checkMessageReadStatus(user.sender);
+    });
+    setUnreadMessages(storedReadStatus);
+  }, [userSender, checkMessageReadStatus]);
 
   return (
     <div className="md:mt-10 mt-0">
       {userSender.length >= 0 ? (
         userSender?.map((user: any) => {
           const fixImage = StringHelpers.getProfile(user);
-
+          console.log(unreadMessages[user.sender]);
           return (
             <div
               onClick={() => handleRedirect(user)}
@@ -113,11 +111,8 @@ const ChatRoom: React.FC = () => {
                 <ImageRank
                   userNameStyle="text-gray-black"
                   userName={user?.userNameSender}
-                  className="w-80 h-80"
                   imgSize={60}
                   score={user?.score || 0}
-                  rankStyle="w-9 h-9"
-                  classUserName="text-black"
                   imgSrc={fixImage || "default-profile-image.png"}
                 />
               </div>

@@ -33,7 +33,8 @@ const Following = () => {
 
   return (
     <div>
-      <Loading isLoading={isLoading} />
+      {isLoading && <Loading isLoading={isLoading} />}
+
       {main?.allFollingList?.allFollowing?.map((follower: any, index) => {
         console.log(follower);
         const image = StringHelpers.getProfile(follower?.attachment);

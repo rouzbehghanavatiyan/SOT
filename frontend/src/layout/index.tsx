@@ -7,7 +7,6 @@ import PhoneFooter from "./PhoneFooter";
 import PhoneHeader from "./PhoneHeader";
 import {
   RsetAllFollingList,
-  RsetAllFollowerList,
   RsetCategory,
   RsetGetImageProfile,
   RsetGiveUserOnlines,
@@ -57,10 +56,11 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const handleGetProfile = async (userId: number) => {
     try {
       const [resImageProfile] = await Promise.all([
-        // attachmentList(),
         profileAttachmentList(userId),
       ]);
       const { status, data } = resImageProfile?.data;
+      console.log(data);
+
       if (status === 0) {
         dispatch(RsetGetImageProfile(data));
       }

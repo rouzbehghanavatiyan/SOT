@@ -123,6 +123,7 @@ const PrivateChat: React.FC = ({}) => {
   }, [reciveUserId, markMessagesAsRead, hasMarkedAsRead]);
 
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
+  console.log(location?.state?.userInfo);
 
   return (
     <div className="flex flex-col h-[calc(100vh-50px)] bg-white">
@@ -131,7 +132,7 @@ const PrivateChat: React.FC = ({}) => {
         userProfile={
           !fixImage?.includes("undefined")
             ? fixImage
-            : StringHelpers?.getProfile(location?.state?.userInfo?.userProfile)
+            : location?.state?.userInfo?.userProfile
         }
         score={location?.state?.userInfo?.score || 20}
       />

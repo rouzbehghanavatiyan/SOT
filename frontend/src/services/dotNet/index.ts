@@ -129,10 +129,9 @@ export const addComment = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
-export const removeComment = async (postData: number | string) => {
-  const url = `${baseURL}/removeComment`;
-  // commentId
-  return await axios.delete(url, { data: postData });
+export const removeComment = async (commentId: number) => {
+  const url = `${baseURL}/removeComment?commentId=${commentId}`;
+  return await axios.delete(url);
 };
 
 export const commentList = async (movieId: number) => {

@@ -1,98 +1,179 @@
-import React, { useState } from "react";
-import Video from "../../../components/Video";
-import ImageRank from "../../../components/ImageRank";
+import React, { useMemo, useState } from "react";
+import Timer from "../../../components/Timer";
+import StringHelpers from "../../../utils/helpers/StringHelper";
+import VideoSection from "../../../common/VideoSection";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ShareIcon from "@mui/icons-material/Share";
+import ReportIcon from "@mui/icons-material/Report";
+import EmailIcon from "@mui/icons-material/Email";
+import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
+import { useNavigate } from "react-router-dom";
 
-const VideosProfile: React.FC<any> = ({ match }) => {
-  const [expandedVideo, setExpandedVideo] = useState(null);
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const [playingId, setPlayingId] = useState<string | null>(null);
+const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
+  const [openDropdowns, setOpenDropdowns] = useState<any>({});
+  const navigate = useNavigate();
+  const videoGroupsWithLikes = useMemo(() => {
+    return match.map((video: any) => {
+      const parentLikes =
+        (videoLikes[video?.attachmentInserted?.attachmentId] || 0) +
+        (video.likeInserted || 0);
+      const childLikes = video.child
+        ? (videoLikes[video.attachmentMatched?.attachmentId] || 0) +
+          (video.likeMatched || 0)
+        : 0;
 
-  const handleVideoPlay = (videoId: string) => {
-    setPlayingId((prevId) => {
-      if (prevId === videoId) {
-        return null;
+      return {
+        ...video,
+        parentLikes,
+        childLikes,
+        parentMovieId: video?.attachmentInserted?.attachmentId,
+        childMovieId: video?.attachmentMatched?.attachmentId,
+        likeInserted: video?.likeInserted,
+        likeMatched: video?.likeMatched,
+      };
+    });
+  }, [match, videoLikes]);
+
+  const dropdown = (data: any, position: number, userSenderId: any) => {
+    const temp = {
+      sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
+      userProfile:
+        position === 0
+          ? StringHelpers.getProfile(data?.profileInserted)
+          : StringHelpers.getProfile(data?.profileMatched),
+      userNameSender:
+        position === 0
+          ? data?.userInserted?.userName
+          : data?.userMatched?.userName,
+    };
+    return [
+      {
+        label: "Send message",
+        icon: <EmailIcon className="text-gray-800 font20" />,
+        onClick: () => {
+          navigate(`/privateMessage?id=${userSenderId?.id}`, {
+            state: {
+              userInfo: temp,
+            },
+          });
+        },
+      },
+      {
+        label: "Share via",
+        icon: <ShareIcon className="text-gray-800 font20" />,
+
+        onClick: () => console.log(data),
+      },
+      {
+        label: "Report",
+        icon: <ReportIcon className="text-gray-800 font20" />,
+        onClick: () => alert("اعلان‌ها"),
+      },
+      {
+        label: "Save",
+        icon: <TurnedInNotIcon className="text-gray-800 font20" />,
+        onClick: () => alert("اعلان‌ها"),
+      },
+
+      { divider: true },
+    ];
+  };
+
+  const toggleDropdown = (video: any, index: number) => {
+    setOpenDropdowns((prev: any) => {
+      if (index === 0 || index === 1) {
+        return {
+          ...prev,
+          [index]: !prev[index],
+        };
       }
-      return videoId;
+      return prev;
     });
   };
 
   return (
     <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12">
       <div className="grid grid-cols-1 gap-2 w-full">
-        {match.map((video: any, index: number) => {
-          const videoUrl1 = `${baseURL}/${video?.attachmentInserted?.attachmentType}/${video?.attachmentInserted?.fileName}${video?.attachmentInserted?.ext}`;
-          const videoUrl2 = `${baseURL}/${video?.attachmentMatched?.attachmentType}/${video?.attachmentMatched?.fileName}${video?.attachmentMatched?.ext}`;
-          const fixProfileImageParent = `${baseURL}/${video?.profileInserted?.attachmentType}/${video?.profileInserted?.fileName}${video?.profileInserted?.ext}`;
-          const fixProfileImageChild = `${baseURL}/${video?.profileMatched?.attachmentType}/${video?.profileMatched?.fileName}${video?.profileMatched?.ext}`;
+        {videoGroupsWithLikes.map((video: any) => {
+          const parentLikes =
+            (videoLikes[video?.parentMovieId] || 0) +
+            (video?.likeInserted || 0);
+          const childLikes =
+            (videoLikes[video?.childMovieId] || 0) + (video?.likeMatched || 0);
+          const endTime =
+            video?.inviteMatched?.insertDate !== -1 ||
+            video?.inviteInserted?.insertDate !== -1;
+          const startTime = video?.inviteMatched?.insertDate;
+
+          const resultInserted =
+            video?.likeInserted > video?.likeMatched
+              ? true
+              : video?.likeInserted < video?.likeMatched
+                ? false
+                : null;
+          const resultMatched =
+            video?.likeInserted < video?.likeMatched
+              ? true
+              : video?.likeInserted > video?.likeMatched
+                ? false
+                : null;
 
           return (
-            <section key={index} className="w-full">
-              <div
-                className="relative w-full bg-black"
-                style={{
-                  height: "calc(100vh - 100px)", // ارتفاع دلخواه
-                  minHeight: "500px", // حداقل ارتفاع
-                  maxHeight: "800px", // حداکثر ارتفاع
-                }}
-              >
-                <div className="flex flex-col h-full">
-                  {/* ویدیوی بالایی */}
-                  <div className="flex-1 relative h-1/2">
-                    <div className="absolute inset-0 flex flex-col">
-                      <div className="flex bg_profile_watch absolute w-full top-0 justify-between items-center p-2 bg-red z-10">
-                        <ImageRank
-                          classUserName="text-white font-bold"
-                          iconProfileStyle="font50"
-                          userName={video?.userInserted?.userName}
-                          imgSize={50}
-                          imgSrc={fixProfileImageParent}
-                          rankWidth={40}
-                          starWidth={5}
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <Video
-                          url={videoUrl1}
-                          playing={playingId === `${index}-top`}
-                          loop={true}
-                          muted={false}
-                          handleVideo={() => handleVideoPlay(`${index}-top`)}
-                          width="100%"
-                          height="100%"
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ویدیوی پایینی */}
-                  <div className="flex-1 relative h-1/2">
-                    <div className="absolute inset-0 flex flex-col">
-                      <div className="flex bg_profile_watch absolute w-full top-0 justify-between items-center p-2 bg-red z-10">
-                        <ImageRank
-                          userName={video?.userMatched?.userName}
-                          classUserName="text-white font-bold"
-                          imgSize={50}
-                          imgSrc={fixProfileImageChild}
-                          rankWidth={40}
-                          starWidth={5}
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <Video
-                          url={videoUrl2}
-                          playing={playingId === `${index}-bottom`}
-                          loop={true}
-                          muted={false}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          handleVideo={() => handleVideoPlay(`${index}-bottom`)}
-                          width="100%"
-                          height="100%"
-                        />
-                      </div>
-                    </div>
-                  </div>
+            <section className="flex flex-col relative h-screen">
+              <div className="flex-1 min-h-0 ">
+                <VideoSection
+                  result={resultInserted}
+                  toggleDropdown={() => toggleDropdown(video, 0)}
+                  startTime={startTime}
+                  endTime={endTime}
+                  countLiked={parentLikes}
+                  video={video}
+                  dropdownItems={() => dropdown(video, 0, video?.userInserted)}
+                  setOpenDropdowns={setOpenDropdowns}
+                  openDropdowns={openDropdowns}
+                  positionVideo={0}
+                />
+              </div>
+              {endTime && (
+                <div className="absolute top-6 right-5 z-50 flex gap-1 text-white justify-center items-end">
+                  {parentLikes}
+                  <ThumbUpIcon className="font25 text-white" />
                 </div>
+              )}
+              <div className="flex-1 min-h-0 relative">
+                <VideoSection
+                  result={resultMatched}
+                  toggleDropdown={() => toggleDropdown(video, 1)}
+                  countLiked={childLikes}
+                  endTime={endTime}
+                  video={video}
+                  dropdownItems={() => dropdown(video, 1, video?.userMatched)}
+                  openDropdowns={openDropdowns}
+                  setOpenDropdowns={setOpenDropdowns}
+                  positionVideo={1}
+                />
+                {endTime && (
+                  <div className="absolute top-6 right-5 z-50 flex gap-1 text-white justify-center items-end">
+                    {childLikes}
+                    <ThumbUpIcon className="font25 text-white" />
+                  </div>
+                )}
+                {endTime && (
+                  <div className="w-full absolute bottom-7">
+                    <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
+                      <HourglassTopIcon className="font20" />
+                      <Timer
+                        video={video}
+                        startTime={startTime}
+                        duration={3600}
+                        active={true}
+                        className="text-white font20 ml-2"
+                        onComplete={() => {}}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </section>
           );
@@ -103,3 +184,85 @@ const VideosProfile: React.FC<any> = ({ match }) => {
 };
 
 export default VideosProfile;
+
+// <section key={index} className="w-full">
+//   <div
+//     className="relative w-full bg-black"
+//     style={{
+//       height: "calc(100vh - 100px)", // ارتفاع دلخواه
+//       minHeight: "500px", // حداقل ارتفاع
+//       maxHeight: "800px", // حداکثر ارتفاع
+//     }}
+//   >
+//     <div className="flex flex-col h-full">
+//       <div className="flex-1 relative h-1/2">
+//         <div className="absolute inset-0 flex flex-col">
+//           <div className="flex bg_profile_watch absolute w-full top-0 justify-between items-center p-2 bg-red z-10">
+//             <ImageRank
+//               userName={video?.userInserted?.userName}
+//               imgSize={50}
+//               imgSrc={fixProfileImageParent}
+//             />
+//           </div>
+//           <div className="flex-1">
+//             <Video
+//               url={videoUrl1}
+//               playing={playingId === `${index}-top`}
+//               loop={true}
+//               muted={false}
+//               handleVideo={() => handleVideoPlay(`${index}-top`)}
+//               width="100%"
+//               height="100%"
+//               className="absolute inset-0 w-full h-full object-cover"
+//             />
+//           </div>
+//         </div>
+//         <div className="flex absolute bottom-3 right-3 gap-1 bg-red text-white justify-center items-end">
+//           {parentLikes}
+//           <ThumbUpOffAltIcon className="font25 text-white" />
+//         </div>
+//       </div>
+//       <div className="flex-1 relative h-1/2">
+//         <div className="absolute inset-0 flex flex-col">
+//           <div className="flex bg_profile_watch absolute w-full top-0 justify-between items-center p-2 bg-red z-10">
+//             <ImageRank
+//               userName={video?.userMatched?.userName}
+//               imgSize={50}
+//               imgSrc={fixProfileImageChild}
+//             />
+//           </div>
+//           <div className="flex-1">
+//             <Video
+//               url={videoUrl2}
+//               playing={playingId === `${index}-bottom`}
+//               loop={true}
+//               muted={false}
+//               className="absolute inset-0 w-full h-full object-cover"
+//               handleVideo={() => handleVideoPlay(`${index}-bottom`)}
+//               width="100%"
+//               height="100%"
+//             />
+//           </div>
+//           <div className="flex gap-1 text-white justify-center items-end">
+//             {childLikes}
+//             <ThumbUpOffAltIcon className="font25 text-white" />
+//           </div>
+//         </div>
+//       </div>
+//       {true && (
+//         <div className="absolute w-full bottom-0 bg_timer">
+//           <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
+//             <HourglassTopIcon className="font20" />
+//             <Timer
+//               startTime={fixInsertTime}
+//               duration={3600}
+//               active={true}
+//               className="text-white font20 ml-2"
+//               onComplete={() => {}}
+//             />
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   </div>
+// </section>

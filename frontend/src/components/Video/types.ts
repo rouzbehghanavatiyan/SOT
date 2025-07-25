@@ -8,7 +8,7 @@ export interface VideoProps {
   onDuration?: (duration: number) => void;
   onEnded?: () => void;
   className?: string;
-  handleVideo: () => void;
+  handleVideo?: () => void;
   width?: string | number;
   height?: string | number;
 }

@@ -15,30 +15,35 @@ import Comments from "../Comments";
 
 type VideoSectionProps = {
   video: any;
-  isPlaying: boolean;
-  onVideoPlay: (videoId: string) => void;
+  isPlaying?: boolean;
+  onVideoPlay?: (videoId: string) => void;
   onLikeClick?: (video: any) => void;
-  onFollowClick: (video: any, positionVideo: number) => void;
-  toggleDropdown: (index: string) => void;
-  dropdownItems: (data: any) => any[];
+  onFollowClick?: (video: any, positionVideo: number) => void;
+  toggleDropdown?: any;
+  dropdownItems: any;
   openDropdowns: Record<string, boolean>;
   baseURL?: string;
   positionVideo: number;
   setOpenDropdowns: any;
   countLiked: number;
-  showCommentsIcon: boolean;
+  endTime?: boolean;
+  startTime?: any;
+  result?: boolean | null;
+  handleShowCMT: any;
 };
 
 const VideoSection: React.FC<VideoSectionProps> = ({
   video,
-  showCommentsIcon,
+  endTime = false,
   setOpenDropdowns,
   onLikeClick,
   toggleDropdown,
   dropdownItems,
   openDropdowns,
   positionVideo,
+  result,
   countLiked,
+  handleShowCMT,
 }) => {
   const dispatch = useAppDispatch();
   const main = useAppSelector((state) => state?.main);
@@ -46,11 +51,17 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const [closingComments, setClosingComments] = useState(false);
   const [movieInfo, setMovieInfo] = useState<any>({});
 
-  const handleToggleComments = (videoData: any) => {
-    setMovieInfo(videoData);
-    setShowComments(true);
+  const handleToggleComments = () => {
+    handleShowCMT();
   };
-  console.log(showCommentsIcon);
+
+  const handleClose = () => {
+    setClosingComments(true);
+    setTimeout(() => {
+      setShowComments(false);
+      setClosingComments(false);
+    }, 150);
+  };
 
   const profile =
     positionVideo === 0
@@ -92,7 +103,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       followerId: userId, // شناسه کاربری که دنبال می‌شود
     };
     const isCurrentlyFollowed = video?.follows?.[userId]?.isFollowed || false;
-
     dispatch(
       RsetAllLoginMatch((prevVideos: any) => {
         console.log(prevVideos);
@@ -142,17 +152,16 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     }
   };
 
-  // const handleShowCMT = (data: any) => {
-  //   setMovieInfo(data);
-  //   if (showComments) {
-  //     setClosingComments(true);
-  //     setTimeout(() => {
-  //       setClosingComments(false);
-  //     }, 150);
-  //   } else {
-  //     setShowComments(true);
-  //   }
+  // const handleSlideChange = (swiper: any) => {
+  //   const realIndex = swiper.realIndex;
+  //   const topVideoId = videos[realIndex]?.attachmentInserted?.attachmentId;
+  //   setCurrentlyPlayingId(topVideoId);
   // };
+
+  // const playing =
+  //   currentlyPlayingId === video?.attachmentInserted?.attachmentId;
+
+  console.log(showComments);
 
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
@@ -168,7 +177,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             />
           </div>
           <div className="flex justify-center">
-            {checkMyVideo && (
+            {false && (
               <Follows
                 bgColor=""
                 title={isFollowed ? "Unfollow" : "Follow"}
@@ -177,7 +186,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             )}
           </div>
           <div className="flex justify-end ">
-            {checkMyVideo && (
               <Dropdown
                 isOpenOptions={openDropdowns[positionVideo]}
                 setIsOpenOptions={(isOpen) => {
@@ -198,7 +206,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 position="right"
                 className="ml-4"
               />
-            )}
           </div>
         </div>
       </div>
@@ -208,7 +215,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             videoId={video?.id}
             className="max-w-full max-h-[35vh] min-h-[430px] w-auto h-[70vh] object-contain"
             loop
-            // playing={isPlaying}
+            // playing={playing}
             // handleVideo={() => onVideoPlay(video)}
             url={videoUrl}
           />
@@ -216,13 +223,25 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             <div className="grid grid-cols-3 items-center mx-2">
               <div className="col-span-1 flex justify-start">
                 <ChatBubbleOutlineIcon
-                  onClick={() => handleToggleComments(video)}
-                  className="font30  text-white"
+                  onClick={() => handleToggleComments()}
+                  className="font25  text-white"
                 />
               </div>
-              {true && (
-                <div className="col-span-1 text-red flex justify-center">
-                  <span className="font20 font-bold">Loss</span>
+              {!endTime && (
+                <div className="col-span-1 flex justify-center">
+                  {result === true ? (
+                    <span className="font15 font-bold text-green border-[1px] px-2 border-green rounded-lg">
+                      Win
+                    </span>
+                  ) : result === false ? (
+                    <span className="font15 font-bold text-red border-[1px] px-2 border-red rounded-lg">
+                      Loss
+                    </span>
+                  ) : (
+                    <span className="font15 font-bold text-yellow border-[1px] px-2 border-yellow rounded-lg">
+                      Draw
+                    </span>
+                  )}
                 </div>
               )}
               <div className="col-span-1 flex justify-end">
@@ -241,11 +260,10 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                     )}
                   </>
                 )}
-
-                {countLiked && (
+                {!endTime && (
                   <div className="text-gray-200 flex items-end gap-2">
-                    <span className="font20 text-sm">{countLiked}</span>
-                    <ThumbUpIcon className=" font35 unlike_animation cursor-pointer" />
+                    <span className="font15 text-gray-200">{countLiked}</span>
+                    <ThumbUpIcon className=" font30 unlike_animation cursor-pointer" />
                   </div>
                 )}
               </div>
@@ -255,12 +273,11 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       </div>
       {showComments && (
         <Comments
-          positionVideo={positionVideo}
-          setClosingComments={setClosingComments}
+          showComments={showComments}
+          closingComments={closingComments}
           movieInfo={movieInfo}
           setShowComments={setShowComments}
-          // handleShowCMT={handleShowCMT}
-          closingComments={closingComments}
+          setClosingComments={setClosingComments}
         />
       )}
     </div>

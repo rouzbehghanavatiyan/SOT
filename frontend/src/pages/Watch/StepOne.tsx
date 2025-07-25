@@ -52,7 +52,6 @@ const StepOne: React.FC = () => {
   };
 
   const handleShowMatch = (item: any) => {
-    console.log("item?.group", item?.group);
     const newPath = `${location.pathname}/show?id=${item?.group?.inviteInserted?.id}`;
     navigate(newPath);
     setLastTap(0);
@@ -67,8 +66,6 @@ const StepOne: React.FC = () => {
         take: pagination.take,
       });
       setIsLoading(false);
-      console.log(res);
-
       const { data, status } = res?.data;
       if (status === 0) {
         setAllDableWatch((prev) => [...prev, ...data]);
@@ -108,19 +105,9 @@ const StepOne: React.FC = () => {
 
   const videoGroups = getVideosForDisplay(allDableWatch);
 
-  const checkIsMy = (group: any) => {
-    if (
-      group?.userInfoChild?.id === userId ||
-      group?.userInfoParent?.id === userId
-    ) {
-      return true;
-    }
-  };
-
   const videoGroupsWithOwnership = useMemo(() => {
     return videoGroups.map((group) => {
-      const itsMyVideo = checkIsMy(group);
-      return { ...group, itsMyVideo };
+      return { ...group };
     });
   }, [videoGroups, userId]);
 
@@ -132,8 +119,6 @@ const StepOne: React.FC = () => {
   };
 
   const handleGetRemoveLike = (data: { userId: number; movieId: number }) => {
-    console.log(videoLikes, data);
-
     setVideoLikes((prev) => ({
       ...prev,
       [data.movieId]: (prev[data.movieId] || 0) - 1,
@@ -216,8 +201,8 @@ const StepOne: React.FC = () => {
   }, [pagination.hasMore, isLoading]);
 
   return (
-    <>
-      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10  gap-[5px] p-[1px]">
+    <section className="mt-3">
+      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10  gap-[5px] p-[2px]">
         {videoGroupsWithLikes.map((group, index) => {
           const {
             parent,
@@ -294,16 +279,10 @@ const StepOne: React.FC = () => {
                             <div className="flex  justify-between items-center mx-2">
                               <ImageRank
                                 imgSize={60}
-                                rankStyle="w-7 h-7"
-                                iconProfileStyle="text-gray-200 font50"
                                 userName={
                                   group?.userInfoChild?.userName || "User"
                                 }
-                                classUserName="text-white"
                                 score={parent?.score || 0}
-                                rankWidth={45}
-                                starWidth={6}
-                                className="absolute bottom-0"
                               />
                               <div className="flex gap-1 text-white justify-center items-end">
                                 {childLikes}
@@ -324,9 +303,7 @@ const StepOne: React.FC = () => {
                                 duration={3600}
                                 active={true}
                                 className="text-white font20 ml-2"
-                                onComplete={() => {
-                                  console.log("Timer completed!");
-                                }}
+                                onComplete={() => {}}
                               />
                             </div>
                           </div>
@@ -346,7 +323,7 @@ const StepOne: React.FC = () => {
       >
         <div className="mb-20 loader-userFinding w-12 h-12"></div>
       </div>
-    </>
+    </section>
   );
 };
 

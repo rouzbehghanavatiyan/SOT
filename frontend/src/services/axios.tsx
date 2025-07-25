@@ -4,16 +4,8 @@ import { store } from "../hooks/store";
 
 axios.interceptors.request.use(
   function (config: any) {
-    // const state = store.getState();
-    // if (config.url.toLowerCase().includes("/addattachment")) {
-    //   config.headers["Content-Type"] = "multipart/form-data";
-    // } else if (config.url.toLowerCase().includes("/attachmentplay")) {
-    //   config.headers["Content-Type"] = "video/mp4";
-    // } else {
-    //   config.headers["Content-Type"] = "application/json";
-    // }
+    // تنظیم نوع محتوا بر اساس URL
     if (config.url.toLowerCase().includes("/attachmentplay")) {
-      console.log(config.url.toLowerCase().includes("/attachmentplay"));
       config.headers["Content-Type"] = "video/mp4";
     } else if (config.url.toLowerCase().includes("/addattachment")) {
       config.headers["Content-Type"] = "multipart/form-data";
@@ -21,10 +13,16 @@ axios.interceptors.request.use(
       config.headers["Content-Type"] = "application/json";
     }
 
-    config.headers.Authorization = `Bearer ${sessionStorage.getItem("token")}`;
+    // اضافه کردن توکن به هدر
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   function (error) {
+    // مدیریت خطاهای درخواست
     return Promise.reject(error);
   }
 );
@@ -32,14 +30,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   async function (response) {
     // بررسی وضعیت پاسخ و نمایش پیام‌های مربوطه
-    if (
-      !!response?.data?.code &&
-      response?.data?.code !== 0 &&
-      response?.data?.code !== 2 &&
-      response?.data?.code !== 5 &&
-      response?.data?.code !== 10 &&
-      response?.data?.code !== 11
-    ) {
+    const errorCodes = [0, 2, 5, 10, 11];
+    if (!!response?.data?.code && !errorCodes.includes(response?.data?.code)) {
       store.dispatch(
         RsetMessageModal({
           show: true,
@@ -50,8 +42,11 @@ axios.interceptors.response.use(
     return response;
   },
   async function (error) {
-    // بررسی کد وضعیت 401
-    if (error.response?.status === 401) {
+    // بررسی وضعیت خطا
+    const status = error?.response?.status;
+
+    // مدیریت خطای 401 (Unauthorized)
+    if (status === 401) {
       store.dispatch(
         RsetMessageModal({
           show: true,
@@ -59,36 +54,29 @@ axios.interceptors.response.use(
         })
       );
 
-      // پاکسازی اطلاعات کاربر از localStorage
+      // پاک کردن اطلاعات کاربر و هدایت به صفحه لاگین
       localStorage.clear();
-
-      // هدایت به صفحه لاگین
-      window.location.href = "/login"; // آدرس صفحه لاگین
+      sessionStorage.clear();
+      window.location.href = "/"; // استفاده از window.location.href به جای Navigate
       return Promise.reject(error);
     }
 
-    // بررسی خطاهای دیگر (4xx)
-    const expectedErrors =
-      error.response &&
-      error.response.status !== 401 &&
-      error.response.status >= 400 &&
-      error.response.status < 500;
-
-    if (expectedErrors) {
+    // مدیریت سایر خطاهای 4xx
+    if (status >= 400 && status < 500) {
       store.dispatch(
         RsetMessageModal({
           show: true,
-          title: error.response?.data?.message || "Internal server error",
+          title: error.response?.data?.message || "Client error",
         })
       );
       return Promise.reject(error);
     }
 
-    // مدیریت خطاهای غیرمنتظره
+    // مدیریت خطاهای دیگر
     store.dispatch(
       RsetMessageModal({
         show: true,
-        title: error.response?.data?.message || "Internal server error",
+        title: "An unexpected error occurred",
       })
     );
     return Promise.reject(error);

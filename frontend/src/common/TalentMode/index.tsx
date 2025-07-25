@@ -60,7 +60,7 @@ const TalentMode: FC<Props> = () => {
 
   return (
     <>
-      <Loading isLoading={isLoading ? true : false} />
+      {isLoading && <Loading isLoading={isLoading ? true : false} />}
       <div className="grid justify-center">
         <div className="w-screen md:w-full h-screen md:h-full ">
           <div className="border-b-2 px-3 flex justify-between text-center items-center">

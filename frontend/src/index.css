@@ -647,7 +647,7 @@ br {
 }
 
 .lds-dual-ring:after {
-  color: white;
+  color: #10153D;
   content: " ";
   display: block;
   width: 64px;
@@ -958,4 +958,71 @@ br {
 .container_message {
   max-width: 70%;
   word-wrap: break-word;
+}
+
+
+/* video edit */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  /* عرض ویدیو برابر با عرض کادر */
+  max-width: 640px;
+  /* محدود کردن عرض ویدیو */
+  aspect-ratio: 16/9;
+  /* نسبت ابعاد ویدیو */
+  margin: 0 auto;
+  /* مرکزیت کادر در صفحه */
+  overflow: hidden;
+  /* جلوگیری از بیرون‌زدگی محتوا */
+}
+
+.video-full {
+  width: 100%;
+  /* تنظیم عرض ویدیو */
+  height: 100%;
+  /* تنظیم ارتفاع ویدیو */
+  object-fit: cover;
+  /* تطابق ویدیو با کادر */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* ماسک تیره */
+}
+
+.highlight-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* کل عرض ویدیو */
+  height: 66%;
+  /* دو سوم ارتفاع ویدیو */
+  background-color: rgba(255, 255, 255, 0.3);
+  /* رنگ روشن برای بخش انتخاب شده */
+  border: 2px dashed #fff;
+  /* حاشیه برای مشخص کردن کادر انتخاب */
+  cursor: grab;
+  /* نشانگر ماوس به شکل دست */
+}
+
+.highlight-area:active {
+  cursor: grabbing;
+  /* نشانگر ماوس هنگام Drag */
+}
+
+@media (max-width: 768px) {
+  .video-wrapper {
+    max-width: 100%;
+  }
+
+  .highlight-area {
+    height: 50%;
+    /* نصف ارتفاع در موبایل */
+  }
 }

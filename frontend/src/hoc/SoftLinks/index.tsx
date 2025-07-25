@@ -39,7 +39,7 @@ const SoftLink: FC<TalentModeProps> = ({
 }) => {
   return (
     <>
-      <Loading isLoading={isLoading} />
+      {isLoading && <Loading isLoading={isLoading} />}
 
       <div className="grid justify-center">
         <div className={containerClass}>

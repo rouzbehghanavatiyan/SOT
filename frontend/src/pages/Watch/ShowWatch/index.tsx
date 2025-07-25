@@ -20,6 +20,7 @@ import {
   handleAttachmentListByInviteId,
   RsetTornoment,
 } from "../../../common/Slices/main";
+import StringHelpers from "../../../utils/helpers/StringHelper";
 
 const ShowWatch: React.FC = () => {
   const navigate = useNavigate();
@@ -187,7 +188,9 @@ const ShowWatch: React.FC = () => {
     const temp = {
       sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
       userProfile:
-        position === 0 ? data?.profileInserted : data?.profileMatched,
+        position === 0
+          ? StringHelpers.getProfile(data?.profileInserted)
+          : StringHelpers.getProfile(data?.profileMatched),
       userNameSender:
         position === 0
           ? data?.userInserted?.userName
@@ -258,6 +261,7 @@ const ShowWatch: React.FC = () => {
               >
                 <div className="h-1/2 w-full relative flex flex-col">
                   <VideoSection
+                    endTime={true}
                     video={video}
                     isPlaying={
                       currentlyPlayingId ===
@@ -287,6 +291,7 @@ const ShowWatch: React.FC = () => {
                 </div>
                 <div className="h-1/2 w-full relative flex flex-col">
                   <VideoSection
+                    endTime={true}
                     video={video}
                     isPlaying={
                       currentlyPlayingId ===

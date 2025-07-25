@@ -32,7 +32,8 @@ const Followers = () => {
 
   return (
     <div>
-      <Loading isLoading={isLoading} />
+      {isLoading && <Loading isLoading={isLoading} />}
+
       {allFollower?.map((follower: any, index) => {
         console.log(follower);
         const image = `${baseURL}/${follower?.attachment?.attachmentType}/${follower?.attachment?.fileName}${follower?.attachment?.ext}`;

@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import SoftLink from "../../hoc/SoftLinks";
 import { useAppSelector } from "../../hooks/hook";
 import asyncWrapper from "../../common/AsyncWrapper";
 import { addAttachment } from "../../services/dotNet";
 
 const Setting: React.FC = () => {
-  const  main  = useAppSelector((state) => state?.main);
+  const main = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("userId");
 
@@ -52,6 +51,8 @@ const Setting: React.FC = () => {
         categories={[
           { name: "Singout", id: 1 },
           { name: "profile", id: 2 },
+          { name: "Support", id: 3 },
+          { name: "About us", id: 4 },
         ]}
         isLoading={false}
       />
