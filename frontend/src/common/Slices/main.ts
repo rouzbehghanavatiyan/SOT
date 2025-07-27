@@ -106,7 +106,7 @@ const mainSlice = createSlice({
       state.messageModal = action.payload;
     },
     RsetUserLogin: (state, action: PayloadAction<any>) => {
-      state.userLogin = action.payload;
+      state.userLogin = { ...state.userLogin, ...action.payload };
     },
     RsetLoading: (
       state,

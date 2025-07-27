@@ -20,7 +20,6 @@ const Timer: React.FC<TimerProps> = ({
   onComplete,
 }) => {
   const main = useAppSelector((state) => state?.main);
-  const userId = Number(main?.userLogin?.userId);
   const [winnerInfo, setWinnerInfo] = useState<any>();
   const socket = main?.socketConfig;
   const [remainingSeconds, setRemainingSeconds] = useState<number>(

@@ -8,18 +8,17 @@ import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
 import { useAppSelector } from "../../hooks/hook";
 import ImageRank from "../../components/ImageRank";
+import StringHelpers from "../../utils/helpers/StringHelper";
 
 const PhoneFooter: React.FC = () => {
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
   const main = useAppSelector((state) => state.main);
+  const getProfileImage = main?.userLogin?.profile
+  const findImg = StringHelpers.getProfile(getProfileImage);
 
   const handleWatchClick = () => {
     setActiveIcon("watch");
   };
-
-  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
-  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
 
   return (
     <ResponsiveMaker hiddenWidth={900}>
@@ -86,10 +85,8 @@ const PhoneFooter: React.FC = () => {
             }
           >
             <ImageRank
-              iconProfileStyle="font35 text-gray-200"
               imgSrc={findImg}
               imgSize={35}
-              className={`rounded-full h-[10px] w-[10px] object-cover `}
             />
           </NavLink>
         </div>

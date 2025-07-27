@@ -21,7 +21,7 @@ const Setting: React.FC = () => {
         const file = event.target.files?.[0];
         const formData = new FormData();
         // formData.append("formFile", file.video);
-        formData.append("attachmentId", userId || main?.userLogin?.userId);
+        formData.append("attachmentId", userId || main?.userLogin?.user?.id);
         formData.append("attachmentType", "pf");
         formData.append("attachmentName", "profile");
         const resAttachment = await addAttachment(formData);

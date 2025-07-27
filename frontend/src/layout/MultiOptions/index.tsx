@@ -21,6 +21,7 @@ import { useAppSelector } from "../../hooks/hook";
 import goldStar2 from "../../assets/img/rank11.webp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StringHelpers from "../../utils/helpers/StringHelper";
+import { Link } from "react-router-dom";
 
 interface PropsType {
   openMessage: boolean;
@@ -30,6 +31,8 @@ interface PropsType {
 const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
   let visibleWidth: any = 1390;
   let hiddenWidth: any;
+  const main = useAppSelector((state) => state?.main);
+  const getProfileImage = main?.userLogin?.profile;
 
   const [isVisible, setIsVisible] = useState<boolean>(
     window.innerWidth <= 1390
@@ -39,8 +42,6 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
     setIsVisible(window.innerWidth <= 1390);
   };
 
-  const  main  = useAppSelector((state) => state?.main);
-  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
   const findImg = StringHelpers?.getProfile(getProfileImage);
 
   useEffect(() => {
@@ -63,13 +64,9 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
         <IconButton className="">
           <SupportAgentIcon className="text-gray-800 font20" />
         </IconButton>
-
-        <IconButton
-          onClick={() => setOpenMessage(!openMessage)}
-          className="text-white font20"
-        >
+        <Link to={"/messages"}>
           <MailIcon className="text-white font20" />
-        </IconButton>
+        </Link>
         <IconButton className="  ">
           <div className="relative">
             <span>
@@ -90,13 +87,8 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
           </div>
         </IconButton>
       </ResponsiveMaker>
-      <div className="fixed top-0 right-10 bg-white rounded-full p-1">
-        <ImageRank
-          imgSize={60}
-          rankStyle={isVisible && "w-14 h-14"}
-          iconProfileStyle="bg-white rounded-full text-gray-200 font80"
-          imgSrc={findImg}
-        />
+      <div className="fixed top-0 right-10 bg-white rounded-full">
+        <ImageRank imgSize={60} imgSrc={findImg} />
       </div>
     </div>
   );

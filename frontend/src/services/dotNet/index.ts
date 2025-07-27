@@ -96,8 +96,8 @@ export const followerList = async (userId: any) => {
 };
 
 // get profile
-export const profileAttachmentList = async (userId: number) => {
-  const url = `${baseURL}/profileAttachmentList?userId=${userId}`;
+export const profileAttachment = async (userId: number) => {
+  const url = `${baseURL}/profileAttachment?userId=${userId}`;
   return await axios.get(url);
 };
 

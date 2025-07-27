@@ -4,6 +4,7 @@ import ImageRank from "../../components/ImageRank";
 import { Link, useNavigate } from "react-router-dom";
 import { allUserMessagese } from "../../services/nest";
 import StringHelpers from "../../utils/helpers/StringHelper";
+import Loading from "../../components/Loading";
 
 interface MessageData {
   recipient: number;
@@ -13,8 +14,9 @@ interface MessageData {
 const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
   const main = useAppSelector((state) => state?.main);
-  const userIdLogin = Number(main?.userLogin?.userId);
+  const userIdLogin = main?.userLogin?.user?.id;
   const socket = main?.socketConfig;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userSender, setUserSender] = useState<MessageData[]>([]);
   const [unreadMessages, setUnreadMessages] = useState<Record<number, boolean>>(
     {}
@@ -41,30 +43,26 @@ const ChatRoom: React.FC = () => {
   };
 
   const handleGetUserMessages = async () => {
-    const res = await allUserMessagese(userIdLogin);
-    const { data, status } = res?.data;
-    if (status === 0) {
-      console.log(data);
-
-      setUserSender(data);
-    }
-  };
-
-  const fetchUnreadStatus = async () => {
     try {
-      const response = await fetch(
-        `/api/messages/unread-status?receiver=${userIdLogin}`
-      );
-      const data = await response.json();
-      setUnreadMessages(data);
+      setIsLoading(true);
+      const res = await allUserMessagese(userIdLogin);
+      setIsLoading(false);
+
+      const { data, status } = res?.data;
+      if (status === 0) {
+        console.log(data);
+
+        setUserSender(data);
+      }
     } catch (error) {
-      console.error("Error fetching unread status:", error);
+      console.log(error);
     }
   };
 
   const handleReciveMessage = useCallback(
     (data: MessageData) => {
       if (userIdLogin === data?.recieveId) {
+        localStorage.setItem(`message_read_${data.sender}`, "false");
         setUnreadMessages((prev) => ({ ...prev, [data.sender]: true }));
       }
     },
@@ -82,22 +80,21 @@ const ChatRoom: React.FC = () => {
   }, [socket]);
 
   useEffect(() => {
-    fetchUnreadStatus();
     handleGetUserMessages();
   }, [userIdLogin]);
 
   useEffect(() => {
     const storedReadStatus: Record<number, boolean> = {};
     userSender.forEach((user) => {
-      console.log(user);
-
-      storedReadStatus[user.sender] = checkMessageReadStatus(user.sender);
+      const isUnread =
+        localStorage.getItem(`message_read_${user.sender}`) !== "true";
+      storedReadStatus[user.sender] = isUnread;
     });
     setUnreadMessages(storedReadStatus);
-  }, [userSender, checkMessageReadStatus]);
+  }, [userSender]);
 
   return (
-    <div className="md:mt-10 mt-0">
+    <div className="md:mt-10 mt-0 ">
       {userSender.length >= 0 ? (
         userSender?.map((user: any) => {
           const fixImage = StringHelpers.getProfile(user);
@@ -105,7 +102,7 @@ const ChatRoom: React.FC = () => {
           return (
             <div
               onClick={() => handleRedirect(user)}
-              className="relative border-b-[1px]  flex items-center py-2 border-gray-100 bg-gray-100"
+              className="relative border-b-[1px]  flex items-center p-1 border-gray-150  my-1 bg-gray-100"
             >
               <div className="m-2 ">
                 <ImageRank
@@ -127,6 +124,7 @@ const ChatRoom: React.FC = () => {
           <p className="mt-10 text-gray-500">Empty messages</p>
         </div>
       )}
+      {isLoading && <Loading isLoading={isLoading} />}
     </div>
   );
 };

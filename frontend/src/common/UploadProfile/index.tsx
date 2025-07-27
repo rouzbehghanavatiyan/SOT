@@ -1,6 +1,6 @@
 import {
   addAttachment,
-  profileAttachmentList,
+  profileAttachment,
   userAttachmentList,
   followerList,
 } from "../../services/dotNet";
@@ -29,8 +29,8 @@ export const uploadProfileImage = async (imageData: string, userId: string) => {
     resAttachment?.data;
 
   if (attachmentStatus === 0) {
-    const resProfileAttachmentList = await profileAttachmentList(userId);
-    const { data } = resProfileAttachmentList?.data;
+    const resProfileAttachment = await profileAttachment(userId);
+    const { data } = resProfileAttachment?.data;
     return { newProfileImage: data };
   }
 

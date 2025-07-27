@@ -7,6 +7,7 @@ import EditVideo from "../../EditVideo";
 import MainTitle from "../../../components/MainTitle";
 import SoftLink from "../../../hoc/SoftLinks";
 import { useNavigate } from "react-router-dom";
+import ResponsiveMaker from "../../../utils/helpers/ResponsiveMaker";
 
 const StepFour: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -121,45 +122,45 @@ const StepFour: React.FC = () => {
   };
 
   return (
-    <section className=" ">
+    <section className="md:my-10 my-0 ">
       <MainTitle title="Talent mode" />
       <div className="mx-4 grid grid-cols-1 md:mt-10 justify-center ">
         <video ref={videoRef} style={{ display: "none" }} />
         <div
           onClick={handleOffline}
-          className=" cursor-pointer grid grid-cols-5 mt-4"
+          className=" cursor-pointer grid grid-cols-7 mt-4"
         >
           <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Offline
           </span>
-          <span className="flex col-span-3 justify-start  ">
+          <span className="flex col-span-3 justify-center  ">
             <WifiOffIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
         </div>
         <div
           onClick={handleOptional}
-          className=" cursor-pointer grid grid-cols-5  py-4 mt-4 "
+          className=" cursor-pointer grid grid-cols-7  py-4 mt-4 "
         >
           <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Optional
           </span>
-          <span className="flex col-span-3 justify-start  ">
+          <span className="flex col-span-3 justify-center  ">
             <AltRouteIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
         </div>
-        <div className=" cursor-pointer grid grid-cols-5  py-4 mt-4  ">
+        <div className=" cursor-pointer grid grid-cols-7  py-4 mt-4  ">
           <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Turbo
           </span>
-          <span className="flex col-span-3 justify-start  ">
+          <span className="flex col-span-3 justify-center  ">
             <NetworkCheckIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
         </div>
-        <div className=" cursor-pointer grid grid-cols-5  py-4 mt-4  ">
+        <div className=" cursor-pointer grid grid-cols-7  py-4 mt-4  ">
           <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
             Live
           </span>
-          <span className="flex col-span-3 justify-start">
+          <span className="flex col-span-3 justify-center">
             <RadioButtonCheckedIcon className="font100 flex px-3 justify-center text-primary" />
           </span>
         </div>

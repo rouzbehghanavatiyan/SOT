@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
+import Comments from "../../common/Comments";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { Mousewheel } from "swiper/modules";
 import VideoSection from "../../common/VideoSection";
@@ -21,62 +22,7 @@ const Home: React.FC = () => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
-  const userLogin = Number(main?.userLogin?.userId);
-  const [commentsState, setCommentsState] = useState<any[]>(
-    [] // آرایه‌ای برای مدیریت باز/بسته بودن کامنت‌ها
-  );
-  const [closingCommentsState, setClosingCommentsState] = useState<any[]>(
-    [] // آرایه‌ای برای مدیریت انیمیشن بسته‌شدن کامنت‌ها
-  );
-  const [movieInfoState, setMovieInfoState] = useState<any[]>(
-    [] // آرایه‌ای برای نگه‌داشتن اطلاعات مرتبط با هر کامنت
-  );
-
-  // مقداردهی اولیه state‌ها بر اساس تعداد ویدیوها
-  useEffect(() => {
-    if (videos.length > 0) {
-      setCommentsState(Array(videos.length).fill(false)); // کامنت‌های بسته
-      setClosingCommentsState(Array(videos.length).fill(false)); // انیمیشن بسته‌شدن
-      setMovieInfoState(Array(videos.length).fill(null)); // اطلاعات کامنت‌ها
-    }
-  }, [videos]);
-  // باز کردن کامنت برای اسلاید مشخص
-  const handleToggleComments = (index: number, videoData: any) => {
-    console.log(index, videoData);
-
-    setMovieInfoState((prev) => {
-      const newState = [...prev];
-      newState[index] = videoData;
-      return newState;
-    });
-    setCommentsState((prev) => {
-      const newState = [...prev];
-      newState[index] = true; // باز کردن کامنت
-      return newState;
-    });
-  };
-
-  // بستن کامنت برای اسلاید مشخص
-  const handleCloseComments = (index: number) => {
-    setClosingCommentsState((prev) => {
-      const newState = [...prev];
-      newState[index] = true;
-      return newState;
-    });
-
-    setTimeout(() => {
-      setCommentsState((prev) => {
-        const newState = [...prev];
-        newState[index] = false;
-        return newState;
-      });
-      setClosingCommentsState((prev) => {
-        const newState = [...prev];
-        newState[index] = false;
-        return newState;
-      });
-    }, 150);
-  };
+  const userIdLogin = main?.userLogin?.user?.id;
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
@@ -84,9 +30,17 @@ const Home: React.FC = () => {
     setCurrentlyPlayingId(topVideoId);
   };
 
+  const handleVideoPlay = (videoId: string) => {
+    setOpenDropdowns({});
+    setCurrentlyPlayingId((prevId: any) => {
+      if (prevId === videoId) {
+        return null;
+      }
+      return videoId;
+    });
+  };
+
   const dropdownItems = (data: any, position: number, userSenderId: any) => {
-    console.log(data);
-    
     const temp = {
       sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
       userProfile:
@@ -138,10 +92,10 @@ const Home: React.FC = () => {
   }, [videos]);
 
   useEffect(() => {
-    if (!!main?.userLogin?.userId) {
-      dispatch(handleFollowerAttachmentList(main?.userLogin?.userId));
+    if (!!userIdLogin) {
+      dispatch(handleFollowerAttachmentList(userIdLogin));
     }
-  }, [main?.userLogin?.userId]);
+  }, [userIdLogin]);
 
   return (
     <div className="relative w-full bg-black md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]">
@@ -158,19 +112,7 @@ const Home: React.FC = () => {
       >
         {videos?.length !== 0 &&
           videos?.map((video: any, index: number) => {
-            const resultInserted =
-              video?.likeInserted > video?.likeMatched
-                ? true
-                : video?.likeInserted < video?.likeMatched
-                  ? false
-                  : null;
-            const resultMatched =
-              video?.likeInserted < video?.likeMatched
-                ? true
-                : video?.likeInserted > video?.likeMatched
-                  ? false
-                  : null;
-
+            console.log(video?.userInserted?.id, userIdLogin);
             return (
               <SwiperSlide
                 key={index}
@@ -179,63 +121,34 @@ const Home: React.FC = () => {
                 <section className="flex flex-col h-screen">
                   <div className="flex-1 min-h-0 relative">
                     <VideoSection
-                      showComments={commentsState[index]} // حالت باز بودن کامنت
-                      closingComments={closingCommentsState[index]} // حالت انیمیشن بسته‌شدن
-                      movieInfo={movieInfoState[index]} // اطلاعات مرتبط با کامنت
-                      setShowComments={(val) => {
-                        const newState = [...commentsState];
-                        newState[index] = val;
-                        setCommentsState(newState);
-                      }}
-                      setClosingComments={(val) => {
-                        const newState = [...closingCommentsState];
-                        newState[index] = val;
-                        setClosingCommentsState(newState);
-                      }}
-                      handleShowCMT={() => handleToggleComments(0, video)} // ارسال تابع باز کردن کامنت
-                      result={resultInserted}
                       video={video}
-                      // isPlaying={
-                      //   currentlyPlayingId ===
-                      //   video?.attachmentInserted?.attachmentId
-                      // }
-                      // onVideoPlay={() =>
-                      //   handleVideoPlay(video?.attachmentInserted?.attachmentId)
-                      // }
+                      isPlaying={
+                        currentlyPlayingId ===
+                        video?.attachmentInserted?.attachmentId
+                      }
+                      onVideoPlay={() =>
+                        handleVideoPlay(video?.attachmentInserted?.attachmentId)
+                      }
                       dropdownItems={() =>
                         dropdownItems(video, 0, video?.userInserted)
                       }
                       setOpenDropdowns={setOpenDropdowns}
                       openDropdowns={openDropdowns}
+                      baseURL={baseURL}
                       positionVideo={0}
-                      countLiked={video?.likeInserted}
+                      countLiked={120}
                     />
                   </div>
                   <div className="flex-1 min-h-0 relative">
                     <VideoSection
-                      showComments={commentsState[index]} // حالت باز بودن کامنت
-                      closingComments={closingCommentsState[index]} // حالت انیمیشن بسته‌شدن
-                      movieInfo={movieInfoState[index]} // اطلاعات مرتبط با کامنت
-                      setShowComments={(val) => {
-                        const newState = [...commentsState];
-                        newState[index] = val;
-                        setCommentsState(newState);
-                      }}
-                      setClosingComments={(val) => {
-                        const newState = [...closingCommentsState];
-                        newState[index] = val;
-                        setClosingCommentsState(newState);
-                      }}
-                      handleShowCMT={() => handleToggleComments(1, video)} // ارسال تابع باز کردن کامنت
-                      result={resultMatched}
                       video={video}
-                      // isPlaying={
-                      //   currentlyPlayingId ===
-                      //   video?.attachmentMatched?.attachmentId
-                      // }
-                      // onVideoPlay={() =>
-                      //   handleVideoPlay(video?.attachmentMatched?.attachmentId)
-                      // }
+                      isPlaying={
+                        currentlyPlayingId ===
+                        video?.attachmentMatched?.attachmentId
+                      }
+                      onVideoPlay={() =>
+                        handleVideoPlay(video?.attachmentMatched?.attachmentId)
+                      }
                       onFollowClick={() =>
                         handleFallowClick(video, 1, video?.userMatched?.id)
                       }
@@ -244,8 +157,9 @@ const Home: React.FC = () => {
                       }
                       openDropdowns={openDropdowns}
                       setOpenDropdowns={setOpenDropdowns}
+                      baseURL={baseURL}
                       positionVideo={1}
-                      countLiked={video?.likeMatched}
+                      countLiked={12}
                     />
                   </div>
                 </section>

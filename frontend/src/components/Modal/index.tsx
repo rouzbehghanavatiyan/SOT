@@ -13,7 +13,7 @@ interface ModalPropsType {
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   footer?: ReactNode[];
-  width?: number; 
+  width?: number;
   padding?: number;
   onClose?: () => void;
   className?: string;

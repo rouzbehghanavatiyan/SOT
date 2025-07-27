@@ -33,14 +33,13 @@ const ShowWatch: React.FC = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
-  const socket = main?.socketConfig;
 
   const handleFallowClick = asyncWrapper(
     async (video: any, position: number) => {
       const userId =
         position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
       const postData = {
-        userId: Number(main?.userLogin?.userId),
+        userId: main?.userLogin?.user?.id,
         followerId: userId,
       };
       const currentFollowStatus = video?.follows[userId]?.isFollowed || false;
@@ -109,68 +108,6 @@ const ShowWatch: React.FC = () => {
     });
   };
 
-  const handleLikeClick = asyncWrapper(
-    async (video: any, position: number, movieId: any) => {
-      const postData = {
-        userId: Number(main?.userLogin?.userId) || null,
-        movieId: movieId,
-      };
-      const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
-      try {
-        console.log("prevVideosprevVideosprevVideosprevVideosprevVideos");
-        dispatch(
-          RsetTornoment((prevVideos: any) => {
-            return prevVideos.map((v: any) =>
-              v.id === video.id
-                ? {
-                    ...v,
-                    likes: {
-                      ...v.likes,
-                      [movieId]: {
-                        isLiked: !currentLikeStatus,
-                        count: currentLikeStatus
-                          ? v.likes?.[movieId]?.count - 1
-                          : v.likes?.[movieId]?.count + 1,
-                      },
-                    },
-                  }
-                : v
-            );
-          })
-        );
-        if (currentLikeStatus) {
-          await removeLike(postData);
-          socket.emit("remove_liked", postData);
-        } else {
-          await addLike(postData);
-          socket.emit("add_liked", postData);
-        }
-      } catch (error) {
-        console.error("Error in like operation:", error);
-        dispatch(
-          RsetTornoment((prevVideos: any) =>
-            prevVideos.map((v: any) =>
-              v.id === video.id
-                ? {
-                    ...v,
-                    likes: {
-                      ...v.likes,
-                      [movieId]: {
-                        isLiked: currentLikeStatus,
-                        count: currentLikeStatus
-                          ? v.likes?.[movieId]?.count
-                          : v.likes?.[movieId]?.count,
-                      },
-                    },
-                  }
-                : v
-            )
-          )
-        );
-      }
-    }
-  );
-
   const toggleDropdown = (video: Video, index: number) => {
     setOpenDropdowns((prev: any) => {
       if (index === 0 || index === 1) {
@@ -184,7 +121,6 @@ const ShowWatch: React.FC = () => {
   };
 
   const dropdownItems = (data: any, position: number, userSenderId: any) => {
-    console.log(data);
     const temp = {
       sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
       userProfile:
@@ -261,6 +197,7 @@ const ShowWatch: React.FC = () => {
               >
                 <div className="h-1/2 w-full relative flex flex-col">
                   <VideoSection
+                    showLiked
                     endTime={true}
                     video={video}
                     isPlaying={
@@ -291,6 +228,7 @@ const ShowWatch: React.FC = () => {
                 </div>
                 <div className="h-1/2 w-full relative flex flex-col">
                   <VideoSection
+                    showLiked
                     endTime={true}
                     video={video}
                     isPlaying={

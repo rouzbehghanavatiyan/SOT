@@ -1,67 +1,83 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../../components/Button";
 import ImageRank from "../../../../components/ImageRank";
-import "swiper/css";
-import "swiper/css/pagination";
+
 import asyncWrapper from "../../../AsyncWrapper";
 import { useAppSelector } from "../../../../hooks/hook";
 import RequestModal from "./RequestModal";
-
+import StringHelpers from "../../../../utils/helpers/StringHelper";
 const userIdFromSStorage = sessionStorage.getItem("userId");
-
 interface PropsType {
-  movieData: any;
   setShowEditMovie: any;
 }
 
-const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
-  const  main  = useAppSelector((state) => state?.main);
+const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
+  const main = useAppSelector((state) => state?.main);
   const socket = main?.socketConfig;
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [findUser, setFindUser] = useState<any>([]);
   const [dataUserRequestInfo, setDataUserRequestInfo] = useState<any>({});
-
   const [isLoadingBtn, setIsLoadingBtn] = useState<boolean>(false);
   const [isLoadingSearchUser, setIsLoadingSearchUser] = useState<boolean>(true);
   const [showRequestModal, setShowRequestModal] = useState<boolean>(false);
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
-  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
+  const getProfileImage = main?.userLogin?.profile;
+  const findImg = StringHelpers.getProfile(getProfileImage);
 
   const handlePick = (id: number) => {
     setSelectedId(id);
   };
+  console.log(isLoadingBtn);
 
   const handleSendInviteUser = asyncWrapper(async (item: any) => {
     const postUserInfo = {
       userIdSender:
-        Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+        Number(userIdFromSStorage) || Number(main?.userLogin?.user?.id),
       userName: main?.userLogin?.userName,
       userImage: findImg,
       userAnswer: null,
       userIdReciever: item?.userIdJoin,
     };
-
     setIsLoadingBtn(true);
     socket.emit("add_invite_optional", postUserInfo);
   });
 
   const handleGetUsers = (dataList: any[]) => {
     const filterMe = dataList?.filter(
-      (item) => Number(item?.userIdJoin) !== Number(main?.userLogin?.userId)
+      (item) => Number(item?.userIdJoin) !== Number(main?.userLogin?.user?.id)
     );
     setFindUser(filterMe);
   };
 
   const handleGetRequestUsers = (data: any) => {
     console.log(data);
-    if (
-      data?.userIdSender !== Number(userIdFromSStorage) &&
-      data?.userIdReciever === Number(userIdFromSStorage)
-    ) {
-      setDataUserRequestInfo(data);
-      setShowRequestModal(true);
+
+    // بررسی اینکه آیا داده‌ها یک آرایه هستند
+    if (Array.isArray(data)) {
+      // پردازش تمام کاربران درخواست‌دهنده
+      const allReqUsers = data.map((item: any) => {
+        return {
+          userIdSender: item?.userIdSender,
+          userIdReciever: item?.userIdReciever,
+          userName: item?.userName,
+          userImage: item?.userImage,
+          userAnswer: item?.userAnswer,
+        };
+      });
+
+      // بررسی کاربران و تنظیم وضعیت برای نمایش مودال
+      const filteredUsers = allReqUsers.filter(
+        (item) =>
+          item?.userIdSender !== Number(userIdFromSStorage) &&
+          item?.userIdReciever === Number(userIdFromSStorage)
+      );
+
+      if (filteredUsers.length > 0) {
+        setDataUserRequestInfo(filteredUsers); // تنظیم لیست کاربران برای نمایش در مودال
+        setShowRequestModal(true); // نمایش مودال
+      }
     }
+
+    // بررسی وضعیت پاسخ کاربران
     if (data?.userAnswer === false) {
       setIsLoadingBtn(false);
     }
@@ -69,7 +85,7 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
 
   useEffect(() => {
     const postUserInfo = {
-      userIdJoin: Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+      userIdJoin: Number(userIdFromSStorage) || Number(main?.userLogin?.user?.id),
       userName: main?.userLogin?.userName,
       userImage: findImg,
       userAnswer: null,
@@ -94,7 +110,7 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
   const handleClose = () => {
     if (socket) {
       socket.emit("user_left_optional", {
-        userId: Number(userIdFromSStorage) || Number(main?.userLogin?.userId),
+        userId: Number(userIdFromSStorage) || Number(main?.userLogin?.user?.id),
       });
     }
     setShowEditMovie(false);
@@ -111,10 +127,10 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
                   <div className="flex  justify-between items-center my-2">
                     <ImageRank
                       imgSize={60}
-                      rankStyle="w-8 h-8"
+                      score={20}
+                      userNameStyle="text-gray-800"
                       imgSrc={item.userImage}
                       userName={item?.userName}
-                      iconProfileStyle="font60 text-gray-800"
                     />
                     {selectedId === index && (
                       <Button
@@ -146,7 +162,7 @@ const Operational: React.FC<PropsType> = ({ movieData, setShowEditMovie }) => {
             </>
           )}
         </div>
-        <div className="flex justify-around">
+        <div className="flex mb-7 justify-around">
           <Button
             className="border"
             onClick={handleClose}

@@ -30,6 +30,7 @@ export interface EditVideoProps {
 
 export interface AddMovieType {
   userId: number | null;
+  cropData: any;
   description?: string;
   title?: string;
   subSubCategoryId: number;

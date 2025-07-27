@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import ImageRank from "../../components/ImageRank";
-import { addComment, commentList, removeComment } from "../../services/dotNet";
+import { addComment, commentList } from "../../services/dotNet";
 import { useAppSelector } from "../../hooks/hook";
 import MessageInput from "../../pages/ChatRoom/PrivateChat/MessageInput";
 import CloseIcon from "@mui/icons-material/Close";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Loading from "../../components/Loading";
 
 const Comments: React.FC<any> = ({
+  setClosingComments,
+  handleShowCMT,
   showComments,
+  positionVideo,
+  setShowComments,
   closingComments,
   movieInfo,
-  setShowComments,
-  setClosingComments,
 }) => {
   const main = useAppSelector((state) => state?.main);
   const [title, setTitle] = useState<string>("");
@@ -23,8 +23,6 @@ const Comments: React.FC<any> = ({
   const [answerInfo, setAnswerInfo] = useState<any>(null);
   const [answerData, setAnswerData] = useState<any>({});
   const titleInputRef = useRef<HTMLInputElement>(null);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getMovieId =
     positionVideo === 0
@@ -35,7 +33,7 @@ const Comments: React.FC<any> = ({
     e.preventDefault();
     if (title !== "") {
       const postData: any = {
-        userId: Number(main?.userLogin?.userId),
+        userId: main?.userLogin?.user?.id,
         movieId: getMovieId,
         desc: title.trim(),
         ParentId: answerData?.id || null,
@@ -58,9 +56,7 @@ const Comments: React.FC<any> = ({
 
   const handleGetAllList = async () => {
     try {
-      setIsLoading(true);
       const res = await commentList(getMovieId);
-      setIsLoading(false);
       const { data, status } = res?.data;
       console.log(data);
 
@@ -89,6 +85,32 @@ const Comments: React.FC<any> = ({
     handleGetAllList();
   }, [showComments]);
 
+  useEffect(() => {
+    if (showComments) {
+      document.body.style.overflow = "hidden";
+
+      const swiperContainer = document.querySelector(".swiper-container");
+      if (swiperContainer) {
+        swiperContainer.style.pointerEvents = "none";
+      }
+    } else {
+      document.body.style.overflow = "auto";
+
+      const swiperContainer = document.querySelector(".swiper-container");
+      if (swiperContainer) {
+        swiperContainer.style.pointerEvents = "auto";
+      }
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+      const swiperContainer = document.querySelector(".swiper-container");
+      if (swiperContainer) {
+        swiperContainer.style.pointerEvents = "auto";
+      }
+    };
+  }, [showComments]);
+
   const handleInputFocus = (e: React.FocusEvent) => {
     e.stopPropagation();
   };
@@ -112,21 +134,16 @@ const Comments: React.FC<any> = ({
     titleInputRef.current?.focus();
   };
 
-  const handleRemoveComments = async (item: any) => {
-    try {
-      const res = await removeComment(item?.id);
-      const { data, status } = res?.data;
-      console.log(data);
-      if (status === 0) {
-        handleGetAllList();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
+      {showComments && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          style={{ pointerEvents: "all" }}
+          onClick={(e) => e.stopPropagation()}
+        ></div>
+      )}
+
       <div
         className={`fixed inset-0 flex flex-col justify-end bg-opacity-70 z-50`}
       >
@@ -144,7 +161,10 @@ const Comments: React.FC<any> = ({
               <div className="grid grid-cols-5 items-center">
                 <div className="col-span-1 flex justify-start">
                   <ImageRank
+                    className="rounded-full object-cover"
+                    rankStyle="w-9 h-9"
                     userNameStyle="text-black"
+                    iconProfileStyle="font35"
                     imgSize={45}
                     userName={
                       positionVideo === 0
@@ -172,11 +192,10 @@ const Comments: React.FC<any> = ({
               </div>
             </div>
             <div className="py-20">
-              {isLoading && <Loading isLoading={isLoading} />}
-              {allComments.map((item: any) => (
-                <div key={item?.id}>
-                  <div className="py-1 p-2  border-b-[1px] border-gray-150">
-                    <div className="flex justify-between">
+              {allComments.length > 0 ? (
+                allComments.map((item: any) => (
+                  <div key={item?.id}>
+                    <div className="py-1 p-2  border-b-[1px] border-gray-150">
                       <ImageRank
                         userNameStyle="text-black"
                         imgSize={35}
@@ -184,54 +203,47 @@ const Comments: React.FC<any> = ({
                         score={item.score}
                         imgSrc={StringHelpers.getProfile(item.profile)}
                       />
-                      <div>
-                        <DeleteIcon
-                          onClick={() => handleRemoveComments(item)}
+                      <div className="flex justify-between items-center">
+                        <p className="col-span-6 m-2 container_message text-gray-800">
+                          {item.desc}
+                        </p>
+                        <ArrowForwardIosIcon
+                          onClick={() => handleAnswerComments(item)}
                           className="m-2 font15 cursor-pointer"
                         />
                       </div>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <p className="col-span-6 m-2 container_message text-gray-800">
-                        {item.desc}
-                      </p>
-                      <ArrowForwardIosIcon
-                        onClick={() => handleAnswerComments(item)}
-                        className="m-2 font15 cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                  {answerInfo?.id === item?.id && (
-                    <div className="p-4 bg-gray-100 flex gap-2">
-                      <span className="font-bold">
-                        @{main?.userLogin?.userName}
-                      </span>
-                      <span className=" text-gray-800 container_message">
-                        {title}
-                      </span>
-                    </div>
-                  )}
-                  {item?.replies?.length > 0 &&
-                    item?.replies?.map((reply: any) => (
-                      <div
-                        key={reply.id}
-                        className="ml-6 pl-4 bg-gray-100  border-gray-300"
-                      >
-                        <ImageRank
-                          userNameStyle="text-black"
-                          imgSize={30}
-                          userName={reply.userName}
-                          score={reply.score}
-                          imgSrc={StringHelpers.getProfile(reply.profile)}
-                        />
-                        <p className="text-sm container_message text-gray-800">
-                          {reply.desc}
-                        </p>
+                    {answerInfo?.id === item?.id && (
+                      <div className="p-4 bg-gray-100 flex gap-2">
+                        <span className="font-bold">
+                          @{main?.userLogin?.user?.userName}
+                        </span>
+                        <span className=" text-gray-800 container_message">
+                          {title}
+                        </span>
                       </div>
-                    ))}
-                </div>
-              ))}
-              {allComments.length <= 0 && (
+                    )}
+                    {item?.replies?.length > 0 &&
+                      item?.replies?.map((reply: any) => (
+                        <div
+                          key={reply.id}
+                          className="ml-6 pl-4 bg-gray-100  border-gray-300"
+                        >
+                          <ImageRank
+                            userNameStyle="text-black"
+                            imgSize={30}
+                            userName={reply.userName}
+                            score={reply.score}
+                            imgSrc={StringHelpers.getProfile(reply.profile)}
+                          />
+                          <p className="text-sm container_message text-gray-800">
+                            {reply.desc}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                ))
+              ) : (
                 <div className="text-gray-500 text-center p-4">
                   No comments yet. Be the first to comment!
                 </div>

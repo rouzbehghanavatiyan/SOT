@@ -102,7 +102,7 @@ export const useServiceWorker = () => {
 
     const postData = {
       endpoint: newSubscription.endpoint,
-      userId: Number(main?.userLogin?.userId),
+      userId: Number(main?.userLogin?.user?.id),
       keys: {
         p256dh: arrayBufferToBase64(newSubscription?.getKey("p256dh")),
         auth: arrayBufferToBase64(newSubscription?.getKey("auth")),

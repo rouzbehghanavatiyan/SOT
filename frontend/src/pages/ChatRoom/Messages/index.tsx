@@ -1,17 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../../hooks/hook";
 import { userMessages } from "../../../services/nest";
 import { useLocation } from "react-router-dom";
+import Loading from "../../../components/Loading";
 
 const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const userReciver = Number(location?.search?.split("=")?.[1]);
 
-  const userIdLogin = Number(main?.userLogin?.userId);
+  const userIdLogin = main?.userLogin?.user?.id;
 
   const handleGetMessages = async () => {
+    setIsLoading(true);
     const res = await userMessages(userIdLogin, userReciver);
+    setIsLoading(false);
+
     setMessages(res?.data?.data);
   };
 
@@ -19,8 +24,11 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
     if (!!userIdLogin && !!userReciver) handleGetMessages();
   }, [userIdLogin, userReciver]);
 
+  console.log(messages);
+
   return (
     <>
+      {isLoading && <Loading isLoading={isLoading} />}
       {messages
         ?.filter(
           (item: any) =>

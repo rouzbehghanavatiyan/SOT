@@ -28,16 +28,12 @@ import { sendUserNotif } from "../../../services/dotNet";
 
 const PrivateChat: React.FC = ({}) => {
   const main = useAppSelector((state) => state?.main);
-  const navigate = useNavigate();
   const location = useLocation();
   const socket = main?.socketConfig;
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const getUserId = Number(location?.search?.split("=")?.[1]);
-  const userIdLogin = Number(main?.userLogin?.userId);
+  const userIdLogin = main?.userLogin?.user?.id;
   const { sender: reciveUserId = "" } = location?.state?.userInfo || {};
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const getProfileImage =
-    main?.profileImage?.[main?.profileImage?.length - 1] || {};
+  const getProfileImage = main?.userLogin?.profile || {};
   const [readMessages, setReadMessages] = useState<Record<number, boolean>>({});
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const findImg = StringHelpers?.getProfile(getProfileImage);
@@ -67,7 +63,7 @@ const PrivateChat: React.FC = ({}) => {
     if (title !== "") {
       const message = {
         userProfile: findImg,
-        sender: Number(main?.userLogin?.userId),
+        sender: main?.userLogin?.user?.id,
         recieveId: reciveUserId,
         title: title,
         time: timeString,
@@ -116,17 +112,28 @@ const PrivateChat: React.FC = ({}) => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
   useEffect(() => {
-    if (reciveUserId && !hasMarkedAsRead) {
-      markMessagesAsRead(reciveUserId);
+    if (reciveUserId) {
+      // علامت‌گذاری پیام‌های این کاربر به عنوان "خوانده شده"
+      localStorage.setItem(`message_read_${reciveUserId}`, "true");
+      setHasMarkedAsRead(true);
+
+      // ارسال تاییدیه به سرور
+      socket?.emit("messages_read", {
+        sender: reciveUserId,
+        receiver: userIdLogin,
+      });
+
+      setReadMessages((prev) => ({ ...prev, [reciveUserId]: true }));
     }
-  }, [reciveUserId, markMessagesAsRead, hasMarkedAsRead]);
+  }, [reciveUserId, socket, userIdLogin]);
 
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
   console.log(location?.state?.userInfo);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-50px)] bg-white">
+    <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-70px)] md:mt-5  bg-white shadow-card">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
         userProfile={

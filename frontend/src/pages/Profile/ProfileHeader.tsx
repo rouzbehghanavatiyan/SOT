@@ -13,7 +13,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const main = useAppSelector((state) => state?.main);
   const dispatch = useAppDispatch();
   const baseURL = import.meta.env.VITE_SERVERTEST;
-  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
+  const getProfileImage = main?.userLogin?.profile;
   const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
   const [profileImage, setProfileImage] = useState(findImg);
 
@@ -28,7 +28,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           try {
             const response = await uploadProfileImage(
               imageData,
-              main?.userLogin?.userId
+              main?.userLogin?.user?.id
             );
             setProfileImage(response?.newProfileImage || imageData);
           } catch (error) {
@@ -38,7 +38,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       };
       reader.readAsDataURL(file);
     },
-    [main?.userLogin?.userId]
+    [main?.userLogin?.user?.id]
   );
 
   return (

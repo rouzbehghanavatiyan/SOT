@@ -41,13 +41,13 @@ const SoftLink: FC<TalentModeProps> = ({
     <>
       {isLoading && <Loading isLoading={isLoading} />}
 
-      <div className="grid justify-center">
+      <div className="grid  justify-start ">
         <div className={containerClass}>
           {categories.map((category) => (
             <span
               key={category.id}
               onClick={() => handleAcceptCategory(category)}
-              className={itemClass}
+              className={` ${itemClass}`}
             >
               {(category.icon && iconMap[category.icon.toLowerCase()]) ||
                 defaultIcon}

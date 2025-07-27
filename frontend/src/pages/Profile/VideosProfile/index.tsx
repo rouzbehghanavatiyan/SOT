@@ -123,6 +123,7 @@ const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
             <section className="flex flex-col relative h-screen">
               <div className="flex-1 min-h-0 ">
                 <VideoSection
+                  score={video?.scoreInserted}
                   result={resultInserted}
                   toggleDropdown={() => toggleDropdown(video, 0)}
                   startTime={startTime}
@@ -143,6 +144,7 @@ const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
               )}
               <div className="flex-1 min-h-0 relative">
                 <VideoSection
+                  score={video?.scoreMatched}
                   result={resultMatched}
                   toggleDropdown={() => toggleDropdown(video, 1)}
                   countLiked={childLikes}

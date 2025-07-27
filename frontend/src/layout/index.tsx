@@ -15,11 +15,9 @@ import {
 } from "../common/Slices/main";
 import { useAppDispatch, useAppSelector } from "../hooks/hook";
 import {
-  attachmentList,
   categoryList,
-  followerList,
   followingList,
-  profileAttachmentList,
+  profileAttachment,
 } from "../services/dotNet";
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
@@ -55,14 +53,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   const handleGetProfile = async (userId: number) => {
     try {
-      const [resImageProfile] = await Promise.all([
-        profileAttachmentList(userId),
-      ]);
+      const [resImageProfile] = await Promise.all([profileAttachment(userId)]);
       const { status, data } = resImageProfile?.data;
-      console.log(data);
-
       if (status === 0) {
-        dispatch(RsetGetImageProfile(data));
+        return dispatch(dispatch(RsetUserLogin(data)));
       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);
@@ -75,7 +69,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   const handleAllFolling = async () => {
     try {
-      const res = await followingList(main?.userLogin?.userId);
+      const res = await followingList(main?.userLogin?.user?.id);
       const { status, data } = res?.data;
 
       if (status === 0) {
@@ -98,21 +92,15 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    const userId = sessionStorage.getItem("userId");
-
+    const userId = Number(sessionStorage.getItem("userId"));
     if (token && userId) {
-      const fixUser: any = jwtDecode(token);
-      const userInfo = Object.values(fixUser);
-      const userName = userInfo[0];
-      dispatch(RsetUserLogin({ token, userId, userName }));
-
       handleGetProfile(userId);
       handleGetCategory();
     }
   }, [dispatch]);
 
   useEffect(() => {
-    if (!main?.userLogin?.userId) return;
+    if (!main?.userLogin?.user?.id) return;
     handleSocketConfig();
     handleAllFolling();
     const handleConnect = () => {
@@ -128,7 +116,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       socket.off("connect", handleConnect);
       socket.off("all_user_online", handleGiveUsersOnline);
     };
-  }, [main?.userLogin?.userId]);
+  }, [main?.userLogin?.user?.id]);
 
   return (
     <main className="relative">

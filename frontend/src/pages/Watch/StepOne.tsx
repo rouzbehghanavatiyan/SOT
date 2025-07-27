@@ -15,7 +15,7 @@ import StringHelpers from "../../utils/helpers/StringHelper";
 
 const StepOne: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
-  const userId = Number(main?.userLogin?.userId);
+  const userId = main?.userLogin?.user?.id;
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();

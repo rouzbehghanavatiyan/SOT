@@ -39,7 +39,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
   });
 
   const main = useAppSelector((state) => state?.main);
-  const userIdFromSStorage = Number(main?.userLogin?.userId);
+  const userIdFromSStorage = Number(main?.userLogin?.user?.id);
   const socket = main?.socketConfig;
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
@@ -83,7 +83,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
         if (attachmentStatus === 0) {
           const postInvite = {
             parentId: null,
-            userId: userIdFromSStorage || main?.userLogin?.userId || null,
+            userId: userIdFromSStorage || main?.userLogin?.user?.id || null,
             movieId: resMovieData?.id || null,
             status: 0,
           };
@@ -122,7 +122,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
         userId: userIdFromSStorage || null,
         movieId: Number(resMovieData?.modeId),
       }));
-      setCurrentStep(2);
+      setCurrentStep(3);
     }),
     []
   );
@@ -147,19 +147,19 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
       setIsLoadingBtn(true);
-
       const postData: AddMovieType = {
         userId: Number(sessionStorage?.getItem("userId") as null) || null,
         description: movieData?.desc ?? "",
         title: movieData?.title ?? "",
         subSubCategoryId: 1 || null,
         modeId: mode?.typeMode || 0,
-        cropData,
+        cropData: null,
       };
 
       const res = await addMovie(postData);
       const { status: movieStatus, data: resMovieData }: GetServices =
         res?.data;
+      console.log(mode, resMovieData);
       if (movieStatus === 0) {
         if (mode?.typeMode === 3) {
           handleFixVideo(resMovieData);
@@ -188,7 +188,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
       className="rounded-2xl "
       padding={0}
       isOpen={showEditMovie}
-      onClose={setShowEditMovie}
     >
       <div className="flex flex-col">
         {currentStep === 1 && (
@@ -227,7 +226,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
                 }
               />
             </div>
-            <SlideRange />
+            {/* <SlideRange /> */}
             <div className="mt-4 flex justify-around">
               <Button
                 className="border"
@@ -244,17 +243,15 @@ const EditVideo: React.FC<EditVideoProps> = ({
             </div>
           </div>
         )}
-
-        {/* مرحله دوم: نمایش کاور ویدیو */}
         {currentStep === 2 && (
           <div className="p-5">
             {coverImage && (
               <>
-                <span>Cover: </span>
+                <span className="my-4 font-bold">Your cover: </span>
                 <img
                   src={coverImage}
                   alt="Video Cover"
-                  className="w-full h-full rounded-sm"
+                  className="w-full max-h-96 rounded-sm"
                 />
               </>
             )}
@@ -276,6 +273,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
           </div>
         )}
       </div>
+      {currentStep === 3 && <Operational setShowEditMovie={setShowEditMovie} />}
     </Modal>
   );
 };

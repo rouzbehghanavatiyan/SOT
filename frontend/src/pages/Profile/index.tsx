@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import {
   addAttachment,
   followerList,
-  profileAttachmentList,
+  profileAttachment,
   userAttachmentList,
 } from "../../services/dotNet";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
@@ -19,7 +19,6 @@ import ImageRank from "../../components/ImageRank";
 import EditProfile from "./EditProfile";
 import { Link } from "react-router-dom";
 import ProgressBar from "../../components/ProgressBar";
-import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import Loading from "../../components/Loading";
 
@@ -28,11 +27,12 @@ const Profile: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
   const dispatch = useAppDispatch();
   const socket = main.socketConfig;
+  const userId = main?.userLogin?.user?.id;
+  console.log(main?.userLogin);
 
-  const userId = Number(main?.userLogin?.userId);
   const [match, setMatch] = useState<any>([]);
   const [allFollower, setAllFollower] = useState<any>([]);
-  const [percentage, setPercentage] = useState(100);
+  const [percentage, setPercentage] = useState(0);
   const [profileImage, setProfileImage] = useState(userProfile);
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [editingImage, setEditingImage] = useState(false);
@@ -41,9 +41,7 @@ const Profile: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const getProfileImage = main?.profileImage?.[main?.profileImage?.length - 1];
-  const findImg = StringHelpers.getProfile(getProfileImage);
+  const findImg = StringHelpers.getProfile(main?.userLogin?.profile);
 
   const uploadProfileImage = useCallback(
     async (croppedImage: string) => {
@@ -68,7 +66,7 @@ const Profile: React.FC = () => {
         formData.append("formFile", file);
         formData.append(
           "attachmentId",
-          userId || main?.userLogin?.userId || ""
+          userId || main?.userLogin?.user?.id || ""
         );
         formData.append("attachmentType", "pf");
         formData.append("attachmentName", "profile");
@@ -77,8 +75,8 @@ const Profile: React.FC = () => {
         const { status: attachmentStatus, data: attachmentData } =
           resAttachment?.data;
         if (attachmentStatus === 0) {
-          const resProfileAttachmentList = await profileAttachmentList(userId);
-          const { status, data } = resProfileAttachmentList?.data;
+          const resProfileAttachment = await profileAttachment(userId);
+          const { status, data } = resProfileAttachment?.data;
           if (status === 0) {
             dispatch(RsetGetImageProfile(data));
           }
@@ -90,7 +88,7 @@ const Profile: React.FC = () => {
         throw error;
       }
     },
-    [userId, main?.userLogin?.userId]
+    [userId, main?.userLogin?.user?.id]
   );
 
   const handleImageProfileUpload = useCallback(
@@ -124,7 +122,7 @@ const Profile: React.FC = () => {
   const handleUserVideo = async () => {
     try {
       setIsLoading(true);
-      const res = await userAttachmentList(main?.userLogin?.userId);
+      const res = await userAttachmentList(main?.userLogin?.user?.id);
       setIsLoading(false);
       const { data, status } = res?.data;
       if (status === 0) {
@@ -188,8 +186,13 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleProgress = () => {
+    setPercentage(main?.userLogin?.score);
+  };
+
   useEffect(() => {
     if (userId) {
+      handleProgress();
       handleUserVideo();
       handleGetFollower();
     }
@@ -225,11 +228,15 @@ const Profile: React.FC = () => {
                     onClick={handleProfile}
                     className="cursor-pointer"
                   >
-                    <ImageRank imgSrc={findImg} imgSize={100} score={0} />
+                    <ImageRank
+                      imgSrc={findImg}
+                      imgSize={100}
+                      score={main?.userLogin?.score}
+                    />
                   </span>
                   <div className="flex flex-col gap-2 ms-2">
                     <span className="font20 font-bold">
-                      {main?.userLogin?.userName}
+                      {main?.userLogin?.user?.userName}
                     </span>
                     <div className="flex">
                       <div className="m-2 bg-gray-150 p-2 rounded-2xl">

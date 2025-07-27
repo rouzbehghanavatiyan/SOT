@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import per_bronze_3 from "../../assets/ranks/per_bronze_3.webp";
-import normal_gold_3 from "../../assets/ranks/normal_gold_3.png";
+import startRankig from "../../assets/ranks/2212.w054.n005.276B.p1.276 [Converted]-01.png";
+import normal_gold_2 from "../../assets/ranks/normal_gold_2.png";
+import normal_gold_1 from "../../assets/ranks/normal_gold_1.webp";
+
 import silverRank from "../../assets/img/rank5.webp";
 import goldRank1 from "../../assets/img/rank7.webp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -23,15 +26,40 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   const [rankSrc, setRankSrc] = useState<string>("");
   const rankSize = Math.floor(imgSize * 0.6);
 
-  const determineRank = () => {
+  const determineRank: void = () => {
     if (score === 0) {
-      return per_bronze_3;
-    } else if (score >= 10 && score < 20) {
+      return startRankig;
+    } else if (score > 0 && score < 100) {
       return silverRank;
-    } else if (score >= 20 && score < 30) {
-      return goldRank1;
+    } else if (score > 200 && score < 300) {
+    } else if (score > 100 && score < 200) {
+      return silverRank;
+    } else if (score > 300 && score < 400) {
+      return silverRank;
+    } else if (score > 400 && score < 500) {
+      return silverRank;
+    } else if (score > 500 && score < 600) {
+      return silverRank;
+    } else if (score > 600 && score < 700) {
+      return silverRank;
+    } else if (score > 700 && score < 800) {
+      return silverRank;
+    } else if (score > 800 && score < 900) {
+      return silverRank;
+    } else if (score > 900 && score < 1000) {
+      return silverRank;
+    } else if (score > 1000 && score < 1100) {
+      return silverRank;
+    } else if (score > 1100 && score < 1200) {
+      return silverRank;
+    } else if (score > 1200 && score < 1300) {
+      return silverRank;
+    } else if (score > 1300 && score < 1400) {
+      return silverRank;
+    } else if (score > 1400 && score < 1500) {
+      return silverRank;
     } else {
-      return normal_gold_3;
+      return normal_gold_1;
     }
   };
 
