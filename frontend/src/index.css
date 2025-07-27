@@ -586,34 +586,32 @@ br {
 /* دکمه لودر */
 
 .loader_btn {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
+ display: inline-block;
+ width: 25px; /* عرض ثابت */
+ height: 25px; /* ارتفاع ثابت */
 }
 
 .loader_btn::before {
-  color: rgb(255, 255, 255);
-  content: " ";
-  display: block;
-  width: 25px;
-  height: 25px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 3.4px solid currentColor;
-  border-color: currentColor transparent currentColor transparent;
-  animation: loader_btn 1.2s linear infinite;
+ color: rgb(255, 255, 255);
+ content: " ";
+ display: block;
+ width: 25px;
+ height: 25px;
+ margin: auto;
+ border-radius: 50%;
+ border: 3.4px solid currentColor;
+ border-color: currentColor transparent currentColor transparent;
+ animation: loader_btn 1.2s linear infinite;
 }
 
 @keyframes loader_btn {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+ 0% {
+ transform: rotate(0deg);
+ }
+ 100% {
+ transform: rotate(360deg);
+ }
 }
-
 
 /* لودینگ */
 
