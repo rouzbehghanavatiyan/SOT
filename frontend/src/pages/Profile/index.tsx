@@ -186,13 +186,20 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleProgress = () => {
-    setPercentage(main?.userLogin?.score);
+  const handleProgress = (score: number) => {
+    let percentage;
+    if (score <= 100) {
+      percentage = score;
+    } else {
+      percentage = score % 100 || 100;
+    }
+    return Math.min(Math.max(percentage, 1), 100);
   };
 
   useEffect(() => {
     if (userId) {
-      handleProgress();
+      const calculatedPercentage = handleProgress(main?.userLogin?.score || 0);
+      setPercentage(calculatedPercentage);
       handleUserVideo();
       handleGetFollower();
     }

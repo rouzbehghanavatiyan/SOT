@@ -12,8 +12,10 @@ const MessageInput: React.FC<{
   showStickers: boolean;
   onEmojiSelect?: any;
   onInputFocus?: (e: React.FocusEvent) => void;
+  itsComment?: boolean;
 }> = ({
   title,
+  itsComment = false,
   setTitle,
   handleSendMessage,
   onEmojiSelect,
@@ -22,7 +24,9 @@ const MessageInput: React.FC<{
   showStickers,
   onInputFocus,
 }) => (
-  <div className="w-full bg-white sticky border-t-[1px] border-gray-200 bottom-0 z-50 pb-2 px-3">
+  <div
+    className={`w-full fixed bottom-0 bg-white shadow-md border-t-[1px] border-gray-200  z-50 pb-2 px-3`}
+  >
     <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
       <div className="flex items-center justify-center gap-2">
         <div className="flex-1">

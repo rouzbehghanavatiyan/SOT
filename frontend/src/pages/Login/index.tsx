@@ -63,6 +63,7 @@ const LogInForm: FC = () => {
     <div className="flex items-center justify-center min-h-screen bg_tusi">
       <div className="  rounded-lg mx-auto p-8 w-full max-w-md">
         <form className="space-y-6" onKeyDown={handleKeyDown}>
+          <h1 className="text-2xl font-semibold text-center mb-4">Login</h1>
           <div className="flex justify-center">
             <Link to="/">
               <img
@@ -74,6 +75,9 @@ const LogInForm: FC = () => {
               />
             </Link>
           </div>
+          <h1 className="logoFont font40 font-bold  text-center mb-4">
+            Star of talent
+          </h1>
           <Input
             onKeyDown={(e: any) => e.key === "Enter" && handleAccept()}
             className="w-full bg-gray-100 border border-gray-300 rounded-lg py-5 p-2"
@@ -105,15 +109,15 @@ const LogInForm: FC = () => {
           />
           <div className="text-center">
             <p className="text-sm">
-              <Link className="text-blue-500 hover:underline" to="#">
+              <Link className="text-primary hover:underline" to="#">
                 Forgot your password?
               </Link>
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm flex items-center justify-center">
+            <p className="text-sm flex text-gray-800 items-center justify-center">
               Don't have an account?
-              <Link className="text-blue-500 hover:underline ml-1" to="/signUp">
+              <Link className="text-primary hover:underline ml-1" to="/signUp">
                 Sign Up
               </Link>
             </p>

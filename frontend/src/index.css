@@ -528,33 +528,41 @@ br {
   /* افزودن انیمیشن */
 }
 
+
 /* cmt کامنت */
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
 
-  to {
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(100%);
-  }
-}
-
+/* انیمیشن شفاف شدن (ورود) */
 .animate-slideUp {
-  animation: slideUp 0.3s forwards;
+  animation: fadeIn 0.3s forwards;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    /* شروع با شفافیت صفر */
+  }
+
+  to {
+    opacity: 1;
+    /* شفافیت کامل در انتها */
+  }
+}
+
+/* انیمیشن غیر شفاف شدن (خروج) */
 .animate-slideDown {
-  animation: slideDown 0.3s forwards;
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    /* شروع با شفافیت کامل */
+  }
+
+  to {
+    opacity: 0;
+    /* شفافیت صفر در انتها */
+  }
 }
 
 .react-player {
@@ -586,31 +594,34 @@ br {
 /* دکمه لودر */
 
 .loader_btn {
- display: inline-block;
- width: 25px; /* عرض ثابت */
- height: 25px; /* ارتفاع ثابت */
+  display: inline-block;
+  width: 25px;
+  /* عرض ثابت */
+  height: 25px;
+  /* ارتفاع ثابت */
 }
 
 .loader_btn::before {
- color: rgb(255, 255, 255);
- content: " ";
- display: block;
- width: 25px;
- height: 25px;
- margin: auto;
- border-radius: 50%;
- border: 3.4px solid currentColor;
- border-color: currentColor transparent currentColor transparent;
- animation: loader_btn 1.2s linear infinite;
+  color: rgb(255, 255, 255);
+  content: " ";
+  display: block;
+  width: 25px;
+  height: 25px;
+  margin: auto;
+  border-radius: 50%;
+  border: 3.4px solid currentColor;
+  border-color: currentColor transparent currentColor transparent;
+  animation: loader_btn 1.2s linear infinite;
 }
 
 @keyframes loader_btn {
- 0% {
- transform: rotate(0deg);
- }
- 100% {
- transform: rotate(360deg);
- }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* لودینگ */
@@ -1023,4 +1034,22 @@ br {
     height: 50%;
     /* نصف ارتفاع در موبایل */
   }
+}
+
+
+/* در فایل CSS کلی پروژه */
+body.comments-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+#comments-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  pointer-events: none;
 }

@@ -169,8 +169,6 @@ const ShowWatch: React.FC = () => {
     }
   }, [allMatch]);
 
-  console.log(videos);
-
   return (
     <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
       <Swiper

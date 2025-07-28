@@ -21,6 +21,11 @@ export const login = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
+export const registerUser = async (postData: any) => {
+  const url = `${baseURL}/registerUser`;
+  return await axios.post(url, postData);
+};
+
 export const addLike = async (postData: any) => {
   const url = `${baseURL}/addLike`;
   return await axios.post(url, postData);

@@ -155,7 +155,6 @@ const mainSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           const { status, data } = action?.payload.getData?.data;
           const getAllStateMain = action?.payload?.state?.main;
-
           if (status === 0) {
             const processedVideos = data.map((video: any) => {
               const isFollowedFromMeTop =

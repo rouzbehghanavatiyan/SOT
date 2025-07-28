@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import Comments from "../../common/Comments";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { Mousewheel } from "swiper/modules";
 import VideoSection from "../../common/VideoSection";
@@ -25,6 +24,7 @@ const Home: React.FC = () => {
   const userIdLogin = main?.userLogin?.user?.id;
 
   const handleSlideChange = (swiper: any) => {
+    console.log();
     const realIndex = swiper.realIndex;
     const topVideoId = videos[realIndex]?.attachmentInserted?.attachmentId;
     setCurrentlyPlayingId(topVideoId);
@@ -33,6 +33,7 @@ const Home: React.FC = () => {
   const handleVideoPlay = (videoId: string) => {
     setOpenDropdowns({});
     setCurrentlyPlayingId((prevId: any) => {
+      console.log(prevId);
       if (prevId === videoId) {
         return null;
       }
@@ -112,7 +113,22 @@ const Home: React.FC = () => {
       >
         {videos?.length !== 0 &&
           videos?.map((video: any, index: number) => {
-            console.log(video?.userInserted?.id, userIdLogin);
+            const resultInserted =
+              video?.likeInserted > video?.likeMatched
+                ? "Win"
+                : video?.likeInserted < video?.likeMatched
+                  ? "Loss"
+                  : "Draw";
+            const resultMatched =
+              video?.likeInserted < video?.likeMatched
+                ? "Win"
+                : video?.likeInserted > video?.likeMatched
+                  ? "Loss"
+                  : "Draw";
+            const parentLikes = video?.likeInserted || 0;
+            const childLikes = video?.likeMatched || 0;
+            const scoreInserted = video?.scoreInserted;
+            const scoreMatched = video?.scoreMatched;
             return (
               <SwiperSlide
                 key={index}
@@ -121,6 +137,9 @@ const Home: React.FC = () => {
                 <section className="flex flex-col h-screen">
                   <div className="flex-1 min-h-0 relative">
                     <VideoSection
+                      score={scoreInserted}
+                      countLiked={parentLikes}
+                      result={resultInserted}
                       video={video}
                       isPlaying={
                         currentlyPlayingId ===
@@ -136,12 +155,13 @@ const Home: React.FC = () => {
                       openDropdowns={openDropdowns}
                       baseURL={baseURL}
                       positionVideo={0}
-                      countLiked={120}
                     />
                   </div>
                   <div className="flex-1 min-h-0 relative">
                     <VideoSection
+                      score={scoreMatched}
                       video={video}
+                      result={resultMatched}
                       isPlaying={
                         currentlyPlayingId ===
                         video?.attachmentMatched?.attachmentId
@@ -149,17 +169,14 @@ const Home: React.FC = () => {
                       onVideoPlay={() =>
                         handleVideoPlay(video?.attachmentMatched?.attachmentId)
                       }
-                      onFollowClick={() =>
-                        handleFallowClick(video, 1, video?.userMatched?.id)
-                      }
                       dropdownItems={() =>
                         dropdownItems(video, 1, video?.userMatched)
                       }
+                      countLiked={childLikes}
                       openDropdowns={openDropdowns}
                       setOpenDropdowns={setOpenDropdowns}
                       baseURL={baseURL}
                       positionVideo={1}
-                      countLiked={12}
                     />
                   </div>
                 </section>

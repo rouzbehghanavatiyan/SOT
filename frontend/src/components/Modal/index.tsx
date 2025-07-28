@@ -11,7 +11,7 @@ interface ModalPropsType {
   children: ReactNode;
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  title: string;
+  title?: string;
   footer?: ReactNode[];
   width?: number;
   padding?: number;
@@ -40,7 +40,7 @@ const Modal: FC<ModalPropsType> = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
         style={{ padding }}
-        className={`${className} w-[940px]`}
+        className={`${className} rounded-xl  w-[940px]`}
         onClick={handleOnClose}
       >
         {!!title && (

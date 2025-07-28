@@ -6,15 +6,14 @@ import MessageInput from "../../pages/ChatRoom/PrivateChat/MessageInput";
 import CloseIcon from "@mui/icons-material/Close";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Modal from "../../components/Modal";
 
 const Comments: React.FC<any> = ({
-  setClosingComments,
-  handleShowCMT,
-  showComments,
   positionVideo,
   setShowComments,
   closingComments,
-  movieInfo,
+  commentUserInfo,
+  showComments,
 }) => {
   const main = useAppSelector((state) => state?.main);
   const [title, setTitle] = useState<string>("");
@@ -26,8 +25,8 @@ const Comments: React.FC<any> = ({
 
   const getMovieId =
     positionVideo === 0
-      ? movieInfo?.attachmentInserted?.attachmentId
-      : movieInfo?.attachmentMatched?.attachmentId;
+      ? commentUserInfo?.attachmentInserted?.attachmentId
+      : commentUserInfo?.attachmentMatched?.attachmentId;
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +57,6 @@ const Comments: React.FC<any> = ({
     try {
       const res = await commentList(getMovieId);
       const { data, status } = res?.data;
-      console.log(data);
 
       if (status === 0) {
         const commentsHierarchy = data.reduce((acc: any, comment: any) => {
@@ -85,47 +83,8 @@ const Comments: React.FC<any> = ({
     handleGetAllList();
   }, [showComments]);
 
-  useEffect(() => {
-    if (showComments) {
-      document.body.style.overflow = "hidden";
-
-      const swiperContainer = document.querySelector(".swiper-container");
-      if (swiperContainer) {
-        swiperContainer.style.pointerEvents = "none";
-      }
-    } else {
-      document.body.style.overflow = "auto";
-
-      const swiperContainer = document.querySelector(".swiper-container");
-      if (swiperContainer) {
-        swiperContainer.style.pointerEvents = "auto";
-      }
-    }
-
-    return () => {
-      document.body.style.overflow = "auto";
-      const swiperContainer = document.querySelector(".swiper-container");
-      if (swiperContainer) {
-        swiperContainer.style.pointerEvents = "auto";
-      }
-    };
-  }, [showComments]);
-
   const handleInputFocus = (e: React.FocusEvent) => {
     e.stopPropagation();
-  };
-
-  const handleClose = () => {
-    setClosingComments(true);
-    setTimeout(() => {
-      setShowComments(false);
-      setClosingComments(false);
-    }, 150);
-  };
-
-  const toggleComments = () => {
-    if (closingComments) return;
-    handleClose();
   };
 
   const handleAnswerComments = (item: any) => {
@@ -133,65 +92,52 @@ const Comments: React.FC<any> = ({
     setAnswerData(item);
     titleInputRef.current?.focus();
   };
+  console.log(showComments);
 
   return (
     <>
-      {showComments && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          style={{ pointerEvents: "all" }}
-          onClick={(e) => e.stopPropagation()}
-        ></div>
-      )}
-
-      <div
-        className={`fixed inset-0 flex flex-col justify-end bg-opacity-70 z-50`}
+      <Modal
+        setIsOpen={setShowComments}
+        onClose={() => setShowComments(false)}
+        padding={0}
+        isOpen={showComments}
       >
-        <div
-          className={`bg-white relative shadow-card w-full h-[70vh] overflow-hidden ${
-            closingComments ? "animate-slideDown" : "animate-slideUp"
-          }`}
-        >
-          <div
-            className="h-full overflow-y-auto"
-            onTouchStart={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-          >
+        <div className="flex flex-col justify-end h-[80vh] max-w-[600px]   bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className={`relative w-full h-full overflow-y-auto `}>
             <div className="text-center fixed w-full z-20 border-b-[1px] mb-4 font-bold font15 bg-gray-100 p-2">
               <div className="grid grid-cols-5 items-center">
                 <div className="col-span-1 flex justify-start">
                   <ImageRank
-                    className="rounded-full object-cover"
-                    rankStyle="w-9 h-9"
                     userNameStyle="text-black"
-                    iconProfileStyle="font35"
                     imgSize={45}
                     userName={
                       positionVideo === 0
-                        ? movieInfo?.userInserted?.userName
-                        : movieInfo?.userMatched?.userName
+                        ? commentUserInfo?.userInserted?.userName
+                        : commentUserInfo?.userMatched?.userName
                     }
                     imgSrc={
                       positionVideo === 0
-                        ? StringHelpers.getProfile(movieInfo?.profileInserted)
-                        : StringHelpers.getProfile(movieInfo?.profileMatched)
+                        ? StringHelpers.getProfile(
+                            commentUserInfo?.profileInserted
+                          )
+                        : StringHelpers.getProfile(
+                            commentUserInfo?.profileMatched
+                          )
                     }
                   />
                 </div>
-
                 <div className="col-span-3 flex justify-center">
                   <span>Comments</span>
                 </div>
-
                 <div className="col-span-1 flex justify-end">
                   <CloseIcon
-                    onClick={toggleComments}
+                    onClick={() => setShowComments(false)}
                     className="text-primary font20 cursor-pointer"
                   />
                 </div>
               </div>
             </div>
-            <div className="py-20">
+            <div className="py-20 px-4">
               {allComments.length > 0 ? (
                 allComments.map((item: any) => (
                   <div key={item?.id}>
@@ -250,9 +196,8 @@ const Comments: React.FC<any> = ({
               )}
             </div>
           </div>
-        </div>
-        <span className="w-full bg-gray-100 fixed bottom-0">
           <MessageInput
+            itsComment={true}
             title={title}
             setTitle={setTitle}
             handleSendMessage={(e) => handleSendMessage(e)}
@@ -262,8 +207,8 @@ const Comments: React.FC<any> = ({
             showStickers={showStickers}
             onInputFocus={handleInputFocus}
           />
-        </span>
-      </div>
+        </div>
+      </Modal>
     </>
   );
 };
