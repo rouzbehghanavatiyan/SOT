@@ -23,6 +23,7 @@ export const uploadProfileImage = async (imageData: string, userId: string) => {
   formData.append("attachmentId", userId);
   formData.append("attachmentType", "pf");
   formData.append("attachmentName", "profile");
+  console.log(userId);
 
   const resAttachment = await addAttachment();
   const { status: attachmentStatus, data: attachmentData } =

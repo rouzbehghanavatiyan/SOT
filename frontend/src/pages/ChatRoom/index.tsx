@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { allUserMessagese } from "../../services/nest";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import Loading from "../../components/Loading";
+import DraftsIcon from "@mui/icons-material/Drafts";
 
 interface MessageData {
   recipient: number;
@@ -93,9 +94,11 @@ const ChatRoom: React.FC = () => {
     setUnreadMessages(storedReadStatus);
   }, [userSender]);
 
+  console.log(userSender);
+
   return (
     <div className="md:mt-10 mt-0 ">
-      {userSender.length >= 0 ? (
+      {userSender.length > 0 ? (
         userSender?.map((user: any) => {
           const fixImage = StringHelpers.getProfile(user);
           console.log(unreadMessages[user.sender]);
@@ -120,8 +123,11 @@ const ChatRoom: React.FC = () => {
           );
         })
       ) : (
-        <div className="flex items-center justify-center h-full">
-          <p className="mt-10 text-gray-500">Empty messages</p>
+        <div className="flex flex-col bg-white items-center justify-center h-full p-4">
+          <div className="flex items-end text-gray-800 rounded-lg p-4 gap-2 mb-2">
+            <DraftsIcon className="text-gray-800 flex items-end font25" />
+            <span className=""> Empty messages</span>
+          </div>
         </div>
       )}
       {isLoading && <Loading isLoading={isLoading} />}

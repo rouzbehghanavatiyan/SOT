@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import Timer from "../../../components/Timer";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import VideoSection from "../../../common/VideoSection";
@@ -9,13 +9,32 @@ import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../hooks/hook";
+import { useGetUserAttachmentListQuery } from "../../../common/Slices/apiSlice";
 
-const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
+const VideosProfile: React.FC<any> = ({
+  // match,
+  videoLikes,
+  videosProfileRef,
+}) => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const navigate = useNavigate();
+  const firstVideoRef = useRef<HTMLDivElement>(null);
+  const main = useAppSelector((state) => state.main);
+  const userId = main?.userLogin?.user?.id;
+  const {
+    data: match = [],
+    isLoading,
+    isError,
+    error,
+  } = useGetUserAttachmentListQuery(userId, {
+    skip: !userId,
+  });
+
+  console.log(match);
 
   const videoGroupsWithLikes = useMemo(() => {
-    return match.map((video: any) => {
+    return match?.data?.map((video: any) => {
       const parentLikes =
         (videoLikes[video?.attachmentInserted?.attachmentId] || 0) +
         (video.likeInserted || 0);
@@ -34,7 +53,7 @@ const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
         likeMatched: video?.likeMatched,
       };
     });
-  }, [match, videoLikes]);
+  }, [match?.data, videoLikes]);
 
   const dropdown = (data: any, position: number, userSenderId: any) => {
     const temp = {
@@ -94,9 +113,12 @@ const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
   };
 
   return (
-    <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12">
+    <div
+      ref={videosProfileRef}
+      className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12"
+    >
       <div className="grid grid-cols-1 gap-2 w-full">
-        {videoGroupsWithLikes.map((video: any) => {
+        {videoGroupsWithLikes?.map((video: any, index: number) => {
           const parentLikes =
             (videoLikes[video?.parentMovieId] || 0) +
             (video?.likeInserted || 0);
@@ -119,9 +141,13 @@ const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
                 ? "Loss"
                 : "Draw";
           return (
-            <section className="flex flex-col relative h-screen">
+            <section
+              ref={index === 0 ? firstVideoRef : null}
+              className={`flex flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[50px]" : ""}`}
+            >
               <div className="flex-1 min-h-0 ">
                 <VideoSection
+                  endTime={endTime}
                   score={video?.scoreInserted}
                   result={resultInserted}
                   toggleDropdown={() => toggleDropdown(video, 0)}
@@ -141,6 +167,7 @@ const VideosProfile: React.FC<any> = ({ match, videoLikes }) => {
               )}
               <div className="flex-1 min-h-0 relative">
                 <VideoSection
+                  endTime={endTime}
                   score={video?.scoreMatched}
                   result={resultMatched}
                   toggleDropdown={() => toggleDropdown(video, 1)}

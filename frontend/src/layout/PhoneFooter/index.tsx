@@ -3,17 +3,17 @@ import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import HomeIcon from "@mui/icons-material/Home";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LogoTC from "../../assets/img/1724181984017.jpg";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
 import { useAppSelector } from "../../hooks/hook";
 import ImageRank from "../../components/ImageRank";
 import StringHelpers from "../../utils/helpers/StringHelper";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 const PhoneFooter: React.FC = () => {
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
   const main = useAppSelector((state) => state.main);
-  const getProfileImage = main?.userLogin?.profile
+  const getProfileImage = main?.userLogin?.profile;
   const findImg = StringHelpers.getProfile(getProfileImage);
 
   const handleWatchClick = () => {
@@ -22,8 +22,8 @@ const PhoneFooter: React.FC = () => {
 
   return (
     <ResponsiveMaker hiddenWidth={900}>
-      <div className="fixed z-40 bottom-0 w-full shadow-card text-center bg-white">
-        <div className="flex gap-5 justify-center items-center col-span-3">
+      <div className="fixed z-40 bottom-0 w-full  text-center bg-white">
+        <div className="flex gap-5 justify-center shadow-card items-center col-span-3">
           <NavLink
             to="/home"
             className={({ isActive }) =>
@@ -73,7 +73,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <NotificationsIcon className="icon_size" />
+            <TrendingUpIcon className="icon_size" />
           </NavLink>
           <NavLink
             to="/profile"
@@ -84,10 +84,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <ImageRank
-              imgSrc={findImg}
-              imgSize={35}
-            />
+            <ImageRank imgSrc={findImg} imgSize={35} />
           </NavLink>
         </div>
       </div>

@@ -8,7 +8,6 @@ import PhoneHeader from "./PhoneHeader";
 import {
   RsetAllFollingList,
   RsetCategory,
-  RsetGetImageProfile,
   RsetGiveUserOnlines,
   RsetSocketConfig,
   RsetUserLogin,
@@ -22,7 +21,6 @@ import {
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
 import { useLocation } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { useServiceWorker } from "../hooks/useServiceWorker";
 import SotLogo from "../assets/img/logocircle.png";
 import { Button } from "../components/Button";
@@ -51,12 +49,14 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     dispatch(RsetSocketConfig(socket));
   }, [dispatch, socket]);
 
-  const handleGetProfile = async (userId: number) => {
+  const handleProfileAttachment = async (userId: number) => {
     try {
-      const [resImageProfile] = await Promise.all([profileAttachment(userId)]);
+      const resImageProfile = await profileAttachment(userId);
       const { status, data } = resImageProfile?.data;
+      console.log(data);
       if (status === 0) {
-        return dispatch(dispatch(RsetUserLogin(data)));
+        console.log(data);
+        return dispatch(RsetUserLogin(data));
       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);
@@ -76,7 +76,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         const getMapFollowingId = data?.map(
           (item: any) => item?.attachment?.attachmentId
         );
-        console.log(data);
 
         dispatch(
           RsetAllFollingList({
@@ -92,9 +91,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    const userId = Number(sessionStorage.getItem("userId"));
-    if (token && userId) {
-      handleGetProfile(userId);
+    const user = { id: Number(sessionStorage.getItem("userId")) };
+    dispatch(RsetUserLogin({ user: user }));
+    if (token && user?.id) {
+      handleProfileAttachment(user?.id);
       handleGetCategory();
     }
   }, [dispatch]);

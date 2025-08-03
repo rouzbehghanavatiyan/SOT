@@ -133,7 +133,7 @@ const PrivateChat: React.FC = ({}) => {
   console.log(location?.state?.userInfo);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-70px)] md:mt-5  bg-white shadow-card">
+    <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-70px)] md:mt-5 pb-16  bg-white shadow-card">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
         userProfile={

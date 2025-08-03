@@ -3,12 +3,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import ReportIcon from "@mui/icons-material/Report";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import {
-  addFollower,
-  addLike,
-  removeFollower,
-  removeLike,
-} from "../../../services/dotNet";
+import { addFollower, removeFollower } from "../../../services/dotNet";
 import asyncWrapper from "../../../common/AsyncWrapper";
 import { useLocation, useNavigate } from "react-router-dom";
 import VideoSection from "../../../common/VideoSection";
@@ -21,6 +16,7 @@ import {
   RsetTornoment,
 } from "../../../common/Slices/main";
 import StringHelpers from "../../../utils/helpers/StringHelper";
+import Loading from "../../../components/Loading";
 
 const ShowWatch: React.FC = () => {
   const navigate = useNavigate();
@@ -28,8 +24,10 @@ const ShowWatch: React.FC = () => {
   const dispatch = useAppDispatch();
   const main = useAppSelector((state) => state?.main);
   const getInvitedId = location?.search?.split("id=")?.[1];
-  const videos: any = Array.isArray(main?.tornoment) ? main.tornoment : [];
-  const allMatch: any = main?.allTornoment;
+  const videos: any = Array.isArray(main?.allLoginMatch)
+    ? main?.allLoginMatch
+    : [];
+  const allMatch: any = main?.allLoginMatch;
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
@@ -169,98 +167,110 @@ const ShowWatch: React.FC = () => {
     }
   }, [allMatch]);
 
+  console.log(main?.showLoading?.value);
+
   return (
-    <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
-      <Swiper
-        direction={"vertical"}
-        slidesPerView={1}
-        mousewheel={true}
-        onSlideChange={handleSlideChange}
-        modules={[Mousewheel]}
-        onInit={() => {
-          if (allMatch?.length > 0) {
-            setCurrentlyPlayingId(
-              allMatch?.[0]?.attachmentInserted?.attachmentId
-            );
-          }
-        }}
-        className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-42px)] "
-      >
-        {videos?.length !== 0 &&
-          videos?.map((video: any, index: number) => {
-            return (
-              <SwiperSlide
-                className="h-full w-full bg-black flex flex-col"
-                key={index}
-              >
-                <div className="h-1/2 w-full relative flex flex-col">
-                  <VideoSection
-                    showLiked
-                    endTime={true}
-                    video={video}
-                    isPlaying={
-                      currentlyPlayingId ===
-                      video?.attachmentInserted?.attachmentId
-                    }
-                    onVideoPlay={() =>
-                      handleVideoPlay(video?.attachmentInserted?.attachmentId)
-                    }
-                    onLikeClick={() =>
-                      handleLikeClick(
-                        video,
-                        0,
-                        video?.attachmentInserted?.attachmentId
-                      )
-                    }
-                    onFollowClick={() =>
-                      handleFallowClick(video, 0, video?.userInserted?.id)
-                    }
-                    toggleDropdown={() => toggleDropdown(video, 0)}
-                    dropdownItems={() =>
-                      dropdownItems(video, 0, video?.userInserted)
-                    }
-                    setOpenDropdowns={setOpenDropdowns}
-                    openDropdowns={openDropdowns}
-                    positionVideo={0}
-                  />
-                </div>
-                <div className="h-1/2 w-full relative flex flex-col">
-                  <VideoSection
-                    showLiked
-                    endTime={true}
-                    video={video}
-                    isPlaying={
-                      currentlyPlayingId ===
-                      video?.attachmentMatched?.attachmentId
-                    }
-                    onVideoPlay={() =>
-                      handleVideoPlay(video?.attachmentMatched?.attachmentId)
-                    }
-                    onLikeClick={() =>
-                      handleLikeClick(
-                        video,
-                        1,
-                        video?.attachmentMatched?.attachmentId
-                      )
-                    }
-                    onFollowClick={() =>
-                      handleFallowClick(video, 1, video?.userMatched?.id)
-                    }
-                    toggleDropdown={() => toggleDropdown(video, 1)}
-                    dropdownItems={() =>
-                      dropdownItems(video, 1, video?.userMatched)
-                    }
-                    openDropdowns={openDropdowns}
-                    setOpenDropdowns={setOpenDropdowns}
-                    positionVideo={1}
-                  />
-                </div>
-              </SwiperSlide>
-            );
-          })}
-        {/* {showComments && <Comments handleShowCMT={handleShowComments} />} */}
-      </Swiper>
-    </div>
+    <>
+      {main?.showLoading?.value ? (
+        <Loading isLoading={main?.showLoading?.value} />
+      ) : (
+        <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
+          <Swiper
+            direction={"vertical"}
+            slidesPerView={1}
+            mousewheel={true}
+            onSlideChange={handleSlideChange}
+            modules={[Mousewheel]}
+            onInit={() => {
+              if (allMatch?.length > 0) {
+                setCurrentlyPlayingId(
+                  allMatch?.[0]?.attachmentInserted?.attachmentId
+                );
+              }
+            }}
+            className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-50px)] "
+          >
+            {videos?.length !== 0 &&
+              videos?.map((video: any, index: number) => {
+                return (
+                  <SwiperSlide
+                    className="h-full w-full bg-black flex flex-col"
+                    key={index}
+                  >
+                    <div className="h-1/2 w-full relative flex flex-col">
+                      <VideoSection
+                        showLiked
+                        endTime={true}
+                        video={video}
+                        isPlaying={
+                          currentlyPlayingId ===
+                          video?.attachmentInserted?.attachmentId
+                        }
+                        onVideoPlay={() =>
+                          handleVideoPlay(
+                            video?.attachmentInserted?.attachmentId
+                          )
+                        }
+                        onLikeClick={() =>
+                          handleLikeClick(
+                            video,
+                            0,
+                            video?.attachmentInserted?.attachmentId
+                          )
+                        }
+                        onFollowClick={() =>
+                          handleFallowClick(video, 0, video?.userInserted?.id)
+                        }
+                        toggleDropdown={() => toggleDropdown(video, 0)}
+                        dropdownItems={() =>
+                          dropdownItems(video, 0, video?.userInserted)
+                        }
+                        setOpenDropdowns={setOpenDropdowns}
+                        openDropdowns={openDropdowns}
+                        positionVideo={0}
+                      />
+                    </div>
+                    <div className="h-1/2 w-full relative flex flex-col">
+                      <VideoSection
+                        showLiked
+                        endTime={true}
+                        video={video}
+                        isPlaying={
+                          currentlyPlayingId ===
+                          video?.attachmentMatched?.attachmentId
+                        }
+                        onVideoPlay={() =>
+                          handleVideoPlay(
+                            video?.attachmentMatched?.attachmentId
+                          )
+                        }
+                        onLikeClick={() =>
+                          handleLikeClick(
+                            video,
+                            1,
+                            video?.attachmentMatched?.attachmentId
+                          )
+                        }
+                        onFollowClick={() =>
+                          handleFallowClick(video, 1, video?.userMatched?.id)
+                        }
+                        toggleDropdown={() => toggleDropdown(video, 1)}
+                        dropdownItems={() =>
+                          dropdownItems(video, 1, video?.userMatched)
+                        }
+                        openDropdowns={openDropdowns}
+                        setOpenDropdowns={setOpenDropdowns}
+                        positionVideo={1}
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
+            {/* {showComments && <Comments handleShowCMT={handleShowComments} />} */}
+          </Swiper>
+        </div>
+      )}
+    </>
   );
 };
 

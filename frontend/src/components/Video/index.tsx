@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { VideoProps } from "./types";
 
- 
 const Video: React.FC<VideoProps> = ({
   loop,
   videoId,

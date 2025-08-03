@@ -1,10 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
-import SlideRange from "../../components/SlideRange";
 import Modal from "../../components/Modal";
 import asyncWrapper from "../AsyncWrapper";
-import { addAttachment, addInvite, addMovie } from "../../services/dotNet";
+import {
+  addAttachment,
+  addInvite,
+  addMovie,
+  removeInvite,
+} from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
 import Operational from "../TalentMode/StepFour/Operational";
 import { useNavigate } from "react-router-dom";
@@ -19,13 +23,21 @@ const EditVideo: React.FC<EditVideoProps> = ({
   allFormData,
   mode,
 }) => {
+  const navigate = useNavigate();
+  const draggableHighlightRef = useRef<any>(null);
+  const main = useAppSelector((state) => state?.main);
+  const socket = main?.socketConfig;
+  const userIdFromSStorage = Number(main?.userLogin?.user?.id);
+  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
+  const [findingMatch, setFindingMatch] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [croppedImage, setCroppedImage] = useState<Blob | null>(null);
   const [movieData, setMovieData] = useState<MovieDataType>({
     parentId: null,
     userId: null,
     movieId: null,
     status: null,
   });
-
   const [cropData, setCropData] = useState<{
     x: number;
     y: number;
@@ -38,49 +50,42 @@ const EditVideo: React.FC<EditVideoProps> = ({
     height: 100,
   });
 
-  const main = useAppSelector((state) => state?.main);
-  const userIdFromSStorage = Number(main?.userLogin?.user?.id);
-  const socket = main?.socketConfig;
-  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
-  const [findingMatch, setFindingMatch] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1); // استپ‌های کامپوننت
-  const navigate = useNavigate();
-
   const handleAttachment = useCallback(
     asyncWrapper(async (resMovieData: any) => {
       const formData = new FormData();
+      console.log(croppedImage);
 
-      if (allFormData?.video) {
-        formData.append("formFile", allFormData.video);
+      if (croppedImage) {
+        formData.append("formFile", croppedImage, "cropped-video.mp4");
       }
-      if (allFormData?.imageCover) {
-        formData.append("formFile", allFormData.imageCover);
-      }
-
       formData.append("attachmentId", resMovieData?.id);
       formData.append("attachmentType", "mo");
       formData.append("attachmentName", "movies");
-
-      const resAttachment = await addAttachment(formData);
-      const { status: attachmentStatus, data: attachmentData } =
-        resAttachment?.data;
-
-      return { attachmentStatus, attachmentData };
+      try {
+        const resAttachment = await addAttachment(formData);
+        return resAttachment.data;
+      } catch (error) {
+        console.error("Attachment upload failed:", error);
+        throw error;
+      }
     }),
-    [allFormData]
+    [croppedImage]
   );
+
+  const handleCropImage = useCallback((blob: Blob) => {
+    console.log(blob);
+    setCroppedImage(blob);
+  }, []);
 
   const handleFixVideo = useCallback(
     async (resMovieData: any) => {
       try {
-        const { attachmentStatus } = await handleAttachment(resMovieData);
-
-        if (attachmentStatus === -1) {
-          console.log("Invalid video dimensions.");
+        const callAddAttachment = await handleAttachment(resMovieData);
+        const { status: statusAttachemnt, data } = callAddAttachment;
+        if (statusAttachemnt === -1) {
           return;
         }
-
-        if (attachmentStatus === 0) {
+        if (statusAttachemnt === 0) {
           const postInvite = {
             parentId: null,
             userId: userIdFromSStorage || main?.userLogin?.user?.id || null,
@@ -90,18 +95,14 @@ const EditVideo: React.FC<EditVideoProps> = ({
           setFindingMatch(true);
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
-
           setMovieData((prev: any) => ({
             ...prev,
             userId: userIdFromSStorage || null,
             movieId: Number(resMovieData?.id),
             inviteId: inviteData,
           }));
-
-          console.log(resInvite);
-
-          if (inviteStatus === 0) {
-            socket.emit("add_invite_offline", inviteData);
+          if (inviteData?.userId !== 0) {
+            socket.emit("add_invite_offline", inviteData?.userId);
             setShowEditMovie(false);
             navigate(`/profile`);
           } else {
@@ -127,22 +128,17 @@ const EditVideo: React.FC<EditVideoProps> = ({
     []
   );
 
-  const handleBack = useCallback(() => {
+  const handleBack = useCallback(async () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
-  }, [currentStep]);
-
-  useEffect(() => {
-    socket.on("add_invite_offline_response", (data: any) => {
-      setIsLoadingBtn(false);
-      setShowEditMovie(false);
-      navigate(`/profile`);
-    });
-    return () => {
-      socket.off("add_invite_offline_response");
-    };
-  }, [socket]);
+    console.log(movieData);
+    setIsLoadingBtn(false);
+    if (movieData?.inviteId) {
+      const res = await removeInvite(movieData?.inviteId?.id);
+      console.log(res);
+    }
+  }, [currentStep, movieData]);
 
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
@@ -159,7 +155,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
       const res = await addMovie(postData);
       const { status: movieStatus, data: resMovieData }: GetServices =
         res?.data;
-      console.log(mode, resMovieData);
       if (movieStatus === 0) {
         if (mode?.typeMode === 3) {
           handleFixVideo(resMovieData);
@@ -172,9 +167,38 @@ const EditVideo: React.FC<EditVideoProps> = ({
     }),
     [handleFixVideo, handleAcceptOptional, movieData, mode, cropData]
   );
+
   const videoSrc = React.useMemo(() => {
     return allFormData?.video ? URL.createObjectURL(allFormData.video) : "";
   }, [allFormData?.video]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handler = (data: any) => {
+      console.log("handleInviteResponse", data);
+      setIsLoadingBtn(false);
+      setShowEditMovie(false);
+      navigate(`/profile`);
+    };
+    socket.on("add_invite_offline_response", handler);
+
+    return () => {
+      socket.off("add_invite_offline_response", handler);
+    };
+  }, [socket, navigate, setShowEditMovie, setIsLoadingBtn]);
+
+  const handleNextStep = async () => {
+    try {
+      if (draggableHighlightRef.current) {
+        const croppedVideo = await draggableHighlightRef.current.cropVideo();
+        setCroppedImage(croppedVideo);
+        setCurrentStep(2);
+      }
+    } catch (error) {
+      console.error("Error cropping video:", error);
+      alert("Error cropping video. Please try again.");
+    }
+  };
 
   return (
     <Modal
@@ -185,7 +209,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
             ? "Optional"
             : ""
       }
-      className="rounded-2xl "
+      className="rounded-2xl"
       padding={0}
       isOpen={showEditMovie}
     >
@@ -195,8 +219,10 @@ const EditVideo: React.FC<EditVideoProps> = ({
             <div className="border mb-4 p-1">
               <div className="video-wrapper">
                 <DraggableHighlight
+                  ref={draggableHighlightRef}
                   videoSrc={videoSrc}
                   onCropChange={(data) => setCropData(data)}
+                  onCropVideo={(blob) => setCroppedImage(blob)}
                 />
               </div>
             </div>
@@ -238,7 +264,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
                 className="border"
                 variant={"green"}
                 label="Next"
-                onClick={() => setCurrentStep(2)}
+                onClick={() => handleNextStep()}
               />
             </div>
           </div>

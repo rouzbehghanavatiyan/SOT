@@ -84,6 +84,12 @@ export const addInvite = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
+// remove attachment video
+export const removeInvite = async (invId: number) => {
+  const url = `${baseURL}/removeInvite?inviteId=${invId}`;
+  return await axios.delete(url);
+};
+
 export const userList = async () => {
   const url = `${baseURL}/userList`;
   return await axios.get(url);
@@ -94,7 +100,6 @@ export const addFollower = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
-// all follower
 export const followerList = async (userId: any) => {
   const url = `${baseURL}/followerList?userId=${userId}`;
   return await axios.get(url);
@@ -168,4 +173,9 @@ export const sendUserNotif = async (postData: any) => {
 export const addScoure = async (postData: any) => {
   const url = `${urlNotif}/addScoure`;
   return await axios.post(url, postData);
+};
+
+export const topScoreList = async () => {
+  const url = `${baseURL}/topScoreList`;
+  return await axios.get(url);
 };

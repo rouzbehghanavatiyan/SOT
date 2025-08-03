@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 import cupLevel from "../../assets/img/cupLevel.webp";
@@ -12,7 +18,6 @@ import {
   profileAttachment,
   userAttachmentList,
 } from "../../services/dotNet";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
 import ImageRank from "../../components/ImageRank";
@@ -28,8 +33,6 @@ const Profile: React.FC = () => {
   const dispatch = useAppDispatch();
   const socket = main.socketConfig;
   const userId = main?.userLogin?.user?.id;
-  console.log(main?.userLogin);
-
   const [match, setMatch] = useState<any>([]);
   const [allFollower, setAllFollower] = useState<any>([]);
   const [percentage, setPercentage] = useState(0);
@@ -42,6 +45,7 @@ const Profile: React.FC = () => {
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
   const findImg = StringHelpers.getProfile(main?.userLogin?.profile);
+  console.log(main?.userLogin?.user?.id);
 
   const uploadProfileImage = useCallback(
     async (croppedImage: string) => {
@@ -62,12 +66,10 @@ const Profile: React.FC = () => {
           type: "image/jpeg",
         });
 
+        console.log(main?.userLogin);
         const formData = new FormData();
         formData.append("formFile", file);
-        formData.append(
-          "attachmentId",
-          userId || main?.userLogin?.user?.id || ""
-        );
+        formData.append("attachmentId", userId);
         formData.append("attachmentType", "pf");
         formData.append("attachmentName", "profile");
 
@@ -165,7 +167,6 @@ const Profile: React.FC = () => {
   const calculateInitialLikes = (data: any[]) => {
     const initialLikes: Record<string, number> = {};
     data.forEach((match) => {
-      console.log(match);
       if (match.likeInserted && match.attachmentInserted?.movieId) {
         initialLikes[match.attachmentInserted.movieId] = match.likeInserted;
       }
@@ -196,6 +197,33 @@ const Profile: React.FC = () => {
     return Math.min(Math.max(percentage, 1), 100);
   };
 
+  const scrollToFirstVideo = () => {
+    const firstVideo = document.querySelector(".first-video");
+    if (firstVideo) {
+      firstVideo.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+  const itsMatchingWithTimer = useMemo(() => {
+    return match?.some(
+      (item: any) =>
+        item?.inviteInserted?.insertDate !== -1 ||
+        item?.inviteMatched?.insertDate !== -1
+    );
+  }, [match]);
+
+  console.log(itsMatchingWithTimer);
+  useEffect(() => {
+    if (itsMatchingWithTimer) {
+      scrollToFirstVideo();
+      const timer = setTimeout(scrollToFirstVideo, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [match, isLoading]);
+
   useEffect(() => {
     if (userId) {
       const calculatedPercentage = handleProgress(main?.userLogin?.score || 0);
@@ -204,15 +232,6 @@ const Profile: React.FC = () => {
       handleGetFollower();
     }
   }, [userId]);
-
-  useEffect(() => {
-    if (videosProfileRef.current) {
-      videosProfileRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, []);
 
   return (
     <>
@@ -228,8 +247,8 @@ const Profile: React.FC = () => {
         <section className="grid justify-center ">
           <div className="w-screen pt-3 px-3 md:w-full md:h-full bg-gray-100">
             <div className="mb-1 border-b-[1px] ">
-              <div className="grid grid-cols-6 relative ">
-                <div className="col-span-5 flex h-32">
+              <div className="grid grid-cols-6 mt-1  relative ">
+                <div className="col-span-5  flex h-32">
                   <span
                     ref={imageRef}
                     onClick={handleProfile}
@@ -246,7 +265,7 @@ const Profile: React.FC = () => {
                       {main?.userLogin?.user?.userName}
                     </span>
                     <div className="flex">
-                      <div className="m-2 bg-gray-150 p-2 rounded-2xl">
+                      <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
                         <Link to={"/followers"}>
                           <span className="font-bold text-gray-800">
                             {allFollower?.length}
@@ -256,7 +275,7 @@ const Profile: React.FC = () => {
                           </span>
                         </Link>
                       </div>
-                      <div className="m-2 bg-gray-150 p-2 rounded-2xl">
+                      <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
                         <Link to={"/following"}>
                           <span className="font-bold text-gray-800">
                             {main?.allFollingList?.getMapFollowingId?.length}
@@ -268,14 +287,6 @@ const Profile: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="items-start flex justify-end  col-span-1">
-                  <ModeEditIcon
-                    onClick={() => {
-                      setShowEditProfile(true);
-                    }}
-                    className="text-gray-800 font25"
-                  />
                 </div>
               </div>
               <div className="flex flex-col items-center mb-5">
@@ -328,15 +339,13 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
-          <div ref={videosProfileRef}>
-            {isLoading && <Loading isLoading={isLoading ? true : false} />}
-            <VideosProfile
-              videosProfileRef={videosProfileRef}
-              match={match}
-              videoLikes={videoLikes}
-              setVideoLikes={setVideoLikes}
-            />
-          </div>
+          {isLoading && <Loading isLoading={isLoading ? true : false} />}
+          <VideosProfile
+            videosProfileRef={videosProfileRef}
+            match={match}
+            videoLikes={videoLikes}
+            setVideoLikes={setVideoLikes}
+          />
           {showEditProfile && (
             <EditProfile
               showEditProfile={showEditProfile}

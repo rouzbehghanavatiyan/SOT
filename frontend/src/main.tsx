@@ -1,5 +1,6 @@
 import App from "./App.tsx";
 import "./index.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import ReactDOM from "react-dom/client";

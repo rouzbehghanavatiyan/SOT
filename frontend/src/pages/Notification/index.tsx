@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../../components/Loading";
+import { topScoreList } from "../../services/dotNet";
 
 const Notification: React.FC = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const fetchNotifications = async () => {
-    setNotifications(data);
+  const handleGetAllScoure = async () => {
     setIsLoading(true);
+    const res = await topScoreList();
+    setIsLoading(false);
+    console.log(res);
+    const { data, status } = res?.data;
+    if (status === 0) {
+      setNotifications(data);
+    }
   };
 
   useEffect(() => {
-    fetchNotifications();
+    handleGetAllScoure();
   }, []);
 
   return (

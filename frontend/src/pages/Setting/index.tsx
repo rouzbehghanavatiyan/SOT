@@ -8,7 +8,6 @@ import { addAttachment } from "../../services/dotNet";
 const Setting: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
-  const userId = sessionStorage.getItem("userId");
 
   const handleSignOut = () => {
     sessionStorage.clear();
@@ -21,7 +20,7 @@ const Setting: React.FC = () => {
         const file = event.target.files?.[0];
         const formData = new FormData();
         // formData.append("formFile", file.video);
-        formData.append("attachmentId", userId || main?.userLogin?.user?.id);
+        formData.append("attachmentId", main?.userLogin?.user?.id);
         formData.append("attachmentType", "pf");
         formData.append("attachmentName", "profile");
         const resAttachment = await addAttachment(formData);
@@ -43,6 +42,14 @@ const Setting: React.FC = () => {
       handleProfile();
     }
   };
+  // <div className="items-start flex justify-end  col-span-1">
+  //   <ModeEditIcon
+  //     onClick={() => {
+  //       setShowEditProfile(true);
+  //     }}
+  //     className="text-gray-800 font25"
+  //   />
+  // </div>
 
   return (
     <>
@@ -50,7 +57,7 @@ const Setting: React.FC = () => {
         handleAcceptCategory={handleCategoryClick}
         categories={[
           { name: "Singout", id: 1 },
-          { name: "profile", id: 2 },
+          { name: "Profile", id: 2 },
           { name: "Support", id: 3 },
           { name: "About us", id: 4 },
         ]}

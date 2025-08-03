@@ -3,6 +3,7 @@ import { followerList } from "../../services/dotNet";
 import { redirect } from "react-router-dom";
 import ImageRank from "../../components/ImageRank";
 import Loading from "../../components/Loading";
+import StringHelpers from "../../utils/helpers/StringHelper";
 
 const Followers = () => {
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -35,18 +36,12 @@ const Followers = () => {
       {isLoading && <Loading isLoading={isLoading} />}
 
       {allFollower?.map((follower: any, index) => {
-        console.log(follower);
-        const image = `${baseURL}/${follower?.attachment?.attachmentType}/${follower?.attachment?.fileName}${follower?.attachment?.ext}`;
-
+        const image = StringHelpers.getProfile(follower?.attachment);
         return (
           <div className="w-full bg-gray-100 border-b-[1px] border-white py-3 px-4 sticky top-0 z-10">
             <ImageRank
               score={0}
-              rankStyle="w-8 h-8"
-              className="w-80 h-80"
               imgSize={60}
-              classUserName="text-black"
-              iconProfileStyle="font60"
               userName={follower?.userName || "Unknown User"}
               imgSrc={image || "default-profile-image.png"}
             />

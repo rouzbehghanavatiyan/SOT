@@ -38,10 +38,12 @@ type VideoSectionProps = {
   setShowComments?: React.Dispatch<React.SetStateAction<boolean>>;
   result?: any;
   score?: number;
+  endTime?: number | boolean;
 };
 
 const VideoSection: React.FC<VideoSectionProps> = ({
   score,
+  endTime,
   onVideoPlay,
   video,
   showLiked = false,
@@ -100,7 +102,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const handleFallowClick = async (video: any, position: number) => {
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
-
     const postData = {
       userId: userIdLogin || null,
       followerId: userIdFollow || null,
@@ -115,7 +116,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 follows: {
                   ...v.follows,
                   [userId]: {
-                    isFollowed: !isCurrentlyFollowed, // تغییر وضعیت
+                    isFollowed: !isCurrentlyFollowed,
                   },
                 },
               }
@@ -126,13 +127,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     );
     try {
       if (isCurrentlyFollowed) {
-        await removeFollower(postData); // حذف دنبال کردن
+        await removeFollower(postData);
       } else {
-        await addFollower(postData); // اضافه کردن دنبال کردن
+        await addFollower(postData);
       }
     } catch (error) {
       console.error("Error in follow operation:", error);
-
       dispatch(
         RsetAllLoginMatch((prevVideos: any) =>
           prevVideos.map((v: any) =>
@@ -164,7 +164,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   //     setShowComments(true);
   //   }
   // };
-
   const handleLikeClick = asyncWrapper(async (video: any, position: number) => {
     const movieId =
       position === 0
@@ -175,10 +174,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       userId: userIdLogin || null,
       movieId: movieId,
     };
-
     const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
-
-    console.log(score);
 
     try {
       dispatch(
@@ -234,21 +230,23 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     }
   });
 
+  console.log(endTime);
+
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
       <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
-        <div className="grid grid-cols-3 items-center w-full">
-          <div className="flex justify-start">
+        <div className="grid grid-cols-9 items-center w-full">
+          <div className="flex col-span-5 justify-start">
             <ImageRank
               userNameStyle="text-gray-150"
               userName={userInfo?.userName}
               imgSize={50}
               imgSrc={profile}
-              score={0}
+              score={score}
             />
           </div>
-          <div className="flex justify-center">
-            {checkMyVideo && (
+          <div className="flex col-span-3 justify-center">
+            {endTime && checkMyVideo && (
               <Follows
                 bgColor=""
                 title={isFollowed ? "Unfollow" : "Follow"}
@@ -256,8 +254,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
               />
             )}
           </div>
-          <div className="flex justify-end ">
-            {checkMyVideo && (
+          <div className="flex col-span-1 justify-end ">
+            {!endTime && checkMyVideo && (
               <Dropdown
                 isOpenOptions={openDropdowns[positionVideo]}
                 setIsOpenOptions={(isOpen) => {
@@ -292,34 +290,40 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             handleVideo={() => onVideoPlay(video)}
             url={videoUrl}
           />
-          <div className="absolute w-full bottom-8 z-10">
-            <div className="flex  items-between justify-between mx-2">
-              <div className="">
-                <ChatBubbleOutlineIcon
-                  onClick={() => handleToggleComments(video)}
-                  className="font25  text-white"
-                />
-              </div>
-              {result === "Win" ? (
-                <div className="text-green flex justify-center">
+          <div className="absolute w-full bottom-5 z-10">
+            <div className="grid grid-cols-3 items-end justify-between mx-2">
+              {!endTime && (
+                <div className="col-span-1">
+                  <ChatBubbleOutlineIcon
+                    onClick={() => handleToggleComments(video)}
+                    className="font25  text-white"
+                  />
+                </div>
+              )}
+              {endTime ? null : result === "Win" ? (
+                <div className="text-green col-span-1 flex justify-center">
                   <span className="font15 border-green px-2 rounded-lg border font-bold">
                     Win
                   </span>
                 </div>
               ) : result === "Loss" ? (
-                <div className="text-red flex justify-center">
+                <div className="text-red col-span-1 flex justify-center">
                   <span className="font15 border-red px-2 rounded-lg border font-bold">
                     Loss
                   </span>
                 </div>
               ) : result === "Draw" ? (
-                <div className="text-yellow flex justify-center">
+                <div className="text-yellow col-span-1 flex justify-center">
                   <span className="font15 border-yellow px-2 rounded-lg border font-bold">
                     Draw
                   </span>
                 </div>
-              ) : null}
-              <div className=" flex justify-end">
+              ) : (
+                <div className="col-span-1 flex justify-center">
+                  <span className="font15 px-2 rounded-lg border font-bold"></span>
+                </div>
+              )}
+              <div className="col-span-1 flex justify-end">
                 {showLiked && (
                   <>
                     {isLiked ? (
@@ -335,8 +339,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                     )}
                   </>
                 )}
-                {countLiked !== undefined && (
-                  <div className="text-gray-200  flex items-end justify-end gap-2">
+                {!endTime && countLiked !== undefined && (
+                  <div className="text-gray-200 flex items-end justify-end gap-2">
                     <span className="font18 text-sm">{countLiked}</span>
                     <span className=" pb-1">
                       <ThumbUpIcon className=" font25 unlike_animation cursor-pointer" />

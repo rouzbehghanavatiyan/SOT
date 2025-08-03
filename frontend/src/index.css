@@ -84,6 +84,18 @@ br {
   font-size: 10px !important;
 }
 
+.font11 {
+  font-size: 11px !important;
+}
+
+.font12 {
+  font-size: 12px !important;
+}
+
+.font13 {
+  font-size: 13px !important;
+}
+
 .font15 {
   font-size: 15px !important;
 }
@@ -812,33 +824,25 @@ br {
 
 .seek-bar {
   -webkit-appearance: none;
-  /* برای Chrome، Safari و Opera */
   width: 100%;
   height: 2px;
-  /* ارتفاع اهرم را به 2px تغییر دادیم */
   background: rgb(255, 255, 255);
-  /* تغییر رنگ اهرم به خاکستری */
   border-radius: 5px;
-  /* گوشه‌های اهرم را کمی گرد کردیم */
   cursor: pointer;
 }
 
 .seek-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 12px;
-  /* ارتفاع ناودانی */
-  width: 12px;
-  /* عرض ناودانی */
+  height: 8px;
+  width: 8px;
   border-radius: 50%;
-  /* گوشه‌های ناودان را گرد کرده‌ایم */
-  background: white;
-  /* رنگ ناودان */
+  background: rgb(255, 255, 255);
   cursor: pointer;
 }
 
 .seek-bar::-moz-range-thumb {
-  height: 12px;
-  width: 12px;
+  height: 8px;
+  width: 8px;
   border-radius: 50%;
   background: white;
   cursor: pointer;
@@ -970,19 +974,13 @@ br {
 }
 
 
-/* video edit */
 .video-wrapper {
   position: relative;
   width: 100%;
-  /* عرض ویدیو برابر با عرض کادر */
   max-width: 640px;
-  /* محدود کردن عرض ویدیو */
   aspect-ratio: 16/9;
-  /* نسبت ابعاد ویدیو */
   margin: 0 auto;
-  /* مرکزیت کادر در صفحه */
   overflow: hidden;
-  /* جلوگیری از بیرون‌زدگی محتوا */
 }
 
 .video-full {

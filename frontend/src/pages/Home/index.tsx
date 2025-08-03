@@ -12,13 +12,16 @@ import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
+import Loading from "../../components/Loading";
 
 const Home: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const videos: any = main?.allLoginMatch;
+
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
   const userIdLogin = main?.userLogin?.user?.id;
@@ -98,93 +101,112 @@ const Home: React.FC = () => {
     }
   }, [userIdLogin]);
 
+  console.log(main?.showLoading?.value);
+
   return (
-    <div className="relative w-full bg-black md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]">
-      <Swiper
-        direction={"vertical"}
-        slidesPerView={1}
-        mousewheel={{
-          forceToAxis: true,
-          releaseOnEdges: true,
-        }}
-        modules={[Mousewheel]}
-        className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]"
-        onSlideChange={handleSlideChange}
-      >
-        {videos?.length !== 0 &&
-          videos?.map((video: any, index: number) => {
-            const resultInserted =
-              video?.likeInserted > video?.likeMatched
-                ? "Win"
-                : video?.likeInserted < video?.likeMatched
-                  ? "Loss"
-                  : "Draw";
-            const resultMatched =
-              video?.likeInserted < video?.likeMatched
-                ? "Win"
-                : video?.likeInserted > video?.likeMatched
-                  ? "Loss"
-                  : "Draw";
-            const parentLikes = video?.likeInserted || 0;
-            const childLikes = video?.likeMatched || 0;
-            const scoreInserted = video?.scoreInserted;
-            const scoreMatched = video?.scoreMatched;
-            return (
-              <SwiperSlide
-                key={index}
-                className="h-full w-full bg-black flex flex-col"
-              >
-                <section className="flex flex-col h-screen">
-                  <div className="flex-1 min-h-0 relative">
-                    <VideoSection
-                      score={scoreInserted}
-                      countLiked={parentLikes}
-                      result={resultInserted}
-                      video={video}
-                      isPlaying={
-                        currentlyPlayingId ===
-                        video?.attachmentInserted?.attachmentId
-                      }
-                      onVideoPlay={() =>
-                        handleVideoPlay(video?.attachmentInserted?.attachmentId)
-                      }
-                      dropdownItems={() =>
-                        dropdownItems(video, 0, video?.userInserted)
-                      }
-                      setOpenDropdowns={setOpenDropdowns}
-                      openDropdowns={openDropdowns}
-                      baseURL={baseURL}
-                      positionVideo={0}
-                    />
-                  </div>
-                  <div className="flex-1 min-h-0 relative">
-                    <VideoSection
-                      score={scoreMatched}
-                      video={video}
-                      result={resultMatched}
-                      isPlaying={
-                        currentlyPlayingId ===
-                        video?.attachmentMatched?.attachmentId
-                      }
-                      onVideoPlay={() =>
-                        handleVideoPlay(video?.attachmentMatched?.attachmentId)
-                      }
-                      dropdownItems={() =>
-                        dropdownItems(video, 1, video?.userMatched)
-                      }
-                      countLiked={childLikes}
-                      openDropdowns={openDropdowns}
-                      setOpenDropdowns={setOpenDropdowns}
-                      baseURL={baseURL}
-                      positionVideo={1}
-                    />
-                  </div>
-                </section>
-              </SwiperSlide>
-            );
-          })}
-      </Swiper>
-    </div>
+    <>
+      {main?.showLoading?.value ? (
+        <Loading isLoading={main?.showLoading?.value} />
+      ) : (
+        <div className="relative w-full bg-black md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]">
+          {videos?.length > 0 ? (
+            <Swiper
+              direction={"vertical"}
+              slidesPerView={1}
+              mousewheel={{
+                forceToAxis: true,
+                releaseOnEdges: true,
+              }}
+              modules={[Mousewheel]}
+              className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
+              onSlideChange={handleSlideChange}
+            >
+              {videos?.map((video: any, index: number) => {
+                const resultInserted =
+                  video?.likeInserted > video?.likeMatched
+                    ? "Win"
+                    : video?.likeInserted < video?.likeMatched
+                      ? "Loss"
+                      : "Draw";
+                const resultMatched =
+                  video?.likeInserted < video?.likeMatched
+                    ? "Win"
+                    : video?.likeInserted > video?.likeMatched
+                      ? "Loss"
+                      : "Draw";
+
+                return (
+                  <SwiperSlide
+                    key={index}
+                    className="h-full w-full bg-black flex flex-col"
+                  >
+                    <section className="flex flex-col h-screen">
+                      <div className="flex-1 min-h-0 relative">
+                        <VideoSection
+                          score={video?.scoreInserted}
+                          countLiked={video?.likeInserted || 0}
+                          result={resultInserted}
+                          video={video}
+                          isPlaying={
+                            currentlyPlayingId ===
+                            video?.attachmentInserted?.attachmentId
+                          }
+                          onVideoPlay={() =>
+                            handleVideoPlay(
+                              video?.attachmentInserted?.attachmentId
+                            )
+                          }
+                          dropdownItems={() =>
+                            dropdownItems(video, 0, video?.userInserted)
+                          }
+                          setOpenDropdowns={setOpenDropdowns}
+                          openDropdowns={openDropdowns}
+                          baseURL={baseURL}
+                          positionVideo={0}
+                        />
+                      </div>
+                      <div className="flex-1 min-h-0 relative">
+                        <VideoSection
+                          score={video?.scoreMatched}
+                          video={video}
+                          result={resultMatched}
+                          isPlaying={
+                            currentlyPlayingId ===
+                            video?.attachmentMatched?.attachmentId
+                          }
+                          onVideoPlay={() =>
+                            handleVideoPlay(
+                              video?.attachmentMatched?.attachmentId
+                            )
+                          }
+                          dropdownItems={() =>
+                            dropdownItems(video, 1, video?.userMatched)
+                          }
+                          countLiked={video?.likeMatched || 0}
+                          openDropdowns={openDropdowns}
+                          setOpenDropdowns={setOpenDropdowns}
+                          baseURL={baseURL}
+                          positionVideo={1}
+                        />
+                      </div>
+                    </section>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          ) : (
+            <div className="flex flex-col bg-white items-center justify-center h-full p-4">
+              <div className="font20   text-white bg-primary font-bold rounded-lg p-4 mb-2">
+                No match available
+              </div>
+              <p className="text-gray-400 text-primary mt-10 text-center">
+                Dear user, you don't have any following to view at this time.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 };
 

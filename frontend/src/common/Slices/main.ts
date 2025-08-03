@@ -1,13 +1,21 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import {
   attachmentListByInviteId,
   categoryList,
   followerAttachmentList,
 } from "../../services/dotNet";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { apiSlice } from "./apiSlice";
 
 type MessageModal = {
   title?: string;
   show?: boolean;
+  icon?: string;
 };
 
 type ToastifyType = {
@@ -22,7 +30,7 @@ interface ShowQuestion {
 }
 
 interface MainType {
-  messageModal: MessageModal;
+  messageModal?: MessageModal;
   showToast: ToastifyType;
   showQuestionModal: ShowQuestion;
   showLoading?: { btnName?: string | number; value?: boolean };
@@ -40,10 +48,11 @@ interface MainType {
   progress?: any;
   allLoginMatch?: any[];
   loginMatch?: any[];
+  selectedInviteId: any;
 }
 
 const initialState: MainType = {
-  messageModal: { title: "", show: false },
+  messageModal: { title: "", show: false, icon: "" },
   showToast: { title: "", bg: "", show: false },
   loading: false,
   showQuestionModal: { show: false, answer: false },
@@ -60,13 +69,28 @@ const initialState: MainType = {
   allFollingList: {},
   allLoginMatch: [],
   loginMatch: [],
+  selectedInviteId: null,
 };
+
+export const extendedApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getMainAttachments: builder.query({
+      query: (inviteId) => `/main/attachments/${inviteId}`,
+      providesTags: (result, error, inviteId) => [
+        { type: "Attachments", id: inviteId },
+      ],
+    }),
+  }),
+});
 
 export const handleAttachmentListByInviteId = createAsyncThunk(
   "main/handleAttachmentListByInviteId",
-  async (inviteId: string, { rejectWithValue, getState }) => {
+  async (inviteId: string, { rejectWithValue, getState, dispatch }) => {
     try {
+      dispatch(RsetLoading({ value: true }));
       const response = await attachmentListByInviteId(inviteId);
+      dispatch(RsetLoading({ value: false }));
+
       return {
         getData: response,
         state: getState(),
@@ -82,9 +106,12 @@ export const handleAttachmentListByInviteId = createAsyncThunk(
 
 export const handleFollowerAttachmentList = createAsyncThunk(
   "main/handleFollowerAttachmentList",
-  async (userIdLogin: number, { rejectWithValue, getState }) => {
+  async (userIdLogin: number, { rejectWithValue, getState, dispatch }) => {
     try {
+      dispatch(RsetLoading({ value: true }));
       const response = await followerAttachmentList(userIdLogin);
+      dispatch(RsetLoading({ value: false }));
+
       return {
         getData: response,
         state: getState(),
@@ -106,7 +133,8 @@ const mainSlice = createSlice({
       state.messageModal = action.payload;
     },
     RsetUserLogin: (state, action: PayloadAction<any>) => {
-      state.userLogin = { ...state.userLogin, ...action.payload };
+      // state.userLogin = { ...state.userLogin, ...action.payload };
+      state.userLogin = action.payload;
     },
     RsetLoading: (
       state,
@@ -196,8 +224,9 @@ const mainSlice = createSlice({
               };
             });
 
-            state.tornoment = processedVideos;
-            state.allTornoment = data;
+            // state.tornoment = processedVideos;
+            state.allLoginMatch = processedVideos;
+            // state.allTornoment = data;
           }
         }
       )
@@ -266,4 +295,6 @@ export const {
   RsetGetImageProfile,
   RsetAllLoginMatch,
 } = mainSlice.actions;
+
+export const { useGetMainAttachmentsQuery } = extendedApiSlice;
 export default mainSlice.reducer;

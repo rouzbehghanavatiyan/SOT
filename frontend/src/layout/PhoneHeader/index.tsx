@@ -70,7 +70,7 @@ const PhoneHeader = () => {
               //     Store
               //   </span>
               // ) : (
-              <span className="icon_size col-span-3 flex justify-start logoFont text-primary">
+              <span className="icon_size col-span-3 flex justify-start logoFont text-dark_blue">
                 Star Of Talent
               </span>
               //   )

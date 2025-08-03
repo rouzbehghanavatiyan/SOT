@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import per_bronze_3 from "../../assets/ranks/per_bronze_3.webp";
-import startRankig from "../../assets/ranks/2212.w054.n005.276B.p1.276 [Converted]-01.png";
-import normal_gold_2 from "../../assets/ranks/normal_gold_2.png";
-import normal_gold_1 from "../../assets/ranks/normal_gold_1.webp";
-
 import silverRank from "../../assets/img/rank5.webp";
-import goldRank1 from "../../assets/img/rank7.webp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 interface ProfileWithRankProps {
@@ -28,44 +22,49 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
 
   const determineRank: void = () => {
     if (score === 0) {
-      return startRankig;
-    } else if (score > 0 && score < 100) {
       return silverRank;
-    } else if (score > 200 && score < 300) {
-    } else if (score > 100 && score < 200) {
+    } else if (score > 0 && score < 10) {
       return silverRank;
-    } else if (score > 300 && score < 400) {
+    } else if (score > 20 && score < 30) {
+    } else if (score > 10 && score < 20) {
       return silverRank;
-    } else if (score > 400 && score < 500) {
+    } else if (score > 30 && score < 40) {
       return silverRank;
-    } else if (score > 500 && score < 600) {
+    } else if (score > 40 && score < 50) {
       return silverRank;
-    } else if (score > 600 && score < 700) {
+    } else if (score > 50 && score < 60) {
       return silverRank;
-    } else if (score > 700 && score < 800) {
+    } else if (score > 60 && score < 70) {
       return silverRank;
-    } else if (score > 800 && score < 900) {
+    } else if (score > 70 && score < 80) {
       return silverRank;
-    } else if (score > 900 && score < 1000) {
+    } else if (score > 80 && score < 90) {
       return silverRank;
-    } else if (score > 1000 && score < 1100) {
+    } else if (score > 90 && score < 100) {
       return silverRank;
-    } else if (score > 1100 && score < 1200) {
+    } else if (score > 100 && score < 110) {
       return silverRank;
-    } else if (score > 1200 && score < 1300) {
+    } else if (score > 110 && score < 120) {
       return silverRank;
-    } else if (score > 1300 && score < 1400) {
+    } else if (score > 120 && score < 130) {
       return silverRank;
-    } else if (score > 1400 && score < 1500) {
+    } else if (score > 130 && score < 140) {
+      return silverRank;
+    } else if (score > 140 && score < 150) {
       return silverRank;
     } else {
-      return normal_gold_1;
+      return silverRank;
     }
   };
 
   useEffect(() => {
     setRankSrc(determineRank());
   }, [score]);
+
+  const shortenUserName = (name: string | undefined): string => {
+    if (!name) return "";
+    return name.length > 15 ? `${name.slice(0, 15)}...` : name;
+  };
 
   return (
     <div
@@ -125,10 +124,9 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
       </div>
       {userName && (
         <span
-          className={`ms-2 font-bold ${!userNameStyle ? "text-gray-200" : userNameStyle}`}
-          style={{ fontSize: `${Math.max(12, imgSize * 0.35)}px` }}
+          className={`ms-2 font-bold ${!userNameStyle ? "text-gray-800" : userNameStyle}`}
         >
-          {userName}
+          {shortenUserName(userName)}
         </span>
       )}
     </div>

@@ -32,8 +32,6 @@ const Timer: React.FC<TimerProps> = ({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  console.log(video);
-
   const handleGetWinner = () => {
     if (video?.likeInserted > video?.likeMatched) {
       setWinnerInfo({
@@ -87,8 +85,6 @@ const Timer: React.FC<TimerProps> = ({
   }, [startTime]);
 
   const progressPercent = (remainingSeconds / duration) * 100;
-  console.log(remainingSeconds);
-
   return (
     <div className="flex items-center">
       <span className={className}>{formatTime(remainingSeconds)}</span>

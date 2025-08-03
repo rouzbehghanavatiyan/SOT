@@ -7,7 +7,6 @@ import EditVideo from "../../EditVideo";
 import MainTitle from "../../../components/MainTitle";
 import SoftLink from "../../../hoc/SoftLinks";
 import { useNavigate } from "react-router-dom";
-import ResponsiveMaker from "../../../utils/helpers/ResponsiveMaker";
 
 const StepFour: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -130,38 +129,38 @@ const StepFour: React.FC = () => {
           onClick={handleOffline}
           className=" cursor-pointer grid grid-cols-7 mt-4"
         >
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
             Offline
           </span>
           <span className="flex col-span-3 justify-center  ">
-            <WifiOffIcon className="font100 flex px-3 justify-center text-primary" />
+            <WifiOffIcon className="font60 flex px-3 justify-center text-primary" />
           </span>
         </div>
         <div
           onClick={handleOptional}
           className=" cursor-pointer grid grid-cols-7  py-4 mt-4 "
         >
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
             Optional
           </span>
           <span className="flex col-span-3 justify-center  ">
-            <AltRouteIcon className="font100 flex px-3 justify-center text-primary" />
+            <AltRouteIcon className="font60 flex px-3 justify-center text-primary" />
           </span>
         </div>
         <div className=" cursor-pointer grid grid-cols-7  py-4 mt-4  ">
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
             Turbo
           </span>
           <span className="flex col-span-3 justify-center  ">
-            <NetworkCheckIcon className="font100 flex px-3 justify-center text-primary" />
+            <NetworkCheckIcon className="font60 flex px-3 justify-center text-primary" />
           </span>
         </div>
         <div className=" cursor-pointer grid grid-cols-7  py-4 mt-4  ">
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font20 font-bold">
+          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
             Live
           </span>
           <span className="flex col-span-3 justify-center">
-            <RadioButtonCheckedIcon className="font100 flex px-3 justify-center text-primary" />
+            <RadioButtonCheckedIcon className="font60 flex px-3 justify-center text-primary" />
           </span>
         </div>
 
@@ -175,27 +174,6 @@ const StepFour: React.FC = () => {
           />
         )}
       </div>
-      {/* <MainTitle handleBack={handleBack} title="Mode" />
-      <SoftLink
-        iconMap={iconMap}
-        handleAcceptCategory={handleCategoryClick}
-        isLoading={false}
-        categories={[
-          { name: "Offline", id: 1 },
-          { name: "Optional", id: 2 },
-          { name: "Turbo", id: 3 },
-          { name: "Live", id: 4 },
-        ]}
-      />
-      {showEditMovie && (
-        <EditVideo
-          mode={mode}
-          allFormData={allFormData}
-          showEditMovie={showEditMovie}
-          setShowEditMovie={setShowEditMovie}
-          coverImage={coverImage}
-        />
-      )} */}
     </section>
   );
 };
