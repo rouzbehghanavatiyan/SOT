@@ -6,7 +6,6 @@ import asyncWrapper from "../../common/AsyncWrapper";
 import "swiper/css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
-import { RsetProgress } from "../../common/Slices/main";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import VideoItemSkeleton from "../../components/VideoLoading";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
@@ -14,6 +13,10 @@ import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import LocalSeeIcon from "@mui/icons-material/LocalSee";
+import ArchitectureIcon from "@mui/icons-material/Architecture";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 
 const StepOne: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
@@ -32,13 +35,7 @@ const StepOne: React.FC = () => {
     take: 6,
     hasMore: true,
   });
-
   const loadingRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(() => {
-    const savedProgress = localStorage.getItem("timerProgress");
-    return savedProgress ? parseInt(savedProgress, 10) : 0;
-  });
-  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
 
   const calculateInitialLikes = (data: any[]) => {
     const initialLikes: Record<string, number> = {};
@@ -144,18 +141,6 @@ const StepOne: React.FC = () => {
     handleAttachmentList();
   }, []);
 
-  useEffect(() => {
-    let interval: any;
-    if (progress < 60 && isTimerActive) {
-      interval = setInterval(() => {
-        dispatch(RsetProgress(progress + 1));
-      }, 100000);
-    } else if (progress >= 60) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [progress, isTimerActive, dispatch]);
-
   const videoGroupsWithLikes = useMemo(() => {
     return videoGroupsWithOwnership.map((group) => {
       const parentLikes =
@@ -195,93 +180,94 @@ const StepOne: React.FC = () => {
   }, [pagination.hasMore, isLoading]);
 
   return (
-    <section className="mt-3">
-      <div className="flex gap-4 py-2 mx-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-        <span className="flex items-center  rounded-full border flex-shrink-0">
-          <span className="font-bold px-4">All</span>
+    <section>
+      {/* <div className="scrollable-container flex gap-4 px-2 pb-2 pt-16 bg-white whitespace-nowrap scrollbar-hide fixed top-0 left-0 w-full  z-10">
+        <span className="rounded-full flex items-center border-2 border-gray-200 flex-shrink-0">
+          <span className="font-bold text-gray-200 px-4">All</span>
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <AudiotrackIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2 border-gray-800 flex-shrink-0">
+          <AudiotrackIcon className="my-3 mx-3 text-gray-800  font25" />
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <SportsKabaddiIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2  flex-shrink-0">
+          <SportsKabaddiIcon className="my-3 mx-3 text-gray-200  font25" />
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <PrecisionManufacturingIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2  flex-shrink-0">
+          <PrecisionManufacturingIcon className="my-3 mx-3 text-gray-200  font25" />
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <OutdoorGrillIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2  flex-shrink-0">
+          <OutdoorGrillIcon className="my-3 mx-3 text-gray-200  font25" />
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <LocalSeeIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2  flex-shrink-0">
+          <LocalSeeIcon className="my-3 mx-3 text-gray-200  font25" />
         </span>
-        {/* <span className="rounded-full border flex-shrink-0">
-          <ArchitectureIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2  flex-shrink-0">
+          <ArchitectureIcon className="my-3 mx-3 text-gray-200  font25" />
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <SportsEsportsIcon className="text-2xl  my-3 mx-3 font25" />
-        </span> */}
-        {/* <span className="rounded-full border flex-shrink-0">
-          <InsertEmoticonIcon className="text-2xl  my-3 mx-3 font25" />
+        <span className="rounded-full border-2  flex-shrink-0">
+          <SportsEsportsIcon className="my-3 mx-3 text-gray-200  font25" />
         </span>
-        <span className="rounded-full border flex-shrink-0">
-          <ColorLensIcon className="text-2xl  my-3 mx-3 font25" />
-        </span> */}
-      </div>
-
-      <div className="grid mb-10 grid-cols-2 mt-0 md:mt-10 gap-[5px] p-[2px]">
-        {loadingVideo
-          ? [...Array(12)].map((_, index) => (
-              <div key={index} className="col-span-1">
-                <VideoItemSkeleton justPic />
-              </div>
-            ))
-          : videoGroupsWithLikes.map((group, index) => {
-              const { parent, child } = group;
-              const fixImg1 = StringHelpers.getProfile(parent);
-              const fixImg2 = child ? StringHelpers.getProfile(child) : "";
-              return (
-                <div
-                  key={index}
-                  onClick={() => handleShowMatch({ group, index })}
-                  className={`flex-1 flex flex-col ${"col-span-1 row-span-1"}`}
-                >
-                  <div className="flex-1">
-                    <span className="relative  block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-                      <img
-                        src={fixImg1}
-                        alt={parent?.alt || "Parent Image"}
-                        className={`w-full rounded-tr-lg  min-h-44 max-h-44 object-cover `}
-                      />
-                    </span>
-                  </div>
-                  {child && (
-                    <div className="flex-1 bg-white">
-                      <div className="flex-1">
-                        <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-                          <span className="text-white absolute m-1 bottom-0 border-[1px] rounded-full p-1 border-white">
-                            <AudiotrackIcon className="font20" />
-                          </span>
-                          <img
-                            src={fixImg2}
-                            alt={child?.alt || "Profile image"}
-                            className={`w-full rounded-bl-xl min-h-44 max-h-44 object-cover`}
-                          />
-                        </figure>
-                      </div>
-                    </div>
-                  )}
+        <span className="rounded-full border-2  flex-shrink-0">
+          <InsertEmoticonIcon className="my-3 mx-3 text-gray-200  font25" />
+        </span>
+        <span className="rounded-full border-2  flex-shrink-0">
+          <ColorLensIcon className="my-3 mx-3 text-gray-200  font25" />
+        </span>
+      </div> */}
+      <div className="mt-2">
+        <div className="grid grid-cols-2 mt-0 md:mt-10 gap-[5px] p-[2px]">
+          {loadingVideo
+            ? [...Array(12)].map((_, index) => (
+                <div key={index} className="col-span-1">
+                  <VideoItemSkeleton justPic />
                 </div>
-              );
-            })}
-      </div>
-      <div
-        ref={loadingRef}
-        className="bg-white w-full h-24 flex justify-center items-center"
-      >
-        {isLoading && (
-          <div className="mb-20 loader-userFinding w-12 h-12"></div>
-        )}
+              ))
+            : videoGroupsWithLikes.map((group, index) => {
+                const { parent, child } = group;
+                const fixImg1 = StringHelpers.getProfile(parent);
+                const fixImg2 = child ? StringHelpers.getProfile(child) : "";
+                return (
+                  <div
+                    key={index}
+                    onClick={() => handleShowMatch({ group, index })}
+                    className={`flex-1 flex flex-col ${"col-span-1 row-span-1"}`}
+                  >
+                    <div className="flex-1">
+                      <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                        <img
+                          src={fixImg1}
+                          alt={parent?.alt || "Parent Image"}
+                          className={`w-full rounded-tr-lg  min-h-44 max-h-44 object-cover `}
+                        />
+                      </span>
+                    </div>
+                    {child && (
+                      <div className="flex-1 bg-white">
+                        <div className="flex-1">
+                          <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+                            <span className="text-white absolute m-1 bottom-0 border-2 rounded-full p-1 border-white">
+                              <AudiotrackIcon className="font20" />
+                            </span>
+                            <img
+                              src={fixImg2}
+                              alt={child?.alt || "Profile image"}
+                              className={`w-full rounded-bl-xl min-h-44 max-h-44 object-cover`}
+                            />
+                          </figure>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+        </div>
+        <div
+          ref={loadingRef}
+          className="bg-white w-full h-24 flex justify-center items-center"
+        >
+          {isLoading && (
+            <div className="mb-20 loader-userFinding w-12 h-12"></div>
+          )}
+        </div>
       </div>
     </section>
   );

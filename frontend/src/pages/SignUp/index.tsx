@@ -259,8 +259,6 @@ const SignUpForm: FC = () => {
               </p>
             )}
           </div>
-
-          {/* Submit Button */}
           <Button
             type="submit"
             loading={isLoading}
@@ -268,7 +266,6 @@ const SignUpForm: FC = () => {
             label="Sign Up"
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           />
-
           <div className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link

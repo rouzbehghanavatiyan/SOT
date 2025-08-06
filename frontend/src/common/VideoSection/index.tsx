@@ -9,7 +9,11 @@ import Follows from "../../components/Fallows";
 import Dropdown from "../../components/Dropdown";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
-import { RsetAllLoginMatch, RsetTornoment } from "../Slices/main";
+import {
+  RsetAllLoginMatch,
+  RsetTornoment,
+  RsetUserLogin,
+} from "../Slices/main";
 import {
   addFollower,
   addLike,
@@ -18,6 +22,7 @@ import {
 } from "../../services/dotNet";
 import Comments from "../Comments";
 import asyncWrapper from "../AsyncWrapper";
+import { useNavigate } from "react-router-dom";
 
 type VideoSectionProps = {
   video?: any;
@@ -57,6 +62,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   countLiked,
 }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const main = useAppSelector((state) => state?.main);
   const [commentUserInfo, setCommentUserInfo] = useState<any>({});
   const [showComments, setShowComments] = useState(false);
@@ -86,16 +92,13 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const isLiked = likeInfo.isLiked;
   const userId =
     positionVideo === 0 ? video?.userInserted?.id : video?.userMatched?.id;
-  const checkMyVideo =
-    userInfo?.id !== Number(sessionStorage.getItem("userId"));
-
+  const checkMyVideo = userInfo?.id !== main?.userLogin?.user?.id;
   const allLoginMatch: any = useAppSelector(
     (state) => state.main.allLoginMatch
   );
   const videoFromRedux = allLoginMatch.find((v: any) => {
     return v?.follows?.[userId] === video?.follows?.[userId];
   });
-
   const followInfo = videoFromRedux?.follows?.[userId] || { isFollowed: false };
   const isFollowed = followInfo?.isFollowed;
 
@@ -153,17 +156,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     }
   };
 
-  // const handleShowCMT = (data: any) => {
-  //   setCommentUserInfo(data);
-  //   if (showComments) {
-  //     setClosingComments(true);
-  //     setTimeout(() => {
-  //       setClosingComments(false);
-  //     }, 150);
-  //   } else {
-  //     setShowComments(true);
-  //   }
-  // };
   const handleLikeClick = asyncWrapper(async (video: any, position: number) => {
     const movieId =
       position === 0
@@ -175,10 +167,9 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       movieId: movieId,
     };
     const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
-
     try {
       dispatch(
-        RsetTornoment((prevVideos: any) => {
+        RsetAllLoginMatch((prevVideos: any) => {
           return prevVideos.map((v: any) =>
             v.id === video.id
               ? {
@@ -186,7 +177,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                   likes: {
                     ...v.likes,
                     [movieId]: {
-                      isLiked: !currentLikeStatus, // فقط وضعیت لایک برای movieId مشخص تغییر کند
+                      isLiked: !currentLikeStatus,
                       count: currentLikeStatus
                         ? v.likes?.[movieId]?.count - 1
                         : v.likes?.[movieId]?.count + 1,
@@ -206,9 +197,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       }
     } catch (error) {
       console.error("Error in like operation:", error);
-      // بازگرداندن وضعیت به حالت اولیه در صورت خطا
       dispatch(
-        RsetTornoment((prevVideos: any) =>
+        RsetAllLoginMatch((prevVideos: any) =>
           prevVideos.map((v: any) =>
             v.id === video.id
               ? {
@@ -230,14 +220,14 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     }
   });
 
-  console.log(endTime);
-
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
       <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
         <div className="grid grid-cols-9 items-center w-full">
           <div className="flex col-span-5 justify-start">
             <ImageRank
+              userInfo={video}
+              positionVideo={positionVideo}
               userNameStyle="text-gray-150"
               userName={userInfo?.userName}
               imgSize={50}
@@ -246,7 +236,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             />
           </div>
           <div className="flex col-span-3 justify-center">
-            {endTime && checkMyVideo && (
+            {checkMyVideo && (
               <Follows
                 bgColor=""
                 title={isFollowed ? "Unfollow" : "Follow"}
@@ -255,7 +245,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             )}
           </div>
           <div className="flex col-span-1 justify-end ">
-            {!endTime && checkMyVideo && (
+            {checkMyVideo ? (
               <Dropdown
                 isOpenOptions={openDropdowns[positionVideo]}
                 setIsOpenOptions={(isOpen) => {
@@ -276,6 +266,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 position="right"
                 className="ml-4"
               />
+            ) : (
+              <div> </div>
             )}
           </div>
         </div>
@@ -291,15 +283,13 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             url={videoUrl}
           />
           <div className="absolute w-full bottom-5 z-10">
-            <div className="grid grid-cols-3 items-end justify-between mx-2">
-              {!endTime && (
-                <div className="col-span-1">
-                  <ChatBubbleOutlineIcon
-                    onClick={() => handleToggleComments(video)}
-                    className="font25  text-white"
-                  />
-                </div>
-              )}
+            <div className="flex mb-4 justify-between mx-2">
+              <div className="col-span-1  flex items-end justify-start">
+                <ChatBubbleOutlineIcon
+                  onClick={() => handleToggleComments(video)}
+                  className="font25  text-white"
+                />
+              </div>
               {endTime ? null : result === "Win" ? (
                 <div className="text-green col-span-1 flex justify-center">
                   <span className="font15 border-green px-2 rounded-lg border font-bold">
@@ -318,34 +308,32 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                     Draw
                   </span>
                 </div>
-              ) : (
-                <div className="col-span-1 flex justify-center">
-                  <span className="font15 px-2 rounded-lg border font-bold"></span>
-                </div>
-              )}
+              ) : null}
               <div className="col-span-1 flex justify-end">
                 {showLiked && (
                   <>
                     {isLiked ? (
                       <ThumbUpIcon
-                        className="text-white font35 unlike_animation cursor-pointer"
+                        className="text-white font35  unlike_animation cursor-pointer"
                         onClick={() => handleLikeClick(video, positionVideo)}
                       />
                     ) : (
                       <ThumbUpOffAltIcon
-                        className="text-white font35 cursor-pointer"
+                        className="text-white font35  cursor-pointer"
                         onClick={() => handleLikeClick(video, positionVideo)}
                       />
                     )}
                   </>
                 )}
-                {!endTime && countLiked !== undefined && (
+                {!endTime && countLiked !== undefined ? (
                   <div className="text-gray-200 flex items-end justify-end gap-2">
                     <span className="font18 text-sm">{countLiked}</span>
                     <span className=" pb-1">
                       <ThumbUpIcon className=" font25 unlike_animation cursor-pointer" />
                     </span>
                   </div>
+                ) : (
+                  <div> </div>
                 )}
               </div>
             </div>

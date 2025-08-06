@@ -8,9 +8,11 @@ export default defineConfig({
     assetsDir: "assets",
   },
   define: {
+    module: {},
     "process.env": process.env,
   },
   server: {
+ 
     headers: {
       "Service-Worker-Allowed": "/",
     },

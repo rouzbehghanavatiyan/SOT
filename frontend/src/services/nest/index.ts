@@ -14,3 +14,18 @@ export const allUserMessagese = async (userIdLogin: number) => {
   const url = `${baseURL}/chat/allUserMessagese?userIdLogin=${userIdLogin}`;
   return await axios.get(url);
 };
+
+export const allStore = async () => {
+  const url = `${baseURL}/api/store/allStore`;
+  return await axios.get(url);
+};
+
+export const createPayment = async (postData: any) => {
+  const url = `${baseURL}/api/store/createPayment`;
+  return await axios.post(url, postData);
+};
+
+export const confirmPayment = async (paymentId: number) => {
+  const url = `${baseURL}/api/store/confirmPayment/${paymentId}`;
+  return await axios.patch(url);
+};

@@ -22,6 +22,7 @@ import PrivateChat from "../pages/ChatRoom/PrivateChat";
 import Followers from "../pages/Followers";
 import Notification from "../pages/Notification";
 import Following from "../pages/Following";
+import Pay from "../pages/Pay";
 
 const PublicRoutes = () => {
   return (
@@ -44,12 +45,13 @@ const PublicRoutes = () => {
         <Route path="/store" element={<Store />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/messages" element={<ChatRoom />} />
         <Route path="/privateMessage" element={<PrivateChat />} />
         <Route path="/followers" element={<Followers />} />
         <Route path="/following" element={<Following />} />
-
+        <Route path="/crypto-pay" element={<Pay />} />
         {/* <Route path="/messages" element={<Setting />} /> */}
       </Routes>
     </Layout>

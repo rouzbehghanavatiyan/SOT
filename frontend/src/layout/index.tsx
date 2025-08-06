@@ -20,22 +20,30 @@ import {
 } from "../services/dotNet";
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useServiceWorker } from "../hooks/useServiceWorker";
 import SotLogo from "../assets/img/logocircle.png";
 import { Button } from "../components/Button";
 import CloseIcon from "@mui/icons-material/Close";
-
+import { jwtDecode } from "jwt-decode";
 type PropsType = any;
 
 const Sidebar: React.FC<PropsType> = ({ children }) => {
   const dispatch = useAppDispatch();
   const locationUrl = useLocation();
+  const token: any = sessionStorage.getItem("token");
   const [open, setOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState<boolean>(false);
   const main = useAppSelector((state) => state?.main);
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
+  const userIdWhantToShow = locationUrl?.state?.userInfo?.id;
+  console.log(userIdWhantToShow);
+
+  const userData = jwtDecode(token);
+  let Vals = Object.values(userData);
+  const userId = Vals?.[1];
+  const user = { id: Number(userId) };
 
   const handleGetCategory = asyncWrapper(async () => {
     const res = await categoryList();
@@ -49,13 +57,13 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     dispatch(RsetSocketConfig(socket));
   }, [dispatch, socket]);
 
-  const handleProfileAttachment = async (userId: number) => {
+  const handleProfileAttachment = async () => {
     try {
-      const resImageProfile = await profileAttachment(userId);
+      const resImageProfile = await profileAttachment(
+        userIdWhantToShow || user?.id
+      );
       const { status, data } = resImageProfile?.data;
-      console.log(data);
       if (status === 0) {
-        console.log(data);
         return dispatch(RsetUserLogin(data));
       }
     } catch (error) {
@@ -69,14 +77,15 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   const handleAllFolling = async () => {
     try {
-      const res = await followingList(main?.userLogin?.user?.id);
+      const res = await followingList(
+        userIdWhantToShow || main?.userLogin?.user?.id
+      );
       const { status, data } = res?.data;
 
       if (status === 0) {
         const getMapFollowingId = data?.map(
           (item: any) => item?.attachment?.attachmentId
         );
-
         dispatch(
           RsetAllFollingList({
             getMapFollowingId: getMapFollowingId,
@@ -90,14 +99,12 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const user = { id: Number(sessionStorage.getItem("userId")) };
     dispatch(RsetUserLogin({ user: user }));
-    if (token && user?.id) {
-      handleProfileAttachment(user?.id);
+    if (token) {
+      handleProfileAttachment();
       handleGetCategory();
     }
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (!main?.userLogin?.user?.id) return;
@@ -108,7 +115,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       socket.on("all_user_online", handleGiveUsersOnline);
     };
     socket.on("connect", handleConnect);
-
     if (Notification.permission === "default") {
       setShowPrompt(true);
     }

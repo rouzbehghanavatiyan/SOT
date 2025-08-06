@@ -1,12 +1,6 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Draggable from "react-draggable";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 type DraggableHighlightProps = {
   videoSrc: string;
@@ -16,72 +10,83 @@ type DraggableHighlightProps = {
     width: number;
     height: number;
   }) => void;
+  onCropVideo: (cropVideoFunction: () => Promise<Blob>) => void;
 };
 
-export type DraggableHighlightHandle = {
-  cropVideo: () => Promise<Blob>;
-};
-
-const DraggableHighlight = forwardRef<
-  DraggableHighlightHandle,
-  DraggableHighlightProps
->(({ videoSrc, onCropChange }, ref) => {
+const DraggableHighlight: React.FC<DraggableHighlightProps> = ({
+  videoSrc,
+  onCropChange,
+  onCropVideo,
+}) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [highlightSize] = useState({ width: 200, height: 150 });
   const videoRef = useRef<HTMLVideoElement>(null);
   const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
-  const ffmpegInstance = useRef(new FFmpeg());
+  const ffmpeg = createFFmpeg({
+    log: true,
+  corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js',
+  });
 
-  // بارگذاری FFmpeg
   useEffect(() => {
     const loadFfmpeg = async () => {
-      const ffmpeg = ffmpegInstance.current;
-      if (!ffmpeg.loaded) {
-        await ffmpeg.load({
-          coreURL: "https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js",
-        });
-        setFfmpegLoaded(true);
+      try {
+        if (!ffmpeg.isLoaded()) {
+          console.log("Loading FFmpeg...");
+          await ffmpeg.load();
+          setFfmpegLoaded(true);
+          console.log("FFmpeg loaded successfully");
+        }
+      } catch (error) {
+        console.error("Error loading FFmpeg:", error);
       }
     };
     loadFfmpeg();
   }, []);
 
   const cropVideo = async (): Promise<Blob> => {
-    if (!ffmpegLoaded || !ffmpegInstance.current) {
+    if (!ffmpegLoaded) {
       throw new Error("FFmpeg not loaded yet");
     }
-    const ffmpeg = ffmpegInstance.current;
+    if (!videoRef.current) {
+      throw new Error("Video reference not available");
+    }
+    const video = videoRef.current;
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+    const relativeX = (position.x / video.clientWidth) * videoWidth;
+    const relativeY = (position.y / video.clientHeight) * videoHeight;
+    const relativeWidth =
+      (highlightSize.width / video.clientWidth) * videoWidth;
+    const relativeHeight =
+      (highlightSize.height / video.clientHeight) * videoHeight;
 
-    // دریافت ویدیو به صورت ArrayBuffer
     const response = await fetch(videoSrc);
     const videoBuffer = await response.arrayBuffer();
-
-    // نوشتن فایل ویدیو در سیستم فایل مجازی FFmpeg
-    await ffmpeg.writeFile("input.mp4", new Uint8Array(videoBuffer));
-
-    // اجرای دستور برش ویدیو
-    const cropCommand = [
+    await ffmpeg.FS("writeFile", "input.mp4", new Uint8Array(videoBuffer));
+    await ffmpeg.run(
       "-i",
       "input.mp4",
       "-vf",
-      `crop=${highlightSize.width}:${highlightSize.height}:${position.x}:${position.y}`,
+      `crop=${relativeWidth}:${relativeHeight}:${relativeX}:${relativeY}`,
       "-c:v",
       "libx264",
       "-c:a",
-      "aac",
-      "output.mp4",
-    ];
-    await ffmpeg.exec(cropCommand);
-    const output: any = await ffmpeg.readFile("output.mp4");
-    return new Blob([output], { type: "video/mp4" });
+      "copy",
+      "output.mp4"
+    );
+
+    // Read and return the result
+    const data: any = ffmpeg.FS("readFile", "output.mp4");
+    return new Blob([data.buffer], { type: "video/mp4" });
   };
 
-  // در معرض گذاشتن تابع cropVideo برای کامپوننت والد
-  useImperativeHandle(ref, () => ({
-    cropVideo,
-  }));
+  useEffect(() => {
+    if (ffmpegLoaded) {
+      onCropVideo(cropVideo);
+    }
+  }, [cropVideo, onCropVideo, ffmpegLoaded]);
 
-  const handleDrag = (e: any, data: any) => {
+  const handleDrag = (e: any, data: { x: number; y: number }) => {
     setPosition({ x: data.x, y: data.y });
     onCropChange({
       x: data.x,
@@ -90,43 +95,54 @@ const DraggableHighlight = forwardRef<
       height: highlightSize.height,
     });
   };
+  console.log(ffmpegLoaded);
 
   return (
     <div className="video-wrapper" style={{ position: "relative" }}>
-      <video
-        ref={videoRef}
-        src={videoSrc}
-        controls
-        className="video-full"
-        style={{ width: "100%" }}
-      />
-      <div
-        className="overlay"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-        }}
-      >
-        <Draggable bounds="parent" onDrag={handleDrag}>
+      {!ffmpegLoaded && (
+        <div style={{ textAlign: "center", margin: "20px" }}>
+          <p>Loading FFmpeg... Please wait.</p>
+        </div>
+      )}
+      {ffmpegLoaded && (
+        <>
+          <video
+            ref={videoRef}
+            src={videoSrc}
+            controls
+            className="video-full"
+            style={{ width: "100%" }}
+          />
           <div
-            className="highlight-area"
+            className="overlay"
             style={{
-              width: highlightSize.width,
-              height: highlightSize.height,
-              border: "2px dashed red",
               position: "absolute",
-              pointerEvents: "auto",
-              cursor: "move",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
             }}
-          ></div>
-        </Draggable>
-      </div>
+          >
+            <Draggable bounds="parent" onDrag={handleDrag}>
+              <div
+                className="highlight-area"
+                style={{
+                  width: highlightSize.width,
+                  height: highlightSize.height,
+                  border: "2px dashed red",
+                  position: "absolute",
+                  pointerEvents: "auto",
+                  cursor: "move",
+                  backgroundColor: "rgba(255, 0, 0, 0.2)",
+                }}
+              ></div>
+            </Draggable>
+          </div>
+        </>
+      )}
     </div>
   );
-});
+};
 
 export default DraggableHighlight;

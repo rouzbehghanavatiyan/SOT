@@ -8,11 +8,12 @@ import { login } from "../../services/dotNet";
 import { RsetUserLogin } from "../../common/Slices/main";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { jwtDecode } from "jwt-decode";
+
 interface LoginFormState {
   username: string;
   password: string;
 }
-
 interface FormErrors {
   username?: string;
   password?: string;
@@ -78,20 +79,12 @@ const LogInForm: FC = () => {
       });
 
       const { status, data } = response.data;
-
       if (status === 0) {
-        const tokenPayload = JSON.parse(atob(data.token.split(".")[1]));
-        const userId =
-          tokenPayload[
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-          ];
-
-        console.log(userId);
-
+        const userData = jwtDecode(data.token);
+        let Vals = Object.values(userData);
+        const userId = Vals?.[1];
         sessionStorage.setItem("token", data.token);
-        sessionStorage.setItem("userId", userId);
         dispatch(RsetUserLogin({ token: data.token, userId }));
-
         setLoginAttempts(0);
         navigate("/home");
       } else {

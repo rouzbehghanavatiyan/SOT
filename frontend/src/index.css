@@ -1051,3 +1051,26 @@ body.comments-open {
   z-index: 1000;
   pointer-events: none;
 }
+
+.scrollable-container {
+  transition: transform 0.3s ease-in-out;
+  /* اضافه کردن انیمیشن برای مخفی و نمایش آیکون‌ها */
+  overflow-x: auto;
+  /* اسکرول افقی فقط برای این بخش */
+  white-space: nowrap;
+  /* جلوگیری از شکست خطوط داخلی */
+  scrollbar-width: thin;
+  /* زیباتر کردن اسکرول‌بار در فایرفاکس */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* مخفی کردن اسکرول‌بار در مرورگرهای Webkit */
+}
+
+.content {
+  height: calc(100vh - 64px);
+  /* محتوای اصلی صفحه بدون در نظر گرفتن بخش ثابت بالایی */
+  overflow-y: auto;
+  /* اسکرول عمودی فقط برای این بخش */
+}

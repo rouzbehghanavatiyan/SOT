@@ -13,6 +13,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import Loading from "../../components/Loading";
+import VideoItemSkeleton from "../../components/VideoLoading";
 
 const Home: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
@@ -21,7 +22,6 @@ const Home: React.FC = () => {
   const videos: any = main?.allLoginMatch;
 
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
   const userIdLogin = main?.userLogin?.user?.id;
@@ -101,27 +101,30 @@ const Home: React.FC = () => {
     }
   }, [userIdLogin]);
 
-  console.log(main?.showLoading?.value);
-
   return (
     <>
-      {main?.showLoading?.value ? (
-        <Loading isLoading={main?.showLoading?.value} />
-      ) : (
-        <div className="relative w-full bg-black md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]">
-          {videos?.length > 0 ? (
-            <Swiper
-              direction={"vertical"}
-              slidesPerView={1}
-              mousewheel={{
-                forceToAxis: true,
-                releaseOnEdges: true,
-              }}
-              modules={[Mousewheel]}
-              className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
-              onSlideChange={handleSlideChange}
-            >
-              {videos?.map((video: any, index: number) => {
+      <div className="relative w-full bg-black md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]">
+        <Swiper
+          direction={"vertical"}
+          slidesPerView={1}
+          mousewheel={{
+            forceToAxis: true,
+            releaseOnEdges: true,
+          }}
+          modules={[Mousewheel]}
+          className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
+          onSlideChange={handleSlideChange}
+        >
+          {main?.showLoading?.value
+            ? [...Array(12)].map((_, index) => (
+                <SwiperSlide
+                  className="h-full w-full bg-black flex flex-col"
+                  key={index}
+                >
+                  <VideoItemSkeleton itsHome />
+                </SwiperSlide>
+              ))
+            : videos?.map((video: any, index: number) => {
                 const resultInserted =
                   video?.likeInserted > video?.likeMatched
                     ? "Win"
@@ -193,19 +196,18 @@ const Home: React.FC = () => {
                   </SwiperSlide>
                 );
               })}
-            </Swiper>
-          ) : (
-            <div className="flex flex-col bg-white items-center justify-center h-full p-4">
-              <div className="font20   text-white bg-primary font-bold rounded-lg p-4 mb-2">
-                No match available
-              </div>
-              <p className="text-gray-400 text-primary mt-10 text-center">
-                Dear user, you don't have any following to view at this time.
-              </p>
+        </Swiper>
+        {/* ) : (
+          <div className="flex flex-col bg-white items-center justify-center h-full p-4">
+            <div className="font20   text-white bg-primary font-bold rounded-lg p-4 mb-2">
+              No match available
             </div>
-          )}
-        </div>
-      )}
+            <p className="text-gray-400 text-primary mt-10 text-center">
+              Dear user, you don't have any following to view at this time.
+            </p>
+          </div>
+        )} */}
+      </div>
     </>
   );
 };

@@ -16,7 +16,7 @@ import {
   RsetTornoment,
 } from "../../../common/Slices/main";
 import StringHelpers from "../../../utils/helpers/StringHelper";
-import Loading from "../../../components/Loading";
+import VideoItemSkeleton from "../../../components/VideoLoading";
 
 const ShowWatch: React.FC = () => {
   const navigate = useNavigate();
@@ -31,62 +31,6 @@ const ShowWatch: React.FC = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
-
-  const handleFallowClick = asyncWrapper(
-    async (video: any, position: number) => {
-      const userId =
-        position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
-      const postData = {
-        userId: main?.userLogin?.user?.id,
-        followerId: userId,
-      };
-      const currentFollowStatus = video?.follows[userId]?.isFollowed || false;
-      const shouldRemoveFollow = currentFollowStatus;
-      try {
-        dispatch(
-          RsetTornoment((prevVideos: any) =>
-            prevVideos.map((v: any) =>
-              v.id === video.id
-                ? {
-                    ...v,
-                    follows: {
-                      ...v.follows,
-                      [userId]: {
-                        isFollowed: !currentFollowStatus,
-                      },
-                    },
-                  }
-                : v
-            )
-          )
-        );
-        if (shouldRemoveFollow) {
-          await removeFollower(postData);
-        } else {
-          await addFollower(postData);
-        }
-      } catch (error) {
-        console.error("Error in follow operation:", error);
-        dispatch(
-          RsetTornoment((prevVideos: any) =>
-            prevVideos.map((v: any) =>
-              v.id === video.id
-                ? {
-                    ...v,
-                    follows: {
-                      ...v.follows,
-                      [userId]: {
-                        isFollowed: currentFollowStatus,
-                      },
-                    },
-                  }
-                : v
-            )
-          )
-        );
-      }
-    }
-  );
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
@@ -167,31 +111,34 @@ const ShowWatch: React.FC = () => {
     }
   }, [allMatch]);
 
-  console.log(main?.showLoading?.value);
-
   return (
     <>
-      {main?.showLoading?.value ? (
-        <Loading isLoading={main?.showLoading?.value} />
-      ) : (
-        <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
-          <Swiper
-            direction={"vertical"}
-            slidesPerView={1}
-            mousewheel={true}
-            onSlideChange={handleSlideChange}
-            modules={[Mousewheel]}
-            onInit={() => {
-              if (allMatch?.length > 0) {
-                setCurrentlyPlayingId(
-                  allMatch?.[0]?.attachmentInserted?.attachmentId
-                );
-              }
-            }}
-            className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-50px)] "
-          >
-            {videos?.length !== 0 &&
-              videos?.map((video: any, index: number) => {
+      <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
+        <Swiper
+          direction={"vertical"}
+          slidesPerView={1}
+          mousewheel={true}
+          onSlideChange={handleSlideChange}
+          modules={[Mousewheel]}
+          onInit={() => {
+            if (allMatch?.length > 0) {
+              setCurrentlyPlayingId(
+                allMatch?.[0]?.attachmentInserted?.attachmentId
+              );
+            }
+          }}
+          className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-50px)] "
+        >
+          {main?.showLoading?.value
+            ? [...Array(12)].map((_, index) => (
+                <SwiperSlide
+                  className="h-full w-full bg-black flex flex-col"
+                  key={index}
+                >
+                  <VideoItemSkeleton itsShowWatch />
+                </SwiperSlide>
+              ))
+            : videos?.map((video: any, index: number) => {
                 return (
                   <SwiperSlide
                     className="h-full w-full bg-black flex flex-col"
@@ -266,10 +213,8 @@ const ShowWatch: React.FC = () => {
                   </SwiperSlide>
                 );
               })}
-            {/* {showComments && <Comments handleShowCMT={handleShowComments} />} */}
-          </Swiper>
-        </div>
-      )}
+        </Swiper>
+      </div>
     </>
   );
 };

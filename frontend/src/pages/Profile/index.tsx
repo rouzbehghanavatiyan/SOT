@@ -22,7 +22,7 @@ import EditImage from "../../components/EditImage";
 import { RsetGetImageProfile } from "../../common/Slices/main";
 import ImageRank from "../../components/ImageRank";
 import EditProfile from "./EditProfile";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ProgressBar from "../../components/ProgressBar";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import Loading from "../../components/Loading";
@@ -31,6 +31,7 @@ const Profile: React.FC = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const main = useAppSelector((state) => state?.main);
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const socket = main.socketConfig;
   const userId = main?.userLogin?.user?.id;
   const [match, setMatch] = useState<any>([]);
@@ -40,18 +41,20 @@ const Profile: React.FC = () => {
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [editingImage, setEditingImage] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [selectedImage, setSelectedImage] = useState("");
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
-  const findImg = StringHelpers.getProfile(main?.userLogin?.profile);
-  console.log(main?.userLogin?.user?.id);
+  const userIdWhantToShow = location?.state?.userData;
+  const findImg = !!userIdWhantToShow
+    ? StringHelpers.getProfile(userIdWhantToShow?.profile)
+    : StringHelpers.getProfile(main?.userLogin?.profile);
+
+  console.log(userIdWhantToShow);
 
   const uploadProfileImage = useCallback(
     async (croppedImage: string) => {
       setProfileImage(croppedImage);
       setEditingImage(false);
-
       try {
         const base64Data = croppedImage.split(",")[1];
         const byteCharacters = atob(base64Data);
@@ -72,7 +75,6 @@ const Profile: React.FC = () => {
         formData.append("attachmentId", userId);
         formData.append("attachmentType", "pf");
         formData.append("attachmentName", "profile");
-
         const resAttachment = await addAttachment(formData);
         const { status: attachmentStatus, data: attachmentData } =
           resAttachment?.data;
@@ -124,7 +126,9 @@ const Profile: React.FC = () => {
   const handleUserVideo = async () => {
     try {
       setIsLoading(true);
-      const res = await userAttachmentList(main?.userLogin?.user?.id);
+      const res = await userAttachmentList(
+        userIdWhantToShow?.user?.id || main?.userLogin?.user?.id
+      );
       setIsLoading(false);
       const { data, status } = res?.data;
       if (status === 0) {
@@ -150,19 +154,6 @@ const Profile: React.FC = () => {
       [data.movieId]: (prev[data.movieId] || 0) - 1,
     }));
   };
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("add_liked_response", handleGetAddLike);
-      socket.on("remove_liked_response", handleGetRemoveLike);
-    }
-    return () => {
-      if (socket) {
-        socket.off("add_liked_response", handleGetAddLike);
-        socket.off("remove_liked_response", handleGetRemoveLike);
-      }
-    };
-  }, [socket]);
 
   const calculateInitialLikes = (data: any[]) => {
     const initialLikes: Record<string, number> = {};
@@ -215,7 +206,6 @@ const Profile: React.FC = () => {
     );
   }, [match]);
 
-  console.log(itsMatchingWithTimer);
   useEffect(() => {
     if (itsMatchingWithTimer) {
       scrollToFirstVideo();
@@ -223,6 +213,19 @@ const Profile: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [match, isLoading]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("add_liked_response", handleGetAddLike);
+      socket.on("remove_liked_response", handleGetRemoveLike);
+    }
+    return () => {
+      if (socket) {
+        socket.off("add_liked_response", handleGetAddLike);
+        socket.off("remove_liked_response", handleGetRemoveLike);
+      }
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (userId) {
@@ -262,30 +265,33 @@ const Profile: React.FC = () => {
                   </span>
                   <div className="flex flex-col gap-2 ms-2">
                     <span className="font20 font-bold">
-                      {main?.userLogin?.user?.userName}
+                      {userIdWhantToShow?.user?.userName ||
+                        main?.userLogin?.user?.userName}
                     </span>
-                    <div className="flex">
-                      <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
-                        <Link to={"/followers"}>
-                          <span className="font-bold text-gray-800">
-                            {allFollower?.length}
-                          </span>
-                          <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
-                            Followers
-                          </span>
-                        </Link>
+                    {!userIdWhantToShow && (
+                      <div className="flex">
+                        <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
+                          <Link to={"/followers"}>
+                            <span className="font-bold text-gray-800">
+                              {allFollower?.length}
+                            </span>
+                            <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+                              Followers
+                            </span>
+                          </Link>
+                        </div>
+                        <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
+                          <Link to={"/following"}>
+                            <span className="font-bold text-gray-800">
+                              {main?.allFollingList?.getMapFollowingId?.length}
+                            </span>
+                            <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+                              Following
+                            </span>
+                          </Link>
+                        </div>
                       </div>
-                      <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
-                        <Link to={"/following"}>
-                          <span className="font-bold text-gray-800">
-                            {main?.allFollingList?.getMapFollowingId?.length}
-                          </span>
-                          <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
-                            Following
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -339,13 +345,14 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
-          {isLoading && <Loading isLoading={isLoading ? true : false} />}
           <VideosProfile
+            isLoading={isLoading}
             videosProfileRef={videosProfileRef}
             match={match}
             videoLikes={videoLikes}
             setVideoLikes={setVideoLikes}
           />
+          {isLoading && <Loading isLoading={isLoading ? true : false} />}
           {showEditProfile && (
             <EditProfile
               showEditProfile={showEditProfile}

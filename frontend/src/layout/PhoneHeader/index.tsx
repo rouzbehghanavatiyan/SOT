@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import EmailIcon from "@mui/icons-material/Email";
-import { Link, useLocation } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useAppSelector } from "../../hooks/hook";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
-import Input from "../../components/Input";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const PhoneHeader = () => {
   const location = useLocation();
+  const userIdWhantToShow = location?.state?.userData;
   const socket = useAppSelector((state) => state.main.socketConfig);
   const main = useAppSelector((state) => state.main);
+  const navigate = useNavigate();
   const itsWatchRoute = location?.pathname?.toLocaleLowerCase() === "/watch";
   const itsMessageRoute =
     location?.pathname?.toLocaleLowerCase() === "/privateMessage";
@@ -21,8 +22,6 @@ const PhoneHeader = () => {
     location?.pathname?.toLocaleLowerCase() === "/profile";
   const itsNotificationRoute =
     location?.pathname?.toLocaleLowerCase() === "/notification";
-  const itsStoreRoute = location?.pathname?.toLocaleLowerCase() === "/store";
-  const [searching, setSearching] = useState("");
   const [alertMsg, setAlertMsg] = useState<any>([]);
 
   const handleGetAlert = React.useCallback(
@@ -44,37 +43,24 @@ const PhoneHeader = () => {
     };
   }, [socket, handleGetAlert]);
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <ResponsiveMaker hiddenWidth={900} visibleWidth={300}>
       {!itsShowWatchRoute && (
         <div className="fixed z-40 top-0 left-0 w-full bg-white shadow-md px-1 py-1 text-center text-white font-bold flex">
-          <div className="grid grid-cols-5 w-full items-center ">
-            {
-              // itsWatchRoute ? (
-              //   <span className="icon_size col-span-3 flex justify-start relative">
-              //     <Input
-              //       className="ms-1 bg-gray-100 rounded-lg border-none my-[7px] text-gray-900"
-              //       placeholder="Searching . . ."
-              //       value={searching}
-              //       onChange={(e: any) => setSearching(e.target.value)}
-              //     />
-              //     <SearchIcon className="text-gray-800 absolute top-2 right-1 font23" />
-              //   </span>
-              // ) :
-              // itsNotificationRoute ? (
-              //   <span className="icon_size col-span-3 flex justify-start  text-gray-800">
-              //     Notification
-              //   </span>
-              // ) : itsStoreRoute ? (
-              //   <span className="icon_size col-span-3 flex justify-start text-gray-800">
-              //     Store
-              //   </span>
-              // ) : (
-              <span className="icon_size col-span-3 flex justify-start logoFont text-dark_blue">
-                Star Of Talent
-              </span>
-              //   )
-            }
+          <div className="flex justify-between w-full items-center ">
+            {userIdWhantToShow?.user && (
+              <ArrowBackIcon
+                onClick={handleBack}
+                className="text-primary font-bold font25"
+              />
+            )}
+            <span className="icon_size col-span-3 flex justify-start logoFont text-dark_blue">
+              Star Of Talent
+            </span>
             {itsProfileRoute ? (
               <Link to="/setting" className="col-span-2">
                 <span className="flex justify-end">

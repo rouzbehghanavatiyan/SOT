@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from "react";
-import silverRank from "../../assets/img/rank5.webp";
+import silverRank from "../../assets/ranks/start_question.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useNavigate } from "react-router-dom";
+import { RsetUserLogin } from "../../common/Slices/main";
+import { useAppDispatch } from "../../hooks/hook";
 
 interface ProfileWithRankProps {
+  userInfo?: any;
   imgSrc?: string | any;
   userName?: string;
   score?: number;
   imgSize?: number;
   userNameStyle?: string;
+  positionVideo?: number;
 }
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
   imgSrc,
   userNameStyle,
+  positionVideo,
   userName,
   score = -1,
   imgSize = 40,
+  userInfo,
 }) => {
   const [rankSrc, setRankSrc] = useState<string>("");
   const rankSize = Math.floor(imgSize * 0.6);
-
-  const determineRank: void = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const determineRank: any = () => {
     if (score === 0) {
       return silverRank;
     } else if (score > 0 && score < 10) {
@@ -66,8 +74,28 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
     return name.length > 15 ? `${name.slice(0, 15)}...` : name;
   };
 
+  const handleClick = () => {
+    positionVideo === 0
+      ? userInfo?.userInserted?.id
+      : userInfo?.userMatched?.id;
+    const userData = {
+      profile:
+        positionVideo === 0
+          ? userInfo?.profileInserted
+          : userInfo?.profileMatched,
+      user:
+        positionVideo === 0 ? userInfo?.userInserted : userInfo?.userMatched,
+    };
+    navigate(`/profile`, {
+      state: {
+        userData,
+      },
+    });
+  };
+
   return (
     <div
+      onClick={handleClick}
       className="flex items-center  m-1 relative"
       style={{ height: `${imgSize}px` }}
     >
@@ -111,7 +139,6 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
             }}
           >
             <img
-              className="rounded-full  object-cover"
               src={rankSrc}
               style={{
                 width: "100%",
