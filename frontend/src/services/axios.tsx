@@ -4,17 +4,18 @@ import { store } from "../hooks/store";
 
 axios.interceptors.request.use(
   function (config: any) {
+    const token = sessionStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     if (config.url.toLowerCase().includes("/attachmentplay")) {
       config.headers["Content-Type"] = "video/mp4";
     } else if (config.url.toLowerCase().includes("/addattachment")) {
       config.headers["Content-Type"] = "multipart/form-data";
     } else {
       config.headers["Content-Type"] = "application/json";
-    }
-
-    const token = sessionStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;

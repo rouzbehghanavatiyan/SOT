@@ -1,23 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import ImageRank from "../../components/ImageRank";
-import { addComment, commentList } from "../../services/dotNet";
+import { addComment, commentList, removeComment } from "../../services/dotNet";
 import { useAppSelector } from "../../hooks/hook";
 import MessageInput from "../../pages/ChatRoom/PrivateChat/MessageInput";
 import CloseIcon from "@mui/icons-material/Close";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Modal from "../../components/Modal";
+import asyncWrapper from "../AsyncWrapper";
+import Loading from "../../components/Loading";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 const Comments: React.FC<any> = ({
   positionVideo,
   setShowComments,
-  closingComments,
   commentUserInfo,
   showComments,
 }) => {
   const main = useAppSelector((state) => state?.main);
   const [title, setTitle] = useState<string>("");
   const [allComments, setAllComments] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [showStickers, setShowStickers] = useState(false);
   const [answerInfo, setAnswerInfo] = useState<any>(null);
   const [answerData, setAnswerData] = useState<any>({});
@@ -94,6 +98,15 @@ const Comments: React.FC<any> = ({
   };
   console.log(showComments);
 
+  const handleRemoveComment = asyncWrapper(async (item: any) => {
+    console.log(item);
+    const res = await removeComment(item?.id);
+    console.log(res);
+    if (res.data.status === 0) {
+      handleGetAllList();
+    }
+  });
+
   return (
     <>
       <Modal
@@ -102,13 +115,13 @@ const Comments: React.FC<any> = ({
         padding={0}
         isOpen={showComments}
       >
-        <div className="flex flex-col justify-end h-[80vh] max-w-[600px]   bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className={`relative w-full h-full overflow-y-auto `}>
-            <div className="text-center fixed w-full z-20 border-b-[1px] mb-4 font-bold font15 bg-gray-100 p-2">
+        <div className="flex flex-col justify-end  h-[80vh] max-w-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className={`relative w-full h-full  overflow-y-auto`}>
+            <div className="font15 bg-primary w-full fixed z-20 p-2">
               <div className="grid grid-cols-5 items-center">
                 <div className="col-span-1 flex justify-start">
                   <ImageRank
-                    userNameStyle="text-black"
+                    userNameStyle="text-white"
                     imgSize={45}
                     userName={
                       positionVideo === 0
@@ -127,21 +140,22 @@ const Comments: React.FC<any> = ({
                   />
                 </div>
                 <div className="col-span-3 flex justify-center">
-                  <span>Comments</span>
+                  <span className="text-white">Reacts</span>
                 </div>
-                <div className="col-span-1 flex justify-end">
+                <div className="col-span-1 text-white flex justify-end">
                   <CloseIcon
                     onClick={() => setShowComments(false)}
-                    className="text-primary font20 cursor-pointer"
+                    className="text-white font20 cursor-pointer"
                   />
                 </div>
               </div>
             </div>
-            <div className="py-20 px-4">
+            <div className="py-20 px-2">
+              {isLoading && <Loading isLoading={isLoading} />}
               {allComments.length > 0 ? (
                 allComments.map((item: any) => (
                   <div key={item?.id}>
-                    <div className="py-1 p-2  border-b-[1px] border-gray-150">
+                    <div className="py-1 p-2">
                       <ImageRank
                         userNameStyle="text-black"
                         imgSize={35}
@@ -153,10 +167,16 @@ const Comments: React.FC<any> = ({
                         <p className="col-span-6 m-2 container_message text-gray-800">
                           {item.desc}
                         </p>
-                        <ArrowForwardIosIcon
-                          onClick={() => handleAnswerComments(item)}
-                          className="m-2 font15 cursor-pointer"
-                        />
+                        <div className="flex">
+                          <DeleteOutlineIcon
+                            onClick={() => handleRemoveComment(item)}
+                            className="m-2 font15 cursor-pointer"
+                          />
+                          <ArrowForwardIosIcon
+                            onClick={() => handleAnswerComments(item)}
+                            className="m-2 font15 cursor-pointer"
+                          />
+                        </div>
                       </div>
                     </div>
                     {answerInfo?.id === item?.id && (
@@ -182,9 +202,15 @@ const Comments: React.FC<any> = ({
                             score={reply.score}
                             imgSrc={StringHelpers.getProfile(reply.profile)}
                           />
-                          <p className="text-sm container_message text-gray-800">
-                            {reply.desc}
-                          </p>
+                          <div className="flex justify-between">
+                            <p className="text-sm container_message text-gray-800">
+                              {reply.desc}
+                            </p>
+                            <DeleteOutlineIcon
+                              onClick={() => handleRemoveComment(item)}
+                              className="m-2 font15 cursor-pointer"
+                            />
+                          </div>
                         </div>
                       ))}
                   </div>

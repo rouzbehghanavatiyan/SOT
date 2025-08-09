@@ -7,12 +7,10 @@ import { Mousewheel } from "swiper/modules";
 import VideoSection from "../../common/VideoSection";
 import { handleFollowerAttachmentList } from "../../common/Slices/main";
 import { useNavigate } from "react-router-dom";
-import ShareIcon from "@mui/icons-material/Share";
 import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
-import Loading from "../../components/Loading";
 import VideoItemSkeleton from "../../components/VideoLoading";
 
 const Home: React.FC = () => {
@@ -68,12 +66,12 @@ const Home: React.FC = () => {
             },
           }),
       },
-      {
-        label: "Share via",
-        icon: <ShareIcon className="text-gray-800 font20" />,
+      // {
+      //   label: "Share via",
+      //   icon: <ShareIcon className="text-gray-800 font20" />,
 
-        onClick: () => console.log(data),
-      },
+      //   onClick: () => console.log(data),
+      // },
       {
         label: "Report",
         icon: <ReportIcon className="text-gray-800 font20" />,
@@ -103,7 +101,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <div className="relative w-full bg-black md:h-[calc(100vh-100px)] h-[calc(100vh-92px)]">
+      <div className="relative w-full bg-black md:h-[calc(100vh-100px)] shadow-card h-[calc(100vh-92px)]">
         <Swiper
           direction={"vertical"}
           slidesPerView={1}
@@ -112,7 +110,7 @@ const Home: React.FC = () => {
             releaseOnEdges: true,
           }}
           modules={[Mousewheel]}
-          className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
+          className="mySwiper lg:mt-9 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
           onSlideChange={handleSlideChange}
         >
           {main?.showLoading?.value
@@ -197,16 +195,6 @@ const Home: React.FC = () => {
                 );
               })}
         </Swiper>
-        {/* ) : (
-          <div className="flex flex-col bg-white items-center justify-center h-full p-4">
-            <div className="font20   text-white bg-primary font-bold rounded-lg p-4 mb-2">
-              No match available
-            </div>
-            <p className="text-gray-400 text-primary mt-10 text-center">
-              Dear user, you don't have any following to view at this time.
-            </p>
-          </div>
-        )} */}
       </div>
     </>
   );

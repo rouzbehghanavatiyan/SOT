@@ -25,15 +25,15 @@ const MessageInput: React.FC<{
   onInputFocus,
 }) => (
   <div
-    className={`w-full fixed bottom-0 bg-white shadow-md border-t-[1px] border-gray-200  z-50 pb-2 px-3`}
+    className={`w-full bottom-0 bg-gray-150 shadow-card border-t-[1px] border-gray-200  z-50 px-3 `}
   >
     <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-center gap-2">
-        <div className="flex-1">
+      <div className="flex items-center  justify-center gap-2">
+        <div className="flex-1 mb-2 items-center justify-center">
           <Input
             onFocus={onInputFocus}
             ref={titleInputRef}
-            className="w-full rounded-lg border border-gray-300 font16  px-4 py-4 mt-4 mb-2 focus:outline-none"
+            className="w-full rounded-lg border  border-gray-300 font16  px-4 py-4 mt-4 mb-2 focus:outline-none bg-white"
             placeholder="Type your message..."
             value={title}
             onChange={(e: any) => setTitle(e.target.value)}
@@ -48,11 +48,11 @@ const MessageInput: React.FC<{
         <button
           type="button"
           onClick={() => setShowStickers(!showStickers)}
-          className="p-2 flex text-gray-600 hover:text-gray-800"
+          className="p-2 flex text-gray-600  items-center hover:text-gray-800"
         >
-          <MoodIcon className="col-span-1 cursor-pointer text-gray-900 font25" />
+          <MoodIcon className="col-span-1  cursor-pointer text-gray-900 font25" />
         </button>
-        <button type="submit" className="text-blue-600 hover:text-blue-800">
+        <button type="submit" className="text-blue-600 hover:text-blue">
           <SendIcon className="cursor-pointer col-span-1 text-gray-900 font25 justify-center items-center" />
         </button>
       </div>

@@ -38,8 +38,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
   const userIdWhantToShow = locationUrl?.state?.userInfo?.id;
-  console.log(userIdWhantToShow);
-
   const userData = jwtDecode(token);
   let Vals = Object.values(userData);
   const userId = Vals?.[1];
@@ -126,13 +124,13 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   return (
     <main className="relative">
-      <ResponsiveMaker visibleWidth={900}>
+      <ResponsiveMaker visibleWidth={1024}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
       <div
         className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-12"} `}
       >
-        <ResponsiveMaker visibleWidth={900}>
+        <ResponsiveMaker visibleWidth={1024}>
           <SidebarLinks open={open} />
         </ResponsiveMaker>
         <div className="flex flex-grow justify-center items-center">

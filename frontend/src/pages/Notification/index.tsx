@@ -5,6 +5,8 @@ import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import ImageRank from "../../components/ImageRank";
 import StringHelpers from "../../utils/helpers/StringHelper";
+import { Button } from "../../components/Button";
+import { useServiceWorker } from "../../hooks/useServiceWorker";
 
 interface Category {
   id: string;
@@ -14,6 +16,7 @@ interface Category {
 }
 
 const Notification: React.FC = () => {
+  const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const [categories, setCategories] = useState<Category[]>([
     {
       id: "music",
@@ -93,37 +96,11 @@ const Notification: React.FC = () => {
             </div>
           </div>
         ))}
+        {isLoading && <Loading isLoading={isLoading} />}
       </div>
-      {isLoading && <Loading isLoading={isLoading} />}
+      <Button onClick={handleAllow} label={"Test"} />
     </div>
   );
 };
 
 export default Notification;
-{
-  /* <span className="font-bold text-gray-200 px-4">All</span>
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <SportsKabaddiIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <PrecisionManufacturingIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <OutdoorGrillIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <LocalSeeIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <ArchitectureIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <SportsEsportsIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <InsertEmoticonIcon className="my-3 mx-3 text-gray-200  font25" />
-            </span>
-            <span className="rounded-full border-2  flex-shrink-0">
-              <ColorLensIcon className="my-3 mx-3 text-gray-200  font25" /> */
-}

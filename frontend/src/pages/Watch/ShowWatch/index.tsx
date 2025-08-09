@@ -3,8 +3,6 @@ import ShareIcon from "@mui/icons-material/Share";
 import ReportIcon from "@mui/icons-material/Report";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { addFollower, removeFollower } from "../../../services/dotNet";
-import asyncWrapper from "../../../common/AsyncWrapper";
 import { useLocation, useNavigate } from "react-router-dom";
 import VideoSection from "../../../common/VideoSection";
 import { Mousewheel } from "swiper/modules";
@@ -13,7 +11,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import { Video } from "../../../types/mainType";
 import {
   handleAttachmentListByInviteId,
-  RsetTornoment,
 } from "../../../common/Slices/main";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import VideoItemSkeleton from "../../../components/VideoLoading";
@@ -86,12 +83,12 @@ const ShowWatch: React.FC = () => {
             },
           }),
       },
-      {
-        label: "Share via",
-        icon: <ShareIcon className="text-gray-800 font20" />,
+      // {
+      //   label: "Share via",
+      //   icon: <ShareIcon className="text-gray-800 font20" />,
 
-        onClick: () => console.log(data),
-      },
+      //   onClick: () => console.log(data),
+      // },
       {
         label: "Report",
         icon: <ReportIcon className="text-gray-800 font20" />,
@@ -158,16 +155,7 @@ const ShowWatch: React.FC = () => {
                             video?.attachmentInserted?.attachmentId
                           )
                         }
-                        onLikeClick={() =>
-                          handleLikeClick(
-                            video,
-                            0,
-                            video?.attachmentInserted?.attachmentId
-                          )
-                        }
-                        onFollowClick={() =>
-                          handleFallowClick(video, 0, video?.userInserted?.id)
-                        }
+                       
                         toggleDropdown={() => toggleDropdown(video, 0)}
                         dropdownItems={() =>
                           dropdownItems(video, 0, video?.userInserted)
@@ -190,16 +178,6 @@ const ShowWatch: React.FC = () => {
                           handleVideoPlay(
                             video?.attachmentMatched?.attachmentId
                           )
-                        }
-                        onLikeClick={() =>
-                          handleLikeClick(
-                            video,
-                            1,
-                            video?.attachmentMatched?.attachmentId
-                          )
-                        }
-                        onFollowClick={() =>
-                          handleFallowClick(video, 1, video?.userMatched?.id)
                         }
                         toggleDropdown={() => toggleDropdown(video, 1)}
                         dropdownItems={() =>

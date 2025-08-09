@@ -143,9 +143,8 @@ const Live = () => {
     if (seconds > 0) {
       const timer = setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds - 1);
-      }, 1000); // هر 1 ثانیه به روز رسانی می‌کند
+      }, 1000); 
 
-      // تمیز کردن تایمر
       return () => clearInterval(timer);
     }
   }, [seconds]);

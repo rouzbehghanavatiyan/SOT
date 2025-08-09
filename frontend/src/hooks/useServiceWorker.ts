@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { createSubscription, saveSubscription } from "../services/dotNet";
 import { useAppSelector } from "./hook";
-const userId = Number(sessionStorage.getItem("userId"));
 type NotificationPermission = "default" | "granted" | "denied";
 
 export const useServiceWorker = () => {
@@ -98,11 +97,9 @@ export const useServiceWorker = () => {
   );
 
   const handleSaveSubscription = async (newSubscription: any) => {
-    console.log(main?.userLogin);
-
     const postData = {
       endpoint: newSubscription.endpoint,
-      userId: Number(main?.userLogin?.user?.id),
+      userId: main?.userLogin?.user?.id,
       keys: {
         p256dh: arrayBufferToBase64(newSubscription?.getKey("p256dh")),
         auth: arrayBufferToBase64(newSubscription?.getKey("auth")),
@@ -167,21 +164,21 @@ export const useServiceWorker = () => {
     }
   }, [canSendNotification]);
 
-  useEffect(() => {
-    const checkPermissions = async () => {
-      if ("serviceWorker" in navigator && "Notification" in window) {
-        const permission = Notification.permission;
-        const storedPreference = localStorage.getItem("notifications");
+  const checkPermissions = async () => {
+    if ("serviceWorker" in navigator && "Notification" in window) {
+      const permission = Notification.permission;
+      const storedPreference = localStorage.getItem("notifications");
 
-        if (permission === "default" && storedPreference !== "denied") {
-          const registration = await registerServiceWorker();
-          if (registration) {
-            setShowPrompt(true);
-          }
+      if (permission === "default" && storedPreference !== "denied") {
+        const registration = await registerServiceWorker();
+        if (registration) {
+          setShowPrompt(true);
         }
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     checkPermissions();
   }, [registerServiceWorker]);
 

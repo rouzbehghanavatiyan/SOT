@@ -18,8 +18,6 @@ function App() {
           userVisibleOnly: true,
           applicationServerKey: publicKey, // کلید عمومی VAPID خود را اینجا قرار دهید
         });
-
-        // ارسال subscription به سرور
         console.log("Push subscription:", subscription);
       }
     } catch (error) {

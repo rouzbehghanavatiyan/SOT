@@ -326,7 +326,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                   </>
                 )}
                 {!endTime && countLiked !== undefined ? (
-                  <div className="text-gray-200 flex items-end justify-end gap-2">
+                  <div className="text-gray-200  flex items-end justify-end gap-2">
                     <span className="font18 text-sm">{countLiked}</span>
                     <span className=" pb-1">
                       <ThumbUpIcon className=" font25 unlike_animation cursor-pointer" />

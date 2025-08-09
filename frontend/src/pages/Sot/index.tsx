@@ -8,7 +8,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useLocation, useNavigate } from "react-router-dom";
 import MainTitle from "../../components/MainTitle";
 
-const TalentMode = () => {
+const Sot: React.FC = () => {
   const iconClass = "text-2xl mx-3 font25";
   const main = useAppSelector((state) => state?.main);
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const TalentMode = () => {
     robot: <SmartToyIcon className={iconClass} />,
     solo: <PersonIcon className={iconClass} />,
   };
-
+  
   const handleAcceptCategory = (data: any) => {
     const newPath = `${location.pathname}/${data?.name}`;
     navigate(newPath, { state: { category: data } });
@@ -32,15 +32,15 @@ const TalentMode = () => {
   }));
 
   return (
-    <div className="mt-6">
+    <>
       <MainTitle title="Talent" />
       <SoftLink
         iconMap={iconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}
       />
-    </div>
+    </>
   );
 };
 
-export default TalentMode;
+export default Sot;

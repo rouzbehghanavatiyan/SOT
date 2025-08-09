@@ -23,11 +23,6 @@ const ChatRoom: React.FC = () => {
     {}
   );
 
-  const checkMessageReadStatus = useCallback((senderId: number) => {
-    console.log(senderId);
-    return localStorage.getItem(`message_read_${senderId}`) !== "true";
-  }, []);
-
   const handleRedirect = (data: any) => {
     console.log(data);
     localStorage.setItem(`message_read_${data.sender}`, "true");
@@ -101,7 +96,6 @@ const ChatRoom: React.FC = () => {
       {userSender.length > 0 ? (
         userSender?.map((user: any) => {
           const fixImage = StringHelpers.getProfile(user);
-          console.log(unreadMessages[user.sender]);
           return (
             <div
               onClick={() => handleRedirect(user)}

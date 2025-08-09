@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../../../../components/Button";
 import ImageRank from "../../../../components/ImageRank";
 
-import asyncWrapper from "../../../AsyncWrapper";
 import { useAppSelector } from "../../../../hooks/hook";
 import RequestModal from "./RequestModal";
 import StringHelpers from "../../../../utils/helpers/StringHelper";
+import asyncWrapper from "../../../../common/AsyncWrapper";
 const userIdFromSStorage = sessionStorage.getItem("userId");
 interface PropsType {
   setShowEditMovie: any;
@@ -85,7 +85,8 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
 
   useEffect(() => {
     const postUserInfo = {
-      userIdJoin: Number(userIdFromSStorage) || Number(main?.userLogin?.user?.id),
+      userIdJoin:
+        Number(userIdFromSStorage) || Number(main?.userLogin?.user?.id),
       userName: main?.userLogin?.userName,
       userImage: findImg,
       userAnswer: null,

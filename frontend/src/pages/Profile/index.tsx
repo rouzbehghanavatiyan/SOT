@@ -36,7 +36,7 @@ const Profile: React.FC = () => {
   const userId = main?.userLogin?.user?.id;
   const [match, setMatch] = useState<any>([]);
   const [allFollower, setAllFollower] = useState<any>([]);
-  const [percentage, setPercentage] = useState(0);
+  const [percentage, setPercentage] = useState<number>(0);
   const [profileImage, setProfileImage] = useState(userProfile);
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [editingImage, setEditingImage] = useState(false);
@@ -48,8 +48,6 @@ const Profile: React.FC = () => {
   const findImg = !!userIdWhantToShow
     ? StringHelpers.getProfile(userIdWhantToShow?.profile)
     : StringHelpers.getProfile(main?.userLogin?.profile);
-
-  console.log(userIdWhantToShow);
 
   const uploadProfileImage = useCallback(
     async (croppedImage: string) => {
@@ -63,13 +61,11 @@ const Profile: React.FC = () => {
         for (let i = 0; i < byteCharacters.length; i++) {
           byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
-
         const byteArray = new Uint8Array(byteNumbers);
         const file = new File([byteArray], "profile.jpg", {
           type: "image/jpeg",
         });
 
-        console.log(main?.userLogin);
         const formData = new FormData();
         formData.append("formFile", file);
         formData.append("attachmentId", userId);
@@ -229,12 +225,14 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     if (userId) {
-      const calculatedPercentage = handleProgress(main?.userLogin?.score || 0);
+      const calculatedPercentage = handleProgress(
+        userIdWhantToShow?.score || main?.userLogin?.score || 0
+      );
       setPercentage(calculatedPercentage);
       handleUserVideo();
       handleGetFollower();
     }
-  }, [userId]);
+  }, [userId, main?.userLogin?.score, userIdWhantToShow?.user?.id]);
 
   return (
     <>
@@ -246,9 +244,9 @@ const Profile: React.FC = () => {
           circularCrop={true}
         />
       )}
-      <ResponsiveMaker hiddenWidth={975}>
+      <ResponsiveMaker hiddenWidth={1024}>
         <section className="grid justify-center ">
-          <div className="w-screen pt-3 px-3 md:w-full md:h-full bg-gray-100">
+          <div className="w-screen pt-3 px-5 md:w-full md:h-full ">
             <div className="mb-1 border-b-[1px] ">
               <div className="grid grid-cols-6 mt-1  relative ">
                 <div className="col-span-5  flex h-32">

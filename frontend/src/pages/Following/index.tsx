@@ -43,11 +43,7 @@ const Following = () => {
           <div className="w-full bg-gray-100 border-b-[1px] border-white py-3 px-4 sticky top-0 z-10">
             <ImageRank
               score={0}
-              rankStyle="w-8 h-8"
-              className="w-80 h-80"
               imgSize={60}
-              classUserName="text-black"
-              iconProfileStyle="font60"
               userName={follower?.userName || "Unknown User"}
               imgSrc={image || "default-profile-image.png"}
             />

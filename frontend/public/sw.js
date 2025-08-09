@@ -1,4 +1,3 @@
-// public/sw.js
 const CACHE_NAME = "my-app-cache-v1";
 const urlsToCache = [
   "/",
@@ -15,7 +14,7 @@ self.addEventListener("install", (event) => {
     caches
       .open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting()) // اضافه کردن این خط برای فعال شدن سریعتر SW
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -42,14 +41,20 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-  console.log("PPPPPPPPPP");
-
-  const payload = event.data?.json() || { title: "New Notification", body: "" };
-  console.log("payload payload", payload);
+  console.log("Push event received");
+  let payload = { title: "New Notification", body: "" };
+  try {
+    if (event.data) {
+      payload = event.data.json();
+    }
+  } catch (error) {
+    payload = { title: event.data?.text() || "New Notification", body: "" };
+  }
+  console.log("Payload:", payload);
 
   event.waitUntil(
     self.registration.showNotification(payload.title, {
-      body: payload.body,
+      body: payload.body || "You have a new message.",
       icon: "/assets/img/logocircle.png",
       data: { url: payload.url || "/" },
     })
@@ -57,18 +62,17 @@ self.addEventListener("push", (event) => {
 });
 
 self.addEventListener("notificationclick", (event) => {
-  event.notification.close(); // بستن نوتیفیکیشن پس از کلیک
-
+  event.notification.close();
+  console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+  
   if (event.action === "accept") {
     console.log("User accepted notifications");
-    // باز کردن یک پنجره یا انجام عملیات مورد نظر
     event.waitUntil(
       self.registration.showNotification("Thank you!", {
         body: "You have enabled notifications.",
         icon: "/path/to/icon.png",
       })
     );
-    // درخواست مجوز از کاربر (اگر نیاز باشد)
     event.waitUntil(
       Notification.requestPermission().then((permission) => {
         console.log("Notification permission after accept:", permission);
@@ -76,7 +80,6 @@ self.addEventListener("notificationclick", (event) => {
     );
   } else if (event.action === "reject") {
     console.log("User rejected notifications");
-    // انجام عملیات مورد نظر در صورت رد
     event.waitUntil(
       self.registration.showNotification("Notifications disabled", {
         body: "You have chosen to disable notifications.",
@@ -84,7 +87,6 @@ self.addEventListener("notificationclick", (event) => {
       })
     );
   } else {
-    // کلیک روی خود نوتیفیکیشن (بدون انتخاب اکشن)
     console.log("Notification clicked");
     event.waitUntil(clients.openWindow(event.notification.data?.url || "/"));
   }

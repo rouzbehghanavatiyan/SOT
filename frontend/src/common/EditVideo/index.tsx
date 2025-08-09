@@ -10,11 +10,11 @@ import {
   removeInvite,
 } from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
-import Operational from "../TalentMode/StepFour/Operational";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/hook";
 import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
 import DraggableHighlight from "./DraggableHighligh";
+import Operational from "../../pages/Sot/StepFour/Operational";
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -32,8 +32,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [croppedImage, setCroppedImage] = useState<Blob | null>(null);
-  const [cropVideoFunction, setCropVideoFunction] =
-    useState<() => Promise<Blob>>();
   const [movieData, setMovieData] = useState<MovieDataType>({
     parentId: null,
     userId: null,
@@ -55,39 +53,33 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const handleAttachment = useCallback(
     asyncWrapper(async (resMovieData: any) => {
       const formData = new FormData();
-      console.log(croppedImage);
-
-      if (croppedImage) {
-        formData.append("formFile", croppedImage, "cropped-video.mp4");
+      if (allFormData?.video) {
+        formData.append("formFile", allFormData.video);
+      }
+      if (allFormData?.imageCover) {
+        formData.append("formFile", allFormData.imageCover);
       }
       formData.append("attachmentId", resMovieData?.id);
       formData.append("attachmentType", "mo");
       formData.append("attachmentName", "movies");
-      try {
-        const resAttachment = await addAttachment(formData);
-        return resAttachment.data;
-      } catch (error) {
-        console.error("Attachment upload failed:", error);
-        throw error;
-      }
-    }),
-    [croppedImage]
-  );
+      const resAttachment = await addAttachment(formData);
+      const { status: attachmentStatus, data: attachmentData } =
+        resAttachment?.data;
 
-  const handleCropImage = useCallback((blob: Blob) => {
-    console.log(blob);
-    setCroppedImage(blob);
-  }, []);
+      return { attachmentStatus, attachmentData };
+    }),
+    [allFormData]
+  );
 
   const handleFixVideo = useCallback(
     async (resMovieData: any) => {
       try {
-        const callAddAttachment = await handleAttachment(resMovieData);
-        const { status: statusAttachemnt, data } = callAddAttachment;
-        if (statusAttachemnt === -1) {
+        const { attachmentStatus } = await handleAttachment(resMovieData);
+        if (attachmentStatus === -1) {
+          console.log("Invalid video dimensions.");
           return;
         }
-        if (statusAttachemnt === 0) {
+        if (attachmentStatus === 0) {
           const postInvite = {
             parentId: null,
             userId: userIdFromSStorage || main?.userLogin?.user?.id || null,
@@ -97,14 +89,17 @@ const EditVideo: React.FC<EditVideoProps> = ({
           setFindingMatch(true);
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
+
           setMovieData((prev: any) => ({
             ...prev,
             userId: userIdFromSStorage || null,
             movieId: Number(resMovieData?.id),
             inviteId: inviteData,
           }));
-          if (inviteData?.userId !== 0) {
-            socket.emit("add_invite_offline", inviteData?.userId);
+          console.log(inviteStatus);
+
+          if (inviteStatus === 0) {
+            socket.emit("add_invite_offline", inviteData);
             setShowEditMovie(false);
             navigate(`/profile`);
           } else {
@@ -146,7 +141,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
     asyncWrapper(async () => {
       setIsLoadingBtn(true);
       const postData: AddMovieType = {
-        userId: Number(sessionStorage?.getItem("userId") as null) || null,
+        userId: main?.userLogin?.user?.id || null,
         description: movieData?.desc ?? "",
         title: movieData?.title ?? "",
         subSubCategoryId: 1 || null,
@@ -159,6 +154,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
         res?.data;
       if (movieStatus === 0) {
         if (mode?.typeMode === 3) {
+          console.log("resMovieData resMovieData", resMovieData);
+
           handleFixVideo(resMovieData);
         } else if (mode?.typeMode === 4) {
           handleAcceptOptional(resMovieData);
@@ -174,20 +171,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
     return allFormData?.video ? URL.createObjectURL(allFormData.video) : "";
   }, [allFormData?.video]);
 
-  const handleNextStep = async () => {
-    try {
-      if (!cropVideoFunction) {
-        throw new Error("Crop video function not available");
-      }
-
-      const croppedVideo = await cropVideoFunction();
-      setCroppedImage(croppedVideo);
-      setCurrentStep(2);
-    } catch (error) {
-     console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (!socket) return;
     const handler = (data: any) => {
@@ -202,6 +185,15 @@ const EditVideo: React.FC<EditVideoProps> = ({
       socket.off("add_invite_offline_response", handler);
     };
   }, [socket, navigate, setShowEditMovie, setIsLoadingBtn]);
+
+  const handleNextStep = async () => {
+    try {
+      setCurrentStep(2);
+    } catch (error) {
+      console.error("Error cropping video:", error);
+      alert("Error cropping video. Please try again.");
+    }
+  };
 
   return (
     <Modal
@@ -220,14 +212,40 @@ const EditVideo: React.FC<EditVideoProps> = ({
         {currentStep === 1 && (
           <div className="p-5">
             <div className="border mb-4 p-1">
-              <DraggableHighlight
-                videoSrc={videoSrc}
-                onCropChange={(data) => console.log("Crop data:", data)}
-                onCropVideo={(cropFunction) =>
-                  setCropVideoFunction(() => cropFunction)
-                } 
+              <div className="video-wrapper">
+                <DraggableHighlight
+                  videoSrc={videoSrc}
+                  onCropChange={(data) => setCropData(data)}
+                />
+              </div>
+            </div>
+            <div>
+              <span className="mb-4 mt-4 ">Title</span>
+              <Input
+                value={movieData?.title}
+                onChange={(e: any) =>
+                  setMovieData((prev: any) => ({
+                    ...prev,
+                    title: e.target.value,
+                  }))
+                }
               />
             </div>
+            <div className="">
+              <span className="flex my-4">Description</span>
+              <textarea
+                className=" border w-full focus:border-none outline-mainGray-dark px-5 py-1"
+                rows={6}
+                value={movieData?.desc}
+                onChange={(e: any) =>
+                  setMovieData((prev: any) => ({
+                    ...prev,
+                    desc: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            {/* <SlideRange /> */}
             <div className="mt-4 flex justify-around">
               <Button
                 className="border"
@@ -244,7 +262,37 @@ const EditVideo: React.FC<EditVideoProps> = ({
             </div>
           </div>
         )}
+        {currentStep === 2 && (
+          <div className="p-5">
+            {coverImage && (
+              <>
+                <span className="my-4 font-bold">Your cover: </span>
+                <img
+                  src={coverImage}
+                  alt="Video Cover"
+                  className="w-full max-h-96 rounded-sm"
+                />
+              </>
+            )}
+            <div className="mt-4 flex justify-between">
+              <Button
+                className="border"
+                variant={"outLine_secondary"}
+                label="Back"
+                onClick={handleBack}
+              />
+              <Button
+                className="border"
+                variant={"green"}
+                label="Accept"
+                onClick={handleUploadVideo}
+                loading={isLoadingBtn}
+              />
+            </div>
+          </div>
+        )}
       </div>
+      {currentStep === 3 && <Operational setShowEditMovie={setShowEditMovie} />}
     </Modal>
   );
 };

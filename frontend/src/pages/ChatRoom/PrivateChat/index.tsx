@@ -6,6 +6,7 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import { sendUserNotif } from "../../../services/dotNet";
+import { handleTabVisibilityChange } from "../../../utils/helpers/NotificationHelper";
 
 // interface PrivateChatProps {
 //   socket: any;
@@ -37,7 +38,7 @@ const PrivateChat: React.FC = ({}) => {
   const [readMessages, setReadMessages] = useState<Record<number, boolean>>({});
   const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const findImg = StringHelpers?.getProfile(getProfileImage);
-
+  const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
   const [messages, setMessages] = useState<any>([]);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
@@ -70,10 +71,11 @@ const PrivateChat: React.FC = ({}) => {
         userNameSender: main?.userLogin?.userName,
       };
       socket.emit("send_message", message);
-      setTitle("");
+      // setTitle("");
     }
     if (!location?.pathname?.includes("privateMessage")) {
       const postData = {
+        userId: 0,
         message: title,
       };
       const resNotif = await sendUserNotif(postData);
@@ -96,11 +98,6 @@ const PrivateChat: React.FC = ({}) => {
     ]);
   };
 
-  const handleEmojiSelect = (emoji: any) => {
-    setTitle((prev) => prev + emoji.emoji);
-    setShowStickers(false);
-  };
-
   useEffect(() => {
     if (!socket) return;
     socket.on("receive_message", handleReciveMessage);
@@ -115,11 +112,8 @@ const PrivateChat: React.FC = ({}) => {
 
   useEffect(() => {
     if (reciveUserId) {
-      // علامت‌گذاری پیام‌های این کاربر به عنوان "خوانده شده"
       localStorage.setItem(`message_read_${reciveUserId}`, "true");
       setHasMarkedAsRead(true);
-
-      // ارسال تاییدیه به سرور
       socket?.emit("messages_read", {
         sender: reciveUserId,
         receiver: userIdLogin,
@@ -129,11 +123,21 @@ const PrivateChat: React.FC = ({}) => {
     }
   }, [reciveUserId, socket, userIdLogin]);
 
-  const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
-  console.log(location?.state?.userInfo);
+  const handleTabVisibilityChangeWrapper = useCallback(() => {
+    console.log(title);
+
+    return handleTabVisibilityChange(title, reciveUserId);
+  }, [title, reciveUserId]);
+
+  useEffect(() => {
+    const cleanup = handleTabVisibilityChangeWrapper();
+    return () => {
+      cleanup();
+    };
+  }, [handleTabVisibilityChangeWrapper]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-70px)] md:mt-5 pb-16  bg-white shadow-card">
+    <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-100px)] lg:mt-10 mt-0 pb-12 bg-white">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
         userProfile={

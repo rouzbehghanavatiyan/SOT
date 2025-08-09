@@ -8,7 +8,7 @@ interface PropType {
 
 const MainTitle: React.FC<PropType> = ({ title, handleBack }) => {
   return (
-    <div className=" grid grid-cols-3 border-b-2 border-gray-150 pb-2 mt-6">
+    <div className=" grid grid-cols-3 border-b-2 border-gray-150 bg-gray-100 pb-2 pt-4 lg:mt-16">
       <span className="col-span-1 ms-4 flex items-center">
         {handleBack && (
           <ArrowBackIcon

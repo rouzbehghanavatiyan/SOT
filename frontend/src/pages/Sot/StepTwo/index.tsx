@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import SettingsInputCompositeIcon from "@mui/icons-material/SettingsInputComposite";
-import ResponsiveMaker from "../../../utils/helpers/ResponsiveMaker";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import asyncWrapper from "../../AsyncWrapper";
 import { subCategoryList } from "../../../services/dotNet";
-import Loading from "../../../components/Loading";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
@@ -15,6 +10,7 @@ import ArchitectureIcon from "@mui/icons-material/Architecture";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
+import asyncWrapper from "../../../common/AsyncWrapper";
 
 const StepTwo: React.FC = () => {
   const navigate = useNavigate();
@@ -65,7 +61,6 @@ const StepTwo: React.FC = () => {
     <>
       <MainTitle title="Talent mode" handleBack={handleBack} />
       <SoftLink
-        handleBack={handleBack}
         iconMap={iconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}

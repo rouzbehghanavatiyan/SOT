@@ -80,6 +80,8 @@ export const useCommentsAPI = ({
   };
 
   const handleRemoveComment = async (comment: Comment) => {
+    console.log(comment);
+
     try {
       const res = await removeComment(comment.id);
       if (res.data.status === 0) {

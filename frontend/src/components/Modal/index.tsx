@@ -40,7 +40,7 @@ const Modal: FC<ModalPropsType> = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
         style={{ padding }}
-        className={`${className} rounded-xl  w-[940px]`}
+        className={`${className} border-none rounded-xl  w-[940px]`}
         onClick={handleOnClose}
       >
         {!!title && (

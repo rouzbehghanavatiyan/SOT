@@ -601,32 +601,32 @@ br {
   background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 0%, rgba(18, 68, 31, 0) 100%, rgba(223, 233, 235, 0) 100%);
 }
 
-
-
-/* دکمه لودر */
-
 .loader_btn {
-  display: inline-block;
-  width: 25px;
-  /* عرض ثابت */
-  height: 25px;
-  /* ارتفاع ثابت */
-}
-
-.loader_btn::before {
-  color: rgb(255, 255, 255);
-  content: " ";
-  display: block;
-  width: 25px;
-  height: 25px;
-  margin: auto;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 3.4px solid currentColor;
-  border-color: currentColor transparent currentColor transparent;
-  animation: loader_btn 1.2s linear infinite;
+  display: inline-block;
+  border-top: 4px solid white;
+  border-right: 4px solid transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
 }
 
-@keyframes loader_btn {
+.loader_btn::after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border-bottom: 4px solid white;
+  border-left: 4px solid transparent;
+}
+
+/* #10153D */
+@keyframes rotation {
   0% {
     transform: rotate(0deg);
   }

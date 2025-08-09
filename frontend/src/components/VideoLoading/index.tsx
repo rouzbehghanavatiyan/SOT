@@ -14,8 +14,6 @@ const VideoItemSkeleton: React.FC<PropsType> = ({
   itsHome,
   itsProfile,
 }) => {
-  console.log(itsShowWatch);
-
   return (
     <div className="video-skeleton">
       {itsShowWatch && (

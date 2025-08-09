@@ -9,11 +9,7 @@ import Live from "../pages/Live";
 import Robot from "../pages/Robot";
 import Store from "../pages/Store";
 import Sot from "../pages/Sot";
-import TalentMode from "../common/TalentMode";
-import StepTwo from "../common/TalentMode/StepTwo";
-import StepThree from "../common/TalentMode/StepThree";
 import Profile from "../pages/Profile";
-import StepFour from "../common/TalentMode/StepFour";
 import ShowWatch from "../pages/Watch/ShowWatch";
 import Setting from "../pages/Setting";
 import ChatRoom from "../pages/ChatRoom";
@@ -23,14 +19,17 @@ import Followers from "../pages/Followers";
 import Notification from "../pages/Notification";
 import Following from "../pages/Following";
 import Pay from "../pages/Pay";
+import StepTwo from "../pages/Sot/StepTwo";
+import StepThree from "../pages/Sot/StepThree";
+import StepFour from "../pages/Sot/StepFour";
 
-const PublicRoutes = () => {
+const PublicRoutes: React.FC = () => {
   return (
     <Layout>
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/*" element={<PageNotFound />} />
-        <Route path="/solo" element={<TalentMode />} />
+        <Route path="/sot" element={<Sot />} />
         <Route path="/sot/:id" element={<StepTwo />} />
         <Route path="/sot/:id/:id" element={<StepThree />} />
         <Route path="/sot/:id/:id/:id" element={<StepFour />} />

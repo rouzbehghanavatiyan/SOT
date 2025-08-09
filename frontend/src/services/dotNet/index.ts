@@ -170,6 +170,8 @@ export const sendUserNotif = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
+// -----------------------------------------------------------
+
 export const addScoure = async (postData: any) => {
   const url = `${urlNotif}/addScoure`;
   return await axios.post(url, postData);
@@ -180,3 +182,7 @@ export const topScoreList = async () => {
   return await axios.get(url);
 };
 
+export const modeList = async () => {
+  const url = `${baseURL}/modeList`;
+  return await axios.get(url);
+};

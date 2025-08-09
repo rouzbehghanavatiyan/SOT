@@ -1,22 +1,40 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NetworkCheckIcon from "@mui/icons-material/NetworkCheck";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import WifiOffIcon from "@mui/icons-material/WifiOff";
 import AltRouteIcon from "@mui/icons-material/AltRoute";
-import EditVideo from "../../EditVideo";
 import MainTitle from "../../../components/MainTitle";
 import SoftLink from "../../../hoc/SoftLinks";
 import { useNavigate } from "react-router-dom";
+import { modeList } from "../../../services/dotNet";
+import asyncWrapper from "../../../common/AsyncWrapper";
+import EditVideo from "../../../common/EditVideo";
+
+interface Mode {
+  id: string | number;
+  name: string;
+  icon?: string;
+  label?: string;
+}
+
+interface FormData {
+  imageCover: File;
+  video: File;
+}
 
 const StepFour: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const navigate = useNavigate();
-  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [coverImage, setCoverImage] = useState<string>("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [showEditMovie, setShowEditMovie] = useState<boolean>(false);
-  const [allFormData, setAllFormData] = useState<any>(null);
-  const [mode, setMode] = useState<any>({});
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [allFormData, setAllFormData] = useState<FormData>();
+  const [mode, setMode] = useState<{ show: boolean; typeMode: number }>({
+    show: false,
+    typeMode: 0,
+  });
+  const [allMode, setAllMode] = useState<Mode[]>([]);
   const dataURLtoBlob = (dataURL: string): Blob => {
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)![1];
@@ -78,7 +96,7 @@ const StepFour: React.FC = () => {
 
   const handleOffline = () => {
     setMode({ show: true, typeMode: 3 });
-    const input = document.createElement("input");
+    const input: any = document.createElement("input");
     input.type = "file";
     input.accept = "video/*";
     input.onchange = handleVideoUpload;
@@ -87,25 +105,23 @@ const StepFour: React.FC = () => {
 
   const handleOptional = () => {
     setMode({ show: true, typeMode: 4 });
-    const input = document.createElement("input");
+    const input: any = document.createElement("input");
     input.type = "file";
     input.accept = "video/*";
     input.onchange = handleVideoUpload;
     input.click();
   };
 
-  const handleCategoryClick = (category: {
-    name: string;
-    id: string | number;
-  }) => {
-    if (category.name === "Offline") {
+  const handleCategoryClick = (category: Mode) => {
+    console.log(category);
+    if (category.id === 3) {
       handleOffline();
-    } else if (category.name === "Optional") {
+    } else if (category.id === 4) {
       handleOptional();
-    } else if (category.name === "Turbo") {
-      // handleProfile();
-    } else if (category.name === "Live") {
-      // handleProfile();
+    } else if (category.id === 1) {
+      return null;
+    } else if (category.id === 2) {
+      return null;
     }
   };
 
@@ -114,67 +130,54 @@ const StepFour: React.FC = () => {
   };
 
   const iconMap: { [key: string]: JSX.Element } = {
-    Offline: <WifiOffIcon className="text-2xl mx-3 font25" />,
-    Optional: <AltRouteIcon className="text-2xl mx-3 font25" />,
-    Turbo: <NetworkCheckIcon className="text-2xl mx-3 font25" />,
-    Live: <RadioButtonCheckedIcon className="text-2xl mx-3 font25" />,
+    offline: (
+      <WifiOffIcon onClick={handleOffline} className="text-2xl mx-3 font25" />
+    ),
+    optional: <AltRouteIcon className="text-2xl mx-3 font25" />,
+    turbo: <NetworkCheckIcon className="text-2xl mx-3 font25" />,
+    live: <RadioButtonCheckedIcon className="text-2xl mx-3 font25" />,
   };
 
-  return (
-    <section className="md:my-10 my-0 ">
-      <MainTitle title="Talent mode" />
-      <div className="mx-4 grid grid-cols-1 md:mt-10 justify-center ">
-        <video ref={videoRef} style={{ display: "none" }} />
-        <div
-          onClick={handleOffline}
-          className=" cursor-pointer grid grid-cols-7 mt-4"
-        >
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
-            Offline
-          </span>
-          <span className="flex col-span-3 justify-center  ">
-            <WifiOffIcon className="font60 flex px-3 justify-center text-primary" />
-          </span>
-        </div>
-        <div
-          onClick={handleOptional}
-          className=" cursor-pointer grid grid-cols-7  py-4 mt-4 "
-        >
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
-            Optional
-          </span>
-          <span className="flex col-span-3 justify-center  ">
-            <AltRouteIcon className="font60 flex px-3 justify-center text-primary" />
-          </span>
-        </div>
-        <div className=" cursor-pointer grid grid-cols-7  py-4 mt-4  ">
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
-            Turbo
-          </span>
-          <span className="flex col-span-3 justify-center  ">
-            <NetworkCheckIcon className="font60 flex px-3 justify-center text-primary" />
-          </span>
-        </div>
-        <div className=" cursor-pointer grid grid-cols-7  py-4 mt-4  ">
-          <span className="text-primary col-span-2 flex items-center text-center justify-start font-bold">
-            Live
-          </span>
-          <span className="flex col-span-3 justify-center">
-            <RadioButtonCheckedIcon className="font60 flex px-3 justify-center text-primary" />
-          </span>
-        </div>
+  const handleModeList = asyncWrapper(async () => {
+    setIsLoading(true);
+    const res = await modeList();
+    setIsLoading(false);
+    console.log(res);
+    const { data, status } = res?.data;
+    if (status === 0) {
+      setAllMode(data || []);
+    }
+  });
 
-        {showEditMovie && (
-          <EditVideo
-            mode={mode}
-            allFormData={allFormData}
-            showEditMovie={showEditMovie}
-            setShowEditMovie={setShowEditMovie}
-            coverImage={coverImage}
-          />
-        )}
-      </div>
-    </section>
+  useEffect(() => {
+    handleModeList();
+  }, []);
+
+  const categoriesWithIcons = allMode?.map((mode: any) => ({
+    ...mode,
+    icon: mode.icon || mode.name.toLowerCase(),
+  }));
+
+  return (
+    <>
+      <MainTitle handleBack={handleBack} title="Mode" />
+      <video ref={videoRef} style={{ display: "none" }} />
+      <SoftLink
+        iconMap={iconMap}
+        categories={categoriesWithIcons || []}
+        isLoading={isLoading}
+        handleAcceptCategory={handleCategoryClick}
+      />
+      {showEditMovie && (
+        <EditVideo
+          mode={mode}
+          allFormData={allFormData}
+          showEditMovie={showEditMovie}
+          setShowEditMovie={setShowEditMovie}
+          coverImage={coverImage}
+        />
+      )}
+    </>
   );
 };
 

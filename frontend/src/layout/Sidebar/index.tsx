@@ -12,7 +12,7 @@ type Props = PropTypes;
 
 const SidebarLinks: React.FC<Props> = () => {
   return (
-    <nav className="bg-gray-900 w-[7%] select-none shadow-card h-full border-gray-100 border-e px-6">
+    <nav className="bg-gray-900 w-[10%] select-none shadow-card h-full border-gray-100 border-e px-6">
       <div className="fixed">
         <NavLink
           to="/sot"

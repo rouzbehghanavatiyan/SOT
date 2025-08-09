@@ -24,8 +24,6 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
     if (!!userIdLogin && !!userReciver) handleGetMessages();
   }, [userIdLogin, userReciver]);
 
-  console.log(messages);
-
   return (
     <>
       {isLoading && <Loading isLoading={isLoading} />}

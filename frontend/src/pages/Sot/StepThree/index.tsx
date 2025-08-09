@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import asyncWrapper from "../../AsyncWrapper";
 import { subSubCategoryList } from "../../../services/dotNet";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
+import asyncWrapper from "../../../common/AsyncWrapper";
 
 const StepThree: React.FC = () => {
   const navigate = useNavigate();
@@ -50,21 +50,6 @@ const StepThree: React.FC = () => {
 
   return (
     <>
-      {/* <Loading isLoading={isLoading ? true : false} />
-      <div className="grid mt-10 justify-center">
-        <div className="w-screen md:w-full h-screen md:h-full bg-orange ">
-          {allSubSubCategory?.map((category: any) => (
-            <span
-              key={category.id}
-              onClick={() => handleAcceptCategory(category)}
-              className="bg-green-dark w-full md:min-w-52 my-2 flex justify-start items-center text-white cursor-pointer"
-            >
-              {iconMap[category.name.toLowerCase()]}{" "}
-              <span className="font20 py-2">{category.name}</span>
-            </span>
-          ))}
-        </div>
-      </div> */}
       <MainTitle handleBack={handleBack} title="Choice talent" />
       <SoftLink
         iconMap={iconMap}

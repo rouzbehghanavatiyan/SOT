@@ -48,7 +48,7 @@ const PhoneHeader = () => {
   };
 
   return (
-    <ResponsiveMaker hiddenWidth={900} visibleWidth={300}>
+    <ResponsiveMaker hiddenWidth={1024} visibleWidth={300}>
       {!itsShowWatchRoute && (
         <div className="fixed z-40 top-0 left-0 w-full bg-white shadow-md px-1 py-1 text-center text-white font-bold flex">
           <div className="flex justify-between w-full items-center ">
@@ -71,7 +71,7 @@ const PhoneHeader = () => {
               <div className="col-span-2 flex justify-end gap-4">
                 <Link to="/store">
                   <span className="relative col-span-1">
-                    <ConfirmationNumberIcon className="flex icon_size items-center text-gray-800" />
+                    <ConfirmationNumberIcon className="flex icon_size items-center text-dark_blue" />
                     <span className="absolute top-0 right-4 text-white bg-red w-full rounded-sm font8">
                       124
                     </span>
@@ -79,7 +79,7 @@ const PhoneHeader = () => {
                 </Link>
                 <Link to="/messages">
                   <span className="relative col-span-1">
-                    <EmailIcon className="flex icon_size items-center text-gray-800" />
+                    <EmailIcon className="flex icon_size items-center text-dark_blue" />
                     {alertMsg.length > 0 && (
                       <span className="absolute top-0 right-5 text-white bg-red rounded-full p-[6px] ">
                         {/* {alertMsg.length} */}

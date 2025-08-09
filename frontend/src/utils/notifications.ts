@@ -25,8 +25,8 @@ export async function subscribeToPushNotifications() {
     console.log("Service Worker not supported");
     return null;
   }
- 
   const vapidPublicKey = import.meta.env.VITE_PUBLIC_KEY;
+
   if (!vapidPublicKey) {
     console.error("VAPID_PUBLIC_KEY is not defined in environment variables");
     throw new Error("Server configuration error - missing VAPID key");

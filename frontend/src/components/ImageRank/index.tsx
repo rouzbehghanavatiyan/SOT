@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import silverRank from "../../assets/ranks/start_question.png";
+import Started from "../../assets/ranks/start_question.png";
+import Bronze3 from "../../assets/ranks/Bronze_3.png";
+import Gold3 from "../../assets/ranks/Gold_3.png";
+import wordOne from "../../assets/ranks/wordOne.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import { RsetUserLogin } from "../../common/Slices/main";
@@ -27,41 +30,106 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   const [rankSrc, setRankSrc] = useState<string>("");
   const rankSize = Math.floor(imgSize * 0.6);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+
   const determineRank: any = () => {
     if (score === 0) {
-      return silverRank;
-    } else if (score > 0 && score < 10) {
-      return silverRank;
-    } else if (score > 20 && score < 30) {
-    } else if (score > 10 && score < 20) {
-      return silverRank;
-    } else if (score > 30 && score < 40) {
-      return silverRank;
+      return Bronze3;
+    } else if (score > 0 && score < 100) {
+      return Gold3;
+    } else if (score > 100 && score < 200) {
+      return wordOne;
+    } else if (score > 200 && score < 300) {
+      return wordOne;
+    } else if (score > 300 && score < 400) {
+      return Bronze3;
     } else if (score > 40 && score < 50) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 50 && score < 60) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 60 && score < 70) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 70 && score < 80) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 80 && score < 90) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 90 && score < 100) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 100 && score < 110) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 110 && score < 120) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 120 && score < 130) {
-      return silverRank;
+      return Bronze3;
     } else if (score > 130 && score < 140) {
-      return silverRank;
+      return Started;
     } else if (score > 140 && score < 150) {
-      return silverRank;
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
+    } else if (score > 140 && score < 150) {
+      return Started;
     } else {
-      return silverRank;
+      return Started;
     }
   };
 
@@ -78,6 +146,8 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
     positionVideo === 0
       ? userInfo?.userInserted?.id
       : userInfo?.userMatched?.id;
+    console.log(userInfo);
+
     const userData = {
       profile:
         positionVideo === 0
@@ -85,6 +155,8 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
           : userInfo?.profileMatched,
       user:
         positionVideo === 0 ? userInfo?.userInserted : userInfo?.userMatched,
+      score:
+        positionVideo === 0 ? userInfo?.scoreInserted : userInfo?.scoreMatched,
     };
     navigate(`/profile`, {
       state: {
