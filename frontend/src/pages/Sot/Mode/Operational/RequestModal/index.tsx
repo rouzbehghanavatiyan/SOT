@@ -12,7 +12,8 @@ interface PropsType {
   dataUserRequestInfo: any[];
   setIsLoadingBtn: React.Dispatch<React.SetStateAction<boolean>>;
   socket: any;
-  userId: number; // اضافه کردن userId برای شناسایی کاربر جاری
+  userId: number;
+  isLoadingBtn: any;
 }
 
 const RequestModal: React.FC<PropsType> = ({
@@ -22,20 +23,19 @@ const RequestModal: React.FC<PropsType> = ({
   dataUserRequestInfo,
   socket,
   userId,
+  isLoadingBtn,
 }) => {
-  const handleCancel = () => {
-    setIsLoadingBtn(false);
-    setShowRequestModal(false);
-    socket.off("add_invite_optional_response");
-    socket.off("add_invite_optional");
-
+  const handleCancel = (userId: number) => {
+    setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
     socket.emit("add_invite_optional", {
-      ...dataUserRequestInfo,
+      ...dataUserRequestInfo.find((user) => user.userIdSender === userId),
       userAnswer: false,
     });
   };
 
   const handleAccept = (userInfo: any) => {
+    const userId = userInfo.userIdSender;
+    setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
     socket.emit("add_invite_optional", {
       ...userInfo,
       userAnswer: true,
@@ -47,22 +47,18 @@ const RequestModal: React.FC<PropsType> = ({
       if (socket) {
         socket.off("add_invite_optional_response");
       }
-      setIsLoadingBtn(false);
+      setIsLoadingBtn({ show: false });
     };
   }, [socket]);
 
-  // حذف کاربر جاری و داده‌های تکراری از dataUserRequestInfo
   const filteredDataUserRequestInfo = useMemo(() => {
-    // حذف تکراری‌ها و کاربر جاری
     const uniqueUsers = dataUserRequestInfo.filter(
       (user, index, self) =>
-        user.userIdSender !== userId && // حذف کاربر جاری
-        self.findIndex((u) => u.userIdSender === user.userIdSender) === index // حذف تکراری‌ها
+        user.userIdSender !== userId &&
+        self.findIndex((u) => u.userIdSender === user.userIdSender) === index
     );
     return uniqueUsers;
   }, [dataUserRequestInfo, userId]);
-
-  console.log(filteredDataUserRequestInfo);
 
   return (
     <Modal
@@ -70,7 +66,6 @@ const RequestModal: React.FC<PropsType> = ({
       setIsOpen={setShowRequestModal}
       padding={0}
       onClose={() => setShowRequestModal(false)}
-      className="rounded-2xl bg-white p-6 shadow-lg"
       title="Request user"
     >
       <Swiper
@@ -80,37 +75,37 @@ const RequestModal: React.FC<PropsType> = ({
       >
         {filteredDataUserRequestInfo?.map((userInfo, index) => {
           return (
-            <SwiperSlide key={index} className="flex flex-col items-center">
-              <ImageRank
-                score={20}
-                imgSize={60}
-                userNameStyle="text-gray-800"
-                imgSrc={userInfo.userImage}
-                userName={userInfo.userName}
-              />
-              <div className="flex flex-row mt-10">
-                Make a request to you. Would you like to accept?
-              </div>
-              <div className="flex p-3 justify-center gap-2 mt-5">
-                <Button
-                  onClick={() => handleAccept(userInfo)}
-                  type="button"
-                  variant={"green"}
-                  label="Accept"
+            <SwiperSlide key={index} className="px-12">
+              <div className="container">
+                <ImageRank
+                  score={20}
+                  imgSize={60}
+                  userNameStyle="text-gray-800"
+                  imgSrc={userInfo.userImage}
+                  userName={userInfo.userName}
                 />
+                <div className="flex my-6">
+                  Make a request to you. Would you like to accept?
+                </div>
+                <div className="flex px-3 justify-center gap-2">
+                  <Button
+                    onClick={() => handleAccept(userInfo)}
+                    type="button"
+                    variant={"green"}
+                    label="Accept"
+                  />
+                  <Button
+                    className="border"
+                    onClick={() => handleCancel(userInfo?.userIdSender)}
+                    variant={"outLine_secondary"}
+                    label="Cancel"
+                  />
+                </div>
               </div>
             </SwiperSlide>
           );
         })}
       </Swiper>
-      <span className="mb-5 flex justify-center">
-        <Button
-          className="border"
-          onClick={() => handleCancel()}
-          variant={"outLine_secondary"}
-          label="Cancel"
-        />
-      </span>
     </Modal>
   );
 };

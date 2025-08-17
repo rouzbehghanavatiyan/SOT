@@ -3,10 +3,10 @@ import Started from "../../assets/ranks/start_question.png";
 import Bronze3 from "../../assets/ranks/Bronze_3.png";
 import Gold3 from "../../assets/ranks/Gold_3.png";
 import wordOne from "../../assets/ranks/wordOne.png";
+import emerald from "../../assets/ranks/emerald.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import { RsetUserLogin } from "../../common/Slices/main";
-import { useAppDispatch } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/hook";
 
 interface ProfileWithRankProps {
   userInfo?: any;
@@ -16,10 +16,12 @@ interface ProfileWithRankProps {
   imgSize?: number;
   userNameStyle?: string;
   positionVideo?: number;
+  showProfile?: boolean;
 }
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
   imgSrc,
+  showProfile = true,
   userNameStyle,
   positionVideo,
   userName,
@@ -28,6 +30,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   userInfo,
 }) => {
   const [rankSrc, setRankSrc] = useState<string>("");
+  const main = useAppSelector((state) => state?.main);
   const rankSize = Math.floor(imgSize * 0.6);
   const navigate = useNavigate();
 
@@ -37,7 +40,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
     } else if (score > 0 && score < 100) {
       return Gold3;
     } else if (score > 100 && score < 200) {
-      return wordOne;
+      return emerald;
     } else if (score > 200 && score < 300) {
       return wordOne;
     } else if (score > 300 && score < 400) {
@@ -143,20 +146,27 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   };
 
   const handleClick = () => {
-    positionVideo === 0
-      ? userInfo?.userInserted?.id
-      : userInfo?.userMatched?.id;
     console.log(userInfo);
 
     const userData = {
       profile:
         positionVideo === 0
           ? userInfo?.profileInserted
-          : userInfo?.profileMatched,
+          : positionVideo === 1
+            ? userInfo?.profileMatched
+            : userInfo?.userProfile,
       user:
-        positionVideo === 0 ? userInfo?.userInserted : userInfo?.userMatched,
+        positionVideo === 0
+          ? userInfo?.userInserted
+          : positionVideo === 1
+            ? userInfo?.userMatched
+            : userInfo?.user,
       score:
-        positionVideo === 0 ? userInfo?.scoreInserted : userInfo?.scoreMatched,
+        positionVideo === 0
+          ? userInfo?.scoreInserted
+          : positionVideo === 1
+            ? userInfo?.scoreMatched
+            : userInfo?.score,
     };
     navigate(`/profile`, {
       state: {
@@ -167,7 +177,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
 
   return (
     <div
-      onClick={handleClick}
+      onClick={showProfile ? handleClick : null}
       className="flex items-center  m-1 relative"
       style={{ height: `${imgSize}px` }}
     >

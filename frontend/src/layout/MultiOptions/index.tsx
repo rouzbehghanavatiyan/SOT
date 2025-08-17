@@ -12,27 +12,20 @@ import {
   Mail as MailIcon,
 } from "@mui/icons-material";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
-import CircleIcon from "@mui/icons-material/Circle";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import ImageRank from "../../components/ImageRank";
 import { useAppSelector } from "../../hooks/hook";
-import goldStar2 from "../../assets/img/rank11.webp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { Link } from "react-router-dom";
 
-interface PropsType {
-  openMessage: boolean;
-  setOpenMessage: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
+const MultiOptions: React.FC = () => {
   let visibleWidth: any = 1390;
   let hiddenWidth: any;
   const main = useAppSelector((state) => state?.main);
   const getProfileImage = main?.userLogin?.profile;
+  const score = main?.userLogin?.score;
 
   const [isVisible, setIsVisible] = useState<boolean>(
     window.innerWidth <= 1390
@@ -53,43 +46,36 @@ const MultiOptions: React.FC<PropsType> = ({ setOpenMessage, openMessage }) => {
   }, [visibleWidth, hiddenWidth]);
 
   return (
-    <div className="flex justify-center items-center gap-3 xl:col-span-1 col-span-2">
-      <ResponsiveMaker visibleWidth={1390}>
-        <IconButton className="text-white relative">
-          <span className=" ">
-            <CircleIcon className="font10 text-pink absolute " />
+    <div className="flex justify-end pe-5 gap-6 items-center">
+      <div className="flex gap-4">
+        <ResponsiveMaker visibleWidth={1390}>
+          <span>
+            <SupportAgentIcon className="text-gray-800 mx-1 font25" />
           </span>
-          <NotificationsIcon className="text-white font20" />
-        </IconButton>
-        <IconButton className="">
-          <SupportAgentIcon className="text-gray-800 font20" />
-        </IconButton>
-        <Link to={"/messages"}>
-          <MailIcon className="text-white font20" />
-        </Link>
-        <IconButton className="  ">
-          <div className="relative">
-            <span>
-              <ConfirmationNumberIcon className="text-white font20" />
-            </span>
-          </div>
-        </IconButton>
-        <IconButton className="">
-          <SettingsIcon className=" font20 text-white" />
-        </IconButton>
-        <IconButton className=" ">
-          <div className="halo">
-            <img
-              src={goldStar2}
-              alt="Profile"
-              className={`select-none  rounded-full h-[50px] w-[50px]   `}
-            />
-          </div>
-        </IconButton>
-      </ResponsiveMaker>
-      <div className="fixed top-0 right-10 bg-white rounded-full">
-        <ImageRank imgSize={60} imgSrc={findImg} />
+          <Link to={"/messages"}>
+            <MailIcon className="text-white mx-1 font25" />
+          </Link>
+          <span>
+            <div className="relative">
+              <Link to={"/store"}>
+                <span>
+                  <ConfirmationNumberIcon className="text-white mx-1 font25" />
+                </span>
+              </Link>
+            </div>
+          </span>
+          <span>
+            <Link to={"/setting"}>
+              <SettingsIcon className=" mx-1 font25 text-white" />
+            </Link>
+          </span>
+        </ResponsiveMaker>
       </div>
+      <Link to={"/profile"}>
+        <span className="">
+          <ImageRank score={score} imgSize={60} imgSrc={findImg} />
+        </span>
+      </Link>
     </div>
   );
 };

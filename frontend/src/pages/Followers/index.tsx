@@ -39,7 +39,7 @@ const Followers: React.FC<any> = () => {
       {allFollower?.map((follower: any, index) => {
         const image = StringHelpers.getProfile(follower?.attachment);
         return (
-          <div className="w-full bg-gray-100 border-b-[1px] border-white py-3 px-4 sticky top-0 z-10">
+          <div className="w-full bg-gray-100 border-b-[1px] border-gray-150 py-2 px-4 sticky top-0 z-10">
             <ImageRank
               score={0}
               imgSize={60}

@@ -51,7 +51,7 @@ export const subCategoryList = async (catId: number) => {
   return await axios.get(url);
 };
 
-export const subSubCategoryList = async (subCatId: number) => {
+export const subSubCategoryList = async (subCatId: number | null | undefined) => {
   const url = `${baseURL}/subSubCategoryList?subCategoryId=${subCatId}`;
   return await axios.get(url);
 };
@@ -67,8 +67,12 @@ export const addAttachment = async (data: FormData) => {
 };
 
 // نمایش فیلم
-export const attachmentListByInviteId = async (id: number | string) => {
-  const url = `${baseURL}/attachmentListByInviteId?inviteId=${id}`;
+export const attachmentListByInviteId = async (
+  id: number | string,
+  skip: number,
+  take: number
+) => {
+  const url = `${baseURL}/attachmentListByInviteId?inviteId=${id}&skip=${skip}&take=${take}`;
   return await axios.get(url);
 };
 
@@ -112,17 +116,24 @@ export const profileAttachment = async (userId: number) => {
 };
 
 // get videos home
-export const userAttachmentList = async (userId: number) => {
-  const url = `${baseURL}/userAttachmentList?userId=${userId}`;
+export const userAttachmentList = async (
+  userId: number,
+  skip: number,
+  take: number
+) => {
+  const url = `${baseURL}/userAttachmentList?userId=${userId}&skip=${skip}&take=${take}`;
   return await axios.get(url);
 };
 
-export const followerAttachmentList = async (userId: number) => {
-  const url = `${baseURL}/followerAttachmentList?userId=${userId}`;
+export const followerAttachmentList = async (
+  userId: number,
+  skip: number,
+  take: number
+) => {
+  const url = `${baseURL}/followerAttachmentList?userId=${userId}&skip=${skip}&take=${take}`;
   return await axios.get(url);
 };
 
-// sent notif
 export const sendNotify = async (data: string, userId: number | string) => {
   const url = `${baseURL}/notify?notification=${data}&userId=${userId}`;
   return await axios.get(url);

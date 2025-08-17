@@ -57,6 +57,11 @@ const PrivateChat: React.FC = ({}) => {
     [socket, userIdLogin, hasMarkedAsRead]
   );
 
+  const handleEmojiSelect = (emoji: any) => {
+    setTitle((prev: any) => prev + emoji.emoji);
+    setShowStickers(false);
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const date = new Date().toString();
@@ -160,6 +165,7 @@ const PrivateChat: React.FC = ({}) => {
         handleSendMessage={handleSendMessage}
         titleInputRef={titleInputRef}
         setShowStickers={setShowStickers}
+        onEmojiSelect={handleEmojiSelect}
         showStickers={showStickers}
       />
     </div>

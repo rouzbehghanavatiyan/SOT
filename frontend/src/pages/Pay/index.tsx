@@ -53,7 +53,7 @@ const Pay: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-2">
+    <div className="max-w-md mx-auto mt-10">
       <h2 className="text-2xl font-bold text-gray-800">Crypto Deposit</h2>
       <div className="mb-4">
         <label className="block text-gray-800 text-sm font-medium mb-2">

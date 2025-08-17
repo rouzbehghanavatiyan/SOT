@@ -1,17 +1,16 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Timer from "../../../components/Timer";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import VideoSection from "../../../common/VideoSection";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ShareIcon from "@mui/icons-material/Share";
 import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../hooks/hook";
-import { useGetUserAttachmentListQuery } from "../../../common/Slices/apiSlice";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hook";
 import VideoItemSkeleton from "../../../components/VideoLoading";
+import { RsetLastMatch } from "../../../common/Slices/main";
 
 const VideosProfile: React.FC<any> = ({
   match,
@@ -21,6 +20,7 @@ const VideosProfile: React.FC<any> = ({
 }) => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const firstVideoRef = useRef<HTMLDivElement>(null);
   const main = useAppSelector((state) => state.main);
   // const {
@@ -110,6 +110,11 @@ const VideosProfile: React.FC<any> = ({
       return prev;
     });
   };
+
+  useEffect(() => {
+    if (videoGroupsWithLikes?.length > 0)
+      dispatch(RsetLastMatch(videoGroupsWithLikes?.[0]));
+  }, [videoGroupsWithLikes]);
 
   return (
     <div

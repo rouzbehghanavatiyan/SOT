@@ -625,7 +625,6 @@ br {
   border-left: 4px solid transparent;
 }
 
-/* #10153D */
 @keyframes rotation {
   0% {
     transform: rotate(0deg);
@@ -636,48 +635,30 @@ br {
   }
 }
 
-/* لودینگ */
 
-.loader-wrapper {
-  width: 35px;
-  height: 35px;
-  border-radius: 50px;
-  position: relative;
-  animation: rotate 1s linear infinite
-}
-
-.loader-wrapper::before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  inset: 0px;
-  border-radius: 50px;
-  border: 5px solid #FFF;
-  animation: prixClipFix 2s linear infinite;
-}
-
-.lds-dual-ring,
-.lds-dual-ring:after {
-  box-sizing: border-box;
-}
 
 .lds-dual-ring {
   display: inline-block;
-  width: 80px;
-  height: 80px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border-top: 3px solid #10153D;
+  border-right: 3px solid transparent;
+  box-sizing: border-box;
+  animation: lds-dual-ring 1s linear infinite;
 }
 
 .lds-dual-ring:after {
-  color: #10153D;
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  border: 3.4px solid currentColor;
-  border-color: currentColor transparent currentColor transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
+  border-bottom: 3px solid #10153D;
+  border-left: 3px solid transparent;
 }
 
 @keyframes lds-dual-ring {
@@ -690,80 +671,37 @@ br {
   }
 }
 
-
-
-.loader-text {
-  width: 25px;
-  height: 25px;
-  border-radius: 50px;
-  position: relative;
-  animation: rotate 1s linear infinite
-}
-
-.loader-text::before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  inset: 0px;
-  border-radius: 50px;
-  border: 5px solid #ffffff;
-  animation: prixClipFix 2s linear infinite;
-}
-
 .loader-userFinding {
   display: inline-block;
-  width: 40px;
-  height: 40px;
-}
-
-.loader-userFinding::before {
-  color: black;
-  content: " ";
-  display: block;
-  width: 25px;
-  height: 25px;
-  margin: 8px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 3.4px solid currentColor;
-  border-color: currentColor transparent currentColor transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
+  border-top: 3px solid #10153D;
+  border-right: 3px solid transparent;
+  box-sizing: border-box;
+  animation: userFinding 1s linear infinite;
 }
 
-@keyframes loader-userFinding {
+.loader-userFinding::after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border-bottom: 3px solid #10153D;
+  border-left: 3px solid transparent;
+}
+
+@keyframes userFinding {
   0% {
     transform: rotate(0deg);
   }
 
   100% {
     transform: rotate(360deg);
-  }
-}
-
-/* loading dot */
-.loader-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 12px 0 #fff, -32px 0 #fff;
-  position: relative;
-  animation: flash 0.5s ease-out infinite alternate;
-}
-
-@keyframes flash {
-  0% {
-    background-color: #FFF2;
-    box-shadow: 12px 0 #FFF2, -32px 0 #FFF;
-  }
-
-  50% {
-    background-color: #FFF;
-    box-shadow: 12px 0 #FFF2, -32px 0 #FFF2;
-  }
-
-  100% {
-    background-color: #FFF2;
-    box-shadow: 12px 0 #FFF, -32px 0 #FFF2;
   }
 }
 
@@ -1054,13 +992,9 @@ body.comments-open {
 
 .scrollable-container {
   transition: transform 0.3s ease-in-out;
-  /* اضافه کردن انیمیشن برای مخفی و نمایش آیکون‌ها */
-  overflow-x: auto;
-  /* اسکرول افقی فقط برای این بخش */
+  overflow-x: scroll;
   white-space: nowrap;
-  /* جلوگیری از شکست خطوط داخلی */
   scrollbar-width: thin;
-  /* زیباتر کردن اسکرول‌بار در فایرفاکس */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -1069,7 +1003,7 @@ body.comments-open {
 }
 
 .content {
-  height: calc(100vh - 64px);
+  height: calc(100vh - 14px);
   /* محتوای اصلی صفحه بدون در نظر گرفتن بخش ثابت بالایی */
   overflow-y: auto;
   /* اسکرول عمودی فقط برای این بخش */

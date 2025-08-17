@@ -4,6 +4,8 @@ import SoftLink from "../../hoc/SoftLinks";
 import { useAppSelector } from "../../hooks/hook";
 import asyncWrapper from "../../common/AsyncWrapper";
 import { addAttachment } from "../../services/dotNet";
+import MainTitle from "../../components/MainTitle";
+import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 
 const Setting: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
@@ -42,28 +44,23 @@ const Setting: React.FC = () => {
       handleProfile();
     }
   };
-  // <div className="items-start flex justify-end  col-span-1">
-  //   <ModeEditIcon
-  //     onClick={() => {
-  //       setShowEditProfile(true);
-  //     }}
-  //     className="text-gray-800 font25"
-  //   />
-  // </div>
 
   return (
-    <>
-      <SoftLink
-        handleAcceptCategory={handleCategoryClick}
-        categories={[
-          { name: "Singout", id: 1 },
-          { name: "Profile", id: 2 },
-          { name: "Support", id: 3 },
-          { name: "About us", id: 4 },
-        ]}
-        isLoading={false}
-      />
-    </>
+      <div className="mt-1" >
+        <ResponsiveMaker>
+          <MainTitle title="Settings" />
+        </ResponsiveMaker>
+        <SoftLink
+          handleAcceptCategory={handleCategoryClick}
+          categories={[
+            { name: "Singout", id: 1 },
+            { name: "Profile", id: 2 },
+            { name: "Support", id: 3 },
+            { name: "About us", id: 4 },
+          ]}
+          isLoading={false}
+        />
+      </div>
   );
 };
 

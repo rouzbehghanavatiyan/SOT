@@ -115,42 +115,42 @@ const Comments: React.FC<any> = ({
         padding={0}
         isOpen={showComments}
       >
-        <div className="flex flex-col justify-end  h-[80vh] max-w-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className={`relative w-full h-full  overflow-y-auto`}>
-            <div className="font15 bg-primary w-full fixed z-20 p-2">
-              <div className="grid grid-cols-5 items-center">
-                <div className="col-span-1 flex justify-start">
-                  <ImageRank
-                    userNameStyle="text-white"
-                    imgSize={45}
-                    userName={
-                      positionVideo === 0
-                        ? commentUserInfo?.userInserted?.userName
-                        : commentUserInfo?.userMatched?.userName
-                    }
-                    imgSrc={
-                      positionVideo === 0
-                        ? StringHelpers.getProfile(
-                            commentUserInfo?.profileInserted
-                          )
-                        : StringHelpers.getProfile(
-                            commentUserInfo?.profileMatched
-                          )
-                    }
-                  />
-                </div>
-                <div className="col-span-3 flex justify-center">
-                  <span className="text-white">Reacts</span>
-                </div>
-                <div className="col-span-1 text-white flex justify-end">
-                  <CloseIcon
-                    onClick={() => setShowComments(false)}
-                    className="text-white font20 cursor-pointer"
-                  />
-                </div>
+        <div className="flex flex-col h-[80vh] overflow-hidden">
+          <div className="font15 bg-primary w-full z-20 p-2">
+            <div className="grid grid-cols-5 items-center">
+              <div className="col-span-1 flex justify-start">
+                <ImageRank
+                  userNameStyle="text-white"
+                  imgSize={45}
+                  userName={
+                    positionVideo === 0
+                      ? commentUserInfo?.userInserted?.userName
+                      : commentUserInfo?.userMatched?.userName
+                  }
+                  imgSrc={
+                    positionVideo === 0
+                      ? StringHelpers.getProfile(
+                          commentUserInfo?.profileInserted
+                        )
+                      : StringHelpers.getProfile(
+                          commentUserInfo?.profileMatched
+                        )
+                  }
+                />
+              </div>
+              <div className="col-span-3 flex justify-center">
+                <span className="text-white">Reacts</span>
+              </div>
+              <div className="col-span-1 text-white flex justify-end">
+                <CloseIcon
+                  onClick={() => setShowComments(false)}
+                  className="text-white font20 cursor-pointer"
+                />
               </div>
             </div>
-            <div className="py-20 px-2">
+          </div>
+          <div className={`relative w-full h-full overflow-y-auto`}>
+            <div className=" px-2">
               {isLoading && <Loading isLoading={isLoading} />}
               {allComments.length > 0 ? (
                 allComments.map((item: any) => (

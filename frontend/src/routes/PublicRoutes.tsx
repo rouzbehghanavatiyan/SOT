@@ -8,7 +8,6 @@ import Friendly from "../pages/Friendly";
 import Live from "../pages/Live";
 import Robot from "../pages/Robot";
 import Store from "../pages/Store";
-import Sot from "../pages/Sot";
 import Profile from "../pages/Profile";
 import ShowWatch from "../pages/Watch/ShowWatch";
 import Setting from "../pages/Setting";
@@ -19,9 +18,7 @@ import Followers from "../pages/Followers";
 import Notification from "../pages/Notification";
 import Following from "../pages/Following";
 import Pay from "../pages/Pay";
-import StepTwo from "../pages/Sot/StepTwo";
-import StepThree from "../pages/Sot/StepThree";
-import StepFour from "../pages/Sot/StepFour";
+import Sot from "../pages/Sot";
 
 const PublicRoutes: React.FC = () => {
   return (
@@ -29,10 +26,6 @@ const PublicRoutes: React.FC = () => {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/*" element={<PageNotFound />} />
-        <Route path="/sot" element={<Sot />} />
-        <Route path="/sot/:id" element={<StepTwo />} />
-        <Route path="/sot/:id/:id" element={<StepThree />} />
-        <Route path="/sot/:id/:id/:id" element={<StepFour />} />
         <Route path="/sot" element={<Sot />} />
         <Route path="/watch/show" element={<ShowWatch />} />
         <Route path="/friendly" element={<Friendly />} />

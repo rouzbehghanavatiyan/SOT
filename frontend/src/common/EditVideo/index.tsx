@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/hook";
 import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
 import DraggableHighlight from "./DraggableHighligh";
-import Operational from "../../pages/Sot/StepFour/Operational";
+import Operational from "../../pages/Sot/Mode/Operational";
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -24,10 +24,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
   mode,
 }) => {
   const navigate = useNavigate();
-  const draggableHighlightRef = useRef<any>(null);
   const main = useAppSelector((state) => state?.main);
   const socket = main?.socketConfig;
-  const userIdFromSStorage = Number(main?.userLogin?.user?.id);
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -73,26 +71,29 @@ const EditVideo: React.FC<EditVideoProps> = ({
 
   const handleFixVideo = useCallback(
     async (resMovieData: any) => {
+      console.log(resMovieData);
       try {
         const { attachmentStatus } = await handleAttachment(resMovieData);
         if (attachmentStatus === -1) {
           console.log("Invalid video dimensions.");
           return;
         }
+        console.log(resMovieData);
+
         if (attachmentStatus === 0) {
           const postInvite = {
             parentId: null,
-            userId: userIdFromSStorage || main?.userLogin?.user?.id || null,
+            userId: main?.userLogin?.user?.id || null,
             movieId: resMovieData?.id || null,
             status: 0,
           };
+
           setFindingMatch(true);
           const resInvite = await addInvite(postInvite);
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
-
           setMovieData((prev: any) => ({
             ...prev,
-            userId: userIdFromSStorage || null,
+            userId: main?.userLogin?.user?.id || null,
             movieId: Number(resMovieData?.id),
             inviteId: inviteData,
           }));
@@ -117,7 +118,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
     asyncWrapper(async (resMovieData: any) => {
       setMovieData((prev: any) => ({
         ...prev,
-        userId: userIdFromSStorage || null,
+        userId: main?.userLogin?.user?.id || null,
         movieId: Number(resMovieData?.modeId),
       }));
       setCurrentStep(3);
@@ -140,6 +141,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
       setIsLoadingBtn(true);
+
       const postData: AddMovieType = {
         userId: main?.userLogin?.user?.id || null,
         description: movieData?.desc ?? "",
@@ -154,8 +156,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
         res?.data;
       if (movieStatus === 0) {
         if (mode?.typeMode === 3) {
-          console.log("resMovieData resMovieData", resMovieData);
-
           handleFixVideo(resMovieData);
         } else if (mode?.typeMode === 4) {
           handleAcceptOptional(resMovieData);

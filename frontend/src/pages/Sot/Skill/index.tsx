@@ -11,32 +11,23 @@ import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
-
-const StepTwo: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [allSubCategory, setAllSubCategory] = useState<any>();
+const Skill: React.FC<any> = ({
+  setAllSubCategory,
+  allSubCategory,
+  currentStep,
+  updateStepData,
+}) => {
   const [isLoading, setIsLoading] = useState<any>(false);
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
-    const res = await subCategoryList(location?.state?.category?.id);
+    const res = await subCategoryList(currentStep?.arena?.id);
     setIsLoading(false);
     const { data, status } = res?.data;
     if (status === 0) {
       setAllSubCategory(data || []);
     }
   });
-
-  const handleAcceptCategory = (data: any) => {
-    console.log(data);
-    const newPath = `${location.pathname}/${data?.name}`;
-    navigate(newPath, { state: { subCategory: data } });
-  };
-
-  useEffect(() => {
-    handleGetCategory();
-  }, []);
 
   const iconMap: { [key: string]: JSX.Element } = {
     music: <AudiotrackIcon className="text-2xl mx-3 font25" />,
@@ -48,9 +39,18 @@ const StepTwo: React.FC = () => {
     game: <SportsEsportsIcon className="text-2xl mx-3 font25" />,
   };
 
-  const handleBack = () => {
-    navigate(-1);
+  const handleAcceptCategory = (data: any) => {
+    updateStepData(2, {
+      name: data.name,
+      id: data.id,
+      icon: iconMap[data.icon],
+    });
+    localStorage.setItem("skillId", data.id);
   };
+
+  useEffect(() => {
+    handleGetCategory();
+  }, []);
 
   const categoriesWithIcons = allSubCategory?.map((category: any) => ({
     ...category,
@@ -58,16 +58,16 @@ const StepTwo: React.FC = () => {
   }));
 
   return (
-    <>
-      <MainTitle title="Talent mode" handleBack={handleBack} />
+    <div className="lg:shadow-card">
+      <MainTitle title="Skill" />
       <SoftLink
         iconMap={iconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}
         isLoading={isLoading}
       />
-    </>
+    </div>
   );
 };
 
-export default StepTwo;
+export default Skill;

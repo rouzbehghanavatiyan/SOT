@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { createSubscription, saveSubscription } from "../services/dotNet";
 import { useAppSelector } from "./hook";
+import { jwtDecode } from "jwt-decode";
 type NotificationPermission = "default" | "granted" | "denied";
 
 export const useServiceWorker = () => {
@@ -12,6 +13,10 @@ export const useServiceWorker = () => {
     useState<NotificationPermission>(
       Notification.permission as NotificationPermission
     );
+  const token: any = sessionStorage.getItem("token");
+  const userData = jwtDecode(token);
+  let Vals = Object.values(userData);
+  const userId = Vals?.[1];
 
   const urlBase64ToUint8Array = (base64String: any) => {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -97,9 +102,11 @@ export const useServiceWorker = () => {
   );
 
   const handleSaveSubscription = async (newSubscription: any) => {
+    console.log("main?.userLogin?.user?.id", main?.userLogin);
+
     const postData = {
       endpoint: newSubscription.endpoint,
-      userId: main?.userLogin?.user?.id,
+      userId: Number(userId),
       keys: {
         p256dh: arrayBufferToBase64(newSubscription?.getKey("p256dh")),
         auth: arrayBufferToBase64(newSubscription?.getKey("auth")),
@@ -138,6 +145,22 @@ export const useServiceWorker = () => {
       console.error("Error enabling notifications:", error);
     }
   }, [registerServiceWorker, subscribeToPush]);
+
+  // const handleAllow = useCallback(async () => {
+  //   try {
+  //     localStorage.setItem("notifications", "granted");
+  //     setNotificationStatus("granted");
+  //     setShowPrompt(false);
+
+  //     const registration = await registerServiceWorker();
+  //     if (registration) {
+  //       await subscribeToPush(registration);
+  //       console.log("Service worker and push subscription set up without notification permission");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error enabling notifications:", error);
+  //   }
+  // }, [registerServiceWorker, subscribeToPush]);
 
   const handleBlock = useCallback(() => {
     localStorage.setItem("notifications", "denied");

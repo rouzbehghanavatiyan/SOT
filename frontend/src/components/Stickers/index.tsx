@@ -7,12 +7,12 @@ interface PropsType {
 
 const Stickers: React.FC<PropsType> = ({ onEmojiSelect }) => {
   return (
-    <div className="absolute left-0 bottom-24 z-50 w-full">
+    <div className="absolute left-0 mb-6 bottom-24 z-50 w-full">
       <div className="mx-auto " style={{ height: "400px", width: "100%" }}>
         <EmojiPicker
           height="100%"
           width="100%"
-          onEmojiClick={(emojiObject) => onEmojiSelect(emojiObject)} // اصلاح این بخش
+          onEmojiClick={(emojiObject) => onEmojiSelect(emojiObject)}
           previewConfig={{ showPreview: false }}
         />
       </div>

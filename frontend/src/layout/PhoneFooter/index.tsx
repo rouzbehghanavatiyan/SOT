@@ -28,7 +28,7 @@ const PhoneFooter: React.FC = () => {
             to="/home"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-1 items-center justify-center",
+                "flex w-14 py-3 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -40,7 +40,7 @@ const PhoneFooter: React.FC = () => {
             onClick={handleWatchClick}
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-1 items-center justify-center",
+                "flex w-14 py-3 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -51,7 +51,7 @@ const PhoneFooter: React.FC = () => {
             to="/sot"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-1 items-center justify-center",
+                "flex w-14 py-3 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -68,7 +68,7 @@ const PhoneFooter: React.FC = () => {
             to="/notification"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-1 items-center relative justify-center",
+                "flex w-14 py-3 items-center relative justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -84,7 +84,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <ImageRank imgSrc={findImg} imgSize={35} />
+            <ImageRank imgSrc={findImg} imgSize={37} />
           </NavLink>
         </div>
       </div>

@@ -9,11 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { modeList } from "../../../services/dotNet";
 import asyncWrapper from "../../../common/AsyncWrapper";
 import EditVideo from "../../../common/EditVideo";
+import Cookie from "js-cookie";
 
 interface Mode {
   id: string | number;
   name: string;
-  icon?: string;
+  icon?: any;
   label?: string;
 }
 
@@ -22,7 +23,7 @@ interface FormData {
   video: File;
 }
 
-const StepFour: React.FC = () => {
+const Mode: React.FC<any> = ({ updateStepData, setCurrentStep }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const navigate = useNavigate();
   const [coverImage, setCoverImage] = useState<string>("");
@@ -35,6 +36,7 @@ const StepFour: React.FC = () => {
     typeMode: 0,
   });
   const [allMode, setAllMode] = useState<Mode[]>([]);
+
   const dataURLtoBlob = (dataURL: string): Blob => {
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)![1];
@@ -112,16 +114,44 @@ const StepFour: React.FC = () => {
     input.click();
   };
 
-  const handleCategoryClick = (category: Mode) => {
-    console.log(category);
-    if (category.id === 3) {
-      handleOffline();
-    } else if (category.id === 4) {
-      handleOptional();
-    } else if (category.id === 1) {
-      return null;
-    } else if (category.id === 2) {
-      return null;
+  const handleCategoryClick = (data: Mode) => {
+    if (data.id === 3 || data.id === 4) {
+      if (data.id === 3) {
+        handleOffline();
+      } else if (data.id === 4) {
+        handleOptional();
+      }
+      updateStepData(4, {
+        name: data.name,
+        id: data.id,
+        icon: iconMap[data.icon],
+      });
+
+      // ذخیره اطلاعات در کوکی
+      Cookie.set(
+        "modeData",
+        JSON.stringify({
+          name: data.name,
+          id: data.id,
+          icon: iconMap[data.icon],
+        })
+      );
+    } else {
+      updateStepData(4, {
+        name: data.name,
+        id: data.id,
+        icon: iconMap[data.icon],
+      });
+      setCurrentStep((prev) => ({ ...prev, number: 5 }));
+
+      Cookie.set(
+        "modeData",
+        JSON.stringify({
+          name: data.name,
+          id: data.id,
+          icon: iconMap[data.icon],
+        })
+      );
     }
   };
 
@@ -159,7 +189,7 @@ const StepFour: React.FC = () => {
   }));
 
   return (
-    <>
+    <div className="lg:shadow-card">
       <MainTitle handleBack={handleBack} title="Mode" />
       <video ref={videoRef} style={{ display: "none" }} />
       <SoftLink
@@ -177,8 +207,8 @@ const StepFour: React.FC = () => {
           coverImage={coverImage}
         />
       )}
-    </>
+    </div>
   );
 };
 
-export default StepFour;
+export default Mode;

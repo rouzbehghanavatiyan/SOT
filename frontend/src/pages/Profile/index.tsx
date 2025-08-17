@@ -123,7 +123,9 @@ const Profile: React.FC = () => {
     try {
       setIsLoading(true);
       const res = await userAttachmentList(
-        userIdWhantToShow?.user?.id || main?.userLogin?.user?.id
+        userIdWhantToShow?.user?.id || main?.userLogin?.user?.id,
+        0,
+        6
       );
       setIsLoading(false);
       const { data, status } = res?.data;
@@ -234,6 +236,8 @@ const Profile: React.FC = () => {
     }
   }, [userId, main?.userLogin?.score, userIdWhantToShow?.user?.id]);
 
+  console.log(userIdWhantToShow);
+
   return (
     <>
       {editingImage && (
@@ -244,121 +248,117 @@ const Profile: React.FC = () => {
           circularCrop={true}
         />
       )}
-      <ResponsiveMaker hiddenWidth={1024}>
-        <section className="grid justify-center ">
-          <div className="w-screen pt-3 px-5 md:w-full md:h-full ">
-            <div className="mb-1 border-b-[1px] ">
-              <div className="grid grid-cols-6 mt-1  relative ">
-                <div className="col-span-5  flex h-32">
-                  <span
-                    ref={imageRef}
-                    onClick={handleProfile}
-                    className="cursor-pointer"
-                  >
-                    <ImageRank
-                      imgSrc={findImg}
-                      imgSize={100}
-                      score={main?.userLogin?.score}
-                    />
+      <section className="lg:mt-3">
+        <div className="w-screen pt-3 px-5 md:w-full md:h-full ">
+          <div className="mb-1 border-b-[1px] ">
+            <div className="grid grid-cols-6 mt-1  relative ">
+              <div className="col-span-5  flex h-32">
+                <span
+                  ref={imageRef}
+                  onClick={handleProfile}
+                  className="cursor-pointer"
+                >
+                  <ImageRank
+                    imgSrc={findImg}
+                    imgSize={100}
+                    score={userIdWhantToShow?.score || main?.userLogin?.score}
+                  />
+                </span>
+                <div className="flex flex-col gap-2 ms-2">
+                  <span className="font20 font-bold">
+                    {userIdWhantToShow?.user?.userName ||
+                      main?.userLogin?.user?.userName}
                   </span>
-                  <div className="flex flex-col gap-2 ms-2">
-                    <span className="font20 font-bold">
-                      {userIdWhantToShow?.user?.userName ||
-                        main?.userLogin?.user?.userName}
-                    </span>
-                    {!userIdWhantToShow && (
-                      <div className="flex">
-                        <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
-                          <Link to={"/followers"}>
-                            <span className="font-bold text-gray-800">
-                              {allFollower?.length}
-                            </span>
-                            <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
-                              Followers
-                            </span>
-                          </Link>
-                        </div>
-                        <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
-                          <Link to={"/following"}>
-                            <span className="font-bold text-gray-800">
-                              {main?.allFollingList?.getMapFollowingId?.length}
-                            </span>
-                            <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
-                              Following
-                            </span>
-                          </Link>
-                        </div>
+                  {!userIdWhantToShow && (
+                    <div className="flex">
+                      <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
+                        <Link to={"/followers"}>
+                          <span className="font-bold text-gray-800">
+                            {allFollower?.length}
+                          </span>
+                          <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+                            Followers
+                          </span>
+                        </Link>
                       </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col items-center mb-5">
-                <div className="font-bold mb-2 text-gray-800">Rank score</div>
-                <div className="w-full relative h-4 bg-gray-200 rounded-xl overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-bold font10 text-white text-xs z-10">
-                      <span className="font10  me-1">{percentage}</span>
-                      <span className="font10">%</span>
-                    </span>
-                  </div>
-                  <ProgressBar percentage={percentage} />
-                </div>
-              </div>
-              <div className="mb-4">
-                <span className="text-gray-800">
-                  This is me jenifer Im am the best
-                </span>
-              </div>
-              <div className="mb-4">
-                <span className="text-gray-800">Tehran , Iran</span>
-              </div>
-              <div className="mb-4">
-                <span className="font-bold text-dark_blue">
-                  http://te.me/jenifer159
-                </span>
-              </div>
-              <div className="flex my-2 items-center">
-                <span className="flex gap-3 justify-start py-1 rounded-md">
-                  {[
-                    { img: cupLevel, label: "City" },
-                    { img: cup3, label: "Country" },
-                    { img: cup4, label: "Region" },
-                  ].map((cup, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col items-center justify-end"
-                    >
-                      <img
-                        className="w-14"
-                        src={cup.img}
-                        alt={`Cup ${cup.label}`}
-                      />
-                      <span className="font-bold text-gray-800">
-                        {cup.label}
-                      </span>
+                      <div className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl">
+                        <Link to={"/following"}>
+                          <span className="font-bold text-gray-800">
+                            {main?.allFollingList?.getMapFollowingId?.length}
+                          </span>
+                          <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+                            Following
+                          </span>
+                        </Link>
+                      </div>
                     </div>
-                  ))}
-                </span>
+                  )}
+                </div>
               </div>
             </div>
+            <div className="flex flex-col items-center mb-5">
+              <div className="font-bold mb-2 text-gray-800">Rank score</div>
+              <div className="w-full relative h-4 bg-gray-200 rounded-xl overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-bold font10 text-white text-xs z-10">
+                    <span className="font10  me-1">{percentage}</span>
+                    <span className="font10">%</span>
+                  </span>
+                </div>
+                <ProgressBar percentage={percentage} />
+              </div>
+            </div>
+            <div className="mb-4">
+              <span className="text-gray-800">
+                This is me jenifer Im am the best
+              </span>
+            </div>
+            <div className="mb-4">
+              <span className="text-gray-800">Tehran , Iran</span>
+            </div>
+            <div className="mb-4">
+              <span className="font-bold text-dark_blue">
+                http://te.me/jenifer159
+              </span>
+            </div>
+            <div className="flex my-2 items-center">
+              <span className="flex gap-3 justify-start py-1 rounded-md">
+                {[
+                  { img: cupLevel, label: "City" },
+                  { img: cup3, label: "Country" },
+                  { img: cup4, label: "Region" },
+                ].map((cup, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center justify-end"
+                  >
+                    <img
+                      className="w-14"
+                      src={cup.img}
+                      alt={`Cup ${cup.label}`}
+                    />
+                    <span className="font-bold text-gray-800">{cup.label}</span>
+                  </div>
+                ))}
+              </span>
+            </div>
           </div>
-          <VideosProfile
-            isLoading={isLoading}
-            videosProfileRef={videosProfileRef}
-            match={match}
-            videoLikes={videoLikes}
-            setVideoLikes={setVideoLikes}
+        </div>
+        <VideosProfile
+          isLoading={isLoading}
+          videosProfileRef={videosProfileRef}
+          match={match}
+          videoLikes={videoLikes}
+          setVideoLikes={setVideoLikes}
+        />
+        {isLoading && <Loading isLoading={isLoading ? true : false} />}
+        {showEditProfile && (
+          <EditProfile
+            showEditProfile={showEditProfile}
+            setShowEditProfile={setShowEditProfile}
           />
-          {isLoading && <Loading isLoading={isLoading ? true : false} />}
-          {showEditProfile && (
-            <EditProfile
-              showEditProfile={showEditProfile}
-              setShowEditProfile={setShowEditProfile}
-            />
-          )}
-        </section>
-      </ResponsiveMaker>
+        )}
+      </section>
     </>
   );
 };

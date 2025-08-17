@@ -99,13 +99,13 @@ const ChatRoom: React.FC = () => {
           return (
             <div
               onClick={() => handleRedirect(user)}
-              className="relative border-b-[1px]  flex items-center p-1 border-gray-150  my-1 bg-gray-100"
+              className="relative border-b-[1px]  flex items-center px-2 py-1 border-gray-150 bg-gray-100"
             >
-              <div className="m-2 ">
+              <div className="">
                 <ImageRank
                   userNameStyle="text-gray-black"
                   userName={user?.userNameSender}
-                  imgSize={60}
+                  imgSize={50}
                   score={user?.score || 0}
                   imgSrc={fixImage || "default-profile-image.png"}
                 />

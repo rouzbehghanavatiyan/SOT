@@ -81,12 +81,12 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       const { status, data } = res?.data;
 
       if (status === 0) {
-        const getMapFollowingId = data?.map(
+        const getMapFollowingId: any = data?.map(
           (item: any) => item?.attachment?.attachmentId
         );
         dispatch(
           RsetAllFollingList({
-            getMapFollowingId: getMapFollowingId,
+            getMapFollowingId,
             allFollowing: data,
           })
         );
@@ -106,6 +106,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   useEffect(() => {
     if (!main?.userLogin?.user?.id) return;
+
     handleSocketConfig();
     handleAllFolling();
     const handleConnect = () => {
@@ -130,9 +131,9 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       <div
         className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-12"} `}
       >
-        <ResponsiveMaker visibleWidth={1024}>
-          <SidebarLinks open={open} />
-        </ResponsiveMaker>
+        {/* <ResponsiveMaker visibleWidth={1024}>
+          <SidebarLinks />
+        </ResponsiveMaker> */}
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
             <PhoneHeader />

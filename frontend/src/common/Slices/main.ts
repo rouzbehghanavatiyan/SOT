@@ -48,10 +48,12 @@ interface MainType {
   progress?: any;
   allLoginMatch?: any[];
   loginMatch?: any[];
+  lastMatch?: any[];
   selectedInviteId: any;
 }
 
 const initialState: MainType = {
+  lastMatch: [],
   messageModal: { title: "", show: false, icon: "" },
   showToast: { title: "", bg: "", show: false },
   loading: false,
@@ -88,9 +90,8 @@ export const handleAttachmentListByInviteId = createAsyncThunk(
   async (inviteId: string, { rejectWithValue, getState, dispatch }) => {
     try {
       dispatch(RsetLoading({ value: true }));
-      const response = await attachmentListByInviteId(inviteId);
+      const response = await attachmentListByInviteId(inviteId, 0, 6);
       dispatch(RsetLoading({ value: false }));
-
       return {
         getData: response,
         state: getState(),
@@ -109,9 +110,8 @@ export const handleFollowerAttachmentList = createAsyncThunk(
   async (userIdLogin: number, { rejectWithValue, getState, dispatch }) => {
     try {
       dispatch(RsetLoading({ value: true }));
-      const response = await followerAttachmentList(userIdLogin);
+      const response = await followerAttachmentList(userIdLogin, 0, 6);
       dispatch(RsetLoading({ value: false }));
-
       return {
         getData: response,
         state: getState(),
@@ -171,6 +171,9 @@ const mainSlice = createSlice({
     },
     RsetAllFollingList: (state, action: PayloadAction<any[]>) => {
       state.allFollingList = action.payload;
+    },
+    RsetLastMatch: (state, action: PayloadAction<any[]>) => {
+      state.lastMatch = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -241,10 +244,9 @@ const mainSlice = createSlice({
         handleFollowerAttachmentList.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          const { status, data } = action.payload.getData?.data;
+          const { status, data } = action?.payload?.getData?.data;
           const getAllStateMain = action?.payload?.state?.main;
-
-          const processedVideos = data.map((video: any) => {
+          const processedVideos = data?.map((video: any) => {
             const isFollowedFromMeTop =
               getAllStateMain?.allFollingList?.getMapFollowingId?.some(
                 (following: any) => following === video?.userInserted?.id
@@ -294,6 +296,7 @@ export const {
   RsetGiveUserOnlines,
   RsetGetImageProfile,
   RsetAllLoginMatch,
+  RsetLastMatch,
 } = mainSlice.actions;
 
 export const { useGetMainAttachmentsQuery } = extendedApiSlice;
