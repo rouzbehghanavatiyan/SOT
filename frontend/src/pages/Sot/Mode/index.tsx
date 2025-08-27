@@ -51,7 +51,7 @@ const Mode: React.FC<any> = ({ updateStepData, setCurrentStep }) => {
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
+    console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
     if (file) {
       setVideoFile(file);
       const url = URL.createObjectURL(file);
@@ -126,16 +126,6 @@ const Mode: React.FC<any> = ({ updateStepData, setCurrentStep }) => {
         id: data.id,
         icon: iconMap[data.icon],
       });
-
-      // ذخیره اطلاعات در کوکی
-      Cookie.set(
-        "modeData",
-        JSON.stringify({
-          name: data.name,
-          id: data.id,
-          icon: iconMap[data.icon],
-        })
-      );
     } else {
       updateStepData(4, {
         name: data.name,
@@ -143,15 +133,6 @@ const Mode: React.FC<any> = ({ updateStepData, setCurrentStep }) => {
         icon: iconMap[data.icon],
       });
       setCurrentStep((prev) => ({ ...prev, number: 5 }));
-
-      Cookie.set(
-        "modeData",
-        JSON.stringify({
-          name: data.name,
-          id: data.id,
-          icon: iconMap[data.icon],
-        })
-      );
     }
   };
 

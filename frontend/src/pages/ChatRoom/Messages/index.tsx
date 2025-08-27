@@ -9,7 +9,6 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const userReciver = Number(location?.search?.split("=")?.[1]);
-
   const userIdLogin = main?.userLogin?.user?.id;
 
   const handleGetMessages = async () => {
@@ -82,11 +81,13 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
                 >
                   <div className="flex mb-4   justify-between">
                     {userIdLogin !== numberServerUserId && (
-                      <span className="text-gray-200 left-1 bottom-1 absolute font9">
+                      <span className="text-gray-200  left-1 bottom-1 absolute font9">
                         {displayTime}
                       </span>
                     )}
-                    <span className="ms-2 font18">{msg?.title}</span>
+                    <span className="ms-2 font18 breakWords max-w-[50%]">
+                      {msg?.title}
+                    </span>
                   </div>
                 </div>
               )}

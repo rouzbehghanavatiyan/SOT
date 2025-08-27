@@ -14,6 +14,7 @@ import { RsetLastMatch } from "../../../common/Slices/main";
 
 const VideosProfile: React.FC<any> = ({
   match,
+  loadingRef,
   videoLikes,
   isLoading,
   videosProfileRef,
@@ -215,6 +216,14 @@ const VideosProfile: React.FC<any> = ({
                       </div>
                     </div>
                   )}
+                  <div
+                    ref={loadingRef}
+                    className="bg-white w-full h-24 flex justify-center items-center"
+                  >
+                    {isLoading && (
+                      <div className="mb-20 loader-userFinding w-12 h-12"></div>
+                    )}
+                  </div>
                 </div>
               </section>
             );

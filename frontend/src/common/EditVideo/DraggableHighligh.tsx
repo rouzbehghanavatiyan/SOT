@@ -36,7 +36,6 @@ const DraggableHighlight: React.FC<DraggableHighlightProps> = ({
         height: relativeHeight,
       });
     } else {
-      // یا ارسال ابعاد به صورت پیکسلی (نسبت به نمایش فعلی)
       onCropChange({
         x: data.x,
         y: data.y,

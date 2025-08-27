@@ -26,10 +26,10 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const navigate = useNavigate();
   const main = useAppSelector((state) => state?.main);
   const socket = main?.socketConfig;
+  const userIdLogin = main?.userLogin?.user?.id;
   const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const [findingMatch, setFindingMatch] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [croppedImage, setCroppedImage] = useState<Blob | null>(null);
   const [movieData, setMovieData] = useState<MovieDataType>({
     parentId: null,
     userId: null,
@@ -79,11 +79,10 @@ const EditVideo: React.FC<EditVideoProps> = ({
           return;
         }
         console.log(resMovieData);
-
         if (attachmentStatus === 0) {
           const postInvite = {
             parentId: null,
-            userId: main?.userLogin?.user?.id || null,
+            userId: userIdLogin || null,
             movieId: resMovieData?.id || null,
             status: 0,
           };
@@ -93,13 +92,13 @@ const EditVideo: React.FC<EditVideoProps> = ({
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
           setMovieData((prev: any) => ({
             ...prev,
-            userId: main?.userLogin?.user?.id || null,
+            userId: userIdLogin || null,
             movieId: Number(resMovieData?.id),
             inviteId: inviteData,
           }));
-          console.log(inviteStatus);
+          console.log(resInvite?.data);
 
-          if (inviteStatus === 0) {
+          if (inviteData?.userId !== 0) {
             socket.emit("add_invite_offline", inviteData);
             setShowEditMovie(false);
             navigate(`/profile`);
@@ -118,7 +117,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
     asyncWrapper(async (resMovieData: any) => {
       setMovieData((prev: any) => ({
         ...prev,
-        userId: main?.userLogin?.user?.id || null,
+        userId: userIdLogin || null,
         movieId: Number(resMovieData?.modeId),
       }));
       setCurrentStep(3);
@@ -141,16 +140,16 @@ const EditVideo: React.FC<EditVideoProps> = ({
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
       setIsLoadingBtn(true);
+      console.log(mode, main, movieData);
 
       const postData: AddMovieType = {
-        userId: main?.userLogin?.user?.id || null,
+        userId: userIdLogin || null,
         description: movieData?.desc ?? "",
         title: movieData?.title ?? "",
         subSubCategoryId: 1 || null,
         modeId: mode?.typeMode || 0,
         cropData: null,
       };
-
       const res = await addMovie(postData);
       const { status: movieStatus, data: resMovieData }: GetServices =
         res?.data;

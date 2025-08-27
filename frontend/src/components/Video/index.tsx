@@ -4,7 +4,6 @@ import { VideoProps } from "./types";
 
 const Video: React.FC<VideoProps> = ({
   loop,
-  videoId,
   playing = false,
   playbackRate,
   muted = false,
@@ -74,7 +73,7 @@ const Video: React.FC<VideoProps> = ({
       </span>
       {showControls && (
         <div
-          className="controls bg_video_progress fade-in"
+          className="controls fade-in"
           style={{
             position: "absolute",
             bottom: "0",

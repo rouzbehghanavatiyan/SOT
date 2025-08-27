@@ -1,65 +1,53 @@
-import React, { useCallback, useState } from "react";
+// ProfileHeader.tsx
+import React from "react";
 import ImageRank from "../../components/ImageRank";
-import { useAppSelector, useAppDispatch } from "../../hooks/hook";
-import { uploadProfileImage } from "../../common/UploadProfile";
+import { Link } from "react-router-dom";
 
 interface ProfileHeaderProps {
-  setShowEditProfile: (show: boolean) => void;
+  userImage: string;
+  userName: string;
+  followersCount: number;
+  followingCount: number;
+  onImageClick: () => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  setShowEditProfile,
-}) => {
-  const main = useAppSelector((state) => state?.main);
-  const dispatch = useAppDispatch();
-  const baseURL = import.meta.env.VITE_SERVERTEST;
-  const getProfileImage = main?.userLogin?.profile;
-  const findImg = `${baseURL}/${getProfileImage?.attachmentType}/${getProfileImage?.fileName}${getProfileImage?.ext}`;
-  const [profileImage, setProfileImage] = useState(findImg);
-
-  const handleProfileImageUpload = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.files?.[0]) return;
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        if (e.target?.result) {
-          const imageData = e.target.result as string;
-          try {
-            const response = await uploadProfileImage(
-              imageData,
-              main?.userLogin?.user?.id
-            );
-            setProfileImage(response?.newProfileImage || imageData);
-          } catch (error) {
-            console.error("Error uploading profile image:", error);
-          }
-        }
-      };
-      reader.readAsDataURL(file);
-    },
-    [main?.userLogin?.user?.id]
-  );
-
-  return (
-    <div className="mb-1 border-b-[1px]">
-      <div className="grid grid-cols-6 relative">
-        <div className="col-span-5 flex h-32">
-          <span className="cursor-pointer">
-            <ImageRank imgSrc={profileImage} imgSize={100} score={0} />
-          </span>
-        </div>
-        <div className="items-start flex justify-end col-span-1">
-          <button
-            onClick={() => setShowEditProfile(true)}
-            className="text-gray-800 font25"
+  userImage,
+  userName,
+  followersCount,
+  followingCount,
+  onImageClick,
+}) => (
+  <div className="grid grid-cols-6 mt-1 relative">
+    <div className="col-span-5 flex h-32">
+      <span onClick={onImageClick} className="cursor-pointer">
+        <ImageRank imgSrc={userImage}  imgSize={100} />
+      </span>
+      <div className="flex flex-col gap-2 ms-2">
+        <span className="font20 font-bold">{userName}</span>
+        <div className="flex">
+          <Link
+            to="/followers"
+            className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl"
           >
-            Edit
-          </button>
+            <span className="font-bold text-gray-800">{followersCount}</span>
+            <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+              Followers
+            </span>
+          </Link>
+          <Link
+            to="/following"
+            className="mx-2 bg-gray-150 py-1 px-2 rounded-2xl"
+          >
+            <span className="font-bold text-gray-800">{followingCount}</span>
+            <span className="font-bold text-gray-800 py-1 rounded text-xs ml-1">
+              Following
+            </span>
+          </Link>
         </div>
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 export default ProfileHeader;

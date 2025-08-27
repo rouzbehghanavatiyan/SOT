@@ -1008,3 +1008,12 @@ body.comments-open {
   overflow-y: auto;
   /* اسکرول عمودی فقط برای این بخش */
 }
+
+
+.breakWords {
+  display: block;
+  max-width: 50%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}

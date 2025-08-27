@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import userProfile from "../../assets/img/4d688bcf-f53b-42b6-a98d-3254619f3b58.jpg";
 import cupLevel from "../../assets/img/cupLevel.webp";
 import cup3 from "../../assets/img/cup5.png";
@@ -28,6 +27,7 @@ import StringHelpers from "../../utils/helpers/StringHelper";
 import Loading from "../../components/Loading";
 
 const Profile: React.FC = () => {
+  const loadingRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const main = useAppSelector((state) => state?.main);
   const dispatch = useAppDispatch();
@@ -44,6 +44,11 @@ const Profile: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
+  const [pagination, setPagination] = useState({
+    skip: 0,
+    take: 6,
+    hasMore: true,
+  });
   const userIdWhantToShow = location?.state?.userData;
   const findImg = !!userIdWhantToShow
     ? StringHelpers.getProfile(userIdWhantToShow?.profile)
@@ -121,19 +126,24 @@ const Profile: React.FC = () => {
 
   const handleUserVideo = async () => {
     try {
+      if (!pagination.hasMore || isLoading) return;
       setIsLoading(true);
-      const res = await userAttachmentList(
-        userIdWhantToShow?.user?.id || main?.userLogin?.user?.id,
-        0,
-        6
-      );
+      const res = await userAttachmentList({
+        userId: userIdWhantToShow?.user?.id || main?.userLogin?.user?.id,
+        skip: pagination.skip,
+        take: pagination.take,
+      });
       setIsLoading(false);
       const { data, status } = res?.data;
       if (status === 0) {
         setMatch(data);
         setVideoLikes((prev) => ({ ...prev, ...calculateInitialLikes(data) }));
+        setPagination((prev) => ({
+          ...prev,
+          hasMore: data.length === prev.take,
+          skip: prev.skip + prev.take,
+        }));
       }
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -236,7 +246,27 @@ const Profile: React.FC = () => {
     }
   }, [userId, main?.userLogin?.score, userIdWhantToShow?.user?.id]);
 
-  console.log(userIdWhantToShow);
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting && pagination.hasMore && !isLoading) {
+  //         handleUserVideo();
+  //       }
+  //     },
+  //     { threshold: 0.1 }
+  //   );
+
+  //   const currentRef = loadingRef.current;
+  //   if (currentRef) {
+  //     observer.observe(currentRef);
+  //   }
+
+  //   return () => {
+  //     if (currentRef) {
+  //       observer.unobserve(currentRef);
+  //     }
+  //   };
+  // }, [pagination.hasMore, isLoading, userId, main?.userLogin?.score]);
 
   return (
     <>
@@ -345,6 +375,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
         <VideosProfile
+          loadingRef={loadingRef}
           isLoading={isLoading}
           videosProfileRef={videosProfileRef}
           match={match}

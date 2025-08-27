@@ -51,7 +51,9 @@ export const subCategoryList = async (catId: number) => {
   return await axios.get(url);
 };
 
-export const subSubCategoryList = async (subCatId: number | null | undefined) => {
+export const subSubCategoryList = async (
+  subCatId: number | null | undefined
+) => {
   const url = `${baseURL}/subSubCategoryList?subCategoryId=${subCatId}`;
   return await axios.get(url);
 };
@@ -116,12 +118,8 @@ export const profileAttachment = async (userId: number) => {
 };
 
 // get videos home
-export const userAttachmentList = async (
-  userId: number,
-  skip: number,
-  take: number
-) => {
-  const url = `${baseURL}/userAttachmentList?userId=${userId}&skip=${skip}&take=${take}`;
+export const userAttachmentList = async (postData: any) => {
+  const url = `${baseURL}/userAttachmentList?userId=${postData?.userId}&skip=${postData?.skip}&take=${postData?.take}`;
   return await axios.get(url);
 };
 

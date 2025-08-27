@@ -11,8 +11,6 @@ import {
 } from "../../services/dotNet";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
-import GroupsIcon from "@mui/icons-material/Groups";
-import PersonIcon from "@mui/icons-material/Person";
 
 const Sot: React.FC = () => {
   const [stepsData, setStepsData] = useState([
@@ -106,64 +104,80 @@ const Sot: React.FC = () => {
       const skillId = localStorage.getItem("skillId");
       const gearId = localStorage.getItem("gearId");
 
-      // مرحله Arena
       if (arenaId) {
         const res = await subCategoryList(arenaId);
         const { data, status } = res?.data;
         if (status === 0) {
           setAllSubCategory(data || []);
+          const arenaData = data.find(
+            (item: any) => item.id === parseInt(arenaId)
+          );
+          setCurrentStep((prev: any) => ({
+            ...prev,
+            number: 2,
+            arena: arenaData,
+          }));
+          setStepsData((prev: any) => [
+            {
+              title: arenaData?.name || "Arena",
+              icon: <EmojiEventsIcon className="text-2xl" />,
+            },
+            prev[1],
+            prev[2],
+            prev[3],
+          ]);
         }
-        setCurrentStep((prev: any) => ({
-          ...prev,
-          number: 2,
-          arena: { id: arenaId, name: "Arena" }, // مقداردهی استیت Arena
-        }));
-        setStepsData((prev: any) => [
-          { title: "Arena", icon: "" },
-          prev[1],
-          prev[2],
-          prev[3],
-        ]);
       }
 
-      // مرحله Skill
       if (arenaId && skillId) {
         const res = await subSubCategoryList(skillId);
         const { data, status } = res?.data;
         if (status === 0) {
           setAllSubCategory(data || []);
+          const skillData = data.find(
+            (item: any) => item.id === parseInt(skillId)
+          ); // پیدا کردن آیتم مرتبط با id
+          setCurrentStep((prev: any) => ({
+            ...prev,
+            number: 3,
+            skill: skillData, // ذخیره داده کامل Skill
+          }));
+          setStepsData((prev: any) => [
+            prev[0],
+            {
+              title: skillData?.name || "Skill",
+              icon: <HandshakeIcon className="text-2xl" />,
+            }, // تنظیم name به عنوان title
+            prev[2],
+            prev[3],
+          ]);
         }
-        setCurrentStep((prev: any) => ({
-          ...prev,
-          number: 3,
-          skill: { id: skillId, name: "Skill" }, // مقداردهی استیت Skill
-        }));
-        setStepsData((prev: any) => [
-          prev[0],
-          { title: "Skill", icon: "" },
-          prev[2],
-          prev[3],
-        ]);
       }
 
       // مرحله Gear
       if (arenaId && skillId && gearId) {
-        const res = await modeList();
+        const res = await modeList(); // دریافت اطلاعات مرتبط با Gear
         const { data, status } = res?.data;
         if (status === 0) {
           setAllSubCategory(data || []);
+          const gearData = data.find(
+            (item: any) => item.id === parseInt(gearId)
+          ); // پیدا کردن آیتم مرتبط با id
+          setCurrentStep((prev: any) => ({
+            ...prev,
+            number: 4,
+            gear: gearData, // ذخیره داده کامل Gear
+          }));
+          setStepsData((prev: any) => [
+            prev[0],
+            prev[1],
+            {
+              title: gearData?.name || "Gear",
+              icon: <SmartToyIcon className="text-2xl" />,
+            }, // تنظیم name به عنوان title
+            prev[3],
+          ]);
         }
-        setCurrentStep((prev: any) => ({
-          ...prev,
-          number: 4,
-          gear: { id: gearId, name: "Gear" }, // مقداردهی استیت Gear
-        }));
-        setStepsData((prev: any) => [
-          prev[0],
-          prev[1],
-          { title: "Gear", icon: "" },
-          prev[3],
-        ]);
       }
     } catch (error) {
       console.error("خطا در بررسی ذخیره‌سازی:", error);
