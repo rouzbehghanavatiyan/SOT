@@ -1,36 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Messages from "../Messages";
-import { useAppSelector } from "../../../hooks/hook";
+import { useAppSelector } from "../../../hooks/reduxHookType";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import { sendUserNotif } from "../../../services/dotNet";
 import { handleTabVisibilityChange } from "../../../utils/helpers/NotificationHelper";
-
-// interface PrivateChatProps {
-//   socket: any;
-//   currentUser: {
-//     id: string;
-//     name: string;
-//   } | null;
-//   selectedUser: {
-//     id: string;
-//     name: string;
-//   };
-// }
-
-// interface Message {
-//   id: string;
-//   sender: string;
-//   text: string;
-//   timestamp: Date;
-// }
+import LoadingChild from "../../../components/Loading/LoadingChild";
+import usePagination from "../../../hooks/usePagination";
+import { userMessages } from "../../../services/nest";
 
 const PrivateChat: React.FC = ({}) => {
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
   const socket = main?.socketConfig;
+
   const titleInputRef = useRef<HTMLInputElement>(null);
   const userIdLogin = main?.userLogin?.user?.id;
   const { sender: reciveUserId = "" } = location?.state?.userInfo || {};
@@ -40,6 +25,7 @@ const PrivateChat: React.FC = ({}) => {
   const findImg = StringHelpers?.getProfile(getProfileImage);
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
   const [messages, setMessages] = useState<any>([]);
+  const [isLoadingChild, setIsLoadingChild] = useState<boolean>(false);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -141,6 +127,17 @@ const PrivateChat: React.FC = ({}) => {
     };
   }, [handleTabVisibilityChangeWrapper]);
 
+  const handleGetMessages = async () => {
+    try {
+      setIsLoadingChild(true);
+      const res = await userMessages(userIdLogin, userReciver, 0, 10);
+      setIsLoadingChild(false);
+      setMessages(res?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-100px)] lg:mt-10 mt-0 pb-12 bg-white">
       <ChatHeader
@@ -153,7 +150,9 @@ const PrivateChat: React.FC = ({}) => {
         score={location?.state?.userInfo?.score || 20}
       />
       <div className="flex-1 overflow-y-auto p-2 bg-gray-100">
+        {isLoadingChild && <LoadingChild isLoading={isLoadingChild} />}
         <Messages
+          handleGetMessages={handleGetMessages}
           setMessages={setMessages}
           messages={messages}
           messagesEndRef={messagesEndRef}

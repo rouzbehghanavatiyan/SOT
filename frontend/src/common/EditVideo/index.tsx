@@ -11,7 +11,7 @@ import {
 } from "../../services/dotNet";
 import { GetServices } from "../../utils/mainType/allMainType";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
 import DraggableHighlight from "./DraggableHighligh";
 import Operational from "../../pages/Sot/Mode/Operational";

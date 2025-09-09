@@ -3,7 +3,7 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import EmailIcon from "@mui/icons-material/Email";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 

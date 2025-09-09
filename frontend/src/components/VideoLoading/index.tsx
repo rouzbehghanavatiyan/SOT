@@ -2,106 +2,102 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 interface PropsType {
-  justPic?: boolean;
-  itsShowWatch?: boolean;
-  itsHome?: boolean;
-  itsProfile?: boolean;
+  section?: string;
 }
 
-const VideoItemSkeleton: React.FC<PropsType> = ({
-  justPic,
-  itsShowWatch,
-  itsHome,
-  itsProfile,
-}) => {
+const VideoItemSkeleton: React.FC<PropsType> = ({ section }) => {
   return (
     <div className="video-skeleton">
-      {itsShowWatch && (
+      {section === "itsShowWatch" && (
         <div className="mx-1">
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="6vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="40vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="6vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="40vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
         </div>
       )}
-      {itsHome && (
+      {section === "itsHome" && (
         <div className="mx-1 mt-2">
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="6vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="37vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="6vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="36vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
         </div>
       )}
-      {itsProfile && (
+      {section === "itsProfile" && (
         <div className="m-1">
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="6vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="37vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="6vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full"
+            className="w-full border"
             height="37vh"
             borderRadius={10}
-            baseColor="#525252"
+            baseColor="#5252523a"
           />
         </div>
       )}
-
-      {justPic && <Skeleton height={350} />}
+      {section === "justPic" && (
+        <div className="mb-1">
+          <Skeleton className="rounded-tr-lg" height={175} />
+          <Skeleton className="rounded-bl-xl" height={175} />
+        </div>
+      )}
     </div>
   );
 };

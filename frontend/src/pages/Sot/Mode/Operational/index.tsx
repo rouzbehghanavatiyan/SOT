@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../../components/Button";
 import ImageRank from "../../../../components/ImageRank";
-import { useAppSelector } from "../../../../hooks/hook";
+import { useAppSelector } from "../../../../hooks/reduxHookType";
 import RequestModal from "./RequestModal";
 import StringHelpers from "../../../../utils/helpers/StringHelper";
 import asyncWrapper from "../../../../common/AsyncWrapper";

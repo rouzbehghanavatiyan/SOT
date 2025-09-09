@@ -6,7 +6,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import PersonIcon from "@mui/icons-material/Person";
 import MainTitle from "../../../components/MainTitle";
 import SoftLink from "../../../hoc/SoftLinks";
-import { useAppSelector } from "../../../hooks/hook";
+import { useAppSelector } from "../../../hooks/reduxHookType";
 import Cookies from "js-cookie";
 
 const Arena: React.FC<any> = ({

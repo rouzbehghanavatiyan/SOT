@@ -6,7 +6,7 @@ import SendIcon from "@mui/icons-material/Send";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
-import { useAppSelector } from "../../../hooks/hook";
+import { useAppSelector } from "../../../hooks/reduxHookType";
 
 const Fields: React.FC = () => {
   const  main  = useAppSelector((state) => state?.main);

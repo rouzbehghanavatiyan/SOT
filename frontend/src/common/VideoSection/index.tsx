@@ -8,7 +8,7 @@ import ImageRank from "../../components/ImageRank";
 import Follows from "../../components/Fallows";
 import Dropdown from "../../components/Dropdown";
 import StringHelpers from "../../utils/helpers/StringHelper";
-import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import {
   RsetAllLoginMatch,
   RsetTornoment,
@@ -103,6 +103,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const isFollowed = followInfo?.isFollowed;
 
   const handleFallowClick = async (video: any, position: number) => {
+    console.log("handleFallowClick", video);
+
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
     const postData = {

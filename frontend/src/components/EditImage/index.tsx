@@ -24,7 +24,7 @@ const EditImage: React.FC<EditImageProps> = ({
   });
   const [imageLoaded, setImageLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null); // اضافه کردن ref برای تصویر
+  const imageRef = useRef<HTMLImageElement>(null);
   const [containerSize, setContainerSize] = useState({
     width: 300,
     height: 300,

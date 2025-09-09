@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import Timer from "../../../components/Timer";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import VideoSection from "../../../common/VideoSection";
@@ -8,31 +8,25 @@ import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHookType";
 import VideoItemSkeleton from "../../../components/VideoLoading";
 import { RsetLastMatch } from "../../../common/Slices/main";
+import LoadingChild from "../../../components/Loading/LoadingChild";
 
-const VideosProfile: React.FC<any> = ({
-  match,
-  loadingRef,
-  videoLikes,
-  isLoading,
-  videosProfileRef,
-}) => {
+const VideosProfile = forwardRef<
+  HTMLDivElement,
+  {
+    isLoading: boolean;
+    match: any[];
+    videoLikes: Record<string, number>;
+    loadingRef: any;
+  }
+>(({ loadingRef, isLoading, match, videoLikes }, ref) => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const firstVideoRef = useRef<HTMLDivElement>(null);
   const main = useAppSelector((state) => state.main);
-  // const {
-  //   data: match = [],
-  //   isLoading,
-  //   isError,
-  //   error,
-  // } = useGetUserAttachmentListQuery(userId, {
-  //   skip: !userId,
-  // });
-
   const videoGroupsWithLikes = useMemo(() => {
     return match?.map((video: any) => {
       const parentLikes =
@@ -117,20 +111,21 @@ const VideosProfile: React.FC<any> = ({
       dispatch(RsetLastMatch(videoGroupsWithLikes?.[0]));
   }, [videoGroupsWithLikes]);
 
+  console.log(videoGroupsWithLikes);
+
   return (
-    <div
-      ref={videosProfileRef}
-      className="col-span-12 mb-14 justify-center flex md:col-span-12 lg:col-span-12"
-    >
+    <div className="col-span-12 mb-12 justify-center flex md:col-span-12 lg:col-span-12">
       <div className="grid grid-cols-1 gap-2 w-full">
         {isLoading ? (
           [...Array(12)].map((_, index) => (
-            <div className="bg-black">
-              <VideoItemSkeleton itsProfile />{" "}
+            <div key={index} className="bg-black">
+              <VideoItemSkeleton section="itsProfile" />
             </div>
           ))
         ) : videoGroupsWithLikes?.length === 0 ? (
-          <div> Empty videos </div>
+          <div className="flex h-[calc(50vh-100px)] justify-center items-center ">
+            <span className="font-bold">Empty videos</span>
+          </div>
         ) : (
           videoGroupsWithLikes?.map((video: any, index: number) => {
             const parentLikes =
@@ -216,22 +211,15 @@ const VideosProfile: React.FC<any> = ({
                       </div>
                     </div>
                   )}
-                  <div
-                    ref={loadingRef}
-                    className="bg-white w-full h-24 flex justify-center items-center"
-                  >
-                    {isLoading && (
-                      <div className="mb-20 loader-userFinding w-12 h-12"></div>
-                    )}
-                  </div>
                 </div>
               </section>
             );
           })
         )}
+        {isLoading && <LoadingChild ref={loadingRef} isLoading={isLoading} />}
       </div>
     </div>
   );
-};
+});
 
 export default VideosProfile;

@@ -90,7 +90,11 @@ export const handleAttachmentListByInviteId = createAsyncThunk(
   async (inviteId: string, { rejectWithValue, getState, dispatch }) => {
     try {
       dispatch(RsetLoading({ value: true }));
-      const response = await attachmentListByInviteId(inviteId, 0, 6);
+      const response = await attachmentListByInviteId(0, 6, inviteId);
+      console.log(
+        "attachmentListByInviteId attachmentListByInviteId attachmentListByInviteId",
+        response
+      );
       dispatch(RsetLoading({ value: false }));
       return {
         getData: response,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "../../components/Button";
-import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import { RsetMessageModal } from "../../common/Slices/main";
 import { createPayment } from "../../services/nest";
 

@@ -7,13 +7,20 @@ const urlNotif: string | undefined = import.meta.env.VITE_TEST_NOTIF;
 export const getTableFields = async () => {
   const url = `${baseURL}/logins`;
   const response = await axios.patch(url);
-  console.log(response);
   return response?.data;
 };
+export const attachmentList = async ({
+  skip,
+  take,
+}: {
+  skip: number;
+  take: number;
+}) => {
+  console.log(skip, take);
 
-export const attachmentList = async ({ skip, take }: any) => {
   const url = `${baseURL}/attachmentList?skip=${skip}&take=${take}`;
-  return await axios.get(url);
+  const response = await axios.get(url);
+  return response?.data;
 };
 
 export const login = async (postData: any) => {
@@ -69,13 +76,12 @@ export const addAttachment = async (data: FormData) => {
 };
 
 // نمایش فیلم
-export const attachmentListByInviteId = async (
-  id: number | string,
-  skip: number,
-  take: number
-) => {
-  const url = `${baseURL}/attachmentListByInviteId?inviteId=${id}&skip=${skip}&take=${take}`;
-  return await axios.get(url);
+export const attachmentListByInviteId = async (postData: any) => {
+  console.log(postData);
+
+  const url = `${baseURL}/attachmentListByInviteId?skip=${postData?.skip}&take=${postData?.take}&inviteId=${postData?.id}`;
+  const res = await axios.get(url);
+  return res?.data;
 };
 
 // 2نمایش فیلم
@@ -111,25 +117,20 @@ export const followerList = async (userId: any) => {
   return await axios.get(url);
 };
 
-// get profile
 export const profileAttachment = async (userId: number) => {
   const url = `${baseURL}/profileAttachment?userId=${userId}`;
   return await axios.get(url);
 };
 
-// get videos home
 export const userAttachmentList = async (postData: any) => {
   const url = `${baseURL}/userAttachmentList?userId=${postData?.userId}&skip=${postData?.skip}&take=${postData?.take}`;
   return await axios.get(url);
 };
 
-export const followerAttachmentList = async (
-  userId: number,
-  skip: number,
-  take: number
-) => {
-  const url = `${baseURL}/followerAttachmentList?userId=${userId}&skip=${skip}&take=${take}`;
-  return await axios.get(url);
+export const followerAttachmentList = async (postData: any) => {
+  const url = `${baseURL}/followerAttachmentList?skip=${postData?.skip}&take=${postData?.take}&userId=${postData?.id}`;
+  const res = await axios.get(url);
+  return res?.data;
 };
 
 export const sendNotify = async (data: string, userId: number | string) => {

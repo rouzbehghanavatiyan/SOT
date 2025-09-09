@@ -4,7 +4,7 @@ import { redirect } from "react-router-dom";
 import ImageRank from "../../components/ImageRank";
 import Loading from "../../components/Loading";
 import StringHelpers from "../../utils/helpers/StringHelper";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 
 const Followers: React.FC<any> = () => {
   const main = useAppSelector((state) => state.main);

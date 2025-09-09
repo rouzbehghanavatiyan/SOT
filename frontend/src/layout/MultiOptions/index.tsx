@@ -15,7 +15,7 @@ import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import ImageRank from "../../components/ImageRank";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { Link } from "react-router-dom";

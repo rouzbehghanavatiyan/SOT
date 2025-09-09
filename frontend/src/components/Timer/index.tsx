@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { addScoure } from "../../services/dotNet";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 
 interface TimerProps {
   startTime: number;

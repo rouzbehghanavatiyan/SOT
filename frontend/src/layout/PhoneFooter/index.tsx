@@ -5,7 +5,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LogoTC from "../../assets/img/1724181984017.jpg";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import ImageRank from "../../components/ImageRank";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -15,7 +15,6 @@ const PhoneFooter: React.FC = () => {
   const main = useAppSelector((state) => state.main);
   const getProfileImage = main?.userLogin?.profile;
   const findImg = StringHelpers.getProfile(getProfileImage);
-
   const handleWatchClick = () => {
     setActiveIcon("watch");
   };

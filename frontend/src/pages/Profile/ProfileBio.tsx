@@ -24,14 +24,16 @@ const ProfileBio: React.FC<ProfileBioProps> = ({
         </span>
       </div>
     </div>
-    <div className="mb-4">
-      <span className="text-gray-800">{bio}</span>
-    </div>
-    <div className="mb-4">
-      <span className="text-gray-800">{location}</span>
-    </div>
-    <div className="mb-4">
-      <span className="font-bold text-dark_blue">{website}</span>
+    <div className="flex flex-col w-full mt-5  items-start">
+      <div className="mb-4">
+        <span className="text-gray-800">{bio}</span>
+      </div>
+      <div className="mb-4">
+        <span className="text-gray-800">{location}</span>
+      </div>
+      <div className="mb-4">
+        <span className="font-bold text-dark_blue">{website}</span>
+      </div>
     </div>
   </div>
 );

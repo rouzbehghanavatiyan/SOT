@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import { Mousewheel } from "swiper/modules";
 import VideoSection from "../../common/VideoSection";
 import { handleFollowerAttachmentList } from "../../common/Slices/main";
@@ -12,23 +12,36 @@ import EmailIcon from "@mui/icons-material/Email";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import VideoItemSkeleton from "../../components/VideoLoading";
+import VideoSkeleton from "../../components/VideoLoading/VideoSkeleton";
+import usePagination from "../../hooks/usePagination";
+import { followerAttachmentList } from "../../services/dotNet";
+import LoadingChild from "../../components/Loading/LoadingChild";
 
 const Home: React.FC = () => {
+  const loadingRef = useRef<HTMLDivElement>(null);
   const main = useAppSelector((state) => state?.main);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const videos: any = main?.allLoginMatch;
-
+  const [loadedCount, setLoadedCount] = useState<number>(0);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
   const userIdLogin = main?.userLogin?.user?.id;
+  const { data, isLoading, hasMore, fetchNextPage } = usePagination(
+    followerAttachmentList,
+    {
+      take: 3,
+      extraParams: { id: userIdLogin },
+    }
+  );
 
   const handleSlideChange = (swiper: any) => {
-    console.log();
     const realIndex = swiper.realIndex;
-    const topVideoId = videos[realIndex]?.attachmentInserted?.attachmentId;
+    const topVideoId = data[realIndex]?.attachmentInserted?.attachmentId;
     setCurrentlyPlayingId(topVideoId);
+    if (realIndex === loadedCount - 1 && hasMore && !isLoading) {
+      fetchNextPage();
+    }
   };
 
   const handleVideoPlay = (videoId: string) => {
@@ -88,16 +101,18 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    if (videos.length > 0) {
-      setCurrentlyPlayingId(videos[0]?.attachmentInserted?.attachmentId);
+    if (data.length === 0 && !isLoading) {
+      fetchNextPage();
     }
-  }, [videos]);
+  }, [data, isLoading, fetchNextPage]);
 
   useEffect(() => {
-    if (!!userIdLogin) {
-      dispatch(handleFollowerAttachmentList(userIdLogin));
+    if (data.length > 0) {
+      console.log(data);
+      setLoadedCount(data.length);
+      setCurrentlyPlayingId(data[0]?.attachmentInserted?.attachmentId);
     }
-  }, [userIdLogin]);
+  }, [data]);
 
   return (
     <>
@@ -113,16 +128,16 @@ const Home: React.FC = () => {
           className="mySwiper lg:mt-9 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
           onSlideChange={handleSlideChange}
         >
-          {main?.showLoading?.value
+          {isLoading
             ? [...Array(12)].map((_, index) => (
                 <SwiperSlide
                   className="h-full w-full bg-black flex flex-col"
                   key={index}
                 >
-                  <VideoItemSkeleton itsHome />
+                  <VideoItemSkeleton section="itsHome" />
                 </SwiperSlide>
               ))
-            : videos?.map((video: any, index: number) => {
+            : data?.map((video: any, index: number) => {
                 const resultInserted =
                   video?.likeInserted > video?.likeMatched
                     ? "Win"
@@ -135,7 +150,6 @@ const Home: React.FC = () => {
                     : video?.likeInserted > video?.likeMatched
                       ? "Loss"
                       : "Draw";
-
                 return (
                   <SwiperSlide
                     key={index}
@@ -195,6 +209,7 @@ const Home: React.FC = () => {
                 );
               })}
         </Swiper>
+        <LoadingChild ref={loadingRef} isLoading={isLoading} />
       </div>
     </>
   );

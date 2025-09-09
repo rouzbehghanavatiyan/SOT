@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../hooks/hook";
+import { useAppDispatch } from "../../hooks/reduxHookType";
 import { Button } from "../../components/Button";
 import logo from "../../assets/img/1724181984017.jpg";
 import Input from "../../components/Input";

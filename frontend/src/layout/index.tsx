@@ -12,7 +12,7 @@ import {
   RsetSocketConfig,
   RsetUserLogin,
 } from "../common/Slices/main";
-import { useAppDispatch, useAppSelector } from "../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
   categoryList,
   followingList,

@@ -35,7 +35,7 @@ body * {
 }
 
 p {
-  color: #272343;
+  color: #5252523a;
 }
 
 .logoFont {
@@ -708,13 +708,11 @@ br {
 .fullscreen {
   overflow: hidden;
   position: fixed;
-  /* برای اینکه container در تمام صفحه قرار بگیرد */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 9999;
-  /* برای نمایش در بالای سایر عناصر */
 }
 
 .video-slide {

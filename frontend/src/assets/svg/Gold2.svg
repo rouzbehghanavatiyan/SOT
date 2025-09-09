@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+  <!-- Generator: Adobe Illustrator 29.3.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 151)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: url(#linear-gradient2);
+      }
+
+      .st1 {
+        fill: url(#linear-gradient1);
+        filter: url(#drop-shadow-2);
+      }
+
+      .st2 {
+        fill: url(#linear-gradient);
+        filter: url(#drop-shadow-1);
+      }
+
+      .st3 {
+        fill: url(#linear-gradient3);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="97.7" y1="587.2" x2="487.6" y2="587.2" gradientTransform="translate(0 -329.9)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9f297"/>
+      <stop offset="0" stop-color="#e0ab3d"/>
+    </linearGradient>
+    <filter id="drop-shadow-1" x="82" y="8" width="451" height="505" filterUnits="userSpaceOnUse">
+      <feOffset dx="15" dy="3"/>
+      <feGaussianBlur result="blur" stdDeviation="10"/>
+      <feFlood flood-color="#000" flood-opacity=".6"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient1" x1="363.7" y1="539.5" x2="574" y2="539.5" gradientTransform="translate(585.4 -329.9) rotate(-180) scale(1 -1)" xlink:href="#linear-gradient"/>
+    <filter id="drop-shadow-2" x="-4" y="160" width="271" height="106" filterUnits="userSpaceOnUse">
+      <feOffset dx="15" dy="3"/>
+      <feGaussianBlur result="blur1" stdDeviation="10"/>
+      <feFlood flood-color="#000" flood-opacity=".6"/>
+      <feComposite in2="blur1" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient2" x1="11.6" y1="587.2" x2="472.4" y2="587.2" gradientTransform="translate(0 -329.9)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9f297"/>
+      <stop offset=".3" stop-color="#e0ab3d"/>
+      <stop offset=".7" stop-color="#f9f39a"/>
+      <stop offset="1" stop-color="#b78a43"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient3" x1="235.5" y1="39.6" x2="235.5" y2="39.6" gradientTransform="matrix(1,0,0,1,0,0)" xlink:href="#linear-gradient"/>
+  </defs>
+  <path class="st2" d="M235.5,39.3c28.9-13.4,31.2,13.1,31.2,13.1l41.5,127.6c1.9,5.9,7.4,9.9,13.6,9.9h149.9c16.1,0,20,24.5,11.7,30.5l-121.3,88.1c-5,3.6-7.1,10.1-5.2,16l40.8,131.2c3.1,9.7-16.3,26-24.5,20l-105.4-88.8c-5-3.6-11.8-3.6-16.8,0l-121.3,88.1c-8.2,6-22.5,6-31.9-2.3L235.5,39.3Z"/>
+  <path class="st1" d="M15.9,213.7c-8.9-6.3-4.5-26.6,11.6-26.6h149.9c6.2,0,44.2,0,44.2,0,0,0-15.4,44.5-17.5,45.2s-185.4-18.5-185.4-18.5h-2.8Z"/>
+  <path class="st0" d="M252,44.9l46.3,142.6c1.9,5.9,7.4,9.9,13.6,9.9h149.9c10.2,0,14.4,13,6.2,19l-121.3,88.1c-5,3.6-7.1,10.1-5.2,16l46.3,142.6c3.1,9.7-7.9,17.7-16.2,11.8l-121.3-88.1c-5-3.6-11.8-3.6-16.8,0l-121.3,88.1c-8.2,6-19.3-2.1-16.2-11.8l46.3-142.6c1.9-5.9-.2-12.4-5.2-16L15.9,216.4c-8.2-6-4-19,6.2-19h149.9c6.2,0,11.7-4,13.6-9.9l46.3-142.6c3.1-9.7,16.8-9.7,20,0h0Z"/>
+  <path class="st3" d="M235.5,39.6"/>
+</svg>

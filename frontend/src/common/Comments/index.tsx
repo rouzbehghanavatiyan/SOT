@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ImageRank from "../../components/ImageRank";
 import { addComment, commentList, removeComment } from "../../services/dotNet";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import MessageInput from "../../pages/ChatRoom/PrivateChat/MessageInput";
 import CloseIcon from "@mui/icons-material/Close";
 import StringHelpers from "../../utils/helpers/StringHelper";

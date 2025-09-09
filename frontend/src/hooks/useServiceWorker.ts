@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { createSubscription, saveSubscription } from "../services/dotNet";
-import { useAppSelector } from "./hook";
+import { useAppSelector } from "./reduxHookType";
 import { jwtDecode } from "jwt-decode";
 type NotificationPermission = "default" | "granted" | "denied";
 

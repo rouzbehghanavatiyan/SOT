@@ -6,7 +6,8 @@ import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import ImageRank from "../../components/ImageRank";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import MainTitle from "../../components/MainTitle";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
+import LoadingChild from "../../components/Loading/LoadingChild";
 
 interface Category {
   id: string;
@@ -146,7 +147,7 @@ const Notification: React.FC = () => {
               </div>
             </div>
           ))}
-          {isLoading && <Loading isLoading={isLoading} />}
+          {isLoading && <LoadingChild isLoading={isLoading} />}
         </div>
       </div>
     </section>

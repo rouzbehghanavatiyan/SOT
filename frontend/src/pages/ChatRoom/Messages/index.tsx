@@ -1,31 +1,81 @@
-import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../../hooks/hook";
+import React, { useEffect, useRef, useState } from "react";
+import { useAppSelector } from "../../../hooks/reduxHookType";
 import { userMessages } from "../../../services/nest";
 import { useLocation } from "react-router-dom";
-import Loading from "../../../components/Loading";
+import LoadingChild from "../../../components/Loading/LoadingChild";
+import useScrollControl from "../../../hooks/useScrollController";
 
-const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
+const Messages: React.FC<any> = () => {
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const loadingRef = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState([]);
   const userReciver = Number(location?.search?.split("=")?.[1]);
   const userIdLogin = main?.userLogin?.user?.id;
+  const [pagination, setPagination] = useState({
+    skip: 0,
+    take: 10,
+  });
+  const messagesEndRef = useScrollControl(pagination.skip === 0);
 
-  const handleGetMessages = async () => {
-    setIsLoading(true);
-    const res = await userMessages(userIdLogin, userReciver);
-    setIsLoading(false);
-
-    setMessages(res?.data?.data);
+  const fetchMessages = async () => {
+    try {
+      const response = await userMessages(
+        userIdLogin,
+        userReciver,
+        pagination.skip,
+        pagination.take
+      );
+      setMessages((prev) => [...response?.data.reverse(), ...prev]);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
   };
 
   useEffect(() => {
-    if (!!userIdLogin && !!userReciver) handleGetMessages();
-  }, [userIdLogin, userReciver]);
+    if (userIdLogin) {
+      fetchMessages();
+    }
+  }, [userIdLogin]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setPagination((prev) => ({
+            ...prev,
+            skip: prev.skip + prev.take,
+          }));
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [loadingRef]);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [pagination]);
 
   return (
     <>
-      {isLoading && <Loading isLoading={isLoading} />}
+      <div ref={messagesEndRef}>
+        {true && <LoadingChild isLoading={true} ref={loadingRef} />}
+      </div>
       {messages
         ?.filter(
           (item: any) =>
@@ -35,10 +85,8 @@ const Messages: React.FC<any> = ({ messages, setMessages, messagesEndRef }) => {
         ?.map((msg: any, index: number) => {
           const numberServerUserId = Number(msg?.recieveId);
           const displayTime = msg?.time.slice(0, 5);
-
           return (
             <div
-              ref={messagesEndRef}
               key={index}
               className={`flex w-100 align-center mt-2 justify-${
                 userIdLogin === numberServerUserId ? "start" : "end"

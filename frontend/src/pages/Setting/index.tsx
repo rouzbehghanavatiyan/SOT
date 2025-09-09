@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SoftLink from "../../hoc/SoftLinks";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import asyncWrapper from "../../common/AsyncWrapper";
 import { addAttachment } from "../../services/dotNet";
 import MainTitle from "../../components/MainTitle";

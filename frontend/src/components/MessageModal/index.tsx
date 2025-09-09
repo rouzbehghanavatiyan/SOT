@@ -2,7 +2,7 @@ import React from "react";
 import Input from "../Input";
 import Modal from "../Modal";
 import { Button } from "../Button";
-import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import { RsetMessageModal } from "../../common/Slices/main";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import DoneIcon from "@mui/icons-material/Done";

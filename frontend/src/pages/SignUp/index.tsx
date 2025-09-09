@@ -6,7 +6,7 @@ import Input from "../../components/Input";
 import logo from "../../assets/img/1724181984017.jpg";
 import asyncWrapper from "../../common/AsyncWrapper";
 import { registerUser } from "../../services/dotNet";
-import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import { RsetMessageModal } from "../../common/Slices/main";
 import MessageModal from "../../components/MessageModal";
 import VisibilityIcon from "@mui/icons-material/Visibility";

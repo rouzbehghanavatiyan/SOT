@@ -8,8 +8,6 @@ const urlsToCache = [
 ];
 
 self.addEventListener("install", (event) => {
-  console.log("install install install ", event);
-
   event.waitUntil(
     caches
       .open(CACHE_NAME)
@@ -41,7 +39,6 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-  console.log("Push event received");
   let payload = { title: "New Notification", body: "" };
   try {
     if (event.data) {
@@ -50,7 +47,6 @@ self.addEventListener("push", (event) => {
   } catch (error) {
     payload = { title: event.data?.text() || "New Notification", body: "" };
   }
-  console.log("Payload:", payload);
 
   event.waitUntil(
     self.registration.showNotification(payload.title, {
@@ -63,10 +59,8 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-  
+
   if (event.action === "accept") {
-    console.log("User accepted notifications");
     event.waitUntil(
       self.registration.showNotification("Thank you!", {
         body: "You have enabled notifications.",
@@ -79,7 +73,6 @@ self.addEventListener("notificationclick", (event) => {
       })
     );
   } else if (event.action === "reject") {
-    console.log("User rejected notifications");
     event.waitUntil(
       self.registration.showNotification("Notifications disabled", {
         body: "You have chosen to disable notifications.",
@@ -87,7 +80,6 @@ self.addEventListener("notificationclick", (event) => {
       })
     );
   } else {
-    console.log("Notification clicked");
     event.waitUntil(clients.openWindow(event.notification.data?.url || "/"));
   }
 });

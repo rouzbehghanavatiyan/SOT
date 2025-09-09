@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 import ImageRank from "../../components/ImageRank";
 import { Link, useNavigate } from "react-router-dom";
 import { allUserMessagese } from "../../services/nest";

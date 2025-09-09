@@ -4,7 +4,7 @@ import { redirect } from "react-router-dom";
 import ImageRank from "../../components/ImageRank";
 import Loading from "../../components/Loading";
 import StringHelpers from "../../utils/helpers/StringHelper";
-import { useAppSelector } from "../../hooks/hook";
+import { useAppSelector } from "../../hooks/reduxHookType";
 
 const Following = () => {
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
