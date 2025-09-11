@@ -50,10 +50,12 @@ interface MainType {
   loginMatch?: any[];
   lastMatch?: any[];
   selectedInviteId: any;
+  videos: any;
 }
 
 const initialState: MainType = {
   lastMatch: [],
+  videos: [],
   messageModal: { title: "", show: false, icon: "" },
   showToast: { title: "", bg: "", show: false },
   loading: false,
@@ -179,6 +181,12 @@ const mainSlice = createSlice({
     RsetLastMatch: (state, action: PayloadAction<any[]>) => {
       state.lastMatch = action.payload;
     },
+    setVideos(state, action: PayloadAction<any[]>) {
+      state.videos = action.payload;
+    },
+    RsetAppendVideos(state, action: PayloadAction<any[]>) {
+      state.videos = [...state.videos, ...action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -301,6 +309,7 @@ export const {
   RsetGetImageProfile,
   RsetAllLoginMatch,
   RsetLastMatch,
+  RsetAppendVideos,
 } = mainSlice.actions;
 
 export const { useGetMainAttachmentsQuery } = extendedApiSlice;

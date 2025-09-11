@@ -15,58 +15,36 @@ import Loading from "../../components/Loading";
 import ProfileHeader from "./ProfileHeader";
 import ProfileAchievements from "./ProfileAchievements";
 import ProfileBio from "./ProfileBio";
+import usePagination from "../../hooks/usePagination";
 
 const Profile: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
+  const userIdWhantToShow = location?.state?.userData;
+  const findImg = !!userIdWhantToShow
+    ? StringHelpers.getProfile(userIdWhantToShow?.profile)
+    : StringHelpers.getProfile(main?.userLogin?.profile);
   const socket = main.socketConfig;
+  const [loadedCount, setLoadedCount] = useState<number>(0);
   const userId = main?.userLogin?.user?.id;
   const [match, setMatch] = useState<any>([]);
   const [allFollower, setAllFollower] = useState<any>([]);
   const [percentage, setPercentage] = useState<number>(0);
   const [profileImage, setProfileImage] = useState<string>("");
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
-  const [pagination, setPagination] = useState({
-    skip: 0,
-    take: 1,
-    hasMore: true,
-  });
-  const userIdWhantToShow = location?.state?.userData;
-  const findImg = !!userIdWhantToShow
-    ? StringHelpers.getProfile(userIdWhantToShow?.profile)
-    : StringHelpers.getProfile(main?.userLogin?.profile);
-
-  const handleUserVideo = async () => {
-    try {
-
-      if (!pagination.hasMore || isLoading) return;
-      setIsLoading(true);
-      const res = await userAttachmentList({
-        userId: userIdWhantToShow?.user?.id || main?.userLogin?.user?.id,
-        skip: pagination.skip,
-        take: pagination.take,
-      });
-      setIsLoading(false);
-      const { data, status } = res?.data;
-      if (status === 0) {
-        console.log(data);
-        setMatch(data);
-        setVideoLikes((prev) => ({ ...prev, ...calculateInitialLikes(data) }));
-        setPagination((prev) => ({
-          ...prev,
-          hasMore: data.length === prev.take,
-          skip: prev.skip + prev.take,
-        }));
-      }
-    } catch (error) {
-      console.log(error);
+  const { data, isLoading, hasMore, fetchNextPage } = usePagination(
+    userAttachmentList,
+    {
+      take: 3,
+      extraParams: {
+        id: userIdWhantToShow?.user?.id || main?.userLogin?.user?.id,
+      },
     }
-  };
+  );
 
   const handleGetAddLike = (data: { userId: number; movieId: number }) => {
     setVideoLikes((prev) => ({
@@ -126,12 +104,12 @@ const Profile: React.FC = () => {
   };
 
   const itsMatchingWithTimer = useMemo(() => {
-    return match?.some(
+    return data?.some(
       (item: any) =>
         item?.inviteInserted?.insertDate !== -1 ||
         item?.inviteMatched?.insertDate !== -1
     );
-  }, [match]);
+  }, [data]);
 
   useEffect(() => {
     if (itsMatchingWithTimer) {
@@ -139,7 +117,7 @@ const Profile: React.FC = () => {
       const timer = setTimeout(scrollToFirstVideo, 300);
       return () => clearTimeout(timer);
     }
-  }, [match, isLoading]);
+  }, [data, isLoading]);
 
   useEffect(() => {
     if (socket) {
@@ -160,10 +138,35 @@ const Profile: React.FC = () => {
         userIdWhantToShow?.score || main?.userLogin?.score || 0
       );
       setPercentage(calculatedPercentage);
-      handleUserVideo();
       handleGetFollower();
     }
   }, [userId, main?.userLogin?.score, userIdWhantToShow?.user?.id]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !isLoading) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    const refCurrent = loadingRef.current;
+    if (refCurrent) observer.observe(refCurrent);
+
+    return () => {
+      if (refCurrent) observer.unobserve(refCurrent);
+    };
+  }, [fetchNextPage, hasMore, isLoading]);
+
+  useEffect(() => {
+    setVideoLikes((prev) => ({ ...prev, ...calculateInitialLikes(data) }));
+    setLoadedCount(data.length);
+    if (data.length === 0 && !isLoading) {
+      fetchNextPage();
+    }
+  }, [data, isLoading, fetchNextPage]);
 
   return (
     <>
@@ -195,7 +198,7 @@ const Profile: React.FC = () => {
           loadingRef={loadingRef}
           isLoading={isLoading}
           ref={videosProfileRef}
-          match={match}
+          match={data}
           videoLikes={videoLikes}
         />
         {isLoading && <Loading isLoading={isLoading ? true : false} />}

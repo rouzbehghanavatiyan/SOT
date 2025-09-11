@@ -123,8 +123,9 @@ export const profileAttachment = async (userId: number) => {
 };
 
 export const userAttachmentList = async (postData: any) => {
-  const url = `${baseURL}/userAttachmentList?userId=${postData?.userId}&skip=${postData?.skip}&take=${postData?.take}`;
-  return await axios.get(url);
+  const url = `${baseURL}/userAttachmentList?skip=${postData?.skip}&take=${postData?.take}&userId=${postData?.id}`;
+  const res = await axios.get(url);
+  return res?.data;
 };
 
 export const followerAttachmentList = async (postData: any) => {

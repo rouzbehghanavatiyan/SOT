@@ -1,16 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import LoadingChild from "../../components/Loading/LoadingChild";
-import VideoSkeleton from "../../components/VideoLoading/VideoSkeleton";
 import VideoGroup from "./VideoGroup";
 import { attachmentList } from "../../services/dotNet";
 import usePagination from "../../hooks/usePagination";
-import Filtered from "./Filtered";
 import { useNavigate } from "react-router-dom";
 import VideoItemSkeleton from "../../components/VideoLoading";
 
 const StepOne: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
-  const [lastTap, setLastTap] = useState<number>(0);
   const navigate = useNavigate();
   const {
     data: allDableWatch,
