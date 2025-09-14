@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import LoadingChild from "../../components/Loading/LoadingChild";
 import VideoGroup from "./VideoGroup";
 import { attachmentList } from "../../services/dotNet";
 import usePagination from "../../hooks/usePagination";
 import { useNavigate } from "react-router-dom";
 import VideoItemSkeleton from "../../components/VideoLoading";
+import Filtered from "./Filtered";
 
 const StepOne: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -14,9 +15,15 @@ const StepOne: React.FC = () => {
     isLoading,
     hasMore,
     fetchNextPage,
-  } = usePagination(attachmentList, { take: 6 });
+  } = usePagination(attachmentList, {
+    take: 6,
+    extraParams: { subCatId: 1 },
+  });
+
+  const handleGetCattgory = () => {};
 
   useEffect(() => {
+    handleGetCattgory();
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && hasMore && !isLoading) {
@@ -42,8 +49,8 @@ const StepOne: React.FC = () => {
 
   return (
     <section>
-      <div className="mt-2 mb-3">
-        {/* <Filtered /> */}
+      <Filtered allCategory={""} />
+      <div className=" mb-3">
         <div className="grid grid-cols-2 mt-0 md:mt-10 gap-[5px] p-[2px]">
           {isLoading && allDableWatch.length === 0
             ? [...Array(12)].map((_, index) => (

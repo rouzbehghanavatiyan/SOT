@@ -9,16 +9,8 @@ export const getTableFields = async () => {
   const response = await axios.patch(url);
   return response?.data;
 };
-export const attachmentList = async ({
-  skip,
-  take,
-}: {
-  skip: number;
-  take: number;
-}) => {
-  console.log(skip, take);
-
-  const url = `${baseURL}/attachmentList?skip=${skip}&take=${take}`;
+export const attachmentList = async (postData: any) => {
+  const url = `${baseURL}/attachmentList?skip=${postData?.skip}&take=${postData?.take}&subCatId=${postData?.subCatId}`;
   const response = await axios.get(url);
   return response?.data;
 };
@@ -77,8 +69,6 @@ export const addAttachment = async (data: FormData) => {
 
 // نمایش فیلم
 export const attachmentListByInviteId = async (postData: any) => {
-  console.log(postData);
-
   const url = `${baseURL}/attachmentListByInviteId?skip=${postData?.skip}&take=${postData?.take}&inviteId=${postData?.id}`;
   const res = await axios.get(url);
   return res?.data;
@@ -129,6 +119,8 @@ export const userAttachmentList = async (postData: any) => {
 };
 
 export const followerAttachmentList = async (postData: any) => {
+  console.log(postData);
+
   const url = `${baseURL}/followerAttachmentList?skip=${postData?.skip}&take=${postData?.take}&userId=${postData?.id}`;
   const res = await axios.get(url);
   return res?.data;

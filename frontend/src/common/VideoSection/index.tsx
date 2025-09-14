@@ -9,11 +9,7 @@ import Follows from "../../components/Fallows";
 import Dropdown from "../../components/Dropdown";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
-import {
-  RsetAllLoginMatch,
-  RsetTornoment,
-  RsetUserLogin,
-} from "../Slices/main";
+import { RsetTornoment, RsetUserLogin } from "../Slices/main";
 import {
   addFollower,
   addLike,
@@ -23,6 +19,7 @@ import {
 import Comments from "../Comments";
 import asyncWrapper from "../AsyncWrapper";
 import { useNavigate } from "react-router-dom";
+import { updatePaginationData } from "../Slices/pagination";
 
 type VideoSectionProps = {
   video?: any;
@@ -93,9 +90,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const userId =
     positionVideo === 0 ? video?.userInserted?.id : video?.userMatched?.id;
   const checkMyVideo = userInfo?.id !== main?.userLogin?.user?.id;
-  const allLoginMatch: any = useAppSelector(
-    (state) => state.main.allLoginMatch
-  );
+  const allLoginMatch: any = useAppSelector((state) => state.pagination.data);
   const videoFromRedux = allLoginMatch.find((v: any) => {
     return v?.follows?.[userId] === video?.follows?.[userId];
   });
@@ -103,8 +98,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const isFollowed = followInfo?.isFollowed;
 
   const handleFallowClick = async (video: any, position: number) => {
-    console.log("handleFallowClick", video);
-
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
     const postData = {
@@ -113,7 +106,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     };
     const isCurrentlyFollowed = video?.follows?.[userId]?.isFollowed || false;
     dispatch(
-      RsetAllLoginMatch((prevVideos: any) => {
+      updatePaginationData((prevVideos: any) => {
         const updatedVideos = prevVideos.map((v: any) => {
           return v.id === video.id
             ? {
@@ -139,7 +132,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     } catch (error) {
       console.error("Error in follow operation:", error);
       dispatch(
-        RsetAllLoginMatch((prevVideos: any) =>
+        updatePaginationData((prevVideos: any) =>
           prevVideos.map((v: any) =>
             v.id === video.id
               ? {
@@ -163,7 +156,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       position === 0
         ? video?.attachmentInserted?.attachmentId
         : video?.attachmentMatched?.attachmentId;
-    
+
     const postData = {
       userId: userIdLogin || null,
       movieId: movieId,
@@ -171,7 +164,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
     try {
       dispatch(
-        RsetAllLoginMatch((prevVideos: any) => {
+        updatePaginationData((prevVideos: any) => {
           return prevVideos.map((v: any) =>
             v.id === video.id
               ? {
@@ -200,7 +193,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     } catch (error) {
       console.error("Error in like operation:", error);
       dispatch(
-        RsetAllLoginMatch((prevVideos: any) =>
+        updatePaginationData((prevVideos: any) =>
           prevVideos.map((v: any) =>
             v.id === video.id
               ? {

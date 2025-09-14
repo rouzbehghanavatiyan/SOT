@@ -22,6 +22,8 @@ const Skill: React.FC<any> = ({
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
     const res = await subCategoryList(currentStep?.arena?.id);
+    console.log("subCategoryList", res);
+
     setIsLoading(false);
     const { data, status } = res?.data;
     if (status === 0) {

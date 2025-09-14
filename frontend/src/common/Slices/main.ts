@@ -151,12 +151,12 @@ const mainSlice = createSlice({
     RsetTornoment: (state, action: PayloadAction<(videos: any[]) => any[]>) => {
       state.tornoment = action.payload(state.tornoment);
     },
-    RsetAllLoginMatch: (state, action: PayloadAction<any>) => {
-      const updatedTornoment = action.payload(state.allLoginMatch);
-      console.log(updatedTornoment);
+    // RsetAllLoginMatch: (state, action: PayloadAction<any>) => {
+    //   const updatedTornoment = action.payload(state.allLoginMatch);
+    //   console.log(updatedTornoment);
 
-      state.allLoginMatch = updatedTornoment;
-    },
+    //   state.allLoginMatch = updatedTornoment;
+    // },
     RsetCategory: (state, action: PayloadAction<any[]>) => {
       state.category = action.payload;
     },
@@ -307,7 +307,7 @@ export const {
   RsetAllFollingList,
   RsetGiveUserOnlines,
   RsetGetImageProfile,
-  RsetAllLoginMatch,
+  // RsetAllLoginMatch,
   RsetLastMatch,
   RsetAppendVideos,
 } = mainSlice.actions;

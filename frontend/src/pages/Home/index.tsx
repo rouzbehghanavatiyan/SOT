@@ -16,6 +16,7 @@ import VideoSkeleton from "../../components/VideoLoading/VideoSkeleton";
 import usePagination from "../../hooks/usePagination";
 import { followerAttachmentList } from "../../services/dotNet";
 import LoadingChild from "../../components/Loading/LoadingChild";
+import useReduxPagination from "../../hooks/usePaginationRedux";
 
 const Home: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -24,23 +25,37 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const [loadedCount, setLoadedCount] = useState<number>(0);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
+  const [lastLoadedIndex, setLastLoadedIndex] = useState<number>(-1);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
   const userIdLogin = main?.userLogin?.user?.id;
-  const { data, isLoading, hasMore, fetchNextPage } = usePagination(
-    followerAttachmentList,
-    {
-      take: 3,
+  const { data, isLoading, hasMore, fetchNextPage, resetPagination, setTake } =
+    useReduxPagination({
+      service: followerAttachmentList,
       extraParams: { id: userIdLogin },
-    }
-  );
+    });
+
+  // const handleSlideChange = (swiper: any) => {
+  //   const realIndex = swiper.realIndex;
+  //   const topVideoId = data[realIndex]?.attachmentInserted?.attachmentId;
+  //   setCurrentlyPlayingId(topVideoId);
+  //   if (realIndex === loadedCount - 1 && hasMore && !isLoading) {
+  //     fetchNextPage();
+  //   }
+  // };
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
     const topVideoId = data[realIndex]?.attachmentInserted?.attachmentId;
     setCurrentlyPlayingId(topVideoId);
-    if (realIndex === loadedCount - 1 && hasMore && !isLoading) {
+    if (
+      realIndex % 3 === 0 &&
+      realIndex !== lastLoadedIndex &&
+      hasMore &&
+      !isLoading
+    ) {
       fetchNextPage();
+      setLastLoadedIndex(realIndex);
     }
   };
 
@@ -104,7 +119,7 @@ const Home: React.FC = () => {
     if (data.length === 0 && !isLoading) {
       fetchNextPage();
     }
-  }, [data, isLoading, fetchNextPage]);
+  }, [data, isLoading, userIdLogin]);
 
   useEffect(() => {
     if (data.length > 0) {

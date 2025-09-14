@@ -3,31 +3,42 @@ import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
   fetchPaginationData,
   resetPagination,
+  setTake,
 } from "../common/Slices/pagination";
 
 interface UseReduxPaginationParams {
-  take: number;
-  extraParams?: Record<string, any>;
+  service: (params: Record<string, any>) => Promise<any>; // تابع سرویس داینامیک
+  extraParams?: Record<string, any>; // پارامترهای اضافی
 }
 
 const useReduxPagination = ({
-  take,
+  service,
   extraParams = {},
 }: UseReduxPaginationParams) => {
   const dispatch = useAppDispatch();
-  const { data, isLoading, hasMore, skip, error } = useAppSelector(
+  const { data, isLoading, hasMore, skip, take, error } = useAppSelector(
     (state) => state.pagination
   );
-
+  // دریافت صفحه بعدی
   const fetchNextPage = useCallback(() => {
+    console.log("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+    
     if (isLoading || !hasMore) return;
-    dispatch(fetchPaginationData({ skip, take, extraParams }));
-  }, [dispatch, skip, take, extraParams, isLoading, hasMore]);
+    dispatch(fetchPaginationData({ service, skip, take, extraParams }));
+  }, [dispatch, service, skip, take, extraParams, isLoading, hasMore]);
 
-  // بازنشانی Pagination
+  // بازنشانی صفحه‌بندی
   const resetPaginationState = useCallback(() => {
     dispatch(resetPagination());
   }, [dispatch]);
+
+  // تنظیم تعداد آیتم‌ها در هر صفحه
+  const setPaginationTake = useCallback(
+    (newTake: number) => {
+      dispatch(setTake(newTake));
+    },
+    [dispatch]
+  );
 
   return {
     data,
@@ -35,6 +46,7 @@ const useReduxPagination = ({
     hasMore,
     fetchNextPage,
     resetPagination: resetPaginationState,
+    setTake: setPaginationTake,
     error,
   };
 };

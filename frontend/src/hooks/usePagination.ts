@@ -29,7 +29,7 @@ const usePagination = (
       const response = await fetchService({ skip, take, ...extraParams });
       const newData = response?.data || [];
       console.log(newData);
- 
+
       setData((prev) => [...prev, ...newData]);
       setSkip((prev) => prev + take);
       if (newData.length < take) {
