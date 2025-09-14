@@ -989,7 +989,7 @@ body.comments-open {
 }
 
 .scrollable-container {
-  width: calc(100vw);
+  width: 100vw;
   transition: transform 0.3s ease-in-out;
   overflow-x: scroll;
   white-space: nowrap;

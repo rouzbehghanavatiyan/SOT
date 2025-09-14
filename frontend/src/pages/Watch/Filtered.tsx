@@ -10,7 +10,7 @@ import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 
 const Filtered: React.FC = () => {
   return (
-    <div className="scrollable-container flex gap-4 px-2 pt-3 pb-2 bg-white whitespace-nowrap scrollbar-hide w-full z-10">
+    <div className="scrollable-container md:mt-12 flex gap-4 px-2 pt-3 pb-2 bg-white whitespace-nowrap">
       <span className="rounded-full flex items-center border-2 border-gray-200 bg-white flex-shrink-0">
         <span className="font-bold text-gray-200 px-4">All</span>
       </span>

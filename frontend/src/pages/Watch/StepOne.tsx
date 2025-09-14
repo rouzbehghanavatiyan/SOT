@@ -6,17 +6,30 @@ import usePagination from "../../hooks/usePagination";
 import { useNavigate } from "react-router-dom";
 import VideoItemSkeleton from "../../components/VideoLoading";
 import Filtered from "./Filtered";
+import useReduxPagination from "../../hooks/usePaginationRedux";
 
 const StepOne: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  // const {
+  //   data: allDableWatch,
+  //   isLoading,
+  //   hasMore,
+  //   fetchNextPage,
+  // } = usePagination(attachmentList, {
+  //   take: 6,
+  //   extraParams: { subCatId: 1 },
+  // });
+
   const {
     data: allDableWatch,
     isLoading,
     hasMore,
     fetchNextPage,
-  } = usePagination(attachmentList, {
-    take: 6,
+    resetPagination,
+    setTake,
+  } = useReduxPagination({
+    service: attachmentList,
     extraParams: { subCatId: 1 },
   });
 
