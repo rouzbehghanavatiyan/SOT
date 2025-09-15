@@ -1,0 +1,53 @@
+import { Route, Routes } from "react-router-dom";
+import Home from "../pages/Home";
+import PageNotFound from "../pages/PageNotFound";
+import Layout from "../layout";
+import Watch from "../pages/Watch";
+import Cup from "../pages/Cup";
+import Friendly from "../pages/Friendly";
+import Live from "../pages/Live";
+import Robot from "../pages/Robot";
+import Store from "../pages/Store";
+import Profile from "../pages/Profile";
+import ShowWatch from "../pages/Watch/ShowWatch";
+import Setting from "../pages/Setting";
+import ChatRoom from "../pages/ChatRoom";
+import LearningSot from "../pages/LearningSot";
+import PrivateChat from "../pages/ChatRoom/PrivateChat";
+import Followers from "../pages/Followers";
+import Notification from "../pages/Notification";
+import Following from "../pages/Following";
+import Pay from "../pages/Pay";
+import Sot from "../pages/Sot";
+
+const PublicRoutes: React.FC = () => {
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/*" element={<PageNotFound />} />
+        <Route path="/sot" element={<Sot />} />
+        <Route path="/watch/show" element={<ShowWatch />} />
+        <Route path="/friendly" element={<Friendly />} />
+        <Route path="/cup" element={<Cup />} />
+        <Route path="/watch" element={<Watch />} />
+        <Route path="/learn" element={<LearningSot />} />
+        <Route path="/live" element={<Live />} />
+        <Route path="/robot" element={<Robot />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/notification" element={<Notification />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/setting" element={<Setting />} />
+        <Route path="/messages" element={<ChatRoom />} />
+        <Route path="/privateMessage" element={<PrivateChat />} />
+        <Route path="/followers" element={<Followers />} />
+        <Route path="/following" element={<Following />} />
+        <Route path="/crypto-pay" element={<Pay />} />
+        {/* <Route path="/messages" element={<Setting />} /> */}
+      </Routes>
+    </Layout>
+  );
+};
+
+export default PublicRoutes;

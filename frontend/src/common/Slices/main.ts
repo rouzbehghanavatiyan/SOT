@@ -49,6 +49,7 @@ interface MainType {
   allLoginMatch?: any[];
   loginMatch?: any[];
   lastMatch?: any[];
+  watchVideo?: any;
   selectedInviteId: any;
   videos: any;
 }
@@ -74,6 +75,14 @@ const initialState: MainType = {
   allLoginMatch: [],
   loginMatch: [],
   selectedInviteId: null,
+  watchVideo: {
+    pagination: {
+      take: 6,
+      skip: 0,
+      hasMore: true,
+    },
+    data: [],
+  },
 };
 
 export const extendedApiSlice = apiSlice.injectEndpoints({
@@ -186,6 +195,15 @@ const mainSlice = createSlice({
     },
     RsetAppendVideos(state, action: PayloadAction<any[]>) {
       state.videos = [...state.videos, ...action.payload];
+    },
+    RsetWatchVideo: (state, action: PayloadAction<any[]>) => {
+      state.watchVideo.data = [...state.watchVideo.data, ...action.payload];
+    },
+    setPaginationWatch: (
+      state,
+      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>
+    ) => {
+      state.watchVideo.pagination = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -308,6 +326,8 @@ export const {
   RsetGiveUserOnlines,
   RsetGetImageProfile,
   // RsetAllLoginMatch,
+  setPaginationWatch,
+  RsetWatchVideo,
   RsetLastMatch,
   RsetAppendVideos,
 } = mainSlice.actions;

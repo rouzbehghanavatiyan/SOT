@@ -14,11 +14,10 @@ const initialState: PaginationState = {
   isLoading: false,
   hasMore: true,
   skip: 0,
-  take: 6, // مقدار پیش‌فرض برای تعداد آیتم‌ها در هر صفحه
+  take: 6,
   error: null,
 };
 
-// Thunk برای دریافت داده‌های صفحه‌بندی
 export const fetchPaginationData = createAsyncThunk(
   "pagination/fetchPaginationData",
   async (
