@@ -50,6 +50,7 @@ interface MainType {
   loginMatch?: any[];
   lastMatch?: any[];
   watchVideo?: any;
+  homeMatch?: any;
   selectedInviteId: any;
   videos: any;
 }
@@ -76,6 +77,14 @@ const initialState: MainType = {
   loginMatch: [],
   selectedInviteId: null,
   watchVideo: {
+    pagination: {
+      take: 6,
+      skip: 0,
+      hasMore: true,
+    },
+    data: [],
+  },
+  homeMatch: {
     pagination: {
       take: 6,
       skip: 0,
@@ -205,6 +214,15 @@ const mainSlice = createSlice({
     ) => {
       state.watchVideo.pagination = action.payload;
     },
+    RsetHomeMatch: (state, action: PayloadAction<any[]>) => {
+      state.homeMatch.data = [...state.homeMatch.data, ...action.payload];
+    },
+    setPaginationHomeMatch: (
+      state,
+      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>
+    ) => {
+      state.homeMatch.pagination = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -328,6 +346,8 @@ export const {
   // RsetAllLoginMatch,
   setPaginationWatch,
   RsetWatchVideo,
+  RsetHomeMatch,
+  setPaginationHomeMatch,
   RsetLastMatch,
   RsetAppendVideos,
 } = mainSlice.actions;

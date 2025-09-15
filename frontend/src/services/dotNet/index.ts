@@ -121,7 +121,7 @@ export const userAttachmentList = async (postData: any) => {
 export const followerAttachmentList = async (postData: any) => {
   console.log(postData);
 
-  const url = `${baseURL}/followerAttachmentList?skip=${postData?.skip}&take=${postData?.take}&userId=${postData?.id}`;
+  const url = `${baseURL}/followerAttachmentList?skip=${postData?.skip}&take=${postData?.take}&userId=${postData?.userIdLogin}`;
   const res = await axios.get(url);
   return res?.data;
 };
