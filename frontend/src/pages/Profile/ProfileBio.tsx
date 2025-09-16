@@ -15,7 +15,7 @@ const ProfileBio: React.FC<ProfileBioProps> = ({
   rankPercentage,
 }) => (
   <div className="flex flex-col items-center mb-5">
-    <div className="font-bold mb-2 text-gray-800">Rank score</div>
+    <div className="font-bold mb-2  text-gray-800">Rank score</div>
     <div className="w-full relative h-4 bg-gray-200 rounded-xl overflow-hidden">
       <ProgressBar percentage={rankPercentage} />
       <div className="absolute inset-0 flex items-center justify-center">

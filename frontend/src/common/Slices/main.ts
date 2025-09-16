@@ -51,6 +51,7 @@ interface MainType {
   lastMatch?: any[];
   watchVideo?: any;
   homeMatch?: any;
+  showWatchMatch?: any;
   selectedInviteId: any;
   videos: any;
 }
@@ -92,6 +93,14 @@ const initialState: MainType = {
     },
     data: [],
   },
+  showWatchMatch: {
+    pagination: {
+      take: 6,
+      skip: 0,
+      hasMore: true,
+    },
+    data: [],
+  },
 };
 
 export const extendedApiSlice = apiSlice.injectEndpoints({
@@ -107,15 +116,14 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
 
 export const handleAttachmentListByInviteId = createAsyncThunk(
   "main/handleAttachmentListByInviteId",
-  async (inviteId: string, { rejectWithValue, getState, dispatch }) => {
+  async (data: any, { rejectWithValue, getState, dispatch }) => {
+    const postData = {
+      skip: data?.skip,
+      take: data?.take,
+      inviteId: data?.inviteId,
+    };
     try {
-      dispatch(RsetLoading({ value: true }));
-      const response = await attachmentListByInviteId(0, 6, inviteId);
-      console.log(
-        "attachmentListByInviteId attachmentListByInviteId attachmentListByInviteId",
-        response
-      );
-      dispatch(RsetLoading({ value: false }));
+      const response = await attachmentListByInviteId(postData);
       return {
         getData: response,
         state: getState(),
@@ -223,6 +231,67 @@ const mainSlice = createSlice({
     ) => {
       state.homeMatch.pagination = action.payload;
     },
+    RsetShowWatch: (state, action: PayloadAction<any[]>) => {
+      console.log(action);
+      const processedVideos = action?.payload?.map((video: any) => {
+        const isFollowedFromMeTop =
+          state?.allFollingList?.getMapFollowingId?.some(
+            (following: any) => following === video?.userInserted?.id
+          );
+        const isFollowedFromMeBott =
+          state?.allFollingList?.getMapFollowingId?.some(
+            (following: any) => following === video?.userMatched?.id
+          );
+        return {
+          ...video,
+          urlTop: video?.attachmentInserted?.url,
+          urlBott: video?.attachmentMatched?.url,
+          profileTop: video?.profileInserted?.profileImage,
+          profileBott: video?.profileMatched?.profileImage,
+          isFollowedFromMeTop: isFollowedFromMeTop || false,
+          isFollowedFromMeBott: isFollowedFromMeBott || false,
+          likes: {
+            [video?.attachmentInserted?.attachmentId]: {
+              isLiked: video.isLikedInserted || false,
+              count: video.likeInserted || 0,
+            },
+            [video?.attachmentMatched?.attachmentId]: {
+              isLiked: video.isLikedMatched || false,
+              count: video.likeMatched || 0,
+            },
+          },
+          follows: {
+            [video?.userInserted?.id]: {
+              isFollowed: isFollowedFromMeTop || false,
+            },
+            [video?.userMatched?.id]: {
+              isFollowed: isFollowedFromMeBott || false,
+            },
+          },
+        };
+      });
+
+      state.showWatchMatch.data = [
+        ...state.showWatchMatch.data,
+        ...processedVideos, // استفاده از processedVideos به جای action.payload
+      ];
+    },
+    setPaginationShowWatch: (
+      state,
+      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>
+    ) => {
+      state.showWatchMatch.pagination = action.payload;
+    },
+    resetShowWatchState: (state) => {
+      state.showWatchMatch = {
+        pagination: {
+          take: 6,
+          skip: 0,
+          hasMore: true,
+        },
+        data: [],
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -233,6 +302,7 @@ const mainSlice = createSlice({
         handleAttachmentListByInviteId.fulfilled,
         (state, action: PayloadAction<any>) => {
           const { status, data } = action?.payload.getData?.data;
+          const hasMore = data.length > 0;
           const getAllStateMain = action?.payload?.state?.main;
           if (status === 0) {
             const processedVideos = data.map((video: any) => {
@@ -344,6 +414,9 @@ export const {
   RsetGiveUserOnlines,
   RsetGetImageProfile,
   // RsetAllLoginMatch,
+  resetShowWatchState,
+  RsetShowWatch,
+  setPaginationShowWatch,
   setPaginationWatch,
   RsetWatchVideo,
   RsetHomeMatch,

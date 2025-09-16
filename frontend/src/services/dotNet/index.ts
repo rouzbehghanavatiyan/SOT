@@ -69,7 +69,7 @@ export const addAttachment = async (data: FormData) => {
 
 // نمایش فیلم
 export const attachmentListByInviteId = async (postData: any) => {
-  const url = `${baseURL}/attachmentListByInviteId?skip=${postData?.skip}&take=${postData?.take}&inviteId=${postData?.id}`;
+  const url = `${baseURL}/attachmentListByInviteId?skip=${postData?.skip}&take=${postData?.take}&inviteId=${postData?.inviteId}`;
   const res = await axios.get(url);
   return res?.data;
 };

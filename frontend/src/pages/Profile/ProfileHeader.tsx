@@ -121,7 +121,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
               <div className="flex">
                 <Link
                   to="/followers"
-                  className="mx-2 bg-gray-150 flex flex-col py-1 px-2 rounded-2xl"
+                  className="mx-2 border border-gray-150 flex flex-col py-1 px-2 rounded-2xl"
                 >
                   <span className="font-bold text-gray-800">
                     {followersCount}
@@ -132,7 +132,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
                 </Link>
                 <Link
                   to="/following"
-                  className="mx-2 bg-gray-150 flex flex-col py-1 px-2 rounded-2xl"
+                  className="mx-2 border border-gray-150 flex flex-col py-1 px-2 rounded-2xl"
                 >
                   <span className="font-bold text-gray-800">
                     {followingCount}

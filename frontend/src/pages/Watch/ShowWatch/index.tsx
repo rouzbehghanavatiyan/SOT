@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReportIcon from "@mui/icons-material/Report";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -9,47 +9,32 @@ import EmailIcon from "@mui/icons-material/Email";
 import { Video } from "../../../types/mainType";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import VideoItemSkeleton from "../../../components/VideoLoading";
-import LoadingChild from "../../../components/Loading/LoadingChild";
-import useReduxPagination from "../../../hooks/usePaginationRedux";
 import { attachmentListByInviteId } from "../../../services/dotNet";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHookType";
+import {
+  resetShowWatchState,
+  RsetShowWatch,
+  setPaginationShowWatch,
+} from "../../../common/Slices/main";
 
 const ShowWatch: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const location = useLocation();
-  const getInvitedId = location?.search?.split("id=")?.[1];
+  const inviteId = location?.search?.split("id=")?.[1];
+  const main = useAppSelector((state) => state.main);
+  const [isLoading, setIsLoading] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
-  const loadingRef = useRef<HTMLDivElement>(null);
-  const [lastLoadedIndex, setLastLoadedIndex] = useState<number>(-1);
-  const { data, isLoading, hasMore, fetchNextPage, resetPagination, setTake } =
-    useReduxPagination({
-      service: attachmentListByInviteId,
-      extraParams: { id: getInvitedId },
-    });
+  const { pagination, data } = main.showWatchMatch;
+  const paginationRef = useRef(pagination);
+  const isLoadingRef = useRef(isLoading);
+  console.log(main?.showWatchMatch?.data);
 
   useEffect(() => {
-    resetPagination();
-    setTake(6);
-    fetchNextPage();
-    return () => {
-      resetPagination();
-    };
-  }, []);
-
-  const handleSlideChange = (swiper: any) => {
-    const realIndex = swiper.realIndex;
-    const topVideoId = data[realIndex]?.attachmentInserted?.attachmentId;
-    setCurrentlyPlayingId(topVideoId);
-    if (
-      realIndex % 3 === 0 &&
-      realIndex !== lastLoadedIndex &&
-      hasMore &&
-      !isLoading
-    ) {
-      fetchNextPage();
-      setLastLoadedIndex(realIndex);
-    }
-  };
+    isLoadingRef.current = isLoading;
+    paginationRef.current = pagination;
+  }, [isLoading, pagination]);
 
   const handleVideoPlay = (videoId: string) => {
     setOpenDropdowns({});
@@ -100,6 +85,64 @@ const ShowWatch: React.FC = () => {
       { divider: true },
     ];
   };
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+    paginationRef.current = pagination;
+  }, [isLoading, pagination]);
+
+  const fetchNextPage = useCallback(async () => {
+    if (isLoadingRef.current || !paginationRef.current.hasMore) return;
+
+    try {
+      setIsLoading(true);
+      const res = await attachmentListByInviteId({
+        skip: paginationRef.current.skip,
+        take: paginationRef.current.take,
+        inviteId,
+      });
+      const newData = res?.data || [];
+      const hasMore = newData.length > 0;
+
+      dispatch(RsetShowWatch(newData)); // اضافه کردن داده‌های جدید به داده‌های قبلی
+      dispatch(
+        setPaginationShowWatch({
+          take: paginationRef.current.take,
+          skip: paginationRef.current.skip + paginationRef.current.take,
+          hasMore: hasMore,
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, inviteId]);
+
+  const handleSlideChange = (swiper: any) => {
+    const realIndex = swiper.realIndex;
+
+    // اگر سه اسلاید پیمایش شده باشد و داده‌های بیشتری موجود باشد
+    if (
+      realIndex % 3 === 0 &&
+      paginationRef.current.hasMore &&
+      !isLoadingRef.current
+    ) {
+      fetchNextPage(); // دریافت داده‌های جدید
+    }
+  };
+
+  useEffect(() => {
+    if (inviteId && !isLoadingRef.current) {
+      fetchNextPage();
+    }
+  }, [inviteId, fetchNextPage]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetShowWatchState());
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -178,7 +221,6 @@ const ShowWatch: React.FC = () => {
                 </SwiperSlide>
               ))}
         </Swiper>
-        <LoadingChild ref={loadingRef} isLoading={isLoading} />
       </div>
     </>
   );

@@ -40,6 +40,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const userIdWhantToShow = locationUrl?.state?.userInfo?.id;
   const userData = jwtDecode(token);
   let Vals = Object.values(userData);
+
   const userId = Vals?.[1];
   const user = { id: Number(userId) };
 

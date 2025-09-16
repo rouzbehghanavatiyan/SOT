@@ -14,8 +14,10 @@ const StepOne: React.FC = () => {
   const dispatch = useAppDispatch();
   const main = useAppSelector((state) => state.main); // اطمینان از اینکه به وضعیت صحیح دسترسی دارید
   const { pagination, data } = main.watchVideo;
-
   const [isLoading, setIsLoading] = useState(false);
+  const { pagination: pp2, data: dd2 } = main.showWatchMatch;
+
+  console.log(pp2, dd2);
 
   const handleGetAllMatch = async () => {
     // قبل از ادامه بارگذاری بررسی کنید

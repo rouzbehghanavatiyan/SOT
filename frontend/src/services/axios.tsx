@@ -41,6 +41,7 @@ axios.interceptors.response.use(
   },
   async function (error) {
     const status = error?.response?.status;
+
     if (status === 401) {
       store.dispatch(
         RsetMessageModal({
@@ -50,6 +51,7 @@ axios.interceptors.response.use(
         })
       );
 
+      console.log(error);
       localStorage.clear();
       sessionStorage.clear();
       window.location.href = "/";

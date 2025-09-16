@@ -38,9 +38,7 @@ const Home: React.FC = () => {
   }, [isLoading, pagination]);
 
   const fetchNextPage = useCallback(async () => {
-    console.log(isLoadingRef.current, !paginationRef.current.hasMore);
     if (isLoadingRef.current || !paginationRef.current.hasMore) return;
-
     try {
       setIsLoading(true);
       const res = await followerAttachmentList({

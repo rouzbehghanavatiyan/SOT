@@ -1,11 +1,13 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createSubscription, saveSubscription } from "../services/dotNet";
 import { useAppSelector } from "./reduxHookType";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 type NotificationPermission = "default" | "granted" | "denied";
 
 export const useServiceWorker = () => {
   const main = useAppSelector((state) => state.main);
+  const navigate = useNavigate();
   const [showPrompt, setShowPrompt] = useState(false);
   const [pushSubscription, setPushSubscription] =
     useState<PushSubscription | null>(null);
@@ -13,10 +15,36 @@ export const useServiceWorker = () => {
     useState<NotificationPermission>(
       Notification.permission as NotificationPermission
     );
-  const token: any = sessionStorage.getItem("token");
-  const userData = jwtDecode(token);
-  let Vals = Object.values(userData);
-  const userId = Vals?.[1];
+
+  // Get user ID from token
+  const userId = useMemo(() => {
+    if (!sessionStorage.getItem("token")) {
+      navigate("/");
+      return null;
+    }
+    const token = sessionStorage.getItem("token") as string;
+    const userData = jwtDecode(token);
+    return Object.values(userData)?.[1];
+  }, [navigate]);
+
+  // Utility functions
+  // const urlBase64ToUint8Array = useCallback((base64String: string) => {
+  //   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  //   const base64 = (base64String + padding)
+  //     .replace(/-/g, "+")
+  //     .replace(/_/g, "/");
+  //   const rawData = window.atob(base64);
+  //   const outputArray = new Uint8Array(rawData.length);
+
+  //   for (let i = 0; i < rawData.length; ++i) {
+  //     outputArray[i] = rawData.charCodeAt(i);
+  //   }
+  //   return outputArray;
+  // }, []);
+  // const token: any = sessionStorage.getItem("token");
+  // const userData = jwtDecode(token);
+  // let Vals = Object.values(userData);
+  // const userId = Vals?.[1];
 
   const urlBase64ToUint8Array = (base64String: any) => {
     const padding = "=".repeat((4 - (base64String.length % 4)) % 4);

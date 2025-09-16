@@ -9,7 +9,7 @@ import Follows from "../../components/Fallows";
 import Dropdown from "../../components/Dropdown";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
-import { RsetTornoment, RsetUserLogin } from "../Slices/main";
+import { RsetShowWatch, RsetTornoment, RsetUserLogin } from "../Slices/main";
 import {
   addFollower,
   addLike,
@@ -162,39 +162,46 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       movieId: movieId,
     };
     const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
-    try {
-      dispatch(
-        updatePaginationData((prevVideos: any) => {
-          return prevVideos.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  likes: {
-                    ...v.likes,
-                    [movieId]: {
-                      isLiked: !currentLikeStatus,
-                      count: currentLikeStatus
-                        ? v.likes?.[movieId]?.count - 1
-                        : v.likes?.[movieId]?.count + 1,
-                    },
+    const currentLikeCount = video.likes?.[movieId]?.count || 0;
+    console.log("Current like count before update:", currentLikeCount);
+
+    dispatch(
+      RsetShowWatch(
+        main.showWatchMatch.data.map((v: any) =>
+          v.id === video.id
+            ? {
+                ...v,
+                likes: {
+                  ...v.likes,
+                  [movieId]: {
+                    isLiked: !currentLikeStatus,
+                    count: currentLikeStatus
+                      ? currentLikeCount - 1
+                      : currentLikeCount + 1,
                   },
-                }
-              : v
-          );
-        })
-      );
+                },
+              }
+            : v
+        )
+      )
+    );
+
+    // Send request to server
+    try {
       if (currentLikeStatus) {
-        await removeLike(postData);
-        socket.emit("remove_liked", postData);
+        await removeLike(postData); // Remove like
+        socket.emit("remove_liked", postData); // Send to socket
       } else {
-        await addLike(postData);
-        socket.emit("add_liked", postData);
+        await addLike(postData); // Add like
+        socket.emit("add_liked", postData); // Send to socket
       }
     } catch (error) {
       console.error("Error in like operation:", error);
+
+      // Revert status to initial state on failure
       dispatch(
-        updatePaginationData((prevVideos: any) =>
-          prevVideos.map((v: any) =>
+        RsetShowWatch(
+          main.showWatchMatch.data.map((v: any) =>
             v.id === video.id
               ? {
                   ...v,
@@ -202,9 +209,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                     ...v.likes,
                     [movieId]: {
                       isLiked: currentLikeStatus,
-                      count: currentLikeStatus
-                        ? v.likes?.[movieId]?.count
-                        : v.likes?.[movieId]?.count,
+                      count: currentLikeCount, // Keep the original count
                     },
                   },
                 }
@@ -214,7 +219,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       );
     }
   });
-
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
       <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
