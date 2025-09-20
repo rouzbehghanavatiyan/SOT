@@ -9,7 +9,6 @@ import Follows from "../../components/Fallows";
 import Dropdown from "../../components/Dropdown";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
-import { RsetShowWatch, RsetTornoment, RsetUserLogin } from "../Slices/main";
 import {
   addFollower,
   addLike,
@@ -20,6 +19,7 @@ import Comments from "../Comments";
 import asyncWrapper from "../AsyncWrapper";
 import { useNavigate } from "react-router-dom";
 import { updatePaginationData } from "../Slices/pagination";
+import { RsetLikeFollow, RsetShowWatch } from "../Slices/main";
 
 type VideoSectionProps = {
   video?: any;
@@ -79,6 +79,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     positionVideo === 0
       ? video?.attachmentInserted?.attachmentId
       : video?.attachmentMatched?.attachmentId;
+
   const videoUrl =
     positionVideo === 0
       ? StringHelpers?.getProfile(video?.attachmentInserted)
@@ -151,74 +152,43 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     }
   };
 
+  console.log(main?.likeFollow);
+
   const handleLikeClick = asyncWrapper(async (video: any, position: number) => {
     const movieId =
-      position === 0
-        ? video?.attachmentInserted?.attachmentId
-        : video?.attachmentMatched?.attachmentId;
+      position === 0 ? main?.likeFollow?.movieTop : main?.likeFollow?.movieBott;
+    console.log(movieId);
 
     const postData = {
       userId: userIdLogin || null,
       movieId: movieId,
     };
-    const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
-    const currentLikeCount = video.likes?.[movieId]?.count || 0;
-    console.log("Current like count before update:", currentLikeCount);
 
-    dispatch(
-      RsetShowWatch(
-        main.showWatchMatch.data.map((v: any) =>
-          v.id === video.id
-            ? {
-                ...v,
-                likes: {
-                  ...v.likes,
-                  [movieId]: {
-                    isLiked: !currentLikeStatus,
-                    count: currentLikeStatus
-                      ? currentLikeCount - 1
-                      : currentLikeCount + 1,
-                  },
-                },
-              }
-            : v
-        )
-      )
-    );
+    const currentLikeStatus = video?.likes?.[movieId]?.isLiked || false;
+    const currentLikeCount = video?.likes?.[movieId]?.count || 0;
 
-    // Send request to server
     try {
+      dispatch(
+        RsetLikeFollow({
+          attachmentInserted: video?.attachmentInserted,
+          attachmentMatched: video?.attachmentMatched,
+          position,
+        })
+      );
+
+      // Send request to server
       if (currentLikeStatus) {
         await removeLike(postData); // Remove like
-        socket.emit("remove_liked", postData); // Send to socket
+        socket.emit("remove_liked", postData); // Emit event via socket
       } else {
         await addLike(postData); // Add like
-        socket.emit("add_liked", postData); // Send to socket
+        socket.emit("add_liked", postData); // Emit event via socket
       }
     } catch (error) {
       console.error("Error in like operation:", error);
-
-      // Revert status to initial state on failure
-      dispatch(
-        RsetShowWatch(
-          main.showWatchMatch.data.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  likes: {
-                    ...v.likes,
-                    [movieId]: {
-                      isLiked: currentLikeStatus,
-                      count: currentLikeCount, // Keep the original count
-                    },
-                  },
-                }
-              : v
-          )
-        )
-      );
     }
   });
+
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
       <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
@@ -313,12 +283,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                   <>
                     {isLiked ? (
                       <ThumbUpIcon
-                        className="text-white font35  unlike_animation cursor-pointer"
+                        className="text-white font35 unlike_animation cursor-pointer"
                         onClick={() => handleLikeClick(video, positionVideo)}
                       />
                     ) : (
                       <ThumbUpOffAltIcon
-                        className="text-white font35  cursor-pointer"
+                        className="text-white font35 cursor-pointer"
                         onClick={() => handleLikeClick(video, positionVideo)}
                       />
                     )}

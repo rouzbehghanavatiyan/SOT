@@ -54,6 +54,7 @@ interface MainType {
   showWatchMatch?: any;
   selectedInviteId: any;
   videos: any;
+  likeFollow: any;
 }
 
 const initialState: MainType = {
@@ -76,6 +77,7 @@ const initialState: MainType = {
   allFollingList: {},
   allLoginMatch: [],
   loginMatch: [],
+  likeFollow: [],
   selectedInviteId: null,
   watchVideo: {
     pagination: {
@@ -231,50 +233,52 @@ const mainSlice = createSlice({
     ) => {
       state.homeMatch.pagination = action.payload;
     },
-    RsetShowWatch: (state, action: PayloadAction<any[]>) => {
-      console.log(action);
-      const processedVideos = action?.payload?.map((video: any) => {
-        const isFollowedFromMeTop =
-          state?.allFollingList?.getMapFollowingId?.some(
-            (following: any) => following === video?.userInserted?.id
-          );
-        const isFollowedFromMeBott =
-          state?.allFollingList?.getMapFollowingId?.some(
-            (following: any) => following === video?.userMatched?.id
-          );
-        return {
-          ...video,
-          urlTop: video?.attachmentInserted?.url,
-          urlBott: video?.attachmentMatched?.url,
-          profileTop: video?.profileInserted?.profileImage,
-          profileBott: video?.profileMatched?.profileImage,
-          isFollowedFromMeTop: isFollowedFromMeTop || false,
-          isFollowedFromMeBott: isFollowedFromMeBott || false,
-          likes: {
-            [video?.attachmentInserted?.attachmentId]: {
-              isLiked: video.isLikedInserted || false,
-              count: video.likeInserted || 0,
-            },
-            [video?.attachmentMatched?.attachmentId]: {
-              isLiked: video.isLikedMatched || false,
-              count: video.likeMatched || 0,
-            },
-          },
-          follows: {
-            [video?.userInserted?.id]: {
-              isFollowed: isFollowedFromMeTop || false,
-            },
-            [video?.userMatched?.id]: {
-              isFollowed: isFollowedFromMeBott || false,
-            },
-          },
-        };
-      });
-
-      state.showWatchMatch.data = [
-        ...state.showWatchMatch.data,
-        ...processedVideos, // استفاده از processedVideos به جای action.payload
-      ];
+    RsetLikeFollow: (state, action: PayloadAction<any>) => {
+      state.likeFollow = [...state.likeFollow, ...action.payload];
+    },
+    RsetShowWatch: (state, action: PayloadAction<any>) => {
+      // const processedVideos = payload.map((video: any) => {
+      //   // const isFollowedFromMeTop =
+      //   //   state?.allFollingList?.getMapFollowingId?.some(
+      //   //     (following: any) => following === video?.userInserted?.id
+      //   //   );
+      //   // const isFollowedFromMeBott =
+      //   //   state?.allFollingList?.getMapFollowingId?.some(
+      //   //     (following: any) => following === video?.userMatched?.id
+      //   //   );
+      //   // return {
+      //   //   ...video,
+      //   //   urlTop: video?.attachmentInserted?.url,
+      //   //   urlBott: video?.attachmentMatched?.url,
+      //   //   profileTop: video?.profileInserted?.profileImage,
+      //   //   profileBott: video?.profileMatched?.profileImage,
+      //   //   isFollowedFromMeTop: isFollowedFromMeTop || false,
+      //   //   isFollowedFromMeBott: isFollowedFromMeBott || false,
+      //   //   likes: {
+      //   //     [video?.attachmentInserted?.attachmentId]: {
+      //   //       isLiked: video.isLikedInserted || false,
+      //   //       count: video.likeInserted || 0,
+      //   //     },
+      //   //     [video?.attachmentMatched?.attachmentId]: {
+      //   //       isLiked: video.isLikedMatched || false,
+      //   //       count: video.likeMatched || 0,
+      //   //     },
+      //   //   },
+      //   //   follows: {
+      //   //     [video?.userInserted?.id]: {
+      //   //       isFollowed: isFollowedFromMeTop || false,
+      //   //     },
+      //   //     [video?.userMatched?.id]: {
+      //   //       isFollowed: isFollowedFromMeBott || false,
+      //   //     },
+      //   //   },
+      //   // };
+      // });
+      // state.showWatchMatch.data =  [
+      //   ...state.showWatchMatch.data,
+      //   ...processedVideos,
+      // ];
+      state.showWatchMatch.data = action.payload;
     },
     setPaginationShowWatch: (
       state,
@@ -413,7 +417,7 @@ export const {
   RsetAllFollingList,
   RsetGiveUserOnlines,
   RsetGetImageProfile,
-  // RsetAllLoginMatch,
+  RsetLikeFollow,
   resetShowWatchState,
   RsetShowWatch,
   setPaginationShowWatch,

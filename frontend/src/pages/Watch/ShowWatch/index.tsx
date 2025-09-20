@@ -13,6 +13,7 @@ import { attachmentListByInviteId } from "../../../services/dotNet";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHookType";
 import {
   resetShowWatchState,
+  RsetLikeFollow,
   RsetShowWatch,
   setPaginationShowWatch,
 } from "../../../common/Slices/main";
@@ -29,12 +30,6 @@ const ShowWatch: React.FC = () => {
   const { pagination, data } = main.showWatchMatch;
   const paginationRef = useRef(pagination);
   const isLoadingRef = useRef(isLoading);
-  console.log(main?.showWatchMatch?.data);
-
-  useEffect(() => {
-    isLoadingRef.current = isLoading;
-    paginationRef.current = pagination;
-  }, [isLoading, pagination]);
 
   const handleVideoPlay = (videoId: string) => {
     setOpenDropdowns({});
@@ -101,10 +96,23 @@ const ShowWatch: React.FC = () => {
         take: paginationRef.current.take,
         inviteId,
       });
+
       const newData = res?.data || [];
       const hasMore = newData.length > 0;
+      const temp: any = [];
+      const getLikeFollow = newData?.map((item: any) => {
+        return {
+          isLikedInserted: item?.isLikedInserted,
+          isLikedMatched: item?.isLikedMatched,
+          movieTopId: item?.attachmentInserted?.attachmentId,
+          movieBottId: item?.attachmentMatched?.attachmentId,
+        };
+      });
+      console.log(getLikeFollow);
 
-      dispatch(RsetShowWatch(newData)); // اضافه کردن داده‌های جدید به داده‌های قبلی
+      temp.push(...getLikeFollow);
+      dispatch(RsetLikeFollow(temp));
+      dispatch(RsetShowWatch(newData));
       dispatch(
         setPaginationShowWatch({
           take: paginationRef.current.take,
@@ -121,14 +129,12 @@ const ShowWatch: React.FC = () => {
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
-
-    // اگر سه اسلاید پیمایش شده باشد و داده‌های بیشتری موجود باشد
     if (
       realIndex % 3 === 0 &&
       paginationRef.current.hasMore &&
       !isLoadingRef.current
     ) {
-      fetchNextPage(); // دریافت داده‌های جدید
+      fetchNextPage();
     }
   };
 
