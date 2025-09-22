@@ -1,27 +1,41 @@
 import React, { useRef, useEffect, useState } from "react";
 import LoadingChild from "../../components/Loading/LoadingChild";
 import VideoGroup from "./VideoGroup";
-import { attachmentList } from "../../services/dotNet";
+import { attachmentList, subCategoryList } from "../../services/dotNet";
 import { useNavigate } from "react-router-dom";
 import VideoItemSkeleton from "../../components/VideoLoading";
 import Filtered from "./Filtered";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
-import { RsetWatchVideo, setPaginationWatch } from "../../common/Slices/main";
+import {
+  resetWatchVideo,
+  RsetWatchVideo,
+  setPaginationWatch,
+} from "../../common/Slices/main";
+import asyncWrapper from "../../common/AsyncWrapper";
 
 const StepOne: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const main = useAppSelector((state) => state.main); // اطمینان از اینکه به وضعیت صحیح دسترسی دارید
+  const main = useAppSelector((state) => state.main);
   const { pagination, data } = main.watchVideo;
   const [isLoading, setIsLoading] = useState(false);
-  const { pagination: pp2, data: dd2 } = main.showWatchMatch;
+  const [skills, setSkills] = useState([]);
+  const [selectFiltered, setSelectFiltered] = useState<number | null>(0);
 
-  console.log(pp2, dd2);
+  const handleGetFiltered = asyncWrapper(async () => {
+    const res = await subCategoryList(1);
+    const { data, status } = res?.data;
+    let temp: any = [];
+    temp.push({ id: 0, name: "All" }, ...data);
+    setSkills(temp);
+    if (status === 0) {
+      setSkills(temp);
+    }
+  });
 
-  const handleGetAllMatch = async () => {
-    // قبل از ادامه بارگذاری بررسی کنید
-    console.log(isLoading, pagination.hasMore);
+  const handleGetAllMatch = async (skillId: number) => {
+    console.log(pagination.hasMore);
 
     if (isLoading || !pagination.hasMore) return;
 
@@ -30,7 +44,7 @@ const StepOne: React.FC = () => {
       const res = await attachmentList({
         skip: pagination.skip,
         take: pagination.take,
-        subCatId: 1,
+        subCatId: skillId,
       });
       const newData = res?.data || [];
       console.log(newData);
@@ -51,8 +65,39 @@ const StepOne: React.FC = () => {
     }
   };
 
+  const handleFilterChange = async (skillId: number) => {
+    dispatch(resetWatchVideo());
+
+    setSelectFiltered(skillId);
+
+    try {
+      setIsLoading(true);
+      const res = await attachmentList({
+        skip: 0,
+        take: 6,
+        subCatId: skillId,
+      });
+      const newData = res?.data || [];
+
+      dispatch(RsetWatchVideo(newData));
+
+      dispatch(
+        setPaginationWatch({
+          take: 6,
+          skip: 6,
+          hasMore: newData.length === 6,
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    handleGetAllMatch(); // بارگذاری داده‌ها در هنگام بارگذاری کامپوننت
+    handleGetAllMatch(0);
+    handleGetFiltered();
   }, []);
 
   useEffect(() => {
@@ -78,10 +123,17 @@ const StepOne: React.FC = () => {
     navigate(newPath);
   };
 
+  console.log(selectFiltered);
+
   return (
     <section>
       <div className="mt-2 mb-3">
-        <Filtered />
+        <Filtered
+          handleGetAllMatch={handleGetAllMatch}
+          selectFiltered={selectFiltered}
+          setSelectFiltered={setSelectFiltered}
+          skills={skills}
+        />
         <div className="grid grid-cols-2 mt-0 md:mt-10 gap-[5px] p-[2px]">
           {isLoading && data.length === 0
             ? [...Array(12)].map((_, index) => (

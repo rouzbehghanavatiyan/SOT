@@ -59,7 +59,7 @@ const PhoneHeader = () => {
               />
             )}
             <span className="icon_size col-span-3 flex justify-start logoFont text-dark_blue">
-              Star Of Talent
+             Clash Talent
             </span>
             {itsProfileRoute ? (
               <Link to="/setting" className="col-span-2">

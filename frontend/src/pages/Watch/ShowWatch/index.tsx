@@ -28,6 +28,7 @@ const ShowWatch: React.FC = () => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
   const { pagination, data } = main.showWatchMatch;
+
   const paginationRef = useRef(pagination);
   const isLoadingRef = useRef(isLoading);
 
@@ -96,22 +97,22 @@ const ShowWatch: React.FC = () => {
         take: paginationRef.current.take,
         inviteId,
       });
+      console.log(res);
 
       const newData = res?.data || [];
       const hasMore = newData.length > 0;
-      const temp: any = [];
-      const getLikeFollow = newData?.map((item: any) => {
-        return {
-          isLikedInserted: item?.isLikedInserted,
-          isLikedMatched: item?.isLikedMatched,
-          movieTopId: item?.attachmentInserted?.attachmentId,
-          movieBottId: item?.attachmentMatched?.attachmentId,
-        };
-      });
-      console.log(getLikeFollow);
+      // const temp: any = [];
+      // const getLikeFollow = newData?.map((item: any) => {
+      //   return {
+      //     isLikedInserted: item?.isLikedInserted,
+      //     isLikedMatched: item?.isLikedMatched,
+      //     movieTopId: item?.attachmentInserted?.attachmentId,
+      //     movieBottId: item?.attachmentMatched?.attachmentId,
+      //   };
+      // });
 
-      temp.push(...getLikeFollow);
-      dispatch(RsetLikeFollow(temp));
+      // temp.push(...getLikeFollow);
+      // dispatch(RsetLikeFollow(temp));
       dispatch(RsetShowWatch(newData));
       dispatch(
         setPaginationShowWatch({
@@ -201,10 +202,26 @@ const ShowWatch: React.FC = () => {
                       setOpenDropdowns={setOpenDropdowns}
                       openDropdowns={openDropdowns}
                       positionVideo={0}
+                      isLiked={
+                        video.likes?.[video?.attachmentInserted?.attachmentId]
+                          ?.isLiked || false
+                      }
+                      isFollowed={
+                        video.follows?.[video?.userInserted?.id]?.isFollowed ||
+                        false
+                      }
                     />
                   </div>
                   <div className="h-1/2 w-full relative flex flex-col">
                     <VideoSection
+                      isLiked={
+                        video.likes?.[video?.attachmentMatched?.attachmentId]
+                          ?.isLiked || false
+                      }
+                      isFollowed={
+                        video.follows?.[video?.userMatched?.id]?.isFollowed ||
+                        false
+                      }
                       showLiked
                       endTime={true}
                       video={video}

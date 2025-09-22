@@ -23,7 +23,7 @@ const Header: React.FC<PropsType> = () => {
             height={55}
           />
           <span className="select-none font30 font-bold text-white logoFont">
-            Star Of Talent
+            Clash talent
           </span>
         </NavLink>
       </div>

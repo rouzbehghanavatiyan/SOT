@@ -115,7 +115,7 @@ const LogInForm: FC = () => {
             />
           </Link>
           <h1 className="font25 logoFont font-bold mt-4 text-gray-800">
-            Star of Talent
+            Clash Talent
           </h1>
           <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>

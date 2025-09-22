@@ -19,7 +19,11 @@ import Comments from "../Comments";
 import asyncWrapper from "../AsyncWrapper";
 import { useNavigate } from "react-router-dom";
 import { updatePaginationData } from "../Slices/pagination";
-import { RsetLikeFollow, RsetShowWatch } from "../Slices/main";
+import {
+  RsetShowWatch,
+  updateFollowStatus,
+  updateLikeStatus,
+} from "../Slices/main";
 
 type VideoSectionProps = {
   video?: any;
@@ -41,10 +45,14 @@ type VideoSectionProps = {
   result?: any;
   score?: number;
   endTime?: number | boolean;
+  isLiked?: any;
+  isFollowed?: any;
 };
 
 const VideoSection: React.FC<VideoSectionProps> = ({
   score,
+  isLiked: externalIsLiked,
+  isFollowed: externalIsFollowed,
   endTime,
   onVideoPlay,
   video,
@@ -79,7 +87,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     positionVideo === 0
       ? video?.attachmentInserted?.attachmentId
       : video?.attachmentMatched?.attachmentId;
-
   const videoUrl =
     positionVideo === 0
       ? StringHelpers?.getProfile(video?.attachmentInserted)
@@ -87,7 +94,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const userInfo =
     positionVideo === 0 ? video?.userInserted : video?.userMatched;
   const likeInfo = video?.likes?.[movieId] || { isLiked: false, count: 0 };
-  const isLiked = likeInfo.isLiked;
+  // const isLiked = likeInfo.isLiked;
   const userId =
     positionVideo === 0 ? video?.userInserted?.id : video?.userMatched?.id;
   const checkMyVideo = userInfo?.id !== main?.userLogin?.user?.id;
@@ -96,7 +103,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     return v?.follows?.[userId] === video?.follows?.[userId];
   });
   const followInfo = videoFromRedux?.follows?.[userId] || { isFollowed: false };
-  const isFollowed = followInfo?.isFollowed;
+  const finalIsLiked =
+    externalIsLiked !== undefined ? externalIsLiked : likeInfo.isLiked;
+  const finalIsFollowed =
+    externalIsFollowed !== undefined
+      ? externalIsFollowed
+      : followInfo.isFollowed;
 
   const handleFallowClick = async (video: any, position: number) => {
     const userIdFollow =
@@ -105,25 +117,15 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       userId: userIdLogin || null,
       followerId: userIdFollow || null,
     };
-    const isCurrentlyFollowed = video?.follows?.[userId]?.isFollowed || false;
+    const isCurrentlyFollowed = finalIsFollowed;
+
     dispatch(
-      updatePaginationData((prevVideos: any) => {
-        const updatedVideos = prevVideos.map((v: any) => {
-          return v.id === video.id
-            ? {
-                ...v,
-                follows: {
-                  ...v.follows,
-                  [userId]: {
-                    isFollowed: !isCurrentlyFollowed,
-                  },
-                },
-              }
-            : v;
-        });
-        return updatedVideos;
+      updateFollowStatus({
+        userId: userIdFollow,
+        isFollowed: !isCurrentlyFollowed,
       })
     );
+
     try {
       if (isCurrentlyFollowed) {
         await removeFollower(postData);
@@ -133,61 +135,43 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     } catch (error) {
       console.error("Error in follow operation:", error);
       dispatch(
-        updatePaginationData((prevVideos: any) =>
-          prevVideos.map((v: any) =>
-            v.id === video.id
-              ? {
-                  ...v,
-                  follows: {
-                    ...v.follows,
-                    [userId]: {
-                      isFollowed: isCurrentlyFollowed,
-                    },
-                  },
-                }
-              : v
-          )
-        )
+        updateFollowStatus({
+          userId: userIdFollow,
+          isFollowed: isCurrentlyFollowed,
+        })
       );
     }
   };
 
-  console.log(main?.likeFollow);
-
-  const handleLikeClick = asyncWrapper(async (video: any, position: number) => {
+  const handleLikeClick = async (video: any, position: number) => {
     const movieId =
-      position === 0 ? main?.likeFollow?.movieTop : main?.likeFollow?.movieBott;
-    console.log(movieId);
+      position === 0
+        ? video?.attachmentInserted?.attachmentId
+        : video?.attachmentMatched?.attachmentId;
+
+    const currentLikeStatus = video.likes?.[movieId]?.isLiked || false;
+    const newLikeStatus = !currentLikeStatus;
+
+    dispatch(updateLikeStatus({ movieId, isLiked: newLikeStatus }));
 
     const postData = {
       userId: userIdLogin || null,
       movieId: movieId,
     };
 
-    const currentLikeStatus = video?.likes?.[movieId]?.isLiked || false;
-    const currentLikeCount = video?.likes?.[movieId]?.count || 0;
-
     try {
-      dispatch(
-        RsetLikeFollow({
-          attachmentInserted: video?.attachmentInserted,
-          attachmentMatched: video?.attachmentMatched,
-          position,
-        })
-      );
-
-      // Send request to server
       if (currentLikeStatus) {
-        await removeLike(postData); // Remove like
-        socket.emit("remove_liked", postData); // Emit event via socket
+        await removeLike(postData);
+        socket.emit("remove_liked", postData);
       } else {
-        await addLike(postData); // Add like
-        socket.emit("add_liked", postData); // Emit event via socket
+        await addLike(postData);
+        socket.emit("add_liked", postData);
       }
     } catch (error) {
       console.error("Error in like operation:", error);
+      dispatch(updateLikeStatus({ movieId, isLiked: currentLikeStatus }));
     }
-  });
+  };
 
   return (
     <div className="h-full w-full relative flex flex-col border-b border-gray-800">
@@ -208,7 +192,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             {checkMyVideo && (
               <Follows
                 bgColor=""
-                title={isFollowed ? "Unfollow" : "Follow"}
+                title={finalIsFollowed ? "Unfollow" : "Follow"}
                 onFollowClick={() => handleFallowClick(video, positionVideo)}
               />
             )}
@@ -281,14 +265,14 @@ const VideoSection: React.FC<VideoSectionProps> = ({
               <div className="col-span-1 flex justify-end">
                 {showLiked && (
                   <>
-                    {isLiked ? (
+                    {finalIsLiked ? (
                       <ThumbUpIcon
-                        className="text-white font35 unlike_animation cursor-pointer"
+                        className="text-white font35  unlike_animation cursor-pointer"
                         onClick={() => handleLikeClick(video, positionVideo)}
                       />
                     ) : (
                       <ThumbUpOffAltIcon
-                        className="text-white font35 cursor-pointer"
+                        className="text-white font35  cursor-pointer"
                         onClick={() => handleLikeClick(video, positionVideo)}
                       />
                     )}

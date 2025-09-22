@@ -55,6 +55,7 @@ interface MainType {
   selectedInviteId: any;
   videos: any;
   likeFollow: any;
+  showWatchPagination: any;
 }
 
 const initialState: MainType = {
@@ -236,49 +237,53 @@ const mainSlice = createSlice({
     RsetLikeFollow: (state, action: PayloadAction<any>) => {
       state.likeFollow = [...state.likeFollow, ...action.payload];
     },
-    RsetShowWatch: (state, action: PayloadAction<any>) => {
-      // const processedVideos = payload.map((video: any) => {
-      //   // const isFollowedFromMeTop =
-      //   //   state?.allFollingList?.getMapFollowingId?.some(
-      //   //     (following: any) => following === video?.userInserted?.id
-      //   //   );
-      //   // const isFollowedFromMeBott =
-      //   //   state?.allFollingList?.getMapFollowingId?.some(
-      //   //     (following: any) => following === video?.userMatched?.id
-      //   //   );
-      //   // return {
-      //   //   ...video,
-      //   //   urlTop: video?.attachmentInserted?.url,
-      //   //   urlBott: video?.attachmentMatched?.url,
-      //   //   profileTop: video?.profileInserted?.profileImage,
-      //   //   profileBott: video?.profileMatched?.profileImage,
-      //   //   isFollowedFromMeTop: isFollowedFromMeTop || false,
-      //   //   isFollowedFromMeBott: isFollowedFromMeBott || false,
-      //   //   likes: {
-      //   //     [video?.attachmentInserted?.attachmentId]: {
-      //   //       isLiked: video.isLikedInserted || false,
-      //   //       count: video.likeInserted || 0,
-      //   //     },
-      //   //     [video?.attachmentMatched?.attachmentId]: {
-      //   //       isLiked: video.isLikedMatched || false,
-      //   //       count: video.likeMatched || 0,
-      //   //     },
-      //   //   },
-      //   //   follows: {
-      //   //     [video?.userInserted?.id]: {
-      //   //       isFollowed: isFollowedFromMeTop || false,
-      //   //     },
-      //   //     [video?.userMatched?.id]: {
-      //   //       isFollowed: isFollowedFromMeBott || false,
-      //   //     },
-      //   //   },
-      //   // };
-      // });
-      // state.showWatchMatch.data =  [
-      //   ...state.showWatchMatch.data,
-      //   ...processedVideos,
-      // ];
-      state.showWatchMatch.data = action.payload;
+    RsetShowWatch: (state: any, action: PayloadAction<any>) => {
+      const videos = Array.isArray(action?.payload) ? action.payload : [];
+
+      const processedVideos = videos.map((video: any) => {
+        const isFollowedFromMeTop =
+          state?.allFollingList?.getMapFollowingId?.some(
+            (following: any) => following === video?.userInserted?.id
+          );
+        const isFollowedFromMeBott =
+          state?.allFollingList?.getMapFollowingId?.some(
+            (following: any) => following === video?.userMatched?.id
+          );
+
+        return {
+          ...video,
+          urlTop: video?.attachmentInserted?.url,
+          urlBott: video?.attachmentMatched?.url,
+          profileTop: video?.profileInserted?.profileImage,
+          profileBott: video?.profileMatched?.profileImage,
+          isFollowedFromMeTop: isFollowedFromMeTop || false,
+          isFollowedFromMeBott: isFollowedFromMeBott || false,
+          likes: {
+            [video?.attachmentInserted?.attachmentId]: {
+              isLiked: video.isLikedInserted || false,
+              count: video.likeInserted || 0,
+            },
+            [video?.attachmentMatched?.attachmentId]: {
+              isLiked: video.isLikedMatched || false,
+              count: video.likeMatched || 0,
+            },
+          },
+          follows: {
+            [video?.userInserted?.id]: {
+              isFollowed: isFollowedFromMeTop || false,
+            },
+            [video?.userMatched?.id]: {
+              isFollowed: isFollowedFromMeBott || false,
+            },
+          },
+        };
+      });
+      console.log(processedVideos);
+
+      state.showWatchMatch.data = [
+        ...state.showWatchMatch.data,
+        ...processedVideos,
+      ];
     },
     setPaginationShowWatch: (
       state,
@@ -295,6 +300,66 @@ const mainSlice = createSlice({
         },
         data: [],
       };
+    },
+    resetWatchVideo: (state) => {
+      state.watchVideo = {
+        pagination: {
+          take: 6,
+          skip: 0,
+          hasMore: true,
+        },
+        data: [],
+      };
+    },
+    updateLikeStatus: (
+      state,
+      action: PayloadAction<{ movieId: string; isLiked: boolean }>
+    ) => {
+      const { movieId, isLiked } = action.payload;
+
+      state.showWatchMatch.data = state.showWatchMatch.data.map(
+        (video: any) => {
+          if (video.likes && video.likes[movieId]) {
+            return {
+              ...video,
+              likes: {
+                ...video.likes,
+                [movieId]: {
+                  ...video.likes[movieId],
+                  isLiked: isLiked,
+                  count: isLiked
+                    ? video.likes[movieId].count + 1
+                    : Math.max(0, video.likes[movieId].count - 1),
+                },
+              },
+            };
+          }
+          return video;
+        }
+      );
+    },
+    updateFollowStatus: (
+      state,
+      action: PayloadAction<{ userId: string; isFollowed: boolean }>
+    ) => {
+      const { userId, isFollowed } = action.payload;
+
+      state.showWatchMatch.data = state.showWatchMatch.data.map(
+        (video: any) => {
+          if (video.follows && video.follows[userId]) {
+            return {
+              ...video,
+              follows: {
+                ...video.follows,
+                [userId]: {
+                  isFollowed: isFollowed,
+                },
+              },
+            };
+          }
+          return video;
+        }
+      );
     },
   },
   extraReducers: (builder) => {
@@ -407,6 +472,7 @@ const mainSlice = createSlice({
 
 export const {
   RsetMessageModal,
+  updateFollowStatus,
   RsetLoading,
   RsetTornoment,
   RsetCategory,
@@ -423,10 +489,12 @@ export const {
   setPaginationShowWatch,
   setPaginationWatch,
   RsetWatchVideo,
+  resetWatchVideo,
   RsetHomeMatch,
   setPaginationHomeMatch,
   RsetLastMatch,
   RsetAppendVideos,
+  updateLikeStatus,
 } = mainSlice.actions;
 
 export const { useGetMainAttachmentsQuery } = extendedApiSlice;
