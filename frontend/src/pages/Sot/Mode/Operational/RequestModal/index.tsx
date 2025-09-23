@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useEffect, useMemo } from "react";
 import { Navigation } from "swiper/modules";
 import "swiper/css/navigation";
+import { useAppSelector } from "../../../../../hooks/reduxHookType";
 
 interface PropsType {
   showRequestModal: boolean;
@@ -25,20 +26,39 @@ const RequestModal: React.FC<PropsType> = ({
   userId,
   isLoadingBtn,
 }) => {
+  const main = useAppSelector((state) => state?.main);
+  const currentUserId = main?.userLogin?.user?.id;
+  console.log(dataUserRequestInfo);
+
   const handleCancel = (userId: number) => {
     setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
+
+    const userInfo = dataUserRequestInfo.find(
+      (user) => user.userIdSender === userId
+    );
     socket.emit("add_invite_optional", {
-      ...dataUserRequestInfo.find((user) => user.userIdSender === userId),
+      ...userInfo,
       userAnswer: false,
+    });
+
+    // حذف درخواست از سرور
+    socket.emit("remove_invite_optional", {
+      userIdSender: userId,
     });
   };
 
   const handleAccept = (userInfo: any) => {
     const userId = userInfo.userIdSender;
     setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
+
     socket.emit("add_invite_optional", {
       ...userInfo,
       userAnswer: true,
+    });
+
+    // حذف درخواست از سرور
+    socket.emit("remove_invite_optional", {
+      userIdSender: userId,
     });
   };
 
@@ -52,13 +72,20 @@ const RequestModal: React.FC<PropsType> = ({
   }, [socket]);
 
   const filteredDataUserRequestInfo = useMemo(() => {
-    const uniqueUsers = dataUserRequestInfo.filter(
-      (user, index, self) =>
-        user.userIdSender !== userId &&
-        self.findIndex((u) => u.userIdSender === user.userIdSender) === index
+    return dataUserRequestInfo.filter(
+      (user) => user.userIdReciever === currentUserId
     );
-    return uniqueUsers;
-  }, [dataUserRequestInfo, userId]);
+  }, [dataUserRequestInfo, currentUserId]);
+
+  useEffect(() => {
+    if (filteredDataUserRequestInfo.length === 0 && showRequestModal) {
+      setShowRequestModal(false);
+    }
+  }, [filteredDataUserRequestInfo, showRequestModal]);
+
+  if (filteredDataUserRequestInfo.length === 0) {
+    return null;
+  }
 
   return (
     <Modal

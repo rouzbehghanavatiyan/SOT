@@ -188,10 +188,18 @@ const Home: React.FC = () => {
                         openDropdowns={openDropdowns}
                         baseURL={baseURL}
                         positionVideo={0}
+                        isFollowed={
+                          video.follows?.[video?.userInserted?.id]
+                            ?.isFollowed || false
+                        }
                       />
                     </div>
                     <div className="flex-1 min-h-0 relative">
                       <VideoSection
+                        isFollowed={
+                          video.follows?.[video?.userMatched?.id]?.isFollowed ||
+                          false
+                        }
                         score={video?.scoreMatched}
                         video={video}
                         result={resultMatched}

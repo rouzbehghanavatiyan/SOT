@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
@@ -65,7 +64,7 @@ const Filtered: React.FC<PropsTyles> = ({
             <div key={item.id} className="grid grid-flow-row">
               <span
                 className={`rounded-full p-6 border-2 flex-shrink-0 cursor-pointer ${
-                  isSelected ? "border-primary" : "border-gray-200"
+                  isSelected ? "border-primary bg-gray-150" : "border-gray-200"
                 }`}
                 onClick={() => handleIconClick(item.id)}
               />

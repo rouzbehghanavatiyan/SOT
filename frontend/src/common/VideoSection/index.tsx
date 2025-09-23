@@ -74,6 +74,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const userIdLogin = main?.userLogin?.user?.id;
   const socket = main?.socketConfig;
 
+  console.log(video);
+
   const handleToggleComments = (videoData: any) => {
     setCommentUserInfo(videoData);
     setShowComments(true);

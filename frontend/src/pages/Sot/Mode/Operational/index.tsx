@@ -29,7 +29,7 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
     setSelectedId(id);
   };
 
-  const handleSendInviteUser = asyncWrapper(async (item: any) => {
+  const handleSendInviteUser = (item: any) => {
     const postUserInfo = {
       userIdSender: main?.userLogin?.user?.id,
       userName: main?.userLogin?.user?.userName,
@@ -38,51 +38,51 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
       userIdReciever: item?.userIdJoin,
     };
 
-    setIsLoadingBtn({ show: true });
+    setIsLoadingBtn({ show: true, userId: item?.userIdJoin });
+
+    // این یک عملیات synchronous است، نیازی به async نیست
     socket.emit("add_invite_optional", postUserInfo);
-  });
+  };
+
+  const handleGetRequestUsers = (data: any) => {
+    console.log("Received request data:", data);
+
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      if (data.userIdReciever === main?.userLogin?.user?.id) {
+        setDataUserRequestInfo([data]);
+        setShowRequestModal(true);
+      }
+
+      if (data.userAnswer !== null && data.userAnswer !== undefined) {
+        socket.emit("remove_invite_optional", {
+          userIdSender: data.userIdSender,
+        });
+      }
+    }
+
+    if (data?.userAnswer === false) {
+      setIsLoadingBtn({ show: false, userId: 0 });
+    }
+  };
 
   const handleGetUsers = (dataList: any[]) => {
     const filterMe = dataList?.filter(
       (item) => Number(item?.userIdJoin) !== main?.userLogin?.user?.id
     );
     setFindUser(filterMe);
+    setIsLoadingSearchUser(false); // حتماً loading را false کنید
   };
-
-  const handleGetRequestUsers = (data: any) => {
-    console.log(data);
-    if (Array?.isArray(data)) {
-      const allReqUsers = data.map((item: any) => {
-        return {
-          userIdSender: item?.userIdSender,
-          userIdReciever: item?.userIdReciever,
-          userName: item?.userName,
-          userImage: item?.userImage,
-          userAnswer: item?.userAnswer,
-        };
-      });
-
-      const filteredUsers = allReqUsers.filter(
-        (item) =>
-          item?.userIdSender !== main?.userLogin?.user?.id &&
-          item?.userIdReciever === main?.userLogin?.user?.id
-      );
-      if (filteredUsers.length > 0) {
-        setDataUserRequestInfo(filteredUsers);
-        setShowRequestModal(true);
-      }
-    }
-    if (data?.userAnswer === false) {
-      setIsLoadingBtn({ show: false });
-    }
-  };
-
   const filteredFindUser = findUser.filter(
     (user: any) => user.id !== main?.userLogin?.user?.id
   );
 
   const handleClose = () => {
     if (socket) {
+      // حذف درخواست‌های کاربر از سرور
+      socket.emit("remove_invite_optional", {
+        userIdSender: main?.userLogin?.user?.id,
+      });
+
       socket.emit("user_left_optional", {
         userId: main?.userLogin?.user?.id,
       });
@@ -98,13 +98,24 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
       score: main?.userLogin?.score,
       userAnswer: null,
     };
+
     if (socket) {
       socket.emit("user_entered_optional", postUserInfo);
       socket.on("user_entered_optional_response", handleGetUsers);
       socket.on("add_invite_optional_response", handleGetRequestUsers);
     }
+
     return () => {
       if (socket) {
+        // از asyncWrapper در cleanup هم استفاده نکنید
+        socket.emit("remove_invite_optional", {
+          userIdSender: main?.userLogin?.user?.id,
+        });
+
+        socket.emit("user_left_optional", {
+          userId: main?.userLogin?.user?.id,
+        });
+
         socket.off("user_entered_optional_response", handleGetUsers);
         socket.off("add_invite_optional_response", handleGetRequestUsers);
       }
