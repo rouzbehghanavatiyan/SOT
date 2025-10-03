@@ -206,7 +206,7 @@ const LogInForm: FC = () => {
             className="w-full text-white mt-2"
             aria-label="Login button"
             label={"Sign in"}
-            loading={isLoading}
+            loading={true}
           />
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">

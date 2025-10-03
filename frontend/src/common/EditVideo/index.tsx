@@ -89,6 +89,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
 
           setFindingMatch(true);
           const resInvite = await addInvite(postInvite);
+          console.log(resInvite);
+
           const { status: inviteStatus, data: inviteData } = resInvite?.data;
           setMovieData((prev: any) => ({
             ...prev,

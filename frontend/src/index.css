@@ -602,8 +602,8 @@ br {
 }
 
 .loader_btn {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: inline-block;
   border-top: 4px solid white;
@@ -618,8 +618,8 @@ br {
   position: absolute;
   left: 0;
   top: 0;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border-bottom: 4px solid white;
   border-left: 4px solid transparent;
