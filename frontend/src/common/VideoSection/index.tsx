@@ -115,21 +115,21 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const handleFallowClick = async (video: any, position: number) => {
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
-    const postData = {
-      userId: userIdLogin || null,
-      followerId: userIdFollow || null,
-    };
-    const isCurrentlyFollowed = finalIsFollowed;
-
+      const postData = {
+        userId: userIdLogin || null,
+        followerId: userIdFollow || null,
+      };
+      
+      console.log(userIdFollow,finalIsFollowed);
     dispatch(
       updateFollowStatus({
         userId: userIdFollow,
-        isFollowed: !isCurrentlyFollowed,
+        isFollowed: !finalIsFollowed,
       })
     );
 
     try {
-      if (isCurrentlyFollowed) {
+      if (finalIsFollowed) {
         await removeFollower(postData);
       } else {
         await addFollower(postData);
@@ -139,7 +139,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       dispatch(
         updateFollowStatus({
           userId: userIdFollow,
-          isFollowed: isCurrentlyFollowed,
+          isFollowed: finalIsFollowed,
         })
       );
     }

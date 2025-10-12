@@ -5,6 +5,7 @@ import { store } from "../hooks/store";
 axios.interceptors.request.use(
   function (config: any) {
     const token = sessionStorage.getItem("token");
+    console.log("VBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

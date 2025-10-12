@@ -10,6 +10,7 @@ import ColorLensIcon from "@mui/icons-material/ColorLens";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { useAppDispatch } from "../../hooks/reduxHookType";
 import { setPaginationWatch } from "../../common/Slices/main";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 interface PropsTyles {
   handleGetAllMatch: any;
@@ -40,6 +41,8 @@ const Filtered: React.FC<PropsTyles> = ({
     11: ColorLensIcon,
     12: ColorLensIcon,
     13: ColorLensIcon,
+    1002: QuestionMarkIcon,
+    // 14:Hidden Creative
   };
 
   const handleIconClick = (id: number) => {
@@ -53,6 +56,7 @@ const Filtered: React.FC<PropsTyles> = ({
     );
     handleGetAllMatch(id);
   };
+  console.log(skills);
 
   return (
     <div className="scrollable-container md:mt-12 flex gap-4 px-2 pt-3 pb-2 bg-white whitespace-nowrap">

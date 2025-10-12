@@ -1,10 +1,15 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import CloseIcon from "@mui/icons-material/Close";
 import Messages from "../pages/ChatRoom";
 import SidebarLinks from "./Sidebar";
 import Header from "./Header";
 import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
 import PhoneHeader from "./PhoneHeader";
+import { Button } from "../components/Button";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
   RsetAllFollingList,
   RsetCategory,
@@ -12,7 +17,6 @@ import {
   RsetSocketConfig,
   RsetUserLogin,
 } from "../common/Slices/main";
-import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
   categoryList,
   followingList,
@@ -20,31 +24,88 @@ import {
 } from "../services/dotNet";
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
-import { useLocation, useParams } from "react-router-dom";
 import { useServiceWorker } from "../hooks/useServiceWorker";
 import SotLogo from "../assets/img/logocircle.png";
-import { Button } from "../components/Button";
-import CloseIcon from "@mui/icons-material/Close";
-import { jwtDecode } from "jwt-decode";
-type PropsType = any;
+
+interface PropsType {
+  children: React.ReactNode;
+}
+
+interface DecodedToken {
+  [key: string]: any;
+}
 
 const Sidebar: React.FC<PropsType> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const locationUrl = useLocation();
-  const token: any = sessionStorage.getItem("token");
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // State
   const [openMessage, setOpenMessage] = useState<boolean>(false);
-  const main = useAppSelector((state) => state?.main);
+
+  // Selectors
+  const main = useAppSelector((state) => state.main);
+
+  // Hooks
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
+
+  // Memoized values
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
-  const userIdWhantToShow = locationUrl?.state?.userInfo?.id;
-  const userData = jwtDecode(token);
-  let Vals = Object.values(userData);
 
-  const userId = Vals?.[1];
-  const user = { id: Number(userId) };
+  // Authentication check
+  const token = sessionStorage.getItem("token");
+  const userIdFromLocation = location.state?.userInfo?.id;
 
+  // Redirect to login if no token or invalid token
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      const userId = Object.values(decoded)?.[1];
+
+      if (!userId) {
+        sessionStorage.removeItem("token");
+        navigate("/");
+        return;
+      }
+
+      dispatch(RsetUserLogin({ user: { id: Number(userId) } }));
+    } catch (error) {
+      console.error("Token decoding failed:", error);
+      sessionStorage.removeItem("token");
+      navigate("/");
+    }
+  }, [token, navigate, dispatch]);
+
+  // User data from token
+  const userData = useMemo(() => {
+    if (!token) return null;
+
+    try {
+      return jwtDecode<DecodedToken>(token);
+    } catch (error) {
+      console.error("Token decoding failed:", error);
+      return null;
+    }
+  }, [token]);
+
+  const userId = useMemo(() => {
+    if (!userData) return null;
+    return Object.values(userData)?.[1];
+  }, [userData]);
+
+  const user = useMemo(() => {
+    return userId ? { id: Number(userId) } : null;
+  }, [userId]);
+
+  // API Calls
   const handleGetCategory = asyncWrapper(async () => {
+    if (!token) return;
+
     const res = await categoryList();
     const { data, status } = res?.data;
     if (status === 0) {
@@ -52,129 +113,174 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   });
 
-  const handleSocketConfig = useCallback(() => {
-    dispatch(RsetSocketConfig(socket));
-  }, [dispatch, socket]);
+  const handleProfileAttachment = asyncWrapper(async () => {
+    if (!token || !user) return;
 
-  const handleProfileAttachment = async () => {
     try {
-      const resImageProfile = await profileAttachment(
-        userIdWhantToShow || user?.id
-      );
+      const targetUserId = userIdFromLocation || user.id;
+      const resImageProfile = await profileAttachment(targetUserId);
       const { status, data } = resImageProfile?.data;
+
       if (status === 0) {
-        return dispatch(RsetUserLogin(data));
+        dispatch(RsetUserLogin(data));
       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);
     }
-  };
+  });
 
-  const handleGiveUsersOnline = useCallback((data: any) => {
-    dispatch(RsetGiveUserOnlines(data));
-  }, []);
+  const handleAllFollowing = asyncWrapper(async () => {
+    if (!token) return;
 
-  const handleAllFolling = async () => {
     try {
-      const res = await followingList(
-        userIdWhantToShow || main?.userLogin?.user?.id
-      );
+      const targetUserId = userIdFromLocation || main?.userLogin?.user?.id;
+      if (!targetUserId) return;
+
+      const res = await followingList(targetUserId);
       const { status, data } = res?.data;
 
       if (status === 0) {
-        const getMapFollowingId: any = data?.map(
+        const followingIds = data?.map(
           (item: any) => item?.attachment?.attachmentId
         );
         dispatch(
           RsetAllFollingList({
-            getMapFollowingId,
+            getMapFollowingId: followingIds,
             allFollowing: data,
           })
         );
       }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch following list:", error);
     }
-  };
+  });
+
+  // Socket handlers
+  const handleSocketConfig = useCallback(() => {
+    dispatch(RsetSocketConfig(socket));
+  }, [dispatch, socket]);
+
+  const handleGiveUsersOnline = useCallback(
+    (data: any) => {
+      dispatch(RsetGiveUserOnlines(data));
+    },
+    [dispatch]
+  );
+
+  // Effects
+  useEffect(() => {
+    if (!token || !user) return;
+
+    handleProfileAttachment();
+    handleGetCategory();
+  }, [token, user]);
 
   useEffect(() => {
-    dispatch(RsetUserLogin({ user: user }));
-    if (token) {
-      handleProfileAttachment();
-      handleGetCategory();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!main?.userLogin?.user?.id) return;
+    if (!main?.userLogin?.user?.id || !token) return;
 
     handleSocketConfig();
-    handleAllFolling();
+    handleAllFollowing();
+
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);
     };
+
     socket.on("connect", handleConnect);
+
+    // Notification permission check
     if (Notification.permission === "default") {
       setShowPrompt(true);
     }
+
+    // Cleanup
     return () => {
       socket.off("connect", handleConnect);
       socket.off("all_user_online", handleGiveUsersOnline);
     };
-  }, [main?.userLogin?.user?.id]);
+  }, [main?.userLogin?.user?.id, token]);
+
+  // Don't render if no user (will redirect in useEffect)
+  if (!user || !token) {
+    return null;
+  }
+
+  const isWatchShowPage = location.pathname === "/watch/show";
+  const marginTopClass = isWatchShowPage ? "mt-0" : "mt-12";
 
   return (
     <main className="relative">
+      {/* Header for desktop */}
       <ResponsiveMaker visibleWidth={1024}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
-      <div
-        className={`flex ${locationUrl?.pathname === "/watch/show" ? "mt-0" : "mt-12"} `}
-      >
+
+      <div className={`flex ${marginTopClass}`}>
+        {/* Sidebar for desktop - currently commented */}
         {/* <ResponsiveMaker visibleWidth={1024}>
           <SidebarLinks />
         </ResponsiveMaker> */}
+
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
+            {/* Phone header */}
             <PhoneHeader />
+
             <div>
               {children}
+
+              {/* Notification permission prompt */}
               {showPrompt && (
-                <div className="fixed inset-0   bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
-                  <header className="bg-white  border-[1px] p-4 rounded-xl">
-                    <div className=" flex  justify-end">
+                <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
+                  <div className="bg-white border-[1px] p-4 rounded-xl max-w-md w-full">
+                    {/* Close button */}
+                    <div className="flex justify-end">
                       <CloseIcon
                         onClick={() => setShowPrompt(false)}
-                        className="text-primary  font20"
+                        className="text-primary font20 cursor-pointer"
                       />
                     </div>
-                    <div className=" flex justify-center rounded-xl p-4 bg-white max-w-md w-full">
+
+                    {/* Content */}
+                    <div className="flex justify-center rounded-xl p-4 bg-white">
                       <div className="text-center">
-                        <div className="flex  items-center justify-center">
-                          <img src={SotLogo} className="w-10 h-10" />
+                        {/* Logo */}
+                        <div className="flex items-center justify-center mb-4">
+                          <img
+                            src={SotLogo}
+                            className="w-10 h-10"
+                            alt="Sot Logo"
+                          />
                         </div>
-                        <div className="text-sm text-gray-600 my-10">
+
+                        {/* Message */}
+                        <div className="text-sm text-gray-600 my-6">
                           <p>Notifications are disabled for you.</p>
                           <p>Do you want to enable them?</p>
                         </div>
+
+                        {/* Action buttons */}
                         <div className="mt-6 flex justify-center gap-3">
                           <Button
                             onClick={handleAllow}
-                            variant={"default"}
+                            variant="default"
                             label="Accept"
                           />
                         </div>
                       </div>
                     </div>
-                  </header>
+                  </div>
                 </div>
               )}
             </div>
+
+            {/* Phone footer */}
             <PhoneFooter />
           </div>
         </div>
       </div>
+
+      {/* Messages modal */}
       {openMessage && (
         <Messages
           socket={socket}

@@ -36,9 +36,7 @@ const StepOne: React.FC = () => {
 
   const handleGetAllMatch = async (skillId: number) => {
     console.log(pagination.hasMore);
-
     if (isLoading || !pagination.hasMore) return;
-
     try {
       setIsLoading(true);
       const res = await attachmentList({
@@ -67,7 +65,6 @@ const StepOne: React.FC = () => {
 
   const handleFilterChange = async (skillId: number) => {
     dispatch(resetWatchVideo());
-
     setSelectFiltered(skillId);
 
     try {
@@ -123,7 +120,8 @@ const StepOne: React.FC = () => {
     navigate(newPath);
   };
 
-  console.log(selectFiltered);
+  console.log(skills);
+  
 
   return (
     <section>

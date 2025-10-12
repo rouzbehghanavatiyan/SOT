@@ -130,6 +130,7 @@ const ShowWatch: React.FC = () => {
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
+    setCurrentlyPlayingId(false);
     if (
       realIndex % 3 === 0 &&
       paginationRef.current.hasMore &&

@@ -5,6 +5,7 @@ import ImageRank from "../../components/ImageRank";
 import Loading from "../../components/Loading";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppSelector } from "../../hooks/reduxHookType";
+import MainTitle from "../../components/MainTitle";
 
 const Followers: React.FC<any> = () => {
   const main = useAppSelector((state) => state.main);
@@ -35,18 +36,20 @@ const Followers: React.FC<any> = () => {
   return (
     <div>
       {isLoading && <Loading isLoading={isLoading} />}
-
-      {allFollower?.map((follower: any, index) => {
+      {allFollower?.map((follower: any) => {
         const image = StringHelpers.getProfile(follower?.attachment);
         return (
-          <div className="w-full bg-gray-100 border-b-[1px] border-gray-150 py-2 px-4 sticky top-0 z-10">
-            <ImageRank
-              score={0}
-              imgSize={60}
-              userName={follower?.userName || "Unknown User"}
-              imgSrc={image || "default-profile-image.png"}
-            />
-          </div>
+          <section className="mt-1">
+            <MainTitle title="Follower" />
+            <div className="w-full bg-gray-100 border-b-[1px] border-gray-150 py-2 px-4 sticky top-0 z-10">
+              <ImageRank
+                score={0}
+                imgSize={60}
+                userName={follower?.userName || "Unknown User"}
+                imgSrc={image || "default-profile-image.png"}
+              />
+            </div>
+          </section>
         );
       })}
     </div>

@@ -5,6 +5,7 @@ import ImageRank from "../../components/ImageRank";
 import Loading from "../../components/Loading";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppSelector } from "../../hooks/reduxHookType";
+import MainTitle from "../../components/MainTitle";
 
 const Following = () => {
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -34,20 +35,22 @@ const Following = () => {
   return (
     <div>
       {isLoading && <Loading isLoading={isLoading} />}
-
-      {main?.allFollingList?.allFollowing?.map((follower: any, index) => {
+      {main?.allFollingList?.allFollowing?.map((follower: any) => {
         console.log(follower);
         const image = StringHelpers.getProfile(follower?.attachment);
 
         return (
-          <div className="w-full bg-gray-100 border-b-[1px] border-white py-3 px-4 sticky top-0 z-10">
-            <ImageRank
-              score={0}
-              imgSize={60}
-              userName={follower?.userName || "Unknown User"}
-              imgSrc={image || "default-profile-image.png"}
-            />
-          </div>
+          <section className="mt-1">
+            <MainTitle title="Following" />
+            <div className="w-full bg-gray-100 border-b-[1px] border-white py-3 px-4 sticky top-0 z-10">
+              <ImageRank
+                score={0}
+                imgSize={60}
+                userName={follower?.userName || "Unknown User"}
+                imgSrc={image || "default-profile-image.png"}
+              />
+            </div>
+          </section>
         );
       })}
     </div>

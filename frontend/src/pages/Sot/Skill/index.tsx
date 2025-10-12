@@ -11,6 +11,8 @@ import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+
 const Skill: React.FC<any> = ({
   setAllSubCategory,
   allSubCategory,
@@ -39,6 +41,7 @@ const Skill: React.FC<any> = ({
     photography: <LocalSeeIcon className="text-2xl mx-3 font25" />,
     engineer: <ArchitectureIcon className="text-2xl mx-3 font25" />,
     game: <SportsEsportsIcon className="text-2xl mx-3 font25" />,
+    uncharted: <QuestionMarkIcon className="text-2xl mx-3 font25"/>
   };
 
   const handleAcceptCategory = (data: any) => {

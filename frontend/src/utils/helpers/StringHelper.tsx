@@ -5,7 +5,7 @@ export default class StringHelpers {
     console.log(data);
   }
 
-  static getProfile = (data: any) => {
+  static getProfile = (data: any) => { 
     return `${StringHelpers.baseURL}/${data?.attachmentType}/${data?.fileName}${data?.ext}`;
   };
 }

@@ -23,9 +23,11 @@ const Profile: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
   const userIdWhantToShow = location?.state?.userData;
-  const findImg = !!userIdWhantToShow
+  const findImg = !!userIdWhantToShow?.user
     ? StringHelpers.getProfile(userIdWhantToShow?.profile)
     : StringHelpers.getProfile(main?.userLogin?.profile);
+  console.log(findImg);
+
   const socket = main.socketConfig;
   const [loadedCount, setLoadedCount] = useState<number>(0);
   const userId = main?.userLogin?.user?.id;
@@ -36,6 +38,7 @@ const Profile: React.FC = () => {
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
+
   const { data, isLoading, hasMore, fetchNextPage } = usePagination(
     userAttachmentList,
     {

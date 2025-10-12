@@ -71,9 +71,8 @@ const Video: React.FC<VideoProps> = ({
           url={url}
         />
       </span>
-      {showControls && (
         <div
-          className="controls fade-in"
+          className="controls pb-3 fade-in"
           style={{
             position: "absolute",
             bottom: "0",
@@ -86,11 +85,6 @@ const Video: React.FC<VideoProps> = ({
             zIndex: 10,
           }}
         >
-          <span
-            style={{ color: "white", fontSize: "8px", margin: "0 0 0 10px" }}
-          >
-            {formatTime(played * duration)}
-          </span>
           <input
             type="range"
             min={0}
@@ -105,7 +99,6 @@ const Video: React.FC<VideoProps> = ({
             }}
           />
         </div>
-      )}
     </div>
   );
 };

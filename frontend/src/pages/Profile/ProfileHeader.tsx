@@ -15,7 +15,6 @@ interface ProfileHeaderProps {
   setProfileImage?: any;
 }
 
-// استفاده صحیح از forwardRef
 const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
   (
     {
