@@ -122,7 +122,6 @@ const StepOne: React.FC = () => {
 
   console.log(skills);
   
-
   return (
     <section>
       <div className="mt-2 mb-3">

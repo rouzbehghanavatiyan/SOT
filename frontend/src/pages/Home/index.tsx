@@ -26,11 +26,18 @@ const Home: React.FC = () => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
+
+  // تغییر state برای مدیریت بهتر ویدیوهای در حال پخش
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<{
+    slideIndex: number | null;
+    position: number | null;
+  }>({ slideIndex: 0, position: 0 }); // مقدار اولیه برای پخش ویدیو موقعیت 0 در اسلاید 0
+
   const userIdLogin = main?.userLogin?.user?.id;
   const isLoadingRef = useRef(isLoading);
   const { pagination, data } = main.homeMatch;
   const paginationRef = useRef(pagination);
+  const swiperRef = useRef<any>(null);
 
   useEffect(() => {
     isLoadingRef.current = isLoading;
@@ -67,6 +74,13 @@ const Home: React.FC = () => {
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
 
+    // وقتی اسلاید عوض می‌شود، ویدیو قبلی را متوقف کن و ویدیو جدید در پوزیشن 0 را پلی کن
+    setCurrentlyPlaying({
+      slideIndex: realIndex,
+      position: 0,
+    });
+
+    // لود داده‌های بیشتر اگر نیاز باشد
     if (
       realIndex % 3 === 0 &&
       paginationRef.current.hasMore &&
@@ -80,15 +94,43 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
+    if (data.length > 0 && !isLoading) {
+      console.log(":VVVVVVVVVVVVVVVVVVv");
+      setCurrentlyPlaying({
+        slideIndex: 0,
+        position: 0,
+      });
+    }
+  }, [data.length, isLoading]);
+
+  useEffect(() => {
     if (userIdLogin && data.length === 0 && !isLoadingRef.current) {
       fetchNextPage();
     }
   }, [userIdLogin, data.length, fetchNextPage]);
 
-  const handleVideoPlay = (videoId: string) => {
+  const handleVideoPlay = (
+    videoId: string,
+    slideIndex: number,
+    position: number
+  ) => {
     setOpenDropdowns({});
-    setCurrentlyPlayingId((prevId: any) =>
-      prevId === videoId ? null : videoId
+    setCurrentlyPlaying((prev) => {
+      console.log(prev);
+
+      // اگر روی ویدیوی در حال پخش کلیک شد، آن را متوقف کن
+      if (prev.slideIndex === slideIndex && prev.position === position) {
+        return { slideIndex: null, position: null };
+      }
+      // در غیر این صورت ویدیوی جدید را پلی کن
+      return { slideIndex, position };
+    });
+  };
+
+  const shouldVideoPlay = (slideIndex: number, position: number) => {
+    return (
+      currentlyPlaying.slideIndex === slideIndex &&
+      currentlyPlaying.position === position
     );
   };
 
@@ -137,6 +179,8 @@ const Home: React.FC = () => {
         modules={[Mousewheel]}
         className="mySwiper lg:mt-9 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
         onSlideChange={handleSlideChange}
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
+        initialSlide={0}
       >
         {isLoading && data.length === 0
           ? [...Array(12)].map((_, index) => (
@@ -166,19 +210,19 @@ const Home: React.FC = () => {
                   className="h-full w-full bg-black flex flex-col"
                 >
                   <section className="flex flex-col h-screen">
+                    {/* Video Position 0 */}
                     <div className="flex-1 min-h-0 relative">
                       <VideoSection
                         score={video?.scoreInserted}
                         countLiked={video?.likeInserted || 0}
                         result={resultInserted}
                         video={video}
-                        isPlaying={
-                          currentlyPlayingId ===
-                          video?.attachmentInserted?.attachmentId
-                        }
+                        isPlaying={shouldVideoPlay(index, 0)}
                         onVideoPlay={() =>
                           handleVideoPlay(
-                            video?.attachmentInserted?.attachmentId
+                            video?.attachmentInserted?.attachmentId,
+                            index,
+                            0
                           )
                         }
                         dropdownItems={() =>
@@ -194,6 +238,8 @@ const Home: React.FC = () => {
                         }
                       />
                     </div>
+
+                    {/* Video Position 1 */}
                     <div className="flex-1 min-h-0 relative">
                       <VideoSection
                         isFollowed={
@@ -203,13 +249,12 @@ const Home: React.FC = () => {
                         score={video?.scoreMatched}
                         video={video}
                         result={resultMatched}
-                        isPlaying={
-                          currentlyPlayingId ===
-                          video?.attachmentMatched?.attachmentId
-                        }
+                        isPlaying={shouldVideoPlay(index, 1)}
                         onVideoPlay={() =>
                           handleVideoPlay(
-                            video?.attachmentMatched?.attachmentId
+                            video?.attachmentMatched?.attachmentId,
+                            index,
+                            1
                           )
                         }
                         dropdownItems={() =>

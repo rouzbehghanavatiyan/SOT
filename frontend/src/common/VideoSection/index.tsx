@@ -74,8 +74,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const userIdLogin = main?.userLogin?.user?.id;
   const socket = main?.socketConfig;
 
-  console.log(video);
-
   const handleToggleComments = (videoData: any) => {
     setCommentUserInfo(videoData);
     setShowComments(true);
@@ -115,12 +113,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   const handleFallowClick = async (video: any, position: number) => {
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
-      const postData = {
-        userId: userIdLogin || null,
-        followerId: userIdFollow || null,
-      };
-      
-      console.log(userIdFollow,finalIsFollowed);
+    const postData = {
+      userId: userIdLogin || null,
+      followerId: userIdFollow || null,
+    };
+
+    console.log(userIdFollow, finalIsFollowed);
     dispatch(
       updateFollowStatus({
         userId: userIdFollow,

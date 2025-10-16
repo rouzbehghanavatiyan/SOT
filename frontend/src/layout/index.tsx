@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import CloseIcon from "@mui/icons-material/Close";
 import Messages from "../pages/ChatRoom";
-import SidebarLinks from "./Sidebar";
 import Header from "./Header";
 import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
@@ -56,13 +55,11 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const token = sessionStorage.getItem("token");
   const userIdFromLocation = location.state?.userInfo?.id;
 
-  // Redirect to login if no token or invalid token
   useEffect(() => {
     if (!token) {
       navigate("/");
       return;
     }
-
     try {
       const decoded = jwtDecode<DecodedToken>(token);
       const userId = Object.values(decoded)?.[1];
@@ -72,8 +69,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         navigate("/");
         return;
       }
-
-      dispatch(RsetUserLogin({ user: { id: Number(userId) } }));
     } catch (error) {
       console.error("Token decoding failed:", error);
       sessionStorage.removeItem("token");
@@ -81,7 +76,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   }, [token, navigate, dispatch]);
 
-  // User data from token
   const userData = useMemo(() => {
     if (!token) return null;
 
@@ -102,7 +96,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     return userId ? { id: Number(userId) } : null;
   }, [userId]);
 
-  // API Calls
   const handleGetCategory = asyncWrapper(async () => {
     if (!token) return;
 
@@ -115,7 +108,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
   const handleProfileAttachment = asyncWrapper(async () => {
     if (!token || !user) return;
-
     try {
       const targetUserId = userIdFromLocation || user.id;
       const resImageProfile = await profileAttachment(targetUserId);
@@ -155,7 +147,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   });
 
-  // Socket handlers
   const handleSocketConfig = useCallback(() => {
     dispatch(RsetSocketConfig(socket));
   }, [dispatch, socket]);
@@ -167,10 +158,9 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     [dispatch]
   );
 
-  // Effects
   useEffect(() => {
+    dispatch(RsetUserLogin({ user: { id: Number(userId) } }));
     if (!token || !user) return;
-
     handleProfileAttachment();
     handleGetCategory();
   }, [token, user]);

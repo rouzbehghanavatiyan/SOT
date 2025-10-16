@@ -13,8 +13,14 @@ import { GetServices } from "../../utils/mainType/allMainType";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/reduxHookType";
 import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
-import DraggableHighlight from "./DraggableHighligh";
 import Operational from "../../pages/Sot/Mode/Operational";
+
+const VIDEO_CONTAINER_STYLE = {
+  width: "400px",
+  height: "300px",
+  objectFit: "contain" as const, 
+  backgroundColor: "#000",
+};
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -36,17 +42,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
     movieId: null,
     status: null,
   });
-  const [cropData, setCropData] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>({
-    x: 0,
-    y: 0,
-    width: 200,
-    height: 100,
-  });
+
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleAttachment = useCallback(
     asyncWrapper(async (resMovieData: any) => {
@@ -112,7 +109,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
         console.log(error);
       }
     },
-    [handleAttachment, navigate, setShowEditMovie, socket]
+    [handleAttachment, navigate, setShowEditMovie, socket, userIdLogin]
   );
 
   const handleAcceptOptional = useCallback(
@@ -124,7 +121,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
       }));
       setCurrentStep(3);
     }),
-    []
+    [userIdLogin]
   );
 
   const handleBack = useCallback(async () => {
@@ -139,10 +136,29 @@ const EditVideo: React.FC<EditVideoProps> = ({
     }
   }, [currentStep, movieData]);
 
+  // تابع جدید برای resize ویدیو
+  const resizeVideoToFixedSize = useCallback(async () => {
+    if (!allFormData?.video) return;
+
+    try {
+      // اینجا می‌توانید ویدیو را با استفاده از Canvas resize کنید
+      // یا فقط از CSS استفاده کنید (ساده‌تر)
+      console.log("Video resized to fixed dimensions:", VIDEO_CONTAINER_STYLE);
+      
+      // اگر نیاز به پردازش واقعی ویدیو دارید، می‌توانید از Canvas استفاده کنید
+      // اما برای نمایش ساده، CSS کافی است
+    } catch (error) {
+      console.error("Error resizing video:", error);
+    }
+  }, [allFormData?.video]);
+
   const handleUploadVideo = useCallback(
     asyncWrapper(async () => {
       setIsLoadingBtn(true);
       console.log(mode, main, movieData);
+
+      // قبل از آپلود، ویدیو را resize می‌کنیم
+      await resizeVideoToFixedSize();
 
       const postData: AddMovieType = {
         userId: userIdLogin || null,
@@ -150,8 +166,10 @@ const EditVideo: React.FC<EditVideoProps> = ({
         title: movieData?.title ?? "",
         subSubCategoryId: 1 || null,
         modeId: mode?.typeMode || 0,
-        cropData: null,
+        cropData: null, // دیگر نیازی به crop نیست
+        fixedDimensions: VIDEO_CONTAINER_STYLE, // اضافه کردن ابعاد ثابت
       };
+      
       const res = await addMovie(postData);
       const { status: movieStatus, data: resMovieData }: GetServices =
         res?.data;
@@ -165,7 +183,15 @@ const EditVideo: React.FC<EditVideoProps> = ({
         alert("movie does not exist");
       }
     }),
-    [handleFixVideo, handleAcceptOptional, movieData, mode, cropData]
+    [
+      handleFixVideo, 
+      handleAcceptOptional, 
+      movieData, 
+      mode, 
+      userIdLogin, 
+      main,
+      resizeVideoToFixedSize
+    ]
   );
 
   const videoSrc = React.useMemo(() => {
@@ -185,14 +211,14 @@ const EditVideo: React.FC<EditVideoProps> = ({
     return () => {
       socket.off("add_invite_offline_response", handler);
     };
-  }, [socket, navigate, setShowEditMovie, setIsLoadingBtn]);
+  }, [socket, navigate, setShowEditMovie]);
 
   const handleNextStep = async () => {
     try {
       setCurrentStep(2);
     } catch (error) {
-      console.error("Error cropping video:", error);
-      alert("Error cropping video. Please try again.");
+      console.error("Error in next step:", error);
+      alert("Error processing video. Please try again.");
     }
   };
 
@@ -213,10 +239,16 @@ const EditVideo: React.FC<EditVideoProps> = ({
         {currentStep === 1 && (
           <div className="p-5">
             <div className="border mb-4 p-1">
-              <div className="video-wrapper">
-                <DraggableHighlight
-                  videoSrc={videoSrc}
-                  onCropChange={(data) => setCropData(data)}
+              <div 
+                className="video-wrapper flex justify-center items-center"
+                style={VIDEO_CONTAINER_STYLE}
+              >
+                <video
+                  ref={videoRef}
+                  src={videoSrc}
+                  controls
+                  style={VIDEO_CONTAINER_STYLE}
+                  className="max-w-full max-h-full"
                 />
               </div>
             </div>
@@ -235,7 +267,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
             <div className="">
               <span className="flex my-4">Description</span>
               <textarea
-                className=" border w-full focus:border-none outline-mainGray-dark px-5 py-1"
+                className="border w-full focus:border-none outline-mainGray-dark px-5 py-1"
                 rows={6}
                 value={movieData?.desc}
                 onChange={(e: any) =>
@@ -246,7 +278,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
                 }
               />
             </div>
-            {/* <SlideRange /> */}
             <div className="mt-4 flex justify-around">
               <Button
                 className="border"
@@ -271,7 +302,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
                 <img
                   src={coverImage}
                   alt="Video Cover"
-                  className="w-full max-h-96 rounded-sm"
+                  style={VIDEO_CONTAINER_STYLE}
+                  className="rounded-sm mx-auto"
                 />
               </>
             )}

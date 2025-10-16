@@ -37,29 +37,22 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
       userAnswer: null,
       userIdReciever: item?.userIdJoin,
     };
-
     setIsLoadingBtn({ show: true, userId: item?.userIdJoin });
-
-    // این یک عملیات synchronous است، نیازی به async نیست
     socket.emit("add_invite_optional", postUserInfo);
   };
 
   const handleGetRequestUsers = (data: any) => {
-    console.log("Received request data:", data);
-
-    if (data && typeof data === "object" && !Array.isArray(data)) {
-      if (data.userIdReciever === main?.userLogin?.user?.id) {
-        setDataUserRequestInfo([data]);
-        setShowRequestModal(true);
-      }
-
-      if (data.userAnswer !== null && data.userAnswer !== undefined) {
-        socket.emit("remove_invite_optional", {
-          userIdSender: data.userIdSender,
-        });
-      }
+    console.log("Received request data:", data, main?.userLogin);
+    if (data.userIdReciever === main?.userLogin?.user?.id) {
+      setDataUserRequestInfo([data]);
+      setShowRequestModal(true);
     }
 
+    if (data.userAnswer !== null && data.userAnswer !== undefined) {
+      socket.emit("remove_invite_optional", {
+        userIdSender: data.userIdSender,
+      });
+    }
     if (data?.userAnswer === false) {
       setIsLoadingBtn({ show: false, userId: 0 });
     }
@@ -70,7 +63,6 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
       (item) => Number(item?.userIdJoin) !== main?.userLogin?.user?.id
     );
     setFindUser(filterMe);
-    setIsLoadingSearchUser(false); // حتماً loading را false کنید
   };
   const filteredFindUser = findUser.filter(
     (user: any) => user.id !== main?.userLogin?.user?.id
@@ -104,10 +96,8 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
       socket.on("user_entered_optional_response", handleGetUsers);
       socket.on("add_invite_optional_response", handleGetRequestUsers);
     }
-
     return () => {
       if (socket) {
-        // از asyncWrapper در cleanup هم استفاده نکنید
         socket.emit("remove_invite_optional", {
           userIdSender: main?.userLogin?.user?.id,
         });
@@ -122,9 +112,11 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
     };
   }, [socket]);
 
+  console.log(filteredFindUser);
+
   return (
     <>
-      <div className="px-4">
+      <div className="px-4 ">
         <div className="flex flex-col">
           {filteredFindUser?.map((item: any, index: number) => {
             return (

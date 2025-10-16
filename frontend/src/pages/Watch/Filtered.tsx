@@ -59,7 +59,7 @@ const Filtered: React.FC<PropsTyles> = ({
   console.log(skills);
 
   return (
-    <div className="scrollable-container md:mt-12 flex gap-4 px-2 pt-3 pb-2 bg-white whitespace-nowrap">
+    <div className="md:mt-12 flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white max-w-full">
       {skills?.map((item: any) => {
         const IconComponent = iconsMap[item.id] || null;
         const isSelected = selectFiltered === item.id;

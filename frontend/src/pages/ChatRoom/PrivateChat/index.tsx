@@ -62,16 +62,16 @@ const PrivateChat: React.FC = ({}) => {
         userNameSender: main?.userLogin?.userName,
       };
       socket.emit("send_message", message);
-      // setTitle("");
-    }
-    if (!location?.pathname?.includes("privateMessage")) {
-      const postData = {
-        userId: 0,
-        message: title,
-      };
-      const resNotif = await sendUserNotif(postData);
-      console.log(resNotif);
-    }
+      setTitle("");
+    }    
+    // if (!location?.pathname?.includes("privateMessage")) {
+    //   const postData = {
+    //     userId: 0,
+    //     message: title,
+    //   };
+    //   const resNotif = await sendUserNotif(postData);
+    //   console.log(resNotif);
+    // }
     titleInputRef.current?.focus();
   };
 
@@ -88,6 +88,30 @@ const PrivateChat: React.FC = ({}) => {
       },
     ]);
   };
+
+  const handleGetMessages = async () => {
+    try {
+      setIsLoadingChild(true);
+      const res = await userMessages(userIdLogin, userReciver, 0, 10);
+      setIsLoadingChild(false);
+      setMessages(res?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleTabVisibilityChangeWrapper = useCallback(() => {
+    console.log(title);
+
+    return handleTabVisibilityChange(title, reciveUserId);
+  }, [title, reciveUserId]);
+
+  useEffect(() => {
+    const cleanup = handleTabVisibilityChangeWrapper();
+    return () => {
+      cleanup();
+    };
+  }, [handleTabVisibilityChangeWrapper]);
 
   useEffect(() => {
     if (!socket) return;
@@ -109,34 +133,9 @@ const PrivateChat: React.FC = ({}) => {
         sender: reciveUserId,
         receiver: userIdLogin,
       });
-
       setReadMessages((prev) => ({ ...prev, [reciveUserId]: true }));
     }
   }, [reciveUserId, socket, userIdLogin]);
-
-  const handleTabVisibilityChangeWrapper = useCallback(() => {
-    console.log(title);
-
-    return handleTabVisibilityChange(title, reciveUserId);
-  }, [title, reciveUserId]);
-
-  useEffect(() => {
-    const cleanup = handleTabVisibilityChangeWrapper();
-    return () => {
-      cleanup();
-    };
-  }, [handleTabVisibilityChangeWrapper]);
-
-  const handleGetMessages = async () => {
-    try {
-      setIsLoadingChild(true);
-      const res = await userMessages(userIdLogin, userReciver, 0, 10);
-      setIsLoadingChild(false);
-      setMessages(res?.data?.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-100px)] lg:mt-10 mt-0 pb-12 bg-white">

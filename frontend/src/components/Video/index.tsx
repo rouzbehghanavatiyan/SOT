@@ -51,6 +51,7 @@ const Video: React.FC<VideoProps> = ({
           ref={playerRef}
           style={{ pointerEvents: "none" }}
           className={className}
+          playsinline
           width={width}
           height={height}
           playing={playing}
@@ -61,8 +62,18 @@ const Video: React.FC<VideoProps> = ({
           onProgress={handleProgress}
           onDuration={handleDuration}
           config={{
+            // file: {
+            //   attributes: {
+            //     playsInline: true,
+            //     webkitPlaysInline: true,
+            //   },
+            //   forceAudio: true, // اضافه کردن این خط
+            // },
             youtube: {
-              playerVars: { showinfo: 1 },
+              playerVars: {
+                showinfo: 1,
+                playsinline: 1, // اضافه کردن این خط
+              },
             },
             facebook: {
               appId: "12345",
@@ -71,34 +82,34 @@ const Video: React.FC<VideoProps> = ({
           url={url}
         />
       </span>
-        <div
-          className="controls pb-3 fade-in"
+      <div
+        className="controls pb-3 fade-in"
+        style={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          right: "0",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          zIndex: 10,
+        }}
+      >
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step="any"
+          value={played}
+          onChange={handleSeek}
+          className="seek-bar"
           style={{
-            position: "absolute",
-            bottom: "0",
-            left: "0",
-            right: "0",
             width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            zIndex: 10,
+            margin: "0 10px",
           }}
-        >
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step="any"
-            value={played}
-            onChange={handleSeek}
-            className="seek-bar"
-            style={{
-              width: "100%",
-              margin: "0 10px",
-            }}
-          />
-        </div>
+        />
+      </div>
     </div>
   );
 };

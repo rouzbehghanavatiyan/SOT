@@ -199,14 +199,13 @@ const LogInForm: FC = () => {
               Forgot password?
             </Link>
           </div>
-
           <Button
             disabled={isLoading || loginAttempts >= 3}
             type="submit"
             className="w-full text-white mt-2"
             aria-label="Login button"
             label={"Sign in"}
-            loading={true}
+            loading={isLoading}
           />
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">
