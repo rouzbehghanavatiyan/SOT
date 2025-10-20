@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Started from "../../assets/ranks/start_question.png";
-import bronseBase1 from "../../assets/ranks/bronze1.png";
-import bronseBase2 from "../../assets/ranks/bronze2.png";
-import bronseBase3 from "../../assets/ranks/bronze3.png";
+import bronseBase1 from "../../assets/ranks/bronze-1.png";
+import bronseBase2 from "../../assets/ranks/bronze-2.png";
+import bronseBase3 from "../../assets/ranks/bronze-3.png";
 import silverbase from "../../assets/ranks/silverBase2.png";
 import goldBase from "../../assets/ranks/goldBase.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
