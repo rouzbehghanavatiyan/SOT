@@ -89,8 +89,6 @@ const ChatRoom: React.FC = () => {
     setUnreadMessages(storedReadStatus);
   }, [userSender]);
 
-  console.log(userSender);
-
   return (
     <div className="md:mt-10 mt-0 ">
       {userSender.length > 0 ? (

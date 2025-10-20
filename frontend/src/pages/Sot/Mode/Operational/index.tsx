@@ -20,7 +20,6 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
     show: false,
     userId: 0,
   });
-  const [isLoadingSearchUser, setIsLoadingSearchUser] = useState<boolean>(true);
   const [showRequestModal, setShowRequestModal] = useState<boolean>(false);
   const getProfileImage = main?.userLogin?.profile;
   const findImg = StringHelpers.getProfile(getProfileImage);
@@ -64,13 +63,13 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
     );
     setFindUser(filterMe);
   };
+
   const filteredFindUser = findUser.filter(
     (user: any) => user.id !== main?.userLogin?.user?.id
   );
 
   const handleClose = () => {
     if (socket) {
-      // حذف درخواست‌های کاربر از سرور
       socket.emit("remove_invite_optional", {
         userIdSender: main?.userLogin?.user?.id,
       });
@@ -147,14 +146,12 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
           })}
         </div>
         <div className="inset-0 flex my-4 justify-center items-center transition-opacity h-11 w-full gap-2 z-50">
-          {isLoadingSearchUser && (
-            <>
-              <div className="w-10 h-10 flex justify-center items-center rounded-lg">
-                <div className="loader-userFinding w-16 h-16" />
-              </div>
-              <span> Finding users</span>
-            </>
-          )}
+          <>
+            <div className="w-10 h-10 flex justify-center items-center rounded-lg">
+              <div className="loader-userFinding w-16 h-16" />
+            </div>
+            <span> Finding users</span>
+          </>
         </div>
         <span className="flex mb-7 justify-around">
           <Button

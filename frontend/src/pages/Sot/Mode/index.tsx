@@ -51,7 +51,6 @@ const Mode: React.FC<any> = ({ updateStepData, setCurrentStep }) => {
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
     if (file) {
       setVideoFile(file);
       const url = URL.createObjectURL(file);

@@ -29,6 +29,24 @@ const PrivateChat: React.FC = ({}) => {
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  const scrollToBottom = useCallback(() => {
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        const container = messagesContainerRef.current;
+        container.scrollTop = container.scrollHeight;
+      }
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({
+          behavior: "auto",
+          block: "end",
+        });
+      }
+    }, 100);
+  }, []);
+
   const markMessagesAsRead = useCallback(
     (senderId: number) => {
       if (hasMarkedAsRead) return;
@@ -63,15 +81,7 @@ const PrivateChat: React.FC = ({}) => {
       };
       socket.emit("send_message", message);
       setTitle("");
-    }    
-    // if (!location?.pathname?.includes("privateMessage")) {
-    //   const postData = {
-    //     userId: 0,
-    //     message: title,
-    //   };
-    //   const resNotif = await sendUserNotif(postData);
-    //   console.log(resNotif);
-    // }
+    }
     titleInputRef.current?.focus();
   };
 
@@ -101,8 +111,6 @@ const PrivateChat: React.FC = ({}) => {
   };
 
   const handleTabVisibilityChangeWrapper = useCallback(() => {
-    console.log(title);
-
     return handleTabVisibilityChange(title, reciveUserId);
   }, [title, reciveUserId]);
 
@@ -122,8 +130,21 @@ const PrivateChat: React.FC = ({}) => {
   }, [socket]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (messages.length > 0 && !hasScrolled) {
+      scrollToBottom();
+      setHasScrolled(true);
+    } else if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages, scrollToBottom, hasScrolled]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 100); // زمان بیشتری برای اطمینان از لود شدن
+
+    return () => clearTimeout(timer);
+  }, [scrollToBottom]);
 
   useEffect(() => {
     if (reciveUserId) {
@@ -148,7 +169,10 @@ const PrivateChat: React.FC = ({}) => {
         }
         score={location?.state?.userInfo?.score || 20}
       />
-      <div className="flex-1 overflow-y-auto p-2 bg-gray-100">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-2 bg-gray-100"
+      >
         {isLoadingChild && <LoadingChild isLoading={isLoadingChild} />}
         <Messages
           handleGetMessages={handleGetMessages}

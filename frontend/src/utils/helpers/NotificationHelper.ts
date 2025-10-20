@@ -1,7 +1,6 @@
 import { sendUserNotif } from "../../services/dotNet";
 
 export const handleTabVisibilityChange = (message: string, userId: number) => {
-  console.log(message);
 
   const handleVisibilityChange = () => {
     if (document.hidden) {

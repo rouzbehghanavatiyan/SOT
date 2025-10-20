@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Started from "../../assets/ranks/start_question.png";
-import bronseBase from "../../assets/ranks/bronseBase2.png";
+import bronseBase1 from "../../assets/ranks/bronze1.png";
+import bronseBase2 from "../../assets/ranks/bronze2.png";
+import bronseBase3 from "../../assets/ranks/bronze3.png";
 import silverbase from "../../assets/ranks/silverBase2.png";
 import goldBase from "../../assets/ranks/goldBase.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import StarsRenderer from "./StarsRenderer"; // کامپوننت جدید
 
 interface ProfileWithRankProps {
   userInfo?: any;
@@ -44,13 +45,13 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
 
   const determineRank = () => {
     if (score === 0) {
-      return { base: bronseBase, stars: 1, starType: "bronse" as const };
+      return { base: bronseBase1, stars: 1, starType: "bronse" as const };
     } else if (score > 0 && score < 100) {
-      return { base: bronseBase, stars: 1, starType: "bronse" as const };
+      return { base: bronseBase1, stars: 1, starType: "bronse" as const };
     } else if (score >= 100 && score < 200) {
-      return { base: bronseBase, stars: 2, starType: "bronse" as const };
+      return { base: bronseBase2, stars: 2, starType: "bronse" as const };
     } else if (score >= 200 && score < 300) {
-      return { base: bronseBase, stars: 3, starType: "bronse" as const };
+      return { base: bronseBase3, stars: 3, starType: "bronse" as const };
     } else if (score >= 300 && score < 400) {
       return { base: silverbase, stars: 1, starType: "silver" as const };
     } else if (score >= 400 && score < 500) {
@@ -140,7 +141,6 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
             alt="Profile"
           />
         )}
-
         {score >= 0 && rankData.starType && (
           <div
             className=""
@@ -161,11 +161,6 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
                 position: "relative",
               }}
               alt="Rank"
-            />
-            <StarsRenderer
-              starType={rankData.starType}
-              stars={rankData.stars}
-              rankSize={rankSize}
             />
           </div>
         )}

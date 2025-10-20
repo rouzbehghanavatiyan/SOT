@@ -109,7 +109,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     externalIsFollowed !== undefined
       ? externalIsFollowed
       : followInfo.isFollowed;
-
+      
   const handleFallowClick = async (video: any, position: number) => {
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
@@ -117,15 +117,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       userId: userIdLogin || null,
       followerId: userIdFollow || null,
     };
-
-    console.log(userIdFollow, finalIsFollowed);
     dispatch(
       updateFollowStatus({
         userId: userIdFollow,
         isFollowed: !finalIsFollowed,
       })
     );
-
     try {
       if (finalIsFollowed) {
         await removeFollower(postData);

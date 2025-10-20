@@ -23,16 +23,13 @@ const RequestModal: React.FC<PropsType> = ({
   setIsLoadingBtn,
   dataUserRequestInfo,
   socket,
-  userId,
-  isLoadingBtn,
 }) => {
   const main = useAppSelector((state) => state?.main);
   const currentUserId = main?.userLogin?.user?.id;
-  console.log(dataUserRequestInfo);
 
   const handleCancel = (userId: number) => {
     setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
-
+    setShowRequestModal(false);
     const userInfo = dataUserRequestInfo.find(
       (user) => user.userIdSender === userId
     );
@@ -41,7 +38,6 @@ const RequestModal: React.FC<PropsType> = ({
       userAnswer: false,
     });
 
-    // حذف درخواست از سرور
     socket.emit("remove_invite_optional", {
       userIdSender: userId,
     });
@@ -56,20 +52,26 @@ const RequestModal: React.FC<PropsType> = ({
       userAnswer: true,
     });
 
-    // حذف درخواست از سرور
     socket.emit("remove_invite_optional", {
       userIdSender: userId,
     });
   };
 
   useEffect(() => {
+    if (!showRequestModal) {
+      setIsLoadingBtn({ show: false });
+    }
+
     return () => {
       if (socket) {
         socket.off("add_invite_optional_response");
       }
+
       setIsLoadingBtn({ show: false });
     };
-  }, [socket]);
+  }, [socket, showRequestModal]);
+
+  console.log(dataUserRequestInfo);
 
   const filteredDataUserRequestInfo = useMemo(() => {
     return dataUserRequestInfo.filter(

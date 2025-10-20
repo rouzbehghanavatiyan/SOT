@@ -27,11 +27,10 @@ const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
 
-  // تغییر state برای مدیریت بهتر ویدیوهای در حال پخش
   const [currentlyPlaying, setCurrentlyPlaying] = useState<{
     slideIndex: number | null;
     position: number | null;
-  }>({ slideIndex: 0, position: 0 }); // مقدار اولیه برای پخش ویدیو موقعیت 0 در اسلاید 0
+  }>({ slideIndex: 0, position: 0 });
 
   const userIdLogin = main?.userLogin?.user?.id;
   const isLoadingRef = useRef(isLoading);
@@ -73,21 +72,16 @@ const Home: React.FC = () => {
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
-
-    // وقتی اسلاید عوض می‌شود، ویدیو قبلی را متوقف کن و ویدیو جدید در پوزیشن 0 را پلی کن
     setCurrentlyPlaying({
       slideIndex: realIndex,
       position: 0,
     });
 
-    // لود داده‌های بیشتر اگر نیاز باشد
     if (
       realIndex % 3 === 0 &&
       paginationRef.current.hasMore &&
       !isLoadingRef.current
     ) {
-      console.log("Fetching next page...");
-      fetchNextPage();
     } else {
       console.log("No more data or still loading...");
     }
@@ -95,7 +89,6 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (data.length > 0 && !isLoading) {
-      console.log(":VVVVVVVVVVVVVVVVVVv");
       setCurrentlyPlaying({
         slideIndex: 0,
         position: 0,
@@ -117,12 +110,9 @@ const Home: React.FC = () => {
     setOpenDropdowns({});
     setCurrentlyPlaying((prev) => {
       console.log(prev);
-
-      // اگر روی ویدیوی در حال پخش کلیک شد، آن را متوقف کن
       if (prev.slideIndex === slideIndex && prev.position === position) {
         return { slideIndex: null, position: null };
       }
-      // در غیر این صورت ویدیوی جدید را پلی کن
       return { slideIndex, position };
     });
   };
