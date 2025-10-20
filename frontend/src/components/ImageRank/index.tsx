@@ -9,8 +9,6 @@ import silver3 from "../../assets/ranks/silver-3.png";
 import gold1 from "../../assets/ranks/gold-1.png";
 import gold2 from "../../assets/ranks/gold-2.png";
 import gold3 from "../../assets/ranks/gold-3.png";
-import silverbase from "../../assets/ranks/silverBase2.png";
-import goldBase from "../../assets/ranks/goldBase.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 
@@ -59,17 +57,17 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
     } else if (score >= 200 && score < 300) {
       return { base: bronseBase3, stars: 3, starType: "bronse" as const };
     } else if (score >= 300 && score < 400) {
-      return { base: silverbase, stars: 1, starType: "silver" as const };
+      return { base: silver1, stars: 1, starType: "silver" as const };
     } else if (score >= 400 && score < 500) {
-      return { base: silverbase, stars: 2, starType: "silver" as const };
+      return { base: silver2, stars: 2, starType: "silver" as const };
     } else if (score >= 500 && score < 600) {
-      return { base: silverbase, stars: 3, starType: "silver" as const };
+      return { base: silver3, stars: 3, starType: "silver" as const };
     } else if (score >= 600 && score < 700) {
-      return { base: goldBase, stars: 1, starType: "gold" as const };
+      return { base: gold1, stars: 1, starType: "gold" as const };
     } else if (score >= 700 && score < 800) {
-      return { base: goldBase, stars: 2, starType: "gold" as const };
+      return { base: gold2, stars: 2, starType: "gold" as const };
     } else if (score >= 800 && score < 900) {
-      return { base: goldBase, stars: 3, starType: "gold" as const };
+      return { base: gold3, stars: 3, starType: "gold" as const };
     } else {
       return { base: Started, stars: 0, starType: "" as const };
     }
