@@ -61,10 +61,7 @@ const Notification: React.FC = () => {
   console.log(main?.lastMatch);
 
   return (
-    <section
-      className="
-       w-full justify-center"
-    >
+    <section className="w-full min-h-[90vh] justify-center">
       <div className="flex flex-col h-full">
         <header className="mt-1">
           <MainTitle title="News" />

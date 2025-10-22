@@ -21,7 +21,7 @@ const PhoneFooter: React.FC = () => {
 
   return (
     <ResponsiveMaker hiddenWidth={1024}>
-      <div className="fixed z-40 bottom-0 w-full  text-center bg-white">
+      <div className="z-40 bottom-0 w-full text-center bg-white">
         <div className="flex gap-5 justify-center border-t-[1px] items-center col-span-3">
           <NavLink
             to="/home"
@@ -32,7 +32,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <HomeIcon className="icon_size" />
+            <HomeIcon className="font35" />
           </NavLink>
           <NavLink
             to="/watch"
@@ -44,7 +44,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <PlayArrowIcon className="icon_size" />
+            <PlayArrowIcon className="font35" />
           </NavLink>
           <NavLink
             to="/sot"
@@ -59,8 +59,8 @@ const PhoneFooter: React.FC = () => {
               src={LogoTC}
               alt="Logo"
               className={`rounded-full `}
-              width={30}
-              height={30}
+              width={35}
+              height={35}
             />
           </NavLink>
           <NavLink
@@ -72,7 +72,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <TrendingUpIcon className="icon_size" />
+            <TrendingUpIcon className="font35" />
           </NavLink>
           <NavLink
             to="/profile"

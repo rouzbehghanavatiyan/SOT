@@ -33,15 +33,14 @@ const SoftLink: FC<TalentModeProps> = ({
   handleAcceptCategory = () => {},
   isLoading = false,
   defaultIcon = <PersonIcon className="font25 mx-3" />,
-  containerClass = "w-screen md:w-[500px] bg-white md:h-full",
+  containerClass = " w-screen md:w-[500px] md:h-full",
   itemClass = " rounded-lg md:min-w-52 m-1 flex justify-start items-center text-primary cursor-pointer",
   textClass = "py-2",
 }) => {
   return (
     <>
       {isLoading && <Loading isLoading={isLoading} />}
-
-      <div className="grid  justify-start ">
+      <div className="grid  justify-start min-h-[76vh]">
         <div className={containerClass}>
           {categories.map((category) => (
             <span

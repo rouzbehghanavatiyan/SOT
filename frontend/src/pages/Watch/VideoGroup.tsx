@@ -18,7 +18,7 @@ const VideoGroup: React.FC<{
       className="flex-1 flex flex-col col-span-1 row-span-1"
     >
       <div className="flex-1">
-        <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+        <span className=" relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
           <img
             src={fixImg1}
             alt={parent?.alt || "Parent Image"}

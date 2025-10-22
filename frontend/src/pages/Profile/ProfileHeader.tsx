@@ -110,7 +110,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
             circularCrop={true}
           />
         )}
-        <div className="grid grid-cols-6 mt-1 relative">
+        <div className="grid grid-cols-6 relative">
           <div className="col-span-5 flex h-32">
             <span ref={ref} onClick={handleProfile} className="cursor-pointer">
               <ImageRank score={score} imgSrc={userImage} imgSize={100} />

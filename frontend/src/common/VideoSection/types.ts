@@ -28,3 +28,27 @@ export interface DropdownItem {
   action: () => void;
   disabled?: boolean;
 }
+
+export interface VideoSectionProps {
+  video?: any;
+  showLiked?: boolean;
+  isPlaying?: boolean;
+  onVideoPlay?: (videoId: string) => void;
+  onLikeClick?: (video: any) => void;
+  onFollowClick?: (video: any, positionVideo: number) => void;
+  toggleDropdown: (index: string) => void;
+  dropdownItems: (data: any) => any[];
+  openDropdowns: Record<string, boolean>;
+  baseURL?: string;
+  positionVideo: number;
+  setOpenDropdowns?: any;
+  countLiked?: number;
+  showCommentsIcon?: boolean;
+  showComments?: boolean;
+  setShowComments?: React.Dispatch<React.SetStateAction<boolean>>;
+  result?: any;
+  score?: number;
+  endTime?: number | boolean;
+  isLiked?: any;
+  isFollowed?: any;
+}

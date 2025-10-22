@@ -190,8 +190,8 @@ const Sot: React.FC = () => {
 
   return (
     <>
-      <section className="lg:mt-10 mt-4 mb-3 w-full gap-10 flex flex-col items-center">
-        <div className="flex gap-4">
+      <section className="lg:mt-10 mt-2 mb-3 w-full gap-10 flex flex-col items-center">
+        <div className="flex gap-4 overflow-auto ">
           {stepsData.map((step, index) => (
             <div
               key={index}

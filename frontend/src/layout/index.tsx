@@ -195,35 +195,20 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     return null;
   }
 
-  const isWatchShowPage = location.pathname === "/watch/show";
-  const marginTopClass = isWatchShowPage ? "mt-0" : "mt-12";
-
   return (
     <main className="relative">
-      {/* Header for desktop */}
       <ResponsiveMaker visibleWidth={1024}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
-
-      <div className={`flex ${marginTopClass}`}>
-        {/* Sidebar for desktop - currently commented */}
-        {/* <ResponsiveMaker visibleWidth={1024}>
-          <SidebarLinks />
-        </ResponsiveMaker> */}
-
+      <div>
         <div className="flex flex-grow justify-center items-center">
-          <div className="max-w-7xl max-h-3/4 w-full h-full justify-center items-center">
-            {/* Phone header */}
+          <div className="max-w-7xl w-full h-full justify-center items-center">
             <PhoneHeader />
-
-            <div>
+            <div className="overflow-y-auto max-h-[88vh]">
               {children}
-
-              {/* Notification permission prompt */}
-              {showPrompt && (
+              {/* {showPrompt && (
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
                   <div className="bg-white border-[1px] p-4 rounded-xl max-w-md w-full">
-                    {/* Close button */}
                     <div className="flex justify-end">
                       <CloseIcon
                         onClick={() => setShowPrompt(false)}
@@ -231,10 +216,8 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
                       />
                     </div>
 
-                    {/* Content */}
                     <div className="flex justify-center rounded-xl p-4 bg-white">
                       <div className="text-center">
-                        {/* Logo */}
                         <div className="flex items-center justify-center mb-4">
                           <img
                             src={SotLogo}
@@ -243,13 +226,11 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
                           />
                         </div>
 
-                        {/* Message */}
                         <div className="text-sm text-gray-600 my-6">
                           <p>Notifications are disabled for you.</p>
                           <p>Do you want to enable them?</p>
                         </div>
 
-                        {/* Action buttons */}
                         <div className="mt-6 flex justify-center gap-3">
                           <Button
                             onClick={handleAllow}
@@ -261,16 +242,12 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
-
-            {/* Phone footer */}
             <PhoneFooter />
           </div>
         </div>
       </div>
-
-      {/* Messages modal */}
       {openMessage && (
         <Messages
           socket={socket}

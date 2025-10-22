@@ -50,7 +50,7 @@ const PhoneHeader = () => {
   return (
     <ResponsiveMaker hiddenWidth={1024} visibleWidth={300}>
       {!itsShowWatchRoute && (
-        <div className="fixed z-40 top-0 left-0 w-full bg-white border-b border-gray-150 py-1 px-3 text-center text-white font-bold flex">
+        <div className="  z-40 top-0 left-0 w-full bg-white border-b border-gray-150 py-1 px-3 text-center text-white font-bold flex">
           <div className="flex justify-between w-full items-center ">
             {userIdWhantToShow?.user && (
               <ArrowBackIcon

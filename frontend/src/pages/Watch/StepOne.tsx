@@ -93,7 +93,7 @@ const StepOne: React.FC = () => {
   };
 
   useEffect(() => {
-    handleGetAllMatch(0);
+    handleGetAllMatch(2);
     handleGetFiltered();
   }, []);
 
@@ -120,8 +120,6 @@ const StepOne: React.FC = () => {
     navigate(newPath);
   };
 
-  console.log(skills);
-  
   return (
     <section>
       <div className="mt-2 mb-3">

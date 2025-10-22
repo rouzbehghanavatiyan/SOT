@@ -17,6 +17,7 @@ import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import VideoItemSkeleton from "../../components/VideoLoading";
 import { followerAttachmentList } from "../../services/dotNet";
 import LoadingChild from "../../components/Loading/LoadingChild";
+import NotMatchedToVisit from "./NotMatchedToVisit";
 
 const Home: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -37,11 +38,6 @@ const Home: React.FC = () => {
   const { pagination, data } = main.homeMatch;
   const paginationRef = useRef(pagination);
   const swiperRef = useRef<any>(null);
-
-  useEffect(() => {
-    isLoadingRef.current = isLoading;
-    paginationRef.current = pagination;
-  }, [isLoading, pagination]);
 
   const fetchNextPage = useCallback(async () => {
     if (isLoadingRef.current || !paginationRef.current.hasMore) return;
@@ -86,21 +82,6 @@ const Home: React.FC = () => {
       console.log("No more data or still loading...");
     }
   };
-
-  useEffect(() => {
-    if (data.length > 0 && !isLoading) {
-      setCurrentlyPlaying({
-        slideIndex: 0,
-        position: 0,
-      });
-    }
-  }, [data.length, isLoading]);
-
-  useEffect(() => {
-    if (userIdLogin && data.length === 0 && !isLoadingRef.current) {
-      fetchNextPage();
-    }
-  }, [userIdLogin, data.length, fetchNextPage]);
 
   const handleVideoPlay = (
     videoId: string,
@@ -160,6 +141,26 @@ const Home: React.FC = () => {
     ];
   };
 
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+    paginationRef.current = pagination;
+  }, [isLoading, pagination]);
+
+  useEffect(() => {
+    if (data.length > 0 && !isLoading) {
+      setCurrentlyPlaying({
+        slideIndex: 0,
+        position: 0,
+      });
+    }
+  }, [data.length, isLoading]);
+
+  useEffect(() => {
+    if (userIdLogin && data.length === 0 && !isLoadingRef.current) {
+      fetchNextPage();
+    }
+  }, [userIdLogin, data.length, fetchNextPage]);
+
   return (
     <div className="relative w-full bg-black md:h-[calc(100vh-100px)] shadow-card h-[calc(100vh-92px)]">
       <Swiper
@@ -172,7 +173,6 @@ const Home: React.FC = () => {
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         initialSlide={0}
       >
-        {/* Loading State */}
         {isLoading &&
           data.length === 0 &&
           [...Array(12)].map((_, index) => (
@@ -183,22 +183,7 @@ const Home: React.FC = () => {
               <VideoItemSkeleton section="itsHome" />
             </SwiperSlide>
           ))}
-
-        {/* Empty State */}
-        {!isLoading && (!data || data.length === 0) && (
-          <SwiperSlide className="h-full w-full bg-black flex flex-col">
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="text-2xl font-semibold mb-2">
-                  Nothing to watch yet
-                </div>
-                <div className="text-gray-400">
-                  There's no content available at the moment
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        )}
+        {!isLoading && (!data || data.length === 0) && <NotMatchedToVisit />}
         {!isLoading &&
           data?.map((video: any, index: number) => {
             const resultInserted =
