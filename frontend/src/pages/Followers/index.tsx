@@ -36,11 +36,11 @@ const Followers: React.FC<any> = () => {
   return (
     <div>
       {isLoading && <Loading isLoading={isLoading} />}
+      <MainTitle title="Follower" />
       {allFollower?.map((follower: any) => {
         const image = StringHelpers.getProfile(follower?.attachment);
         return (
           <section className="mt-1">
-            <MainTitle title="Follower" />
             <div className="w-full bg-gray-100 border-b-[1px] border-gray-150 py-2 px-4 sticky top-0 z-10">
               <ImageRank
                 score={0}

@@ -241,19 +241,19 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 />
               </div>
               {endTime ? null : result === "Win" ? (
-                <div className="text-green col-span-1 flex justify-center">
+                <div className="text-green col-span-1 flex items-center justify-center">
                   <span className="font15 border-green px-2 rounded-lg border font-bold">
                     Win
                   </span>
                 </div>
               ) : result === "Loss" ? (
-                <div className="text-red col-span-1 flex justify-center">
+                <div className="text-red col-span-1 flex items-center justify-center">
                   <span className="font15 border-red px-2 rounded-lg border font-bold">
                     Loss
                   </span>
                 </div>
               ) : result === "Draw" ? (
-                <div className="text-yellow col-span-1 flex justify-center">
+                <div className="text-yellow col-span-1 flex items-center justify-center">
                   <span className="font15 border-yellow px-2 rounded-lg border font-bold">
                     Draw
                   </span>

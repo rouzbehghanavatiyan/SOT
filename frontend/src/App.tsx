@@ -4,6 +4,7 @@ import PublicRoutes from "./routes/PublicRoutes";
 import Login from "./pages/Login";
 import SignUpForm from "./pages/SignUp";
 import LearningSot from "./pages/LearningSot";
+import ServerError from "./pages/ServerError";
 const publicKey: string | undefined = import.meta.env.VITE_PUBLIC_KEY;
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/*" element={<PublicRoutes />} />
         <Route path="/" element={<Login />} />
         <Route path="/learningSot" element={<LearningSot />} />
+        <Route path="/server-error" element={<ServerError />} />
         <Route path="/signUp" element={<SignUpForm />} />
       </Routes>
     </>

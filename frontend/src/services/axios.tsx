@@ -41,41 +41,83 @@ axios.interceptors.response.use(
   },
   async function (error) {
     const status = error?.response?.status;
+    const isNetworkError = error?.code === 'ERR_NETWORK' || error?.message === 'Network Error';
+    const isCorsError = error?.code === 'ERR_NETWORK' || error?.message?.includes('CORS');
+    
+    console.log('API Error:', error);
 
+    // Handle Network Error & CORS Error
+    if (isNetworkError || isCorsError) {
+      // Save error info to sessionStorage for error page
+      sessionStorage.setItem('serverError', JSON.stringify({
+        type: 'server',
+        timestamp: new Date().toISOString(),
+        message: 'Network or CORS error occurred'
+      }));
+
+      // Clear storage and redirect to server error page
+      localStorage.clear();
+      sessionStorage.removeItem('token'); // Only remove token, keep error info
+      
+      // Redirect immediately to server error page
+      window.location.href = "/server-error";
+      
+      return Promise.reject(error);
+    }
+
+    // Handle 401 Unauthorized
     if (status === 401) {
       store.dispatch(
         RsetMessageModal({
           show: true,
-          title: error.response?.data?.message || "Unauthorized access",
+          title: error.response?.data?.message || "Your session has expired. Please login again.",
           icon: "danger",
         })
       );
 
-      console.log(error);
       localStorage.clear();
       sessionStorage.clear();
-      window.location.href = "/";
+      
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+      
       return Promise.reject(error);
     }
 
+    // Handle other client errors (4xx)
     if (status >= 400 && status < 500) {
       store.dispatch(
         RsetMessageModal({
           show: true,
-          title: error.response?.data?.message || "Client error",
+          title: error.response?.data?.message || "Client error occurred",
           icon: "danger",
         })
       );
       return Promise.reject(error);
     }
 
+    // Handle server errors (5xx)
+    if (status >= 500) {
+      sessionStorage.setItem('serverError', JSON.stringify({
+        type: 'server',
+        timestamp: new Date().toISOString(),
+        message: 'Server error occurred'
+      }));
+      
+      window.location.href = "/server-error";
+      return Promise.reject(error);
+    }
+
+    // Handle other errors
     store.dispatch(
       RsetMessageModal({
         show: true,
-        title: "An unexpected error occurred",
+        title: "An unexpected error occurred. Please try again.",
         icon: "danger",
       })
     );
+    
     return Promise.reject(error);
   }
 );
