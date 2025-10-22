@@ -161,112 +161,121 @@ const Home: React.FC = () => {
     }
   }, [userIdLogin, data.length, fetchNextPage]);
 
-  return (
-    <div className="relative w-full bg-black md:h-[calc(100vh-100px)] shadow-card h-[calc(100vh-92px)]">
-      <Swiper
-        direction={"vertical"}
-        slidesPerView={1}
-        mousewheel={{ forceToAxis: true, releaseOnEdges: true }}
-        modules={[Mousewheel]}
-        className="mySwiper lg:mt-9 md:h-[calc(100vh-100px)] h-[calc(100vh-97px)]"
-        onSlideChange={handleSlideChange}
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
-        initialSlide={0}
-      >
-        {isLoading &&
-          data.length === 0 &&
-          [...Array(12)].map((_, index) => (
-            <SwiperSlide
-              className="h-full w-full bg-black flex flex-col"
-              key={`skeleton-${index}`}
-            >
-              <VideoItemSkeleton section="itsHome" />
-            </SwiperSlide>
-          ))}
-        {!isLoading && (!data || data.length === 0) && <NotMatchedToVisit />}
-        {!isLoading &&
-          data?.map((video: any, index: number) => {
-            const resultInserted =
-              video?.likeInserted > video?.likeMatched
-                ? "Win"
-                : video?.likeInserted < video?.likeMatched
-                  ? "Loss"
-                  : "Draw";
+ return (
+  <div className="relative w-full bg-black 
+    h-[calc(100dvh-92px)] 
+    md:h-[calc(100dvh-100px)] 
+    lg:h-[calc(100dvh-60px)] 
+    shadow-card">
+    <Swiper
+      direction={"vertical"}
+      slidesPerView={1}
+      mousewheel={{ forceToAxis: true, releaseOnEdges: true }}
+      modules={[Mousewheel]}
+      className="mySwiper 
+        h-[calc(100dvh-100px)]
+        md:h-[calc(100dvh-100px)]
+        lg:h-[calc(100dvh-70px)]
+        lg:mt-9"
+      onSlideChange={handleSlideChange}
+      onSwiper={(swiper) => (swiperRef.current = swiper)}
+      initialSlide={0}
+    >
+      {isLoading &&
+        data.length === 0 &&
+        [...Array(12)].map((_, index) => (
+          <SwiperSlide
+            className="h-full w-full bg-black flex flex-col"
+            key={`skeleton-${index}`}
+          >
+            <VideoItemSkeleton section="itsHome" />
+          </SwiperSlide>
+        ))}
+      {!isLoading && (!data || data.length === 0) && <NotMatchedToVisit />}
+      {!isLoading &&
+        data?.map((video: any, index: number) => {
+          const resultInserted =
+            video?.likeInserted > video?.likeMatched
+              ? "Win"
+              : video?.likeInserted < video?.likeMatched
+                ? "Loss"
+                : "Draw";
 
-            const resultMatched =
-              video?.likeInserted < video?.likeMatched
-                ? "Win"
-                : video?.likeInserted > video?.likeMatched
-                  ? "Loss"
-                  : "Draw";
-            return (
-              <SwiperSlide
-                key={`video-${video.id || index}`}
-                className="h-full w-full bg-black flex flex-col"
-              >
-                <section className="flex flex-col h-screen">
-                  <div className="flex-1 min-h-0 relative">
-                    <VideoSection
-                      score={video?.scoreInserted}
-                      countLiked={video?.likeInserted || 0}
-                      result={resultInserted}
-                      video={video}
-                      isPlaying={shouldVideoPlay(index, 0)}
-                      onVideoPlay={() =>
-                        handleVideoPlay(
-                          video?.attachmentInserted?.attachmentId,
-                          index,
-                          0
-                        )
-                      }
-                      dropdownItems={() =>
-                        dropdownItems(video, 0, video?.userInserted)
-                      }
-                      setOpenDropdowns={setOpenDropdowns}
-                      openDropdowns={openDropdowns}
-                      baseURL={baseURL}
-                      positionVideo={0}
-                      isFollowed={
-                        video.follows?.[video?.userInserted?.id]?.isFollowed ||
-                        false
-                      }
-                    />
-                  </div>
-                  <div className="flex-1 min-h-0 relative">
-                    <VideoSection
-                      isFollowed={
-                        video.follows?.[video?.userMatched?.id]?.isFollowed ||
-                        false
-                      }
-                      score={video?.scoreMatched}
-                      video={video}
-                      result={resultMatched}
-                      isPlaying={shouldVideoPlay(index, 1)}
-                      onVideoPlay={() =>
-                        handleVideoPlay(
-                          video?.attachmentMatched?.attachmentId,
-                          index,
-                          1
-                        )
-                      }
-                      dropdownItems={() =>
-                        dropdownItems(video, 1, video?.userMatched)
-                      }
-                      countLiked={video?.likeMatched || 0}
-                      openDropdowns={openDropdowns}
-                      setOpenDropdowns={setOpenDropdowns}
-                      baseURL={baseURL}
-                      positionVideo={1}
-                    />
-                  </div>
-                </section>
-              </SwiperSlide>
-            );
-          })}
-      </Swiper>
-      <LoadingChild ref={loadingRef} isLoading={isLoading} />
-    </div>
-  );
+          const resultMatched =
+            video?.likeInserted < video?.likeMatched
+              ? "Win"
+              : video?.likeInserted > video?.likeMatched
+                ? "Loss"
+                : "Draw";
+          return (
+            <SwiperSlide
+              key={`video-${video.id || index}`}
+              className="h-full w-full bg-black flex flex-col"
+            >
+              {/* تغییر در این بخش */}
+              <section className="flex flex-col h-full min-h-0">
+                <div className="flex-1 min-h-0 relative">
+                  <VideoSection
+                    score={video?.scoreInserted}
+                    countLiked={video?.likeInserted || 0}
+                    result={resultInserted}
+                    video={video}
+                    isPlaying={shouldVideoPlay(index, 0)}
+                    onVideoPlay={() =>
+                      handleVideoPlay(
+                        video?.attachmentInserted?.attachmentId,
+                        index,
+                        0
+                      )
+                    }
+                    dropdownItems={() =>
+                      dropdownItems(video, 0, video?.userInserted)
+                    }
+                    setOpenDropdowns={setOpenDropdowns}
+                    openDropdowns={openDropdowns}
+                    baseURL={baseURL}
+                    positionVideo={0}
+                    isFollowed={
+                      video.follows?.[video?.userInserted?.id]?.isFollowed ||
+                      false
+                    }
+                  />
+                </div>
+                <div className="flex-1 min-h-0 relative">
+                  <VideoSection
+                    isFollowed={
+                      video.follows?.[video?.userMatched?.id]?.isFollowed ||
+                      false
+                    }
+                    score={video?.scoreMatched}
+                    video={video}
+                    result={resultMatched}
+                    isPlaying={shouldVideoPlay(index, 1)}
+                    onVideoPlay={() =>
+                      handleVideoPlay(
+                        video?.attachmentMatched?.attachmentId,
+                        index,
+                        1
+                      )
+                    }
+                    dropdownItems={() =>
+                      dropdownItems(video, 1, video?.userMatched)
+                    }
+                    countLiked={video?.likeMatched || 0}
+                    openDropdowns={openDropdowns}
+                    setOpenDropdowns={setOpenDropdowns}
+                    baseURL={baseURL}
+                    positionVideo={1}
+                  />
+                </div>
+              </section>
+            </SwiperSlide>
+          );
+        })}
+    </Swiper>
+    <LoadingChild ref={loadingRef} isLoading={isLoading} />
+  </div>
+);
 };
 
 export default Home;

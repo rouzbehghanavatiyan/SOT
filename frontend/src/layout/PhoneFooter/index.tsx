@@ -22,35 +22,35 @@ const PhoneFooter: React.FC = () => {
   return (
     <ResponsiveMaker hiddenWidth={1024}>
       <div className="z-40 bottom-0 w-full text-center bg-white">
-        <div className="flex gap-5 justify-center border-t-[1px] items-center col-span-3">
+        <div className="flex gap-5 justify-center border-t-[1px]">
           <NavLink
             to="/home"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-3 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
-            <HomeIcon className="font35" />
+            <HomeIcon className="icon_size" />
           </NavLink>
           <NavLink
             to="/watch"
             onClick={handleWatchClick}
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-3 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
-            <PlayArrowIcon className="font35" />
+            <PlayArrowIcon className="icon_size" />
           </NavLink>
           <NavLink
             to="/sot"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-3 items-center justify-center",
+                "flex w-14 py-1 items-center justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
@@ -59,20 +59,20 @@ const PhoneFooter: React.FC = () => {
               src={LogoTC}
               alt="Logo"
               className={`rounded-full `}
-              width={35}
-              height={35}
+              width={30}
+              height={30}
             />
           </NavLink>
           <NavLink
             to="/notification"
             className={({ isActive }) =>
               cn(
-                "flex w-14 py-3 items-center relative justify-center",
+                "flex w-14 py-1 items-center relative justify-center",
                 isActive ? "text-primary border_phone_footer" : "text-gray-200"
               )
             }
           >
-            <TrendingUpIcon className="font35" />
+            <TrendingUpIcon className="icon_size" />
           </NavLink>
           <NavLink
             to="/profile"
@@ -83,7 +83,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <ImageRank imgSrc={findImg} imgSize={37} />
+            <ImageRank imgSrc={findImg} imgSize={35} />
           </NavLink>
         </div>
       </div>

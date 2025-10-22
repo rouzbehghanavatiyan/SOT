@@ -11,4 +11,5 @@ export interface VideoProps {
   handleVideo?: () => void;
   width?: string | number;
   height?: string | number;
+  style?:string
 }

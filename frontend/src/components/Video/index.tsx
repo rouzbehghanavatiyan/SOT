@@ -10,7 +10,8 @@ const Video: React.FC<VideoProps> = ({
   url,
   onEnded,
   className,
-  handleVideo,
+  handleVideo, 
+  style,
   width = "100%",
   height = "100%",
 }) => {
@@ -49,7 +50,7 @@ const Video: React.FC<VideoProps> = ({
       <span onClick={handleVideoClick}>
         <ReactPlayer
           ref={playerRef}
-          style={{ pointerEvents: "none" }}
+          style={style}
           className={className}
           playsinline
           width={width}
