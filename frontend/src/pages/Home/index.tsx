@@ -162,11 +162,11 @@ const Home: React.FC = () => {
   }, [userIdLogin, data.length, fetchNextPage]);
 
  return (
-  <div className="relative w-full bg-black 
-    h-[calc(100dvh-92px)] 
+  <div className="relative lg:mt-1 mt-0 w-full bg-black 
+    h-[calc(100dvh-100px)] 
     md:h-[calc(100dvh-100px)] 
-    lg:h-[calc(100dvh-60px)] 
-    shadow-card">
+    lg:h-[calc(100dvh-75px)] 
+     ">
     <Swiper
       direction={"vertical"}
       slidesPerView={1}
@@ -175,8 +175,7 @@ const Home: React.FC = () => {
       className="mySwiper 
         h-[calc(100dvh-100px)]
         md:h-[calc(100dvh-100px)]
-        lg:h-[calc(100dvh-70px)]
-        lg:mt-9"
+        lg:h-[calc(100dvh-75px)]"
       onSlideChange={handleSlideChange}
       onSwiper={(swiper) => (swiperRef.current = swiper)}
       initialSlide={0}

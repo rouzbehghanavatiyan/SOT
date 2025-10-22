@@ -15,7 +15,7 @@ const VideoGroup: React.FC<{
     <div
       key={index}
       onClick={() => onClick({ group, index })}
-      className="flex-1 flex flex-col col-span-1 row-span-1"
+      className="flex-1 flex  flex-col col-span-1 row-span-1"
     >
       <div className="flex-1">
         <span className=" relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
@@ -26,7 +26,7 @@ const VideoGroup: React.FC<{
           />
         </span>
       </div>
-      <div className="flex-1 border-t bg-white">
+      <div className="flex-1 bg-white">
         <div className="flex-1">
           <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
             <span className="text-white absolute bottom-0 p-1 m-1 border-2 rounded-full border-white">

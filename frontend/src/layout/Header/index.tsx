@@ -12,7 +12,7 @@ interface PropsType {
 
 const Header: React.FC<PropsType> = () => {
   return (
-    <header className="w-full grid grid-cols-3 z-50 fixed top-0 bg-primary">
+    <header className="w-full grid grid-cols-3 z-50 top-0 bg-primary">
       <div className="col-span-1  flex ps-5 justify-start items-center">
         <NavLink className="flex justify-center gap-5 items-center" to="/sot">
           <img

@@ -204,7 +204,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl w-full h-full justify-center items-center">
             <PhoneHeader />
-           <div className="overflow-y-auto max-h-[85vh] sm:max-h-[95vh] md:max-h-[90vh] lg:max-h-[85vh] xl:max-h-[80vh]">
+           <div className="overflow-y-auto max-h-[85vh] sm:max-h-[95vh] md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]">
               {children}
               {/* {showPrompt && (
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">

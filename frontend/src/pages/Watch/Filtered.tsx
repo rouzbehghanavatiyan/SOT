@@ -14,7 +14,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 
 interface PropsTyles {
   handleGetAllMatch: any;
-  skills: { id: number; name: string };
+  skills?: [{ id: number; name: string }];
   selectFiltered: number | null;
   setSelectFiltered: React.Dispatch<React.SetStateAction<number | null>>;
 }
@@ -59,7 +59,7 @@ const Filtered: React.FC<PropsTyles> = ({
   console.log(skills);
 
   return (
-    <div className="md:mt-12 flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white max-w-full">
+    <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white max-w-full">
       {skills?.map((item: any) => {
         const IconComponent = iconsMap[item.id] || null;
         const isSelected = selectFiltered === item.id;
