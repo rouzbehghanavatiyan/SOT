@@ -2,31 +2,47 @@ import Modal from "../../../../../components/Modal";
 import { Button } from "../../../../../components/Button";
 import ImageRank from "../../../../../components/ImageRank";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Navigation } from "swiper/modules";
 import "swiper/css/navigation";
 import { useAppSelector } from "../../../../../hooks/reduxHookType";
+import { addAttachment, addInvite } from "../../../../../services/dotNet";
+import asyncWrapper from "../../../../../common/AsyncWrapper";
+import { useNavigate } from "react-router-dom";
 
 interface PropsType {
   showRequestModal: boolean;
   setShowRequestModal: React.Dispatch<React.SetStateAction<boolean>>;
   dataUserRequestInfo: any[];
-  setIsLoadingBtn: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoadingBtn: any;
   socket: any;
   userId: number;
   isLoadingBtn: any;
+  resMovieData: any;
+  allFormData: any;
+  setShowEditMovie: any;
+  userIdLogin: any;
+  movieData: any;
+  setMovieData: any;
 }
 
 const RequestModal: React.FC<PropsType> = ({
   showRequestModal,
+  resMovieData,
+  setShowEditMovie,
   setShowRequestModal,
   setIsLoadingBtn,
   dataUserRequestInfo,
   socket,
+  allFormData,
+  userIdLogin,
+  movieData,
+  isLoadingBtn,
+  setMovieData,
 }) => {
   const main = useAppSelector((state) => state?.main);
   const currentUserId = main?.userLogin?.user?.id;
-
+  const navigate = useNavigate();
   const handleCancel = (userId: number) => {
     setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
     setShowRequestModal(false);
@@ -43,10 +59,66 @@ const RequestModal: React.FC<PropsType> = ({
     });
   };
 
-  const handleAccept = (userInfo: any) => {
-    const userId = userInfo.userIdSender;
-    setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
+  const handleAttachment = useCallback(
+    asyncWrapper(async () => {
+      const formData = new FormData();
+      if (allFormData?.video) {
+        formData.append("formFile", allFormData.video);
+      }
+      if (allFormData?.imageCover) {
+        formData.append("formFile", allFormData.imageCover);
+      }
+      formData.append("attachmentId", resMovieData?.id);
+      formData.append("attachmentType", "mo");
+      formData.append("attachmentName", "movies");
+      const resAttachment = await addAttachment(formData);
+      const { status: attachmentStatus, data: attachmentData } =
+        resAttachment?.data;
+      return { attachmentStatus, attachmentData };
+    }),
+    [allFormData]
+  );
 
+  const handleMatched = asyncWrapper(async () => {
+    const { attachmentStatus } = await handleAttachment();
+    if (attachmentStatus === -1) {
+      console.log("Invalid video dimensions.");
+      return;
+    }
+    if (attachmentStatus === 0) {
+      const postInvite = {
+        parentId: null,
+        userId: userIdLogin || null,
+        movieId: resMovieData?.id || null,
+        status: 0,
+      };
+      const resInvite = await addInvite(postInvite);
+      console.log(resInvite);
+      setIsLoadingBtn({ show: false, userId: 0 });
+      const { status: inviteStatus, data: inviteData } = resInvite?.data;
+      setMovieData((prev: any) => ({
+        ...prev,
+        userId: userIdLogin || null,
+        movieId: Number(resMovieData?.id),
+        inviteId: inviteData,
+      }));
+      console.log(resInvite?.data);
+
+      if (inviteData?.userId !== 0) {
+        socket.emit("add_invite_offline", inviteData);
+        setShowEditMovie(false);
+        navigate(`/profile`);
+      } else {
+        setIsLoadingBtn(true);
+      }
+    }
+  });
+
+  const handleAccept = async (userInfo: any) => {
+    const userId = userInfo.userIdSender;
+    setIsLoadingBtn({ show: true, userId: userInfo?.userIdJoin });
+    handleMatched();
+    setIsLoadingBtn((prev: any) => ({ ...prev, [userId]: true }));
     socket.emit("add_invite_optional", {
       ...userInfo,
       userAnswer: true,
@@ -120,6 +192,7 @@ const RequestModal: React.FC<PropsType> = ({
                   <Button
                     onClick={() => handleAccept(userInfo)}
                     type="button"
+                    loading={isLoadingBtn?.show}
                     variant={"green"}
                     label="Accept"
                   />

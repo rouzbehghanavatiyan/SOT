@@ -35,4 +35,5 @@ export interface AddMovieType {
   title?: string;
   subSubCategoryId: number;
   modeId: number | undefined;
+  fixedDimensions: any;
 }

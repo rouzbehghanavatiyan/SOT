@@ -1,26 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import Input from "../../components/Input";
-import { Button } from "../../components/Button";
+import React from "react";
 import Modal from "../../components/Modal";
-import asyncWrapper from "../AsyncWrapper";
-import {
-  addAttachment,
-  addInvite,
-  addMovie,
-  removeInvite,
-} from "../../services/dotNet";
-import { GetServices } from "../../utils/mainType/allMainType";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../hooks/reduxHookType";
-import { AddMovieType, EditVideoProps, MovieDataType } from "./type";
 import Operational from "../../pages/Sot/Mode/Operational";
-
-const VIDEO_CONTAINER_STYLE = {
-  width: "400px",
-  height: "300px",
-  objectFit: "contain" as const, 
-  backgroundColor: "#000",
-};
+import { useEditVideo } from "../../hooks/useEditVideo";
+import { EditVideoProps } from "./type";
+import VideoPreviewStep from "./VideoPreviewStep";
+import { CoverConfirmStep } from "./CoverConfirmStep";
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -29,304 +13,95 @@ const EditVideo: React.FC<EditVideoProps> = ({
   allFormData,
   mode,
 }) => {
-  const navigate = useNavigate();
-  const main = useAppSelector((state) => state?.main);
-  const socket = main?.socketConfig;
-  const userIdLogin = main?.userLogin?.user?.id;
-  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
-  const [findingMatch, setFindingMatch] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [movieData, setMovieData] = useState<MovieDataType>({
-    parentId: null,
-    userId: null,
-    movieId: null,
-    status: null,
+  const {
+    videoRef,
+    videoSrc,
+    isLoadingBtn,
+    resMovieData,
+    currentStep,
+    movieData,
+    setMovieData,
+    handleUploadVideo,
+    handleBack,
+    handleNextStep,
+  } = useEditVideo({
+    showEditMovie,
+    setShowEditMovie,
+    coverImage,
+    allFormData,
+    mode,
   });
 
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const handleMovieDataChange = (updates: any) => {
+    setMovieData((prev: any) => ({ ...prev, ...updates }));
+  };
 
-  const handleAttachment = useCallback(
-    asyncWrapper(async (resMovieData: any) => {
-      const formData = new FormData();
-      if (allFormData?.video) {
-        formData.append("formFile", allFormData.video);
-      }
-      if (allFormData?.imageCover) {
-        formData.append("formFile", allFormData.imageCover);
-      }
-      formData.append("attachmentId", resMovieData?.id);
-      formData.append("attachmentType", "mo");
-      formData.append("attachmentName", "movies");
-      const resAttachment = await addAttachment(formData);
-      const { status: attachmentStatus, data: attachmentData } =
-        resAttachment?.data;
+  const getModalTitle = () => {
+    switch (mode?.typeMode) {
+      case 1:
+        return "Turbo";
+      case 2:
+        return "Live";
+      case 3:
+        return "Offline";
+      case 4:
+        return "Optional";
 
-      return { attachmentStatus, attachmentData };
-    }),
-    [allFormData]
-  );
-
-  const handleFixVideo = useCallback(
-    async (resMovieData: any) => {
-      console.log(resMovieData);
-      try {
-        const { attachmentStatus } = await handleAttachment(resMovieData);
-        if (attachmentStatus === -1) {
-          console.log("Invalid video dimensions.");
-          return;
-        }
-        console.log(resMovieData);
-        if (attachmentStatus === 0) {
-          const postInvite = {
-            parentId: null,
-            userId: userIdLogin || null,
-            movieId: resMovieData?.id || null,
-            status: 0,
-          };
-
-          setFindingMatch(true);
-          const resInvite = await addInvite(postInvite);
-          console.log(resInvite);
-
-          const { status: inviteStatus, data: inviteData } = resInvite?.data;
-          setMovieData((prev: any) => ({
-            ...prev,
-            userId: userIdLogin || null,
-            movieId: Number(resMovieData?.id),
-            inviteId: inviteData,
-          }));
-          console.log(resInvite?.data);
-
-          if (inviteData?.userId !== 0) {
-            socket.emit("add_invite_offline", inviteData);
-            setShowEditMovie(false);
-            navigate(`/profile`);
-          } else {
-            setIsLoadingBtn(true);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [handleAttachment, navigate, setShowEditMovie, socket, userIdLogin]
-  );
-
-  const handleAcceptOptional = useCallback(
-    asyncWrapper(async (resMovieData: any) => {
-      setMovieData((prev: any) => ({
-        ...prev,
-        userId: userIdLogin || null,
-        movieId: Number(resMovieData?.modeId),
-      }));
-      setCurrentStep(3);
-    }),
-    [userIdLogin]
-  );
-
-  const handleBack = useCallback(async () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      default:
+        return "";
     }
-    console.log(movieData);
-    setIsLoadingBtn(false);
-    if (movieData?.inviteId) {
-      const res = await removeInvite(movieData?.inviteId?.id);
-      console.log(res);
-    }
-  }, [currentStep, movieData]);
+  };
 
-  // تابع جدید برای resize ویدیو
-  const resizeVideoToFixedSize = useCallback(async () => {
-    if (!allFormData?.video) return;
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <VideoPreviewStep
+            videoSrc={videoSrc}
+            movieData={movieData}
+            onMovieDataChange={handleMovieDataChange}
+            onCancel={() => setShowEditMovie(false)}
+            onNext={handleNextStep}
+          />
+        );
 
-    try {
-      // اینجا می‌توانید ویدیو را با استفاده از Canvas resize کنید
-      // یا فقط از CSS استفاده کنید (ساده‌تر)
-      console.log("Video resized to fixed dimensions:", VIDEO_CONTAINER_STYLE);
-      
-      // اگر نیاز به پردازش واقعی ویدیو دارید، می‌توانید از Canvas استفاده کنید
-      // اما برای نمایش ساده، CSS کافی است
-    } catch (error) {
-      console.error("Error resizing video:", error);
-    }
-  }, [allFormData?.video]);
+      case 2:
+        return (
+          <CoverConfirmStep
+            coverImage={coverImage}
+            onBack={handleBack}
+            onAccept={handleUploadVideo}
+            isLoading={isLoadingBtn}
+          />
+        );
 
-  const handleUploadVideo = useCallback(
-    asyncWrapper(async () => {
-      setIsLoadingBtn(true);
-      console.log(mode, main, movieData);
-
-      // قبل از آپلود، ویدیو را resize می‌کنیم
-      await resizeVideoToFixedSize();
-
-      const postData: AddMovieType = {
-        userId: userIdLogin || null,
-        description: movieData?.desc ?? "",
-        title: movieData?.title ?? "",
-        subSubCategoryId: 1 || null,
-        modeId: mode?.typeMode || 0,
-        cropData: null, // دیگر نیازی به crop نیست
-        fixedDimensions: VIDEO_CONTAINER_STYLE, // اضافه کردن ابعاد ثابت
-      };
-      
-      const res = await addMovie(postData);
-      const { status: movieStatus, data: resMovieData }: GetServices =
-        res?.data;
-      if (movieStatus === 0) {
-        if (mode?.typeMode === 3) {
-          handleFixVideo(resMovieData);
-        } else if (mode?.typeMode === 4) {
-          handleAcceptOptional(resMovieData);
-        }
-      } else {
-        alert("movie does not exist");
-      }
-    }),
-    [
-      handleFixVideo, 
-      handleAcceptOptional, 
-      movieData, 
-      mode, 
-      userIdLogin, 
-      main,
-      resizeVideoToFixedSize
-    ]
-  );
-
-  const videoSrc = React.useMemo(() => {
-    return allFormData?.video ? URL.createObjectURL(allFormData.video) : "";
-  }, [allFormData?.video]);
-
-  useEffect(() => {
-    if (!socket) return;
-    const handler = (data: any) => {
-      console.log("handleInviteResponse", data);
-      setIsLoadingBtn(false);
-      setShowEditMovie(false);
-      navigate(`/profile`);
-    };
-    socket.on("add_invite_offline_response", handler);
-
-    return () => {
-      socket.off("add_invite_offline_response", handler);
-    };
-  }, [socket, navigate, setShowEditMovie]);
-
-  const handleNextStep = async () => {
-    try {
-      setCurrentStep(2);
-    } catch (error) {
-      console.error("Error in next step:", error);
-      alert("Error processing video. Please try again.");
+      default:
+        return null;
     }
   };
 
   return (
-    <Modal
-      title={
-        mode?.typeMode === 3
-          ? "Offline"
-          : mode?.typeMode === 4
-            ? "Optional"
-            : ""
-      }
-      className="rounded-2xl"
-      padding={0}
-      isOpen={showEditMovie}
-    >
-      <div className="flex flex-col">
-        {currentStep === 1 && (
-          <div className="p-5">
-            <div className="border mb-4 p-1">
-              <div 
-                className="video-wrapper flex justify-center items-center"
-                style={VIDEO_CONTAINER_STYLE}
-              >
-                <video
-                  ref={videoRef}
-                  src={videoSrc}
-                  controls
-                  style={VIDEO_CONTAINER_STYLE}
-                  className="max-w-full max-h-full"
-                />
-              </div>
-            </div>
-            <div>
-              <span className="mb-4 mt-4 ">Title</span>
-              <Input
-                value={movieData?.title}
-                onChange={(e: any) =>
-                  setMovieData((prev: any) => ({
-                    ...prev,
-                    title: e.target.value,
-                  }))
-                }
-              />
-            </div>
-            <div className="">
-              <span className="flex my-4">Description</span>
-              <textarea
-                className="border w-full focus:border-none outline-mainGray-dark px-5 py-1"
-                rows={6}
-                value={movieData?.desc}
-                onChange={(e: any) =>
-                  setMovieData((prev: any) => ({
-                    ...prev,
-                    desc: e.target.value,
-                  }))
-                }
-              />
-            </div>
-            <div className="mt-4 flex justify-around">
-              <Button
-                className="border"
-                variant={"outLine_secondary"}
-                label="Cancel"
-                onClick={() => setShowEditMovie(false)}
-              />
-              <Button
-                className="border"
-                variant={"green"}
-                label="Next"
-                onClick={() => handleNextStep()}
-              />
-            </div>
-          </div>
-        )}
-        {currentStep === 2 && (
-          <div className="p-5">
-            {coverImage && (
-              <>
-                <span className="my-4 font-bold">Your cover: </span>
-                <img
-                  src={coverImage}
-                  alt="Video Cover"
-                  style={VIDEO_CONTAINER_STYLE}
-                  className="rounded-sm mx-auto"
-                />
-              </>
-            )}
-            <div className="mt-4 flex justify-between">
-              <Button
-                className="border"
-                variant={"outLine_secondary"}
-                label="Back"
-                onClick={handleBack}
-              />
-              <Button
-                className="border"
-                variant={"green"}
-                label="Accept"
-                onClick={handleUploadVideo}
-                loading={isLoadingBtn}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-      {currentStep === 3 && <Operational setShowEditMovie={setShowEditMovie} />}
-    </Modal>
+    <>
+      <Modal
+        title={getModalTitle()}
+        className="rounded-2xl"
+        padding={0}
+        isOpen={showEditMovie}
+      >
+        <div className="flex flex-col">{renderStepContent()}</div>
+      </Modal>
+
+      {currentStep === 3 && (
+        <Operational
+          setMovieData={setMovieData}
+          movieData={movieData}
+          userIdLogin={movieData.userId}
+          allFormData={allFormData}
+          resMovieData={resMovieData}
+          setShowEditMovie={setShowEditMovie}
+        />
+      )}
+    </>
   );
 };
 

@@ -4,13 +4,24 @@ import ImageRank from "../../../../components/ImageRank";
 import { useAppSelector } from "../../../../hooks/reduxHookType";
 import RequestModal from "./RequestModal";
 import StringHelpers from "../../../../utils/helpers/StringHelper";
-import asyncWrapper from "../../../../common/AsyncWrapper";
 
 interface PropsType {
   setShowEditMovie: any;
+  resMovieData: any;
+  allFormData: any;
+  userIdLogin: any;
+  movieData: any;
+  setMovieData: any;
 }
 
-const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
+const Operational: React.FC<PropsType> = ({
+  setShowEditMovie,
+  allFormData,
+  resMovieData,
+  userIdLogin,
+  movieData,
+  setMovieData,
+}) => {
   const main = useAppSelector((state) => state?.main);
   const socket = main?.socketConfig;
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -164,8 +175,14 @@ const Operational: React.FC<PropsType> = ({ setShowEditMovie }) => {
       </div>
       {showRequestModal && (
         <RequestModal
+          setMovieData={setMovieData}
+          movieData={movieData}
+          userIdLogin={userIdLogin}
+          setShowEditMovie={setShowEditMovie}
+          resMovieData={resMovieData}
           setIsLoadingBtn={setIsLoadingBtn}
           socket={socket}
+          allFormData={allFormData}
           isLoadingBtn={isLoadingBtn}
           showRequestModal={showRequestModal}
           setShowRequestModal={setShowRequestModal}
