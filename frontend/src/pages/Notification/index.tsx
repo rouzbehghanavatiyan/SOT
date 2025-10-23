@@ -63,7 +63,7 @@ const Notification: React.FC = () => {
   return (
     <section className="w-full min-h-[90vh] justify-center">
       <div className="flex flex-col h-full">
-        <header className="mt-1">
+        <header className="">
           <MainTitle title="News" />
           <div className="m-2 bg-white p-4 rounded-xl">
             <span className="flex items-center justify-center">
