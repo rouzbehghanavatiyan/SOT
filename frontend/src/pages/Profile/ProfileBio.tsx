@@ -92,8 +92,7 @@ const ProfileBio: React.FC<ProfileBioProps> = ({
   return (
     <div className="flex flex-col items-center mb-5">
       <div className="font-bold mb-2 text-gray-800 relative flex items-center justify-between w-full">
-        <span>Rank score</span>
-        {/* Dropdown برای Rank score */}
+        <span className="flex ms-2 w-full justify-center" >Rank score</span>
         <Dropdown
           isOpenOptions={isBioRankDropdownOpen}
           setIsOpenOptions={setIsBioRankDropdownOpen}
@@ -102,7 +101,7 @@ const ProfileBio: React.FC<ProfileBioProps> = ({
           className="ml-4"
           iconOnly={true}
           showRank={true}
-        />
+          />
       </div>
 
       <div
