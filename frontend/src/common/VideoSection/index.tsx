@@ -53,23 +53,21 @@ const VideoSection: React.FC<VideoSectionProps> = ({
         toggleDropdown={toggleDropdown}
         dropdownItems={dropdownItems}
       />
-      
-      {/* بخش اصلی ویدیو با ارتفاع تطبیقی */}
       <div className="flex-1 min-h-0 relative flex items-center justify-center">
         <div className="relative w-full h-full flex items-center justify-center bg-black overflow-hidden">
           <Video
             videoId={video?.id}
             className="max-w-full max-h-full w-auto h-auto object-contain"
-            style={{ 
-              maxHeight: 'calc(50vh - 80px)',
-              height: 'auto'
+            style={{
+              maxHeight: "calc(50vh - 80px)",
+              height: "auto",
             }}
             loop
             playing={isPlaying}
             handleVideo={() => onVideoPlay(video)}
             url={videoUrl}
           />
-          
+
           <OptionBottom
             socket={socket}
             userIdLogin={userIdLogin}
