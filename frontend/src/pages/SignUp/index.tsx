@@ -144,7 +144,7 @@ const SignUpForm: FC = () => {
             <h1 className="font25 logoFont font-bold mt-4 text-gray-800">
              Clash Talent
             </h1>
-            <p className="text-gray-600 mt-1">Create an Account</p>
+            <p className="text-gray-800 mt-1">Create an Account</p>
           </div>
 
           {errors.general && (
@@ -264,13 +264,13 @@ const SignUpForm: FC = () => {
             loading={isLoading}
             variant="green"
             label="Sign Up"
-            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="w-full py-2 px-4 bg-blue hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           />
           <div className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link
               to="/"
-              className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+              className="text-soft_blue hover:text-blue-800 hover:underline font-medium"
             >
               Log In
             </Link>
