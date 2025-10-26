@@ -82,7 +82,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
           />
         </div>
       </div>
-
       {showComments && (
         <Comments
           positionVideo={positionVideo}
