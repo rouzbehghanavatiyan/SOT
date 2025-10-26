@@ -6,6 +6,7 @@ import Loading from "../../components/Loading";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppSelector } from "../../hooks/reduxHookType";
 import MainTitle from "../../components/MainTitle";
+import asyncWrapper from "../../common/AsyncWrapper";
 
 const Followers: React.FC<any> = () => {
   const main = useAppSelector((state) => state.main);
@@ -13,25 +14,23 @@ const Followers: React.FC<any> = () => {
   const [allFollower, setAllFollower] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAllFollower = async () => {
-    try {
-      setIsLoading(true);
-      const res = await followerList(userId);
-      console.log(res);
-      const { status, data } = res?.data;
-      if (status === 0) {
-        setIsLoading(false);
-        redirect("/followers");
-        setAllFollower(data);
-      }
-    } catch (error) {
-      console.log(error);
+  const handleAllFollower = asyncWrapper(async () => {
+    setIsLoading(true);
+    const res = await followerList(userId);
+    console.log(res);
+    const { status, data } = res?.data;
+    if (status === 0) {
+      setIsLoading(false);
+      redirect("/followers");
+      setAllFollower(data);
     }
-  };
+  });
 
   useEffect(() => {
-    handleAllFollower();
-  }, []);
+    if (userId) {
+      handleAllFollower();
+    }
+  }, [userId]);
 
   return (
     <div>

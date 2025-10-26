@@ -1,15 +1,12 @@
 import {
   createAsyncThunk,
-  createEntityAdapter,
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
 import {
   attachmentListByInviteId,
-  categoryList,
   followerAttachmentList,
 } from "../../services/dotNet";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { apiSlice } from "./apiSlice";
 
 type MessageModal = {
