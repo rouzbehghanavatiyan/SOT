@@ -46,7 +46,7 @@ const Setting: React.FC = () => {
   };
 
   return (
-      <div className="mt-1" >
+      <div className=" " >
         <ResponsiveMaker>
           <MainTitle title="Settings" />
         </ResponsiveMaker>

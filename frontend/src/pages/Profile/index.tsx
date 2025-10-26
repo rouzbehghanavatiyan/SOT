@@ -39,6 +39,8 @@ const Profile: React.FC = () => {
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
 
+  console.log(main?.userLogin?.score);
+
   const { data, isLoading, hasMore, fetchNextPage } = usePagination(
     userAttachmentList,
     {
@@ -189,6 +191,7 @@ const Profile: React.FC = () => {
               ref={imageRef}
             />
             <ProfileBio
+              rankScore={main?.userLogin?.score}
               bio={"This is me jenifer Im am the best"}
               location={"Tehran , Iran"}
               rankPercentage={percentage}

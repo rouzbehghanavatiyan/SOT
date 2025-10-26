@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import CloseIcon from "@mui/icons-material/Close";
 import Messages from "../pages/ChatRoom";
 import Header from "./Header";
 import ResponsiveMaker from "../utils/helpers/ResponsiveMaker";
 import PhoneFooter from "./PhoneFooter";
 import PhoneHeader from "./PhoneHeader";
-import { Button } from "../components/Button";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
   RsetAllFollingList,
@@ -24,7 +22,6 @@ import {
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
 import { useServiceWorker } from "../hooks/useServiceWorker";
-import SotLogo from "../assets/img/logocircle.png";
 
 interface PropsType {
   children: React.ReactNode;
@@ -38,20 +35,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // State
   const [openMessage, setOpenMessage] = useState<boolean>(false);
-
-  // Selectors
   const main = useAppSelector((state) => state.main);
-
-  // Hooks
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
-
-  // Memoized values
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
-
-  // Authentication check
   const token = sessionStorage.getItem("token");
   const userIdFromLocation = location.state?.userInfo?.id;
 
@@ -190,7 +177,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     };
   }, [main?.userLogin?.user?.id, token]);
 
-  // Don't render if no user (will redirect in useEffect)
   if (!user || !token) {
     return null;
   }
@@ -204,7 +190,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl w-full h-full justify-center items-center">
             <PhoneHeader />
-           <div className="overflow-y-auto max-h-[85vh] sm:max-h-[95vh] md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]">
+            <div className="overflow-y-auto min-h-[calc(100vh-100px)] max-h-[85vh] sm:max-h-[95vh] md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]">
               {children}
               {/* {showPrompt && (
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">

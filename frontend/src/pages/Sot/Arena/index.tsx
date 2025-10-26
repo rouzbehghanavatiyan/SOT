@@ -7,22 +7,17 @@ import PersonIcon from "@mui/icons-material/Person";
 import MainTitle from "../../../components/MainTitle";
 import SoftLink from "../../../hoc/SoftLinks";
 import { useAppSelector } from "../../../hooks/reduxHookType";
-import Cookies from "js-cookie";
 
-const Arena: React.FC<any> = ({
-  setCurrentStep,
-  updateStepData,
-  allSubCategory,
-  setAllSubCategory,
-}) => {
-  const iconClass = "font20 mx-3 font25";
+const Arena: React.FC<any> = ({ updateStepData }) => {
+  const iconClass = "mx-3 font25";
+  const disabledIconClass = "text-gray-200 mx-3 font25";
   const main = useAppSelector((state) => state?.main);
 
-  const iconMap: Record<string, JSX.Element> = {
-    cup: <EmojiEventsIcon className={iconClass} />,
-    friendly: <HandshakeIcon className={iconClass} />,
+  const arenaIconMap: Record<string, JSX.Element> = {
+    cup: <EmojiEventsIcon className={disabledIconClass} />,
+    friendly: <HandshakeIcon className={disabledIconClass} />,
     group: <GroupsIcon className={iconClass} />,
-    robot: <SmartToyIcon className={iconClass} />,
+    robot: <SmartToyIcon className={disabledIconClass} />,
     solo: <PersonIcon className={iconClass} />,
   };
 
@@ -30,8 +25,11 @@ const Arena: React.FC<any> = ({
     updateStepData(1, {
       name: data.name,
       id: data.id,
-      icon: iconMap[data.icon],
+      icon: arenaIconMap[data.icon],
     });
+    if (data.icon === "robot") {
+      return;
+    }
     localStorage.setItem("arenaId", data.id);
   };
 
@@ -44,7 +42,7 @@ const Arena: React.FC<any> = ({
     <div className="lg:shadow-card">
       <MainTitle title="Arena" />
       <SoftLink
-        iconMap={iconMap}
+        iconMap={arenaIconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}
       />

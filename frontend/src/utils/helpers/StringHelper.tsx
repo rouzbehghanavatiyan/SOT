@@ -9,3 +9,5 @@ export default class StringHelpers {
     return `${StringHelpers.baseURL}/${data?.attachmentType}/${data?.fileName}${data?.ext}`;
   };
 }
+
+
