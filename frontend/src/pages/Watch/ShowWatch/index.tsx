@@ -13,7 +13,6 @@ import { attachmentListByInviteId } from "../../../services/dotNet";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHookType";
 import {
   resetShowWatchState,
-  RsetLikeFollow,
   RsetShowWatch,
   setPaginationShowWatch,
 } from "../../../common/Slices/main";
@@ -110,7 +109,6 @@ const ShowWatch: React.FC = () => {
       //     movieBottId: item?.attachmentMatched?.attachmentId,
       //   };
       // });
-
       // temp.push(...getLikeFollow);
       // dispatch(RsetLikeFollow(temp));
       dispatch(RsetShowWatch(newData));
@@ -207,10 +205,6 @@ const ShowWatch: React.FC = () => {
                         video.likes?.[video?.attachmentInserted?.attachmentId]
                           ?.isLiked || false
                       }
-                      isFollowed={
-                        video.follows?.[video?.userInserted?.id]?.isFollowed ||
-                        false
-                      }
                     />
                   </div>
                   <div className="h-1/2 w-full relative flex flex-col">
@@ -218,10 +212,6 @@ const ShowWatch: React.FC = () => {
                       isLiked={
                         video.likes?.[video?.attachmentMatched?.attachmentId]
                           ?.isLiked || false
-                      }
-                      isFollowed={
-                        video.follows?.[video?.userMatched?.id]?.isFollowed ||
-                        false
                       }
                       showLiked
                       endTime={true}

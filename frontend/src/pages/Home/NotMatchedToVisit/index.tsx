@@ -1,10 +1,7 @@
 import React from "react";
-import { SwiperSlide } from "swiper/react";
 
 const NotMatchedToVisit: React.FC<any> = () => {
-  return (
-
-  );
+  return <div>چیزی برای نمایش وجود ندارد</div>;
 };
 
 export default NotMatchedToVisit;

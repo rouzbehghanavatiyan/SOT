@@ -25,6 +25,7 @@ const OptionTop: React.FC<any> = ({
       ? StringHelpers?.getProfile(video?.profileInserted)
       : StringHelpers?.getProfile(video?.profileMatched);
   const [localIsFollowed, setLocalIsFollowed] = useState(false);
+  const [isLoadingFollow, setIsLoadingFollow] = useState(false);
   const userInfo =
     positionVideo === 0 ? video?.userInserted : video?.userMatched;
 
@@ -43,22 +44,21 @@ const OptionTop: React.FC<any> = ({
   }, [video, positionVideo]);
 
   const handleFallowClick = async (video: any, position: number) => {
+    if (isLoadingFollow) return; // جلوگیری از کلیک چندباره
+    
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
     const postData = {
       userId: userIdLogin || null,
       followerId: userIdFollow || null,
     };
+    
     const newFollowStatus = !localIsFollowed;
-    setLocalIsFollowed(newFollowStatus);
-
-    dispatch(
-      updateFollowStatus({
-        userId: userIdFollow,
-        isFollowed: newFollowStatus,
-      })
-    );
+    
     try {
+      setIsLoadingFollow(true);
+      
+      // اول API را صدا بزن
       if (localIsFollowed) {
         await removeFollower(postData);
         console.log("Unfollow successful");
@@ -66,15 +66,28 @@ const OptionTop: React.FC<any> = ({
         await addFollower(postData);
         console.log("Follow successful");
       }
-    } catch (error) {
-      console.error("Error in follow operation:", error);
-      setLocalIsFollowed(!newFollowStatus);
+      
+      // اگر API موفق بود، state را به روز کن
+      setLocalIsFollowed(newFollowStatus);
       dispatch(
         updateFollowStatus({
           userId: userIdFollow,
-          isFollowed: !newFollowStatus,
+          isFollowed: newFollowStatus,
         })
       );
+      
+    } catch (error) {
+      console.error("Error in follow operation:", error);
+      // اگر API خطا داد، state را به حالت قبلی برگردان
+      setLocalIsFollowed(localIsFollowed);
+      dispatch(
+        updateFollowStatus({
+          userId: userIdFollow,
+          isFollowed: localIsFollowed,
+        })
+      );
+    } finally {
+      setIsLoadingFollow(false);
     }
   };
 
@@ -98,6 +111,7 @@ const OptionTop: React.FC<any> = ({
               bgColor=""
               title={localIsFollowed ? "Unfollow" : "Follow"}
               onFollowClick={() => handleFallowClick(video, positionVideo)}
+              isLoading={isLoadingFollow}
             />
           )}
         </div>

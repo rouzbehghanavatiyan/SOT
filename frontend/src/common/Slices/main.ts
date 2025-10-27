@@ -331,6 +331,7 @@ const mainSlice = createSlice({
         }
       );
     },
+    // در slice
     updateFollowStatus: (
       state,
       action: PayloadAction<{ userId: string; isFollowed: boolean }>
@@ -339,9 +340,11 @@ const mainSlice = createSlice({
 
       state.showWatchMatch.data = state.showWatchMatch.data.map(
         (video: any) => {
-          if (video.follows && video.follows[userId]) {
+          // به روزرسانی برای userInserted
+          if (video.userInserted?.id === userId) {
             return {
               ...video,
+              isFollowedMeInserted: isFollowed,
               follows: {
                 ...video.follows,
                 [userId]: {
@@ -350,6 +353,21 @@ const mainSlice = createSlice({
               },
             };
           }
+
+          // به روزرسانی برای userMatched
+          if (video.userMatched?.id === userId) {
+            return {
+              ...video,
+              isFollowedMeMatched: isFollowed,
+              follows: {
+                ...video.follows,
+                [userId]: {
+                  isFollowed: isFollowed,
+                },
+              },
+            };
+          }
+
           return video;
         }
       );
@@ -360,12 +378,14 @@ const mainSlice = createSlice({
       .addCase(handleAttachmentListByInviteId.pending, (state) => {
         state.loading = true;
       })
+      // در extraReducers
       .addCase(
         handleAttachmentListByInviteId.fulfilled,
         (state, action: PayloadAction<any>) => {
           const { status, data } = action?.payload.getData?.data;
           const hasMore = data.length > 0;
           const getAllStateMain = action?.payload?.state?.main;
+
           if (status === 0) {
             const processedVideos = data.map((video: any) => {
               const isFollowedFromMeTop =
@@ -377,12 +397,15 @@ const mainSlice = createSlice({
                 getAllStateMain?.allFollingList?.getMapFollowingId?.some(
                   (following: any) => following === video?.userMatched?.id
                 );
+
               return {
                 ...video,
                 urlTop: video?.attachmentInserted?.url,
                 urlBott: video?.attachmentMatched?.url,
                 profileTop: video?.profileInserted?.profileImage,
                 profileBott: video?.profileMatched?.profileImage,
+                isFollowedMeInserted: isFollowedFromMeTop || false, // اضافه شد
+                isFollowedMeMatched: isFollowedFromMeBott || false, // اضافه شد
                 isFollowedFromMeTop: isFollowedFromMeTop || false,
                 isFollowedFromMeBott: isFollowedFromMeBott || false,
                 likes: {
@@ -406,9 +429,7 @@ const mainSlice = createSlice({
               };
             });
 
-            // state.tornoment = processedVideos;
             state.allLoginMatch = processedVideos;
-            // state.allTornoment = data;
           }
         }
       )

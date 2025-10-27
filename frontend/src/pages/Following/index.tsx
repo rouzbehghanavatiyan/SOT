@@ -12,30 +12,19 @@ const Following = () => {
   const main = useAppSelector((state) => state.main);
   const [isLoading, setIsLoading] = useState(false);
 
-  //   const handleAllFollowing = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const res = await followerList(userId);
-  //       console.log(res);
-  //       const { status, data } = res?.data;
-  //       if (status === 0) {
-  //         setIsLoading(false);
-  //         redirect("/following");
-  //         setAllFollower(data);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     handleAllFollowing();
-  //   }, []);
-
   return (
     <div>
       {isLoading && <Loading isLoading={isLoading} />}
       <MainTitle title="Following" />
+      {!isLoading && main?.allFollingList?.allFollowing.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              There are no following.
+            </h3>
+          </div>
+        </div>
+      )}
       {main?.allFollingList?.allFollowing?.map((follower: any) => {
         console.log(follower);
         const image = StringHelpers.getProfile(follower?.attachment);

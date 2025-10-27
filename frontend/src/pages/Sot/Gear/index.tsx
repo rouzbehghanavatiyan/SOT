@@ -6,6 +6,7 @@ import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
+import { Icon } from "../../../components/Icon";
 
 const Gear: React.FC<any> = ({
   currentStep,
@@ -31,11 +32,12 @@ const Gear: React.FC<any> = ({
   }, []);
 
   const iconMap: { [key: string]: JSX.Element } = {
-    singer: <AudiotrackIcon className="text-2xl mx-3 font25" />,
-    guitar: <AudiotrackIcon className="text-2xl mx-3 font25" />,
-    violen: <AudiotrackIcon className="text-2xl mx-3 font25" />,
-    optional: <OutdoorGrillIcon className="text-2xl mx-3 font25" />,
+    singer: <Icon name="Audiotrack" className="text-2xl mx-3 font25" />,
+    guitar: <Icon name="Audiotrack" className="text-2xl mx-3 font25" />,
+    violen: <Icon name="Audiotrack" className="text-2xl mx-3 font25" />,
+    optional: <Icon name="OutdoorGrill" className="text-2xl mx-3 font25" />,
   };
+
 
   const handleAcceptCategory = (data: any) => {
     setCurrentStep(4);

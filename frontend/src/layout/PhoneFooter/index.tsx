@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
-import HomeIcon from "@mui/icons-material/Home";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import LogoTC from "../../assets/img/1724181984017.jpg";
+ import LogoTC from "../../assets/img/1724181984017.jpg";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
 import { useAppSelector } from "../../hooks/reduxHookType";
 import ImageRank from "../../components/ImageRank";
 import StringHelpers from "../../utils/helpers/StringHelper";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { Icon } from "../../components/Icon";
 
 const PhoneFooter: React.FC = () => {
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
@@ -32,7 +30,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <HomeIcon className="icon_size" />
+            <Icon name="Home" className="icon_size" />
           </NavLink>
           <NavLink
             to="/watch"
@@ -44,7 +42,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <PlayArrowIcon className="icon_size" />
+            <Icon name="PlayArrow" className="icon_size" />
           </NavLink>
           <NavLink
             to="/sot"
@@ -72,7 +70,7 @@ const PhoneFooter: React.FC = () => {
               )
             }
           >
-            <TrendingUpIcon className="icon_size" />
+            <Icon name="TrendingUp" className="icon_size" />
           </NavLink>
           <NavLink
             to="/profile"

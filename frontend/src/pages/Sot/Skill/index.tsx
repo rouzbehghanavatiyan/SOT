@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { subCategoryList } from "../../../services/dotNet";
-import AudiotrackIcon from "@mui/icons-material/Audiotrack";
-import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
-import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
-import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
-import LocalSeeIcon from "@mui/icons-material/LocalSee";
-import ArchitectureIcon from "@mui/icons-material/Architecture";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import { Icon } from "../../../components/Icon";
 
 const Skill: React.FC<any> = ({
   setAllSubCategory,
@@ -33,24 +25,40 @@ const Skill: React.FC<any> = ({
     }
   });
 
+  const iconNames: { [key: string]: string } = {
+    music: "Audiotrack",
+    sport: "SportsKabaddi",
+    inventor: "PrecisionManufacturing",
+    cook: "OutdoorGrill",
+    photography: "LocalSee",
+    engineer: "Architecture",
+    game: "SportsEsports",
+    uncharted: "QuestionMark",
+  };
+
   const iconMap: { [key: string]: JSX.Element } = {
-    music: <AudiotrackIcon className="text-2xl mx-3 font25" />,
-    sport: <SportsKabaddiIcon className="text-2xl mx-3 font25" />,
-    inventor: <PrecisionManufacturingIcon className="text-2xl mx-3 font25" />,
-    cook: <OutdoorGrillIcon className="text-2xl mx-3 font25" />,
-    photography: <LocalSeeIcon className="text-2xl mx-3 font25" />,
-    engineer: <ArchitectureIcon className="text-2xl mx-3 font25" />,
-    game: <SportsEsportsIcon className="text-2xl mx-3 font25" />,
-    uncharted: <QuestionMarkIcon className="text-2xl mx-3 font25"/>
+    music: <Icon name={iconNames.music} className="text-2xl mx-3 font25" />,
+    sport: <Icon name={iconNames.sport} className="text-2xl mx-3 font25" />,
+    inventor: <Icon name={iconNames.inventor} className="text-2xl mx-3 font25" />,
+    cook: <Icon name={iconNames.cook} className="text-2xl mx-3 font25" />,
+    photography: <Icon name={iconNames.photography} className="text-2xl mx-3 font25" />,
+    engineer: <Icon name={iconNames.engineer} className="text-2xl mx-3 font25" />,
+    game: <Icon name={iconNames.game} className="text-2xl mx-3 font25" />,
+    uncharted: <Icon name={iconNames.uncharted} className="text-2xl mx-3 font25" />,
   };
 
   const handleAcceptCategory = (data: any) => {
+    // گرفتن نام واقعی آیکون
+    const actualIconName = iconNames[data.icon] || data.icon;
+    
     updateStepData(2, {
       name: data.name,
       id: data.id,
       icon: iconMap[data.icon],
     });
+    
     localStorage.setItem("skillId", data.id);
+    localStorage.setItem("skillName", actualIconName); // ارسال نام آیکون
   };
 
   useEffect(() => {

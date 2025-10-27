@@ -36,7 +36,17 @@ const Followers: React.FC<any> = () => {
   return (
     <div>
       {isLoading && <Loading isLoading={isLoading} />}
+
       <MainTitle title="Follower" />
+      {!isLoading && allFollower.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              There are no followers.
+            </h3>
+          </div>
+        </div>
+      )}
       {allFollower?.map((follower: any) => {
         const image = StringHelpers.getProfile(follower?.attachment);
         return (
