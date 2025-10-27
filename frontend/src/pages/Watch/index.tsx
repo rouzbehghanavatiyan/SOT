@@ -66,7 +66,6 @@ const Watch: React.FC = () => {
   const handleFilterChange = async (skillId: number) => {
     dispatch(resetWatchVideo());
     setSelectFiltered(skillId);
-
     try {
       setIsLoading(true);
       const res = await attachmentList({
@@ -92,16 +91,24 @@ const Watch: React.FC = () => {
     }
   };
 
+  // useEffect برای لود اولیه داده‌ها
   useEffect(() => {
-    handleGetAllMatch(2);
     handleGetFiltered();
   }, []);
 
+  // useEffect برای تغییرات selectFiltered
+  useEffect(() => {
+    if (selectFiltered !== null) {
+      handleFilterChange(selectFiltered);
+    }
+  }, [selectFiltered]);
+
+  // useEffect برای infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isLoading && pagination.hasMore) {
-          handleGetAllMatch(0);
+          handleGetAllMatch(selectFiltered || 0);
         }
       },
       { threshold: 0.5 }
@@ -113,7 +120,7 @@ const Watch: React.FC = () => {
     return () => {
       if (refCurrent) observer.unobserve(refCurrent);
     };
-  }, [isLoading, pagination.hasMore]);
+  }, [isLoading, pagination.hasMore, selectFiltered]);
 
   const handleShowMatch = (item: any) => {
     const newPath = `${location.pathname}/show?id=${item?.group?.inviteInserted?.id}`;

@@ -117,7 +117,7 @@ const LogInForm: FC = () => {
           <h1 className="font25 logoFont font-bold mt-4 text-gray-800">
             Clash Talent
           </h1>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+          <p className="text-gray-800 mt-2">Sign in to your account</p>
         </div>
 
         {errors.general && (
@@ -183,7 +183,7 @@ const LogInForm: FC = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:text-soft_blue border-gray-300 rounded"
               />
               <label
                 htmlFor="remember-me"
@@ -194,7 +194,7 @@ const LogInForm: FC = () => {
             </div>
             <Link
               to="/forgot-password"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-soft_blue hover:underline"
             >
               Forgot password?
             </Link>
@@ -208,11 +208,11 @@ const LogInForm: FC = () => {
             loading={isLoading}
           />
           <div className="text-center mt-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-800">
               Don't have an account?{" "}
               <Link
                 to="/signUp"
-                className="text-blue-600 font-medium hover:underline"
+                className="text-soft_blue font-medium hover:underline"
               >
                 Sign up
               </Link>

@@ -25,11 +25,10 @@ const VideoPreviewStep: React.FC<VideoPreviewStepProps> = ({
   onNext,
 }) => {
   return (
-    <div className="p-5">
+    <div className="p-5 ">
       <div className="border mb-4 p-1">
         <div
           className="video-wrapper flex justify-center items-center"
-          style={VIDEO_CONTAINER_STYLE}
         >
           <video
             src={videoSrc}

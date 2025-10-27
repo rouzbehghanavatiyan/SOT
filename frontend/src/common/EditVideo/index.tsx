@@ -14,7 +14,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
   mode,
 }) => {
   const {
-    videoRef,
     videoSrc,
     isLoadingBtn,
     resMovieData,
