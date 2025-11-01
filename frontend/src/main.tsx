@@ -10,35 +10,17 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  // <StrictMode>
-  <BrowserRouter>
+  <BrowserRouter basename={process.env.VITE_URL}>
     <Provider store={store}>
       <App />
     </Provider>
   </BrowserRouter>
-  // </StrictMode>
 ),
   {
     FORCE_BODY: true,
     SANITIZE_NAMED_PROPS: true,
   };
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// DOMPurify.sanitize(
-//   root.render(
-//     <React.StrictMode>
-//       <BrowserRouter>
-//           <App />
-//         </Provider>
-//       </BrowserRouter>
-//     </React.StrictMode>
-//   ),
-//   {
-//     FORCE_BODY: true,
-//     SANITIZE_NAMED_PROPS: true,
-//   }
-// );
-
+ 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker

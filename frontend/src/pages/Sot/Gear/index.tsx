@@ -7,6 +7,8 @@ import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
 import { Icon } from "../../../components/Icon";
+import { useAppDispatch } from "../../../hooks/reduxHookType";
+import { RsetCreateTalent } from "../../../common/Slices/main";
 
 const Gear: React.FC<any> = ({
   currentStep,
@@ -14,6 +16,7 @@ const Gear: React.FC<any> = ({
   updateStepData,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState<boolean>();
   const [allSubSubCategory, setAllSubSubCategory] = useState<any>();
 
@@ -38,8 +41,8 @@ const Gear: React.FC<any> = ({
     optional: <Icon name="OutdoorGrill" className="text-2xl mx-3 font25" />,
   };
 
-
   const handleAcceptCategory = (data: any) => {
+    dispatch(RsetCreateTalent({ gear: data }));
     setCurrentStep(4);
     updateStepData(3, { name: data.name, icon: iconMap[data.icon] });
     localStorage.setItem("gearId", data.id);

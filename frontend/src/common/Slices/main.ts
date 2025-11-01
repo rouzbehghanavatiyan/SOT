@@ -1,8 +1,4 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   attachmentListByInviteId,
   followerAttachmentList,
@@ -27,6 +23,8 @@ interface ShowQuestion {
 }
 
 interface MainType {
+  followers?: any;
+  createTalent: any;
   messageModal?: MessageModal;
   showToast: ToastifyType;
   showQuestionModal: ShowQuestion;
@@ -57,6 +55,7 @@ interface MainType {
 
 const initialState: MainType = {
   lastMatch: [],
+  createTalent: {},
   videos: [],
   messageModal: { title: "", show: false, icon: "" },
   showToast: { title: "", bg: "", show: false },
@@ -176,6 +175,9 @@ const mainSlice = createSlice({
     },
     RsetTornoment: (state, action: PayloadAction<(videos: any[]) => any[]>) => {
       state.tornoment = action.payload(state.tornoment);
+    },
+    RsetCreateTalent: (state, action: PayloadAction<any>) => {
+      state.createTalent = action.payload;
     },
     RsetCategory: (state, action: PayloadAction<any[]>) => {
       state.category = action.payload;
@@ -469,7 +471,6 @@ const mainSlice = createSlice({
 
           if (status === 0) {
             state.allLoginMatch = processedVideos;
-            // state.loginMatch = data;
           }
         }
       )
@@ -482,6 +483,8 @@ const mainSlice = createSlice({
 
 export const {
   RsetMessageModal,
+  RsestAllFollowers,
+  RsetCreateTalent,
   updateFollowStatus,
   RsetLoading,
   RsetTornoment,

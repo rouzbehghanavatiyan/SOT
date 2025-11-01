@@ -93,8 +93,7 @@ const LogInForm: FC = () => {
     } catch (error) {
       setLoginAttempts((prev) => prev + 1);
       setErrors({
-        general:
-          "Invalid username or password. Attempts left: " + (3 - loginAttempts),
+        general: "Invalid username or password.",
       });
     } finally {
       setIsLoading(false);

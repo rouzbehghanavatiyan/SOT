@@ -12,6 +12,7 @@ import {
   setPaginationWatch,
 } from "../../common/Slices/main";
 import asyncWrapper from "../../common/AsyncWrapper";
+import MainTitle from "../../components/MainTitle";
 
 const Watch: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -91,19 +92,16 @@ const Watch: React.FC = () => {
     }
   };
 
-  // useEffect برای لود اولیه داده‌ها
   useEffect(() => {
     handleGetFiltered();
   }, []);
 
-  // useEffect برای تغییرات selectFiltered
   useEffect(() => {
     if (selectFiltered !== null) {
       handleFilterChange(selectFiltered);
     }
   }, [selectFiltered]);
 
-  // useEffect برای infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -128,26 +126,32 @@ const Watch: React.FC = () => {
   };
 
   return (
-    <section className="min-h-[85vh]" >
+    <section className="min-h-[85vh]">
       <Filtered
         handleGetAllMatch={handleGetAllMatch}
         selectFiltered={selectFiltered}
         setSelectFiltered={setSelectFiltered}
         skills={skills}
       />
+      <MainTitle title="Tournament" />
       <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px]">
         {isLoading && data.length === 0
           ? [...Array(12)].map((_, index) => (
-            <VideoItemSkeleton key={index} section="justPic" />
-          ))
-          : data.map((group, index) => (
-            <VideoGroup
-              key={index}
-              group={group}
-              index={index}
-              onClick={() => handleShowMatch({ group, index })}
-            />
-          ))}
+              <VideoItemSkeleton key={index} section="justPic" />
+            ))
+          : data.map((group, index) => {
+              const iconFiltered = group?.subSubCategory;
+              console.log(iconFiltered);
+              return (
+                <VideoGroup
+                  iconFiltered={iconFiltered}
+                  key={index}
+                  group={group}
+                  index={index}
+                  onClick={() => handleShowMatch({ group, index })}
+                />
+              );
+            })}
       </div>
       <LoadingChild ref={loadingRef} isLoading={isLoading} />
     </section>

@@ -162,13 +162,13 @@ const EditImage: React.FC<EditImageProps> = ({
         <div className="flex justify-end gap-2 p-4">
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-300 rounded-md text-sm"
+            className="px-4 py-2 text-orange rounded-md text-sm"
           >
             Cancel
           </button>
           <button
             onClick={getCroppedImg}
-            className="px-4 py-2 bg-blue-500 text-dark rounded-md text-sm"
+            className="px-4 py-2 bg-orange-hover text-white rounded-md text-sm"
           >
             Save
           </button>

@@ -1,4 +1,5 @@
 {
+  "homepage": ".",
   "name": "tc",
   "private": true,
   "version": "0.0.0",
@@ -10,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "build:staging": "vite build --mode staging",
-    "build:production": "vite build --mode production"
+    "build:production": "vite build --mode production",
+    "serve": "vite preview --host"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",

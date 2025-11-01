@@ -107,7 +107,6 @@ const Comments: React.FC<any> = ({
     }
   });
 
-
   return (
     <>
       <Modal
@@ -156,7 +155,7 @@ const Comments: React.FC<any> = ({
               {allComments.length > 0 ? (
                 allComments.map((item: any) => (
                   <div key={item?.id}>
-                    <div className="py-1 p-2">
+                    <div className="flex justify-between items-start py-1 p-2">
                       <ImageRank
                         userNameStyle="text-black"
                         imgSize={35}
@@ -165,9 +164,6 @@ const Comments: React.FC<any> = ({
                         imgSrc={StringHelpers.getProfile(item.profile)}
                       />
                       <div className="flex justify-between items-center">
-                        <p className="col-span-6 m-2 container_message text-gray-800">
-                          {item.desc}
-                        </p>
                         <div className="flex">
                           <DeleteOutlineIcon
                             onClick={() => handleRemoveComment(item)}
@@ -180,6 +176,9 @@ const Comments: React.FC<any> = ({
                         </div>
                       </div>
                     </div>
+                    <p className="col-span-6 m-2 container_message text-gray-800">
+                      {item.desc}
+                    </p>
                     {answerInfo?.id === item?.id && (
                       <div className="p-4 bg-gray-100 flex gap-2">
                         <span className="font-bold">

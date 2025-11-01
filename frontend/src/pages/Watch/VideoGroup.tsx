@@ -1,12 +1,13 @@
 import React from "react";
-import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import StringHelpers from "../../utils/helpers/StringHelper";
+import { Icon } from "../../components/Icon";
 
 const VideoGroup: React.FC<{
   group: any;
   index: number;
+  iconFiltered: string;
   onClick: (item: any) => void;
-}> = ({ group, index, onClick }) => {
+}> = ({ group, index, onClick, iconFiltered }) => {
   const { parent, child } = group;
   const fixImg1 = StringHelpers.getProfile(group?.attachmentInserted);
   const fixImg2 = StringHelpers.getProfile(group?.attachmentMatched);
@@ -30,7 +31,7 @@ const VideoGroup: React.FC<{
         <div className="flex-1">
           <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
             <span className="text-white absolute bottom-0 p-1 m-1 border-2 rounded-full border-white">
-              <AudiotrackIcon className="font20" />
+              <Icon name={iconFiltered} className="font20" />
             </span>
             <img
               src={fixImg2}

@@ -82,13 +82,13 @@ define(['./workbox-f001acab'], (function (workbox) { 'use strict';
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
     "url": "index.html",
-    "revision": "0.htqc0lomgr"
+    "revision": "0.suge9pcqrm"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
     allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(/\/assets\/.*\.(js|css|html|png|jpg|jpeg|svg|gif|ico)$/, new workbox.CacheFirst({
+  workbox.registerRoute(/\/assets\/.*\.(js|css|html|png|jpg|jpeg|svg|gif|ico|webp)$/, new workbox.CacheFirst({
     "cacheName": "static-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 50,

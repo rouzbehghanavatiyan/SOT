@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useState } from "react";
+import React, { forwardRef, useCallback, useRef, useState } from "react";
 import ImageRank from "../../components/ImageRank";
 import { Link } from "react-router-dom";
 import EditImage from "../../components/EditImage";
@@ -12,7 +12,7 @@ interface ProfileHeaderProps {
   followersCount?: number;
   followingCount?: number;
   score?: number;
-  setProfileImage?: any;
+  setProfileImage?: (image: string) => void; // نوع را اصلاح کردم
 }
 
 const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
@@ -32,11 +32,16 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
     const [editingImage, setEditingImage] = useState(false);
     const [selectedImage, setSelectedImage] = useState("");
     const userId = main?.userLogin?.user?.id;
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const uploadProfileImage = useCallback(
       async (croppedImage: string) => {
         try {
-          setProfileImage(croppedImage);
+          // بررسی وجود تابع قبل از فراخوانی
+          if (setProfileImage && typeof setProfileImage === 'function') {
+            setProfileImage(croppedImage);
+          }
+          
           setEditingImage(false);
           const base64Data = croppedImage.split(",")[1];
           const byteCharacters = atob(base64Data);
@@ -71,37 +76,54 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
           throw error;
         }
       },
-      [userId, dispatch]
+      [userId, dispatch, setProfileImage]
     );
 
     const handleImageProfileUpload = useCallback(
-      async (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.files?.[0]) return;
-        const file = event.target.files[0];
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
         const reader = new FileReader();
         reader.onload = (e) => {
           if (e.target?.result) {
             const imageData = e.target.result as string;
-            setProfileImage(imageData);
+            console.log(imageData);
+            
+            // بررسی وجود تابع قبل از فراخوانی
+            if (setProfileImage && typeof setProfileImage === 'function') {
+              setProfileImage(imageData);
+            }
+            
             setSelectedImage(imageData);
             setEditingImage(true);
           }
         };
         reader.readAsDataURL(file);
+        
+        if (event.target) {
+          event.target.value = "";
+        }
       },
       [setProfileImage]
     );
 
     const handleProfile = useCallback(() => {
-      const input: HTMLInputElement = document.createElement("input");
-      input.type = "file";
-      input.accept = "image/*";
-      input.onchange = handleImageProfileUpload;
-      input.click();
-    }, [handleImageProfileUpload]);
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    }, []);
 
     return (
       <>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageProfileUpload}
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
+
         {editingImage && (
           <EditImage
             src={selectedImage}

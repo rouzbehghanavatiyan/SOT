@@ -1015,3 +1015,17 @@ body.comments-open {
   overflow-wrap: break-word;
   white-space: normal;
 }
+
+.rank-number {
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  font-weight: bold !important;
+  transform: translateX(-50%);
+  font-size:  9px !important;
+  color: #005c08;
+  text-align: center;
+  width: 100%;
+  border-radius: 4px;
+  line-height: 1;
+}

@@ -1,10 +1,10 @@
 import React from "react";
 import Modal from "../../components/Modal";
-import Operational from "../../pages/Sot/Mode/Operational";
 import { useEditVideo } from "../../hooks/useEditVideo";
 import { EditVideoProps } from "./type";
 import VideoPreviewStep from "./VideoPreviewStep";
 import { CoverConfirmStep } from "./CoverConfirmStep";
+import Optional from "../../pages/Sot/Mode/Optional";
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -45,7 +45,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
         return "Offline";
       case 4:
         return "Optional";
-
       default:
         return "";
     }
@@ -88,18 +87,17 @@ const EditVideo: React.FC<EditVideoProps> = ({
         isOpen={showEditMovie}
       >
         <div className="flex flex-col">{renderStepContent()}</div>
+        {currentStep === 3 && (
+          <Optional
+            setMovieData={setMovieData}
+            movieData={movieData}
+            userIdLogin={movieData.userId}
+            allFormData={allFormData}
+            resMovieData={resMovieData}
+            setShowEditMovie={setShowEditMovie}
+          />
+        )}
       </Modal>
-
-      {currentStep === 3 && (
-        <Operational
-          setMovieData={setMovieData}
-          movieData={movieData}
-          userIdLogin={movieData.userId}
-          allFormData={allFormData}
-          resMovieData={resMovieData}
-          setShowEditMovie={setShowEditMovie}
-        />
-      )}
     </>
   );
 };

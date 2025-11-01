@@ -26,21 +26,12 @@ const Profile: React.FC = () => {
   const findImg = !!userIdWhantToShow?.user
     ? StringHelpers.getProfile(userIdWhantToShow?.profile)
     : StringHelpers.getProfile(main?.userLogin?.profile);
-  console.log(findImg);
-
   const socket = main.socketConfig;
-  const [loadedCount, setLoadedCount] = useState<number>(0);
   const userId = main?.userLogin?.user?.id;
-  const [match, setMatch] = useState<any>([]);
-  const [allFollower, setAllFollower] = useState<any>([]);
   const [percentage, setPercentage] = useState<number>(0);
-  const [profileImage, setProfileImage] = useState<string>("");
   const [showEditProfile, setShowEditProfile] = useState<boolean>(false);
   const [videoLikes, setVideoLikes] = useState<Record<string, number>>({});
   const videosProfileRef = useRef<HTMLDivElement | null>(null);
-
-  console.log(main?.userLogin?.score);
-
   const { data, isLoading, hasMore, fetchNextPage } = usePagination(
     userAttachmentList,
     {
@@ -50,6 +41,8 @@ const Profile: React.FC = () => {
       },
     }
   );
+
+  console.log(userId);
 
   const handleGetAddLike = (data: { userId: number; movieId: number }) => {
     setVideoLikes((prev) => ({
@@ -76,16 +69,6 @@ const Profile: React.FC = () => {
       }
     });
     return initialLikes;
-  };
-
-  const handleGetFollower = async () => {
-    const res = await followerList(userId);
-    const { data, status } = res?.data;
-    console.log(data);
-
-    if (status === 0) {
-      setAllFollower(data);
-    }
   };
 
   const handleProgress = (score: number) => {
@@ -143,7 +126,6 @@ const Profile: React.FC = () => {
         userIdWhantToShow?.score || main?.userLogin?.score || 0
       );
       setPercentage(calculatedPercentage);
-      handleGetFollower();
     }
   }, [userId, main?.userLogin?.score, userIdWhantToShow?.user?.id]);
 
@@ -167,7 +149,6 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     setVideoLikes((prev) => ({ ...prev, ...calculateInitialLikes(data) }));
-    setLoadedCount(data.length);
     if (data.length === 0 && !isLoading) {
       fetchNextPage();
     }
@@ -184,9 +165,8 @@ const Profile: React.FC = () => {
                 userIdWhantToShow?.user?.userName ||
                 main?.userLogin?.user?.userName
               }
-              setProfileImage={setProfileImage}
               score={userIdWhantToShow?.score || main?.userLogin?.score}
-              followersCount={allFollower?.length}
+              followersCount={main?.allFollowerList?.length}
               followingCount={main?.allFollingList?.getMapFollowingId?.length}
               ref={imageRef}
             />

@@ -15,7 +15,6 @@ const MessageInput: React.FC<{
   itsComment?: boolean;
 }> = ({
   title,
-  itsComment = false,
   setTitle,
   handleSendMessage,
   onEmojiSelect,
@@ -24,17 +23,17 @@ const MessageInput: React.FC<{
   showStickers,
   onInputFocus,
 }) => (
-  <div
-    className={`w-full bottom-0 bg-gray-150 shadow-card border-t-[1px] border-gray-200  z-50 px-3 `}
-  >
-    <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
-      <div className="flex items-center  justify-center gap-2">
-        <div className="flex-1 mb-2 items-center justify-center">
+  <div className={`w-full bottom-0  shadow-card z-50 px-3`}>
+    <form onSubmit={handleSendMessage} className=" mb-2 grid grid-cols-5">
+      <div className="flex col-span-4 items-center justify-center ">
+        <div className="flex-1 items-center justify-center">
           <Input
+            multiline={true}
+            maxHeight="120px"
             onFocus={onInputFocus}
             ref={titleInputRef}
-            className="w-full rounded-lg border  border-gray-300 font16  px-4 py-4 mt-4 mb-2 focus:outline-none bg-white"
-            placeholder="Type your message..."
+            className="w-full rounded-lg border border-gray-300 font14 mt- px-2 py-1 focus:outline-none bg-white"
+            placeholder="Message..."
             value={title}
             onChange={(e: any) => setTitle(e.target.value)}
             onKeyDown={(e: React.KeyboardEvent) => {
@@ -45,15 +44,17 @@ const MessageInput: React.FC<{
             }}
           />
         </div>
+      </div>
+      <div className="col-span-1 gap-4 ms-3 mb-2 items-end justify-center flex">
         <button
           type="button"
           onClick={() => setShowStickers(!showStickers)}
-          className="p-2 flex text-gray-600  items-center hover:text-gray-800"
+          className="flex text-gray-600"
         >
-          <MoodIcon className="col-span-1  cursor-pointer text-gray-900 font25" />
+          <MoodIcon className="cursor-pointer text-gray-900 font25" />
         </button>
-        <button type="submit" className="text-blue-600 hover:text-blue">
-          <SendIcon className="cursor-pointer col-span-1 text-gray-900 font25 justify-center items-center" />
+        <button type="submit">
+          <SendIcon className="cursor-pointer text-gray-900 font25" />
         </button>
       </div>
     </form>

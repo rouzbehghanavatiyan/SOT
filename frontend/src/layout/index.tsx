@@ -8,7 +8,9 @@ import PhoneFooter from "./PhoneFooter";
 import PhoneHeader from "./PhoneHeader";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
+  RsestAllFollowers,
   RsetAllFollingList,
+  RsetAllFollowerList,
   RsetCategory,
   RsetGiveUserOnlines,
   RsetSocketConfig,
@@ -16,6 +18,7 @@ import {
 } from "../common/Slices/main";
 import {
   categoryList,
+  followerList,
   followingList,
   profileAttachment,
 } from "../services/dotNet";
@@ -134,6 +137,17 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   });
 
+  const handleAllFollower = asyncWrapper(async () => {
+    if (!token) return;
+    const res = await followerList(userId);
+    const { status, data } = res?.data;
+    console.log("handleAllFollower handleAllFollower handleAllFollower", data);
+
+    if (status === 0) {
+      dispatch(RsetAllFollowerList(data));
+    }
+  });
+
   const handleSocketConfig = useCallback(() => {
     dispatch(RsetSocketConfig(socket));
   }, [dispatch, socket]);
@@ -157,7 +171,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
     handleSocketConfig();
     handleAllFollowing();
-
+    handleAllFollower();
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);
@@ -165,12 +179,10 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
     socket.on("connect", handleConnect);
 
-    // Notification permission check
     if (Notification.permission === "default") {
       setShowPrompt(true);
     }
 
-    // Cleanup
     return () => {
       socket.off("connect", handleConnect);
       socket.off("all_user_online", handleGiveUsersOnline);
@@ -190,10 +202,12 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <div className="flex flex-grow justify-center items-center">
           <div className="max-w-7xl w-full h-full justify-center items-center">
             <PhoneHeader />
-            <div className="
-             overflow-y-auto min-h-[calc(100vh-200px)]
+            <div
+              className="
+             overflow-y-auto min-h-[calc(100vh-100px)]
              max-h-[85vh] sm:max-h-[95vh]
-             md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]">
+             md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]"
+            >
               {children}
               {/* {showPrompt && (
                 <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">

@@ -8,29 +8,42 @@ import StringHelpers from "../../../utils/helpers/StringHelper";
 import { sendUserNotif } from "../../../services/dotNet";
 import { handleTabVisibilityChange } from "../../../utils/helpers/NotificationHelper";
 import LoadingChild from "../../../components/Loading/LoadingChild";
-import usePagination from "../../../hooks/usePagination";
 import { userMessages } from "../../../services/nest";
 
-const PrivateChat: React.FC = ({}) => {
+interface MessageType {
+  id?: number;
+  userProfile: string;
+  sender: number;
+  recieveId: number;
+  title: string;
+  time: string;
+  userNameSender?: string;
+}
+
+const PrivateChat: React.FC = () => {
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
   const socket = main?.socketConfig;
-
+  const userReciver = Number(location?.search?.split("=")?.[1]);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const userIdLogin = main?.userLogin?.user?.id;
   const { sender: reciveUserId = "" } = location?.state?.userInfo || {};
   const getProfileImage = main?.userLogin?.profile || {};
-  const [readMessages, setReadMessages] = useState<Record<number, boolean>>({});
-  const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
   const findImg = StringHelpers?.getProfile(getProfileImage);
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
-  const [messages, setMessages] = useState<any>([]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoadingChild, setIsLoadingChild] = useState<boolean>(false);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [pagination, setPagination] = useState({
+    skip: 0,
+    take: 10,
+  });
+  const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
@@ -47,22 +60,8 @@ const PrivateChat: React.FC = ({}) => {
     }, 100);
   }, []);
 
-  const markMessagesAsRead = useCallback(
-    (senderId: number) => {
-      if (hasMarkedAsRead) return;
-
-      setReadMessages((prev) => ({ ...prev, [senderId]: true }));
-      socket?.emit("messages_read", {
-        sender: senderId,
-        receiver: userIdLogin,
-      });
-      setHasMarkedAsRead(true);
-    },
-    [socket, userIdLogin, hasMarkedAsRead]
-  );
-
   const handleEmojiSelect = (emoji: any) => {
-    setTitle((prev: any) => prev + emoji.emoji);
+    setTitle((prev: string) => prev + emoji.emoji);
     setShowStickers(false);
   };
 
@@ -70,24 +69,26 @@ const PrivateChat: React.FC = ({}) => {
     e.preventDefault();
     const date = new Date().toString();
     const timeString = date.split(" ")[4];
-    if (title !== "") {
-      const message = {
+    
+    if (title.trim() !== "") {
+      const message: MessageType = {
         userProfile: findImg,
         sender: main?.userLogin?.user?.id,
         recieveId: reciveUserId,
-        title: title,
+        title: title.trim(),
         time: timeString,
         userNameSender: main?.userLogin?.userName,
       };
-      socket.emit("send_message", message);
+      
+      socket?.emit("send_message", message);
       setTitle("");
     }
     titleInputRef.current?.focus();
   };
 
-  const handleReciveMessage = (data: any) => {
-    console.log(data);
-    setMessages((prev: any) => [
+  const handleReciveMessage = useCallback((data: MessageType) => {
+    console.log("Received message:", data);
+    setMessages((prev: MessageType[]) => [
       ...prev,
       {
         userProfile: data?.userProfile,
@@ -95,20 +96,46 @@ const PrivateChat: React.FC = ({}) => {
         title: data?.title,
         time: data?.time,
         recieveId: data?.recieveId,
+        id: data?.id,
       },
     ]);
-  };
+  }, []);
 
-  const handleGetMessages = async () => {
+  const handleGetMessages = async (isLoadMore: boolean = false) => {
     try {
       setIsLoadingChild(true);
-      const res = await userMessages(userIdLogin, userReciver, 0, 10);
+      const res = await userMessages(
+        userIdLogin,
+        userReciver,
+        pagination.skip,
+        pagination.take
+      );
+      
       setIsLoadingChild(false);
-      setMessages(res?.data?.data);
+      
+      if (isLoadMore) {
+        setMessages((prev) => [...res?.data?.data, ...prev]);
+      } else {
+        setMessages(res?.data?.data || []);
+      }
+      
+      // بررسی آیا پیام بیشتری برای لود کردن وجود دارد
+      setHasMore(res?.data?.data?.length === pagination.take);
+      
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching messages:", error);
+      setIsLoadingChild(false);
     }
   };
+
+  const handleLoadMore = useCallback(() => {
+    if (!hasMore || isLoadingChild) return;
+    
+    setPagination((prev) => ({
+      ...prev,
+      skip: prev.skip + prev.take,
+    }));
+  }, [hasMore, isLoadingChild]);
 
   const handleTabVisibilityChangeWrapper = useCallback(() => {
     return handleTabVisibilityChange(title, reciveUserId);
@@ -123,40 +150,81 @@ const PrivateChat: React.FC = ({}) => {
 
   useEffect(() => {
     if (!socket) return;
+    
     socket.on("receive_message", handleReciveMessage);
+    
     return () => {
       socket.off("receive_message", handleReciveMessage);
     };
-  }, [socket]);
+  }, [socket, handleReciveMessage]);
 
   useEffect(() => {
     if (messages.length > 0 && !hasScrolled) {
       scrollToBottom();
       setHasScrolled(true);
     } else if (messages.length > 0) {
-      scrollToBottom();
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.sender === userIdLogin || lastMessage.recieveId === userIdLogin) {
+        scrollToBottom();
+      }
     }
-  }, [messages, scrollToBottom, hasScrolled]);
+  }, [messages, scrollToBottom, hasScrolled, userIdLogin]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       scrollToBottom();
-    }, 100); // زمان بیشتری برای اطمینان از لود شدن
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [scrollToBottom]);
 
   useEffect(() => {
-    if (reciveUserId) {
+    if (reciveUserId && messages.length > 0) {
       localStorage.setItem(`message_read_${reciveUserId}`, "true");
-      setHasMarkedAsRead(true);
-      socket?.emit("messages_read", {
+      socket?.emit("mark_messages_as_read", {
         sender: reciveUserId,
         receiver: userIdLogin,
       });
-      setReadMessages((prev) => ({ ...prev, [reciveUserId]: true }));
     }
-  }, [reciveUserId, socket, userIdLogin]);
+  }, [reciveUserId, socket, userIdLogin, messages]);
+
+  useEffect(() => {
+    handleGetMessages(false);
+  }, [userReciver, userIdLogin]);
+
+  useEffect(() => {
+    if (pagination.skip > 0) {
+      handleGetMessages(true);
+    }
+  }, [pagination.skip]);
+
+  useEffect(() => {
+    if (!hasMore || !loadingRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !isLoadingChild) {
+          handleLoadMore();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "100px",
+        threshold: 0.1,
+      }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [hasMore, isLoadingChild, handleLoadMore]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-100px)] lg:mt-10 mt-0 pb-12 bg-white">
@@ -169,18 +237,24 @@ const PrivateChat: React.FC = ({}) => {
         }
         score={location?.state?.userInfo?.score || 20}
       />
+      
       <div
         ref={messagesContainerRef}
         className="flex-1 overflow-y-auto p-2 bg-gray-100"
       >
-        {isLoadingChild && <LoadingChild isLoading={isLoadingChild} />}
+        {hasMore && (
+          <div ref={loadingRef} className="flex justify-center py-4">
+            <LoadingChild isLoading={isLoadingChild} />
+          </div>
+        )}
+        
         <Messages
-          handleGetMessages={handleGetMessages}
-          setMessages={setMessages}
           messages={messages}
           messagesEndRef={messagesEndRef}
+          userIdLogin={userIdLogin}
         />
       </div>
+      
       <MessageInput
         title={title}
         setTitle={setTitle}
@@ -193,4 +267,5 @@ const PrivateChat: React.FC = ({}) => {
     </div>
   );
 };
+
 export default PrivateChat;

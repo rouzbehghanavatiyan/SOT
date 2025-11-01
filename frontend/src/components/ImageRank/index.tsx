@@ -9,6 +9,10 @@ import silver3 from "../../assets/ranks/silver-3.png";
 import gold1 from "../../assets/ranks/gold-1.png";
 import gold2 from "../../assets/ranks/gold-2.png";
 import gold3 from "../../assets/ranks/gold-3.png";
+import ruby from "../../assets/ranks/ruby.png";
+import gem from "../../assets/ranks/gem.png";
+import word from "../../assets/ranks/wordOne.png";
+
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 
@@ -25,8 +29,11 @@ interface ProfileWithRankProps {
 
 const rankPositionSettings = {
   bronse: { bottom: "-20%", left: "-20%" },
-  silver: { bottom: "-25%", left: "-25%" },
-  gold: { bottom: "-30%", left: "-30%" },
+  silver: { bottom: "-23%", left: "-23%" },
+  gold: { bottom: "-23%", left: "-23%" },
+  gem: { bottom: "-23%", left: "-23%" },
+  ruby: { bottom: "-23%", left: "-23%" },
+  word: { bottom: "-23%", left: "-23%" },
 };
 
 const ImageRank: React.FC<ProfileWithRankProps> = ({
@@ -42,7 +49,8 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   const [rankData, setRankData] = useState<{
     base: string;
     stars: number;
-    starType: "bronse" | "silver" | "gold" | "";
+    starType: "bronse" | "silver" | "gold" | "gem" | "ruby" | "word" | "";
+    displayNumber?: number; // عددی که زیر رنک نمایش داده می‌شود
   }>({ base: Started, stars: 0, starType: "" });
   const rankSize = Math.floor(imgSize * 0.6);
   const navigate = useNavigate();
@@ -68,6 +76,74 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
       return { base: gold2, stars: 2, starType: "gold" as const };
     } else if (score >= 800 && score < 900) {
       return { base: gold3, stars: 3, starType: "gold" as const };
+    } else if (score >= 900 && score < 1000) {
+      return { base: ruby, stars: 1, starType: "ruby" as const };
+    } else if (score >= 1000 && score < 1100) {
+      return { base: ruby, stars: 2, starType: "ruby" as const };
+    } else if (score >= 1100 && score < 1200) {
+      return { base: ruby, stars: 3, starType: "ruby" as const };
+    } else if (score >= 1200 && score < 1300) {
+      return { base: ruby, stars: 1, starType: "ruby" as const };
+    } else if (score >= 1300 && score < 1400) {
+      return { base: ruby, stars: 2, starType: "ruby" as const };
+    } else if (score >= 1400 && score < 1500) {
+      return { base: ruby, stars: 3, starType: "ruby" as const };
+    } else if (score >= 1500 && score < 1600) {
+      return {
+        base: word,
+        stars: 1,
+        starType: "word" as const,
+        displayNumber: 900,
+      };
+    } else if (score >= 1600 && score < 1700) {
+      return {
+        base: word,
+        stars: 1,
+        starType: "word" as const,
+        displayNumber: 850,
+      };
+    } else if (score >= 1700 && score < 1800) {
+      return {
+        base: word,
+        stars: 2,
+        starType: "word" as const,
+        displayNumber: 800,
+      };
+    } else if (score >= 1800 && score < 1850) {
+      return {
+        base: word,
+        stars: 2,
+        starType: "word" as const,
+        displayNumber: 750,
+      };
+    } else if (score >= 1850 && score < 1900) {
+      return {
+        base: word,
+        stars: 3,
+        starType: "word" as const,
+        displayNumber: 700,
+      };
+    } else if (score >= 1900 && score < 1950) {
+      return {
+        base: word,
+        stars: 3,
+        starType: "word" as const,
+        displayNumber: 650,
+      };
+    } else if (score >= 1950 && score < 2000) {
+      return {
+        base: word,
+        stars: 3,
+        starType: "word" as const,
+        displayNumber: 600,
+      };
+    } else if (score >= 2000) {
+      return {
+        base: word,
+        stars: 3,
+        starType: "word" as const,
+        displayNumber: 550,
+      };
     } else {
       return { base: Started, stars: 0, starType: "" as const };
     }
@@ -166,6 +242,10 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
               }}
               alt="Rank"
             />
+
+            {rankData.starType === "word" && rankData.displayNumber && (
+              <div className="rank-number">{rankData.displayNumber}</div>
+            )}
           </div>
         )}
       </div>

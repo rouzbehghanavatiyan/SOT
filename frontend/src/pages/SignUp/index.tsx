@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { isMobile, isTablet, osName } from "react-device-detect";
 import { Button } from "../../components/Button";
 import Input from "../../components/Input";
@@ -30,7 +30,7 @@ const SignUpForm: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const main = useAppSelector((state) => state.main);
-  const [operatingSystem, setOperatingSystem] = useState<string | null>(null);
+  // const [operatingSystem, setOperatingSystem] = useState<string | null>(null);
   const [inputs, setInputs] = useState<FormValues>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -38,11 +38,11 @@ const SignUpForm: FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    setOperatingSystem(
-      isMobile ? osName : isTablet ? "Tablet" : window.navigator.platform
-    );
-  }, []);
+  // useEffect(() => {
+  //   setOperatingSystem(
+  //     isMobile ? osName : isTablet ? "Tablet" : window.navigator.platform
+  //   );
+  // }, []);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -91,20 +91,21 @@ const SignUpForm: FC = () => {
         UserName: inputs.username,
         Password: inputs.password,
         Email: inputs.email,
-        DeviceType: operatingSystem,
+        // DeviceType: operatingSystem,
       };
 
       const res = await registerUser(postData);
       const { status, message } = res?.data;
 
-      if (status === 0) {
-        dispatch(
-          RsetMessageModal({
-            title: "Dear user, please check your email to verify your account.",
-            show: true,
-            icon: "email",
-          })
-        );
+      if (status === 0 || status === 2) {
+        // dispatch(
+        //   RsetMessageModal({
+        //     title: "Dear user, please check your email to verify your account.",
+        //     show: true,
+        //     icon: "email",
+        //   })
+        // );
+        navigate("/home");
         setIsLoading(true);
       } else {
         setErrors({
@@ -142,7 +143,7 @@ const SignUpForm: FC = () => {
               />
             </Link>
             <h1 className="font25 logoFont font-bold mt-4 text-gray-800">
-             Clash Talent
+              Clash Talent
             </h1>
             <p className="text-gray-800 mt-1">Create an Account</p>
           </div>

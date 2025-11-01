@@ -26,7 +26,7 @@ const VideosProfile = forwardRef<
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const firstVideoRef = useRef<HTMLDivElement>(null);
-  const main = useAppSelector((state) => state.main);
+ 
   const videoGroupsWithLikes = useMemo(() => {
     return match?.map((video: any) => {
       const parentLikes =
@@ -73,12 +73,6 @@ const VideosProfile = forwardRef<
           });
         },
       },
-      // {
-      //   label: "Share via",
-      //   icon: <ShareIcon className="text-gray-800 font20" />,
-
-      //   onClick: () => console.log(data),
-      // },
       {
         label: "Report",
         icon: <ReportIcon className="text-gray-800 font20" />,

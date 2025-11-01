@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { followerList } from "../../services/dotNet";
-import { redirect } from "react-router-dom";
 import ImageRank from "../../components/ImageRank";
 import Loading from "../../components/Loading";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import { useAppSelector } from "../../hooks/reduxHookType";
 import MainTitle from "../../components/MainTitle";
-import asyncWrapper from "../../common/AsyncWrapper";
 
 const Followers: React.FC<any> = () => {
   const main = useAppSelector((state) => state.main);
@@ -14,23 +11,23 @@ const Followers: React.FC<any> = () => {
   const [allFollower, setAllFollower] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAllFollower = asyncWrapper(async () => {
-    setIsLoading(true);
-    const res = await followerList(userId);
-    console.log(res);
-    const { status, data } = res?.data;
-    if (status === 0) {
-      setIsLoading(false);
-      redirect("/followers");
-      setAllFollower(data);
-    }
-  });
+  // const handleAllFollower = asyncWrapper(async () => {
+  //   setIsLoading(true);
+  //   const res = await followerList(userId);
+  //   console.log(res);
+  //   const { status, data } = res?.data;
+  //   if (status === 0) {
+  //     setIsLoading(false);
+  //     redirect("/followers");
+  //     setAllFollower(data);
+  //   }
+  // });
 
-  useEffect(() => {
-    if (userId) {
-      handleAllFollower();
-    }
-  }, [userId]);
+  // useEffect(() => {
+  //   if (userId) {
+  //     handleAllFollower();
+  //   }
+  // }, [userId]);
 
   return (
     <div>

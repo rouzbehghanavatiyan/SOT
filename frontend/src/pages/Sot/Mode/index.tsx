@@ -12,7 +12,10 @@ interface ModeProps {
   setCurrentStep: (step: any) => void;
 }
 
-const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
+const Mode: React.FC<ModeProps> = ({
+  updateStepData,
+  setCurrentStep,
+}) => {
   const navigate = useNavigate();
 
   const {
@@ -24,9 +27,15 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
     triggerVideoUpload,
   } = useVideoHandler();
 
-  const { mode, allMode, isLoading, setMode, handleCategoryClick } = useModeHandler();
+  const { mode, allMode, isLoading, setMode, handleCategoryClick } =
+    useModeHandler();
 
   const handleModeSelection = (data: any) => {
+    console.log(
+      "handleModeSelection handleModeSelection handleModeSelection",
+      data
+    );
+
     if (data.id === 3 || data.id === 4) {
       setMode({ show: true, typeMode: data.id });
       triggerVideoUpload();

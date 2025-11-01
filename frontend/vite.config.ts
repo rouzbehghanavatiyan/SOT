@@ -1,30 +1,34 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react"; // اگر از React استفاده می‌کنید
+import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate", // نوع ثبت Service Worker
+      registerType: "autoUpdate",
       devOptions: {
-        enabled: true, // فعال کردن Service Worker در حالت توسعه
+        enabled: true,
       },
       workbox: {
+        maximumFileSizeToCacheInBytes: 5000000,
+        globPatterns: [
+          "**/*.{js,css,html,ico,png,jpg,jpeg,svg,gif,webp,woff,woff2,ttf,eot,json}"
+        ],
         runtimeCaching: [
           {
-            urlPattern: /\/assets\/.*\.(js|css|html|png|jpg|jpeg|svg|gif|ico)$/, // کش کردن فایل‌های استاتیک
+            urlPattern: /\/assets\/.*\.(js|css|html|png|jpg|jpeg|svg|gif|ico|webp)$/,
             handler: "CacheFirst",
             options: {
               cacheName: "static-cache",
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 روز
+                maxAgeSeconds: 30 * 24 * 60 * 60,
               },
             },
           },
           {
-            urlPattern: /^https:\/\/your-api-domain\.com\/.*$/, // کش کردن درخواست‌های API
+            urlPattern: /^https:\/\/your-api-domain\.com\/.*$/,
             handler: "NetworkFirst",
             options: {
               cacheName: "api-cache",
@@ -41,6 +45,15 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom'],
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000,
   },
   define: {
     "process.env": process.env,
