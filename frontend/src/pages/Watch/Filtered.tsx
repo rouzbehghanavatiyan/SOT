@@ -12,6 +12,7 @@ import { useAppDispatch } from "../../hooks/reduxHookType";
 import { setPaginationWatch } from "../../common/Slices/main";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import MainTitle from "../../components/MainTitle";
+import { Icon } from "../../components/Icon";
 
 interface PropsTyles {
   handleGetAllMatch: any;
@@ -27,24 +28,6 @@ const Filtered: React.FC<PropsTyles> = ({
   setSelectFiltered,
 }) => {
   const dispatch = useAppDispatch();
-
-  const iconsMap: { [key: number]: React.ComponentType } = {
-    1: AudiotrackIcon,
-    2: SportsKabaddiIcon,
-    3: PrecisionManufacturingIcon,
-    4: OutdoorGrillIcon,
-    5: SportsEsportsIcon,
-    6: LocalSeeIcon,
-    7: ArchitectureIcon,
-    8: InsertEmoticonIcon,
-    9: ColorLensIcon,
-    10: ColorLensIcon,
-    11: ColorLensIcon,
-    12: ColorLensIcon,
-    13: ColorLensIcon,
-    1002: QuestionMarkIcon,
-    // 14:Hidden Creative
-  };
 
   const handleIconClick = (id: number) => {
     if (selectFiltered === id) {
@@ -63,14 +46,11 @@ const Filtered: React.FC<PropsTyles> = ({
     handleGetAllMatch(id);
   };
 
-  console.log(selectFiltered);
-
   return (
     <>
       <MainTitle title="Filtered" />
-      <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white max-w-full">
+      <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full">
         {skills?.map((item: any) => {
-          const IconComponent = iconsMap[item.id] || null;
           const isSelected = selectFiltered === item.id;
           if (item?.id === 0) {
             return (
@@ -94,15 +74,16 @@ const Filtered: React.FC<PropsTyles> = ({
             );
           } else {
             return (
-              <div key={item.id} className="grid grid-flow-row">
+              <div key={item.id} className="grid  grid-flow-row">
                 <span
                   className={`rounded-full border-2 flex-shrink-0 cursor-pointer ${
                     isSelected ? "border-primary" : "border-gray-200"
                   }`}
                   onClick={() => handleIconClick(item.id)}
                 >
-                  {IconComponent && (
-                    <IconComponent
+                  {item?.icon && (
+                    <Icon
+                      name={item?.icon}
                       className={`my-3 mx-3 font25 ${
                         isSelected ? "text-primary" : "text-gray-200"
                       }`}

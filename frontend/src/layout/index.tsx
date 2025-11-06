@@ -203,9 +203,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
           <div className="max-w-7xl w-full h-full justify-center items-center">
             <PhoneHeader />
             <div
-              className="
-             overflow-y-auto min-h-[calc(100vh-100px)]
-             max-h-[85vh] sm:max-h-[95vh]
+              className="overflow-y-auto h-[100vh] sm:max-h-[95vh]
              md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]"
             >
               {children}

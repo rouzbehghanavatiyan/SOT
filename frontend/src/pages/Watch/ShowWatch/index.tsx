@@ -166,7 +166,7 @@ const ShowWatch: React.FC = () => {
               );
             }
           }}
-          className="mySwiper md:mt-10 md:h-[calc(100vh-100px)] h-[calc(100vh-50px)] "
+          className="mySwiper md:mt-10 md:h-[calc(100vh-500px)] h-[calc(100vh-500px)] "
         >
           {isLoading && data.length === 0
             ? [...Array(12)].map((_, index) => (

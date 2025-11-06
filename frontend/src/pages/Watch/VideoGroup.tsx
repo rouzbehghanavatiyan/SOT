@@ -30,9 +30,11 @@ const VideoGroup: React.FC<{
       <div className="flex-1 bg-white">
         <div className="flex-1">
           <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-            <span className="text-white absolute bottom-0 p-1 m-1 border-2 rounded-full border-white">
-              <Icon name={iconFiltered} className="font20" />
-            </span>
+            {iconFiltered && (
+              <span className="text-white absolute bottom-0 p-1 m-1 border-2 rounded-full border-white">
+                <Icon name={iconFiltered} className="font20" />
+              </span>
+            )}
             <img
               src={fixImg2}
               alt={child?.alt || "Profile image"}

@@ -1,20 +1,16 @@
 import React, { FC } from "react";
 import Loading from "../../components/Loading";
-import PersonIcon from "@mui/icons-material/Person";
 import { TalentModeProps } from "./softLinkType";
+import { Icon } from "../../components/Icon";
 
 const SoftLink: FC<TalentModeProps> = ({
-  iconMap = {},
   categories = [],
-  isCategoryDisabled,
   handleAcceptCategory = () => {},
   isLoading = false,
-  defaultIcon = <PersonIcon className="font25 mx-3" />,
   containerClass = " w-screen md:w-[500px] md:h-full",
   itemClass = " rounded-lg md:min-w-52 m-1 flex justify-start items-center text-primary cursor-pointer",
   textClass = "py-2",
 }) => {
-  
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -34,8 +30,11 @@ const SoftLink: FC<TalentModeProps> = ({
               onClick={() => handleAcceptCategory(category)}
               className={` ${itemClass}`}
             >
-              {(category.icon && iconMap[category.icon.toLowerCase()]) ||
-                defaultIcon}
+              <div className="min-w-8 flex justify-center mx-3">
+                {category.icon && (
+                  <Icon name={category.icon} className="font25" />
+                )}
+              </div>
               <span className={textClass}>
                 {category.label || category.name}
               </span>

@@ -34,18 +34,13 @@ const Gear: React.FC<any> = ({
     handleGetCategory();
   }, []);
 
-  const iconMap: { [key: string]: JSX.Element } = {
-    singer: <Icon name="Audiotrack" className="text-2xl mx-3 font25" />,
-    guitar: <Icon name="Audiotrack" className="text-2xl mx-3 font25" />,
-    violen: <Icon name="Audiotrack" className="text-2xl mx-3 font25" />,
-    optional: <Icon name="OutdoorGrill" className="text-2xl mx-3 font25" />,
-  };
-
   const handleAcceptCategory = (data: any) => {
     dispatch(RsetCreateTalent({ gear: data }));
     setCurrentStep(4);
-    updateStepData(3, { name: data.name, icon: iconMap[data.icon] });
+    updateStepData(3, { name: data.name, icon: data.icon });
     localStorage.setItem("gearId", data.id);
+    localStorage.setItem("gearIconName", data.icon);
+    localStorage.setItem("gearName", data.name);
   };
 
   const categoriesWithIcons = allSubSubCategory?.map((category: any) => ({
@@ -53,6 +48,14 @@ const Gear: React.FC<any> = ({
     icon: category.icon || category.name.toLowerCase(),
   }));
 
+  const arenaIconMap = allSubSubCategory?.reduce((acc: any, category: any) => {
+    if (category.icon) {
+      acc[category.name.toLowerCase()] = (
+        <Icon name={category.icon} className="font25 mx-3" />
+      );
+    }
+    return acc;
+  }, {});
   const handleBack = () => {
     navigate(-1);
   };
@@ -61,7 +64,7 @@ const Gear: React.FC<any> = ({
     <div className="lg:shadow-card">
       <MainTitle handleBack={handleBack} title="Gear" />
       <SoftLink
-        iconMap={iconMap}
+        iconMap={arenaIconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}
         isLoading={false}

@@ -3,21 +3,19 @@ import Arena from "./Arena";
 import Skill from "./Skill";
 import Gear from "./Gear";
 import Mode from "./Mode";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import {
   modeList,
   subCategoryList,
   subSubCategoryList,
 } from "../../services/dotNet";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Icon } from "../../components/Icon";
 
 const Sot: React.FC = () => {
   const [stepsData, setStepsData] = useState([
-    { title: "", icon: "" },
-    { title: "", icon: "" },
-    { title: "", icon: "" },
-    { title: "", icon: "" },
+    { title: "", icon: "", session: "Arena" },
+    { title: "", icon: "", session: "Skill" },
+    { title: "", icon: "", session: "Gear" },
+    { title: "", icon: "", session: "Mode" },
   ]);
   const [allSubCategory, setAllSubCategory] = useState<any>();
   const [currentStep, setCurrentStep] = useState({
@@ -111,6 +109,7 @@ const Sot: React.FC = () => {
       const arenaName = localStorage.getItem("arenaName");
       const skillName = localStorage.getItem("skillName");
       const gearName = localStorage.getItem("gearName");
+      console.log(arenaName);
 
       if (arenaId) {
         const res = await subCategoryList(arenaId);
@@ -127,8 +126,8 @@ const Sot: React.FC = () => {
           }));
           setStepsData((prev: any) => [
             {
-              title: arenaData?.name || arenaName,
-              icon: <Icon name={arenaIconName} className="text-2xl" />,
+              title: arenaName,
+              icon: arenaIconName,
             },
             prev[1],
             prev[2],
@@ -136,7 +135,6 @@ const Sot: React.FC = () => {
           ]);
         }
       }
-
       if (arenaId && skillId) {
         const res = await subSubCategoryList(skillId);
         const { data, status } = res?.data;
@@ -153,8 +151,8 @@ const Sot: React.FC = () => {
           setStepsData((prev: any) => [
             prev[0],
             {
-              title: skillData?.name || skillName,
-              icon: <Icon name={skillIconName} className="text-2xl" />,
+              title: skillName,
+              icon: skillIconName,
             },
             prev[2],
             prev[3],
@@ -179,8 +177,8 @@ const Sot: React.FC = () => {
             prev[0],
             prev[1],
             {
-              title: gearData?.name || gearName,
-              icon: <Icon name={gearIconName} className="text-2xl" />,
+              title: gearName,
+              icon: gearIconName,
             },
             prev[3],
           ]);
@@ -197,24 +195,32 @@ const Sot: React.FC = () => {
 
   return (
     <>
-      <section className="mt-2 mb-3 w-full gap-10 flex flex-col items-center">
-        <div className="flex gap-4 overflow-auto ">
-          {stepsData.map((step, index) => (
-            <div
-              key={index}
-              className={`w-14 h-14 rounded-full cursor-pointer ${
-                index + 1 <= currentStep.number ? "bg-green" : "bg-gray-200"
-              }`}
-              onClick={() =>
-                setCurrentStep({ ...currentStep, number: index + 1 })
-              }
-            >
-              <div className="h-full flex font8 text-white flex-col items-center justify-center">
-                {step.icon}
-                <span className="font10 font-bold">{step.title}</span>
+      <section className="mt-3 mb-1 w-full gap-10 flex flex-col items-center">
+        <div className="flex gap-4 overflow-auto">
+          {stepsData.map((step, index) => {
+            console.log(step);
+
+            return (
+              <div key={index} className="flex flex-col items-center">
+                <div
+                  className={`w-14 h-14 rounded-full cursor-pointer ${
+                    index < currentStep.number ? "bg-green" : "bg-gray-200"
+                  }`}
+                  onClick={() =>
+                    setCurrentStep({ ...currentStep, number: index + 1 })
+                  }
+                >
+                  <div className="h-full flex font8 text-white flex-col items-center justify-center">
+                    <Icon name={step.icon} className="font20" />
+                    <span className="font10 font-bold">{step.title}</span>
+                  </div>
+                </div>
+                <span className="text-xs font11 text-gray-600">
+                  {["Arena", "Skill", "Gear", "Mode"][index]}
+                </span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
       <span>{renderCurrentStep()}</span>

@@ -46,21 +46,21 @@ const Setting: React.FC = () => {
   };
 
   return (
-      <div className=" " >
-        <ResponsiveMaker>
-          <MainTitle title="Settings" />
-        </ResponsiveMaker>
-        <SoftLink
-          handleAcceptCategory={handleCategoryClick}
-          categories={[
-            { name: "Singout", id: 1 },
-            { name: "Profile", id: 2 },
-            { name: "Support", id: 3 },
-            { name: "About us", id: 4 },
-          ]}
-          isLoading={false}
-        />
-      </div>
+    <div className="">
+      <ResponsiveMaker>
+        <MainTitle title="Settings" />
+      </ResponsiveMaker>
+      <SoftLink
+        handleAcceptCategory={handleCategoryClick}
+        categories={[
+          { name: "Singout", id: 1 },
+          { name: "Profile", id: 2 },
+          { name: "Support", id: 3 },
+          { name: "About us", id: 4 },
+        ]}
+        isLoading={false}
+      />
+    </div>
   );
 };
 

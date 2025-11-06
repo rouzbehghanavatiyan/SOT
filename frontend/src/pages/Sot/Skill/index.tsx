@@ -25,40 +25,16 @@ const Skill: React.FC<any> = ({
     }
   });
 
-  const iconNames: { [key: string]: string } = {
-    music: "Audiotrack",
-    sport: "SportsKabaddi",
-    inventor: "PrecisionManufacturing",
-    cook: "OutdoorGrill",
-    photography: "LocalSee",
-    engineer: "Architecture",
-    game: "SportsEsports",
-    uncharted: "QuestionMark",
-  };
-
-  const iconMap: { [key: string]: JSX.Element } = {
-    music: <Icon name={iconNames.music} className="text-2xl mx-3 font25" />,
-    sport: <Icon name={iconNames.sport} className="text-2xl mx-3 font25" />,
-    inventor: <Icon name={iconNames.inventor} className="text-2xl mx-3 font25" />,
-    cook: <Icon name={iconNames.cook} className="text-2xl mx-3 font25" />,
-    photography: <Icon name={iconNames.photography} className="text-2xl mx-3 font25" />,
-    engineer: <Icon name={iconNames.engineer} className="text-2xl mx-3 font25" />,
-    game: <Icon name={iconNames.game} className="text-2xl mx-3 font25" />,
-    uncharted: <Icon name={iconNames.uncharted} className="text-2xl mx-3 font25" />,
-  };
-
   const handleAcceptCategory = (data: any) => {
-    // گرفتن نام واقعی آیکون
-    const actualIconName = iconNames[data.icon] || data.icon;
-    
     updateStepData(2, {
       name: data.name,
       id: data.id,
-      icon: iconMap[data.icon],
+      icon: data.icon,
     });
-    
+
     localStorage.setItem("skillId", data.id);
-    localStorage.setItem("skillName", actualIconName); // ارسال نام آیکون
+    localStorage.setItem("skillIconName", data.icon);
+    localStorage.setItem("skillName", data.name);
   };
 
   useEffect(() => {
@@ -70,11 +46,21 @@ const Skill: React.FC<any> = ({
     icon: category.icon || category.name.toLowerCase(),
   }));
 
+  console.log(allSubCategory);
+  const arenaIconMap = allSubCategory?.reduce((acc: any, category: any) => {
+    if (category.icon) {
+      acc[category.name.toLowerCase()] = (
+        <Icon name={category.icon} className="font25 mx-3" />
+      );
+    }
+    return acc;
+  }, {});
+
   return (
     <div className="lg:shadow-card">
       <MainTitle title="Skill" />
       <SoftLink
-        iconMap={iconMap}
+        iconMap={arenaIconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}
         isLoading={isLoading}

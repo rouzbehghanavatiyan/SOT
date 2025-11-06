@@ -126,7 +126,7 @@ const Watch: React.FC = () => {
   };
 
   return (
-    <section className="min-h-[85vh]">
+    <section>
       <Filtered
         handleGetAllMatch={handleGetAllMatch}
         selectFiltered={selectFiltered}
@@ -140,11 +140,9 @@ const Watch: React.FC = () => {
               <VideoItemSkeleton key={index} section="justPic" />
             ))
           : data.map((group, index) => {
-              const iconFiltered = group?.subSubCategory;
-              console.log(iconFiltered);
               return (
                 <VideoGroup
-                  iconFiltered={iconFiltered}
+                  iconFiltered={group?.subSubCategory}
                   key={index}
                   group={group}
                   index={index}

@@ -5,7 +5,7 @@ import SoftLink from "../../../hoc/SoftLinks";
 import EditVideo from "../../../common/EditVideo";
 import { useVideoHandler } from "../../../hooks/useVideoHandler";
 import { useModeHandler } from "../../../hooks/useModeHandler";
-import { iconMap } from "../../../constants/icons";
+import { Icon } from "../../../components/Icon";
 
 interface ModeProps {
   updateStepData: (step: number, data: any) => void;
@@ -31,10 +31,6 @@ const Mode: React.FC<ModeProps> = ({
     useModeHandler();
 
   const handleModeSelection = (data: any) => {
-    console.log(
-      "handleModeSelection handleModeSelection handleModeSelection",
-      data
-    );
 
     if (data.id === 3 || data.id === 4) {
       setMode({ show: true, typeMode: data.id });
@@ -52,12 +48,22 @@ const Mode: React.FC<ModeProps> = ({
     icon: modeItem.icon || modeItem.name.toLowerCase(),
   }));
 
+  const arenaIconMap = allMode?.reduce((acc: any, category: any) => {
+    if (category.icon) {
+      acc[category.name.toLowerCase()] = (
+        <Icon name={category.icon} className="font25 mx-3" />
+      );
+    }
+    return acc;
+  }, {});
+
+
   return (
     <div className="lg:shadow-card">
       <MainTitle handleBack={handleBack} title="Mode" />
       <video ref={videoRef} style={{ display: "none" }} />
       <SoftLink
-        iconMap={iconMap}
+        iconMap={arenaIconMap}
         categories={categoriesWithIcons || []}
         isLoading={isLoading}
         handleAcceptCategory={handleModeSelection}
