@@ -25,6 +25,7 @@ import {
 import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
 import { useServiceWorker } from "../hooks/useServiceWorker";
+import Prompt from "./Prompt";
 
 interface PropsType {
   children: React.ReactNode;
@@ -198,56 +199,15 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       <ResponsiveMaker visibleWidth={1024}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
-      <div>
-        <div className="flex flex-grow justify-center items-center">
-          <div className="max-w-7xl w-full h-full justify-center items-center">
-            <PhoneHeader />
-            <div
-              className="overflow-y-auto h-[100vh] sm:max-h-[95vh]
-             md:max-h-[90vh] lg:max-h-[85vh] lg:min-h-[89vh]"
-            >
-              {children}
-              {/* {showPrompt && (
-                <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
-                  <div className="bg-white border-[1px] p-4 rounded-xl max-w-md w-full">
-                    <div className="flex justify-end">
-                      <CloseIcon
-                        onClick={() => setShowPrompt(false)}
-                        className="text-primary font20 cursor-pointer"
-                      />
-                    </div>
-
-                    <div className="flex justify-center rounded-xl p-4 bg-white">
-                      <div className="text-center">
-                        <div className="flex items-center justify-center mb-4">
-                          <img
-                            src={SotLogo}
-                            className="w-10 h-10"
-                            alt="Sot Logo"
-                          />
-                        </div>
-
-                        <div className="text-sm text-gray-600 my-6">
-                          <p>Notifications are disabled for you.</p>
-                          <p>Do you want to enable them?</p>
-                        </div>
-
-                        <div className="mt-6 flex justify-center gap-3">
-                          <Button
-                            onClick={handleAllow}
-                            variant="default"
-                            label="Accept"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )} */}
-            </div>
-            <PhoneFooter />
+      <div className="flex flex-col h-screen">
+        <PhoneHeader />
+        <div className="flex-1 overflow-auto">
+          <div className="flex justify-center items-center min-h-full ">
+            {children}
+            {showPrompt && <Prompt />}
           </div>
         </div>
+        <PhoneFooter />
       </div>
       {openMessage && (
         <Messages

@@ -142,7 +142,7 @@ const Watch: React.FC = () => {
           : data.map((group, index) => {
               return (
                 <VideoGroup
-                  iconFiltered={group?.subSubCategory}
+                  iconFiltered={group?.icon}
                   key={index}
                   group={group}
                   index={index}

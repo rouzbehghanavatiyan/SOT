@@ -58,10 +58,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
           <Video
             videoId={video?.id}
             className="max-w-full max-h-full w-auto h-auto object-contain"
-            style={{
-              maxHeight: "calc(50vh - 80px)",
-              height: "auto",
-            }}
             loop
             playing={isPlaying}
             handleVideo={() => onVideoPlay(video)}

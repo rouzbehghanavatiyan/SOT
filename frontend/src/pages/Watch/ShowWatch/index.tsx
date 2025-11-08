@@ -152,7 +152,7 @@ const ShowWatch: React.FC = () => {
 
   return (
     <>
-      <div className="relative w-full bg-black md:h-[calc(100vh-100px)] md:mt-20 mt-0 h-[calc(100vh-42px)]">
+      <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
         <Swiper
           direction={"vertical"}
           slidesPerView={1}
@@ -166,7 +166,7 @@ const ShowWatch: React.FC = () => {
               );
             }
           }}
-          className="mySwiper md:mt-10 md:h-[calc(100vh-500px)] h-[calc(100vh-500px)] "
+          className="h-full"
         >
           {isLoading && data.length === 0
             ? [...Array(12)].map((_, index) => (

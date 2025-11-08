@@ -16,8 +16,13 @@ const VideoGroup: React.FC<{
     <div
       key={index}
       onClick={() => onClick({ group, index })}
-      className="flex-1 flex  flex-col col-span-1 row-span-1"
+      className="flex-1 relative flex  flex-col col-span-1 row-span-1"
     >
+      {iconFiltered && (
+        <span className="text-white z-40 absolute top-1/2 left-6 transform -translate-x-1/2 -translate-y-1/2 border-2 rounded-full border-white">
+          <Icon name={iconFiltered} className="font20 m-1" />
+        </span>
+      )}
       <div className="flex-1">
         <span className=" relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
           <img
@@ -30,11 +35,6 @@ const VideoGroup: React.FC<{
       <div className="flex-1 bg-white">
         <div className="flex-1">
           <figure className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
-            {iconFiltered && (
-              <span className="text-white absolute bottom-0 p-1 m-1 border-2 rounded-full border-white">
-                <Icon name={iconFiltered} className="font20" />
-              </span>
-            )}
             <img
               src={fixImg2}
               alt={child?.alt || "Profile image"}
