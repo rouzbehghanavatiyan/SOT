@@ -237,7 +237,6 @@ const Home: React.FC = () => {
                 key={`video-${video.id || index}`}
                 className="h-full w-full bg-black flex flex-col"
               >
-                {/* تغییر در این بخش */}
                 <section className="flex flex-col h-full min-h-0">
                   <div className="flex-1 min-h-0 relative">
                     <VideoSection

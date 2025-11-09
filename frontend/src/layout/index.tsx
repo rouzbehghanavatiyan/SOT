@@ -202,7 +202,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       <div className="flex flex-col h-screen">
         <PhoneHeader />
         <div className="flex-1 overflow-auto">
-          <div className="flex justify-center items-center min-h-full ">
+          <div className="flex justify-center items-center min-h-full">
             {children}
             {showPrompt && <Prompt />}
           </div>
