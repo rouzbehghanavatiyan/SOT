@@ -195,28 +195,28 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   }
 
   return (
-    <main className="relative">
-      <ResponsiveMaker visibleWidth={1024}>
-        <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
-      </ResponsiveMaker>
-      <div className="flex flex-col h-screen">
-        <PhoneHeader />
-        <div className="flex-1 overflow-auto">
-          <div className="flex justify-center items-center min-h-full ">
-            {children}
-            {showPrompt && <Prompt />}
-          </div>
-        </div>
-        <PhoneFooter />
+ <main className="relative">
+  <ResponsiveMaker visibleWidth={1024}>
+    <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
+  </ResponsiveMaker>
+  <div className="flex flex-col h-screen">
+    <PhoneHeader />
+    <div className="flex-1 overflow-auto">
+      <div className="flex flex-col justify-start items-center min-h-full">
+        {children}
+        {/* {showPrompt && <Prompt />} */}
       </div>
-      {openMessage && (
-        <Messages
-          socket={socket}
-          setOpenMessage={setOpenMessage}
-          openMessage={openMessage}
-        />
-      )}
-    </main>
+    </div>
+    <PhoneFooter />
+  </div>
+  {openMessage && (
+    <Messages
+      socket={socket}
+      setOpenMessage={setOpenMessage}
+      openMessage={openMessage}
+    />
+  )}
+</main>
   );
 };
 

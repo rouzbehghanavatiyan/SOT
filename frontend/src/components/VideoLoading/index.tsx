@@ -98,6 +98,20 @@ const VideoItemSkeleton: React.FC<PropsType> = ({ section }) => {
           <Skeleton className="rounded-bl-xl" height={175} />
         </div>
       )}
+      {section === "filteredWatch" && (
+        <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full">
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+          <Skeleton className="rounded-full" width={60} height={60} />
+        </div>
+      )}
     </div>
   );
 };
