@@ -11,25 +11,25 @@ const VideoItemSkeleton: React.FC<PropsType> = ({ section }) => {
       {section === "itsShowWatch" && (
         <div className="mx-1">
           <Skeleton
-            className="w-full border"
+            className="w-full"
             height="6vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full"
             height="40vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full"
             height="6vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full"
             height="40vh"
             borderRadius={10}
             baseColor="#5252523a"
@@ -39,25 +39,25 @@ const VideoItemSkeleton: React.FC<PropsType> = ({ section }) => {
       {section === "itsHome" && (
         <div className="mx-1 mt-2">
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="6vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="37vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="6vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="36vh"
             borderRadius={10}
             baseColor="#5252523a"
@@ -67,25 +67,25 @@ const VideoItemSkeleton: React.FC<PropsType> = ({ section }) => {
       {section === "itsProfile" && (
         <div className="m-1">
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="6vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="37vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="6vh"
             borderRadius={10}
             baseColor="#5252523a"
           />
           <Skeleton
-            className="w-full border"
+            className="w-full "
             height="37vh"
             borderRadius={10}
             baseColor="#5252523a"

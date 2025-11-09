@@ -155,7 +155,7 @@ const Watch: React.FC = () => {
               );
             })}
       </div>
-      <LoadingChild ref={loadingRef} isLoading={isLoading} />
+      <LoadingChild ref={loadingRef} isLoading={true} />
     </section>
   );
 };

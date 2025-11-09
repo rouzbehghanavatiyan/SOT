@@ -187,7 +187,6 @@ const Profile: React.FC = () => {
           match={data}
           videoLikes={videoLikes}
         />
-        {isLoading && <Loading isLoading={isLoading ? true : false} />}
         {showEditProfile && (
           <EditProfile
             showEditProfile={showEditProfile}
