@@ -62,7 +62,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
             onNext={handleNextStep}
           />
         );
-
       case 2:
         return (
           <CoverConfirmStep

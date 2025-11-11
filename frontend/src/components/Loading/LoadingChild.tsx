@@ -4,7 +4,7 @@ const LoadingChild = React.forwardRef<HTMLDivElement, { isLoading: boolean }>(
   ({ isLoading }, forwardedRef) => {
     return (
       <div 
-        className="flex items-center justify-center min-h-[100px] w-full" 
+        className="flex items-center justify-center w-full" 
         ref={forwardedRef}
       >
         {isLoading && (

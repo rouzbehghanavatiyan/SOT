@@ -26,7 +26,7 @@ const VideosProfile = forwardRef<
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const firstVideoRef = useRef<HTMLDivElement>(null);
- 
+
   const videoGroupsWithLikes = useMemo(() => {
     return match?.map((video: any) => {
       const parentLikes =
@@ -106,8 +106,8 @@ const VideosProfile = forwardRef<
   }, [videoGroupsWithLikes]);
 
   return (
-    <div className="col-span-12 mb-4 justify-center flex md:col-span-12 lg:col-span-12">
-      <div className="grid grid-cols-1 gap-2 w-full">
+    <div className="col-span-12 justify-center flex  md:col-span-12 lg:col-span-12">
+      <div className="grid grid-cols-1 w-full ">
         {isLoading ? (
           [...Array(12)].map((_, index) => (
             <div key={index} className="bg-black">
@@ -145,7 +145,7 @@ const VideosProfile = forwardRef<
             return (
               <section
                 ref={index === 0 ? firstVideoRef : null}
-                className={`flex flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[50px]" : ""}`}
+                className={`flex px-1 pt-1 bg-green-dark flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[50px]" : ""}`}
               >
                 <div className="flex-1 min-h-0 ">
                   <VideoSection

@@ -32,7 +32,7 @@ const EditProfile: React.FC<PropTypes> = ({
         </div>,
       ]}
     >
-      <div className="container">
+      <div className="container ">
         <Input
           label="Username"
           className="ms-1 rounded-lg text-gray-900"

@@ -257,7 +257,19 @@ const config = {
       animation: {
         "height-slow": "height 3s linear",
         "waving-hand": "wave 2s linear infinite",
+         'fade-in': 'fadeIn 0.3s ease-in-out',
+        'progress': 'progress 5s linear forwards',
       },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        progress: {
+          '0%': { width: '100%' },
+          '100%': { width: '0%' },
+        }
+      }
     },
     // borderRadius: {
     //   xl: "0.625rem",

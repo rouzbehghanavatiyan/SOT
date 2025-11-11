@@ -41,7 +41,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       : StringHelpers?.getProfile(video?.attachmentMatched);
 
   return (
-    <div className="h-full w-full relative flex flex-col border-b border-gray-800 min-h-0">
+    <div className="h-full w-full  relative flex flex-col border-b border-gray-800 min-h-0">
       <OptionTop
         main={main}
         video={video}
@@ -53,8 +53,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
         toggleDropdown={toggleDropdown}
         dropdownItems={dropdownItems}
       />
-      <div className="flex-1 min-h-0 relative flex items-center justify-center">
-        <div className="relative w-full h-full flex items-center justify-center bg-black overflow-hidden">
+      <div className="flex-1 min-h-0 relative  flex items-center justify-center">
+        <div className="relative w-full h-full flex items-center  justify-center bg-black overflow-hidden">
           <Video
             videoId={video?.id}
             className="max-w-full max-h-full w-auto h-auto object-contain"

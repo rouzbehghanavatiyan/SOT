@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainTitle from "../../../components/MainTitle";
 import SoftLink from "../../../hoc/SoftLinks";
@@ -6,17 +6,16 @@ import EditVideo from "../../../common/EditVideo";
 import { useVideoHandler } from "../../../hooks/useVideoHandler";
 import { useModeHandler } from "../../../hooks/useModeHandler";
 import { Icon } from "../../../components/Icon";
+import BaseToast from "../../../components/Toastify";
 
 interface ModeProps {
   updateStepData: (step: number, data: any) => void;
   setCurrentStep: (step: any) => void;
 }
 
-const Mode: React.FC<ModeProps> = ({
-  updateStepData,
-  setCurrentStep,
-}) => {
+const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
   const navigate = useNavigate();
+  const [showToast, setShowToast] = useState(false);
 
   const {
     videoRef,
@@ -25,13 +24,19 @@ const Mode: React.FC<ModeProps> = ({
     allFormData,
     setShowEditMovie,
     triggerVideoUpload,
+    videoError,
   } = useVideoHandler();
 
   const { mode, allMode, isLoading, setMode, handleCategoryClick } =
     useModeHandler();
 
-  const handleModeSelection = (data: any) => {
+  useEffect(() => {
+    if (videoError) {
+      setShowToast(true);
+    }
+  }, [videoError]);
 
+  const handleModeSelection = (data: any) => {
     if (data.id === 3 || data.id === 4) {
       setMode({ show: true, typeMode: data.id });
       triggerVideoUpload();
@@ -41,6 +46,10 @@ const Mode: React.FC<ModeProps> = ({
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
   };
 
   const categoriesWithIcons = allMode?.map((modeItem: any) => ({
@@ -57,10 +66,17 @@ const Mode: React.FC<ModeProps> = ({
     return acc;
   }, {});
 
-
   return (
     <div className="lg:shadow-card">
       <MainTitle handleBack={handleBack} title="Mode" />
+      <BaseToast
+        show={showToast}
+        onClose={handleCloseToast}
+        message={videoError || ""}
+        type="error"
+        duration={5000}
+      />
+
       <video ref={videoRef} style={{ display: "none" }} />
       <SoftLink
         iconMap={arenaIconMap}

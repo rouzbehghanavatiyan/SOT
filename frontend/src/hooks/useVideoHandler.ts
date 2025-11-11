@@ -11,6 +11,7 @@ interface UseVideoHandlerReturn {
   setAllFormData: (data: any) => void;
   handleVideoUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   triggerVideoUpload: () => void;
+  videoError: string | null;
 }
 
 export const useVideoHandler = (): UseVideoHandlerReturn => {
@@ -19,12 +20,15 @@ export const useVideoHandler = (): UseVideoHandlerReturn => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [showEditMovie, setShowEditMovie] = useState<boolean>(false);
   const [allFormData, setAllFormData] = useState<any>();
+  const [videoError, setVideoError] = useState<string | null>(null);
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !videoRef.current) return;
 
-    setVideoFile(file);
+    // Reset error
+    setVideoError(null);
+
     const url = URL.createObjectURL(file);
     const videoElement = videoRef.current;
 
@@ -36,16 +40,40 @@ export const useVideoHandler = (): UseVideoHandlerReturn => {
     videoElement.play();
 
     videoElement.onloadedmetadata = () => {
+      // Check video duration
+      const duration = videoElement.duration;
+      const maxDuration = 120; // 1 minute in seconds
+
+      if (duration > maxDuration) {
+        setVideoError("Dear user, your video should not exceed 1 minute");
+        URL.revokeObjectURL(url);
+        videoElement.src = "";
+        return;
+      }
+
       const midpoint = videoElement.duration / 2;
       videoElement.currentTime = midpoint;
     };
 
     videoElement.onseeked = () => {
-      extractVideoThumbnail(videoElement, (thumbnailDataUrl, thumbnailFile) => {
-        setCoverImage(thumbnailDataUrl);
-        setShowEditMovie(true);
-        setAllFormData({ imageCover: thumbnailFile, video: file });
-      });
+      // Only extract thumbnail if video duration is valid
+      if (videoElement.duration <= 60) {
+        extractVideoThumbnail(
+          videoElement,
+          (thumbnailDataUrl, thumbnailFile) => {
+            setCoverImage(thumbnailDataUrl);
+            setShowEditMovie(true);
+            setAllFormData({ imageCover: thumbnailFile, video: file });
+          }
+        );
+      }
+    };
+
+    videoElement.onerror = () => {
+      setVideoError(
+        "Error loading video file, Dear user, your video should not exceed 1 minute"
+      );
+      URL.revokeObjectURL(url);
     };
   };
 
@@ -67,5 +95,6 @@ export const useVideoHandler = (): UseVideoHandlerReturn => {
     setAllFormData,
     handleVideoUpload,
     triggerVideoUpload,
+    videoError,
   };
 };

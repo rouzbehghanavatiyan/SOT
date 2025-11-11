@@ -58,7 +58,6 @@ const OptionTop: React.FC<any> = ({
     try {
       setIsLoadingFollow(true);
       
-      // اول API را صدا بزن
       if (localIsFollowed) {
         await removeFollower(postData);
         console.log("Unfollow successful");
@@ -67,7 +66,6 @@ const OptionTop: React.FC<any> = ({
         console.log("Follow successful");
       }
       
-      // اگر API موفق بود، state را به روز کن
       setLocalIsFollowed(newFollowStatus);
       dispatch(
         updateFollowStatus({
@@ -108,7 +106,6 @@ const OptionTop: React.FC<any> = ({
         <div className="flex col-span-3 justify-center">
           {checkMyVideo && (
             <Follows
-              bgColor=""
               title={localIsFollowed ? "Unfollow" : "Follow"}
               onFollowClick={() => handleFallowClick(video, positionVideo)}
               isLoading={isLoadingFollow}

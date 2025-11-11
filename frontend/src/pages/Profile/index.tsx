@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
     <>
       <section className="lg:mt-3">
         <div className="w-screen pt-2 px-5 md:w-full md:h-full ">
-          <div className="mb-1 border-b-[1px] ">
+          <div className="border-b-[1px] ">
             <ProfileHeader
               userImage={findImg}
               userName={
