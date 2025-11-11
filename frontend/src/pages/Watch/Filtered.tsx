@@ -1,16 +1,6 @@
 import React, { useState } from "react";
-import AudiotrackIcon from "@mui/icons-material/Audiotrack";
-import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
-import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
-import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
-import LocalSeeIcon from "@mui/icons-material/LocalSee";
-import ArchitectureIcon from "@mui/icons-material/Architecture";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
-import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { useAppDispatch } from "../../hooks/reduxHookType";
 import { setPaginationWatch } from "../../common/Slices/main";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import MainTitle from "../../components/MainTitle";
 import { Icon } from "../../components/Icon";
 
@@ -48,7 +38,7 @@ const Filtered: React.FC<PropsTyles> = ({
 
   return (
     <>
-      <MainTitle title="Filtered" />
+      <MainTitle title="Filtered " />
       <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full">
         {skills?.map((item: any) => {
           const isSelected = selectFiltered === item.id;

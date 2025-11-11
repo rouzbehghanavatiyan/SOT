@@ -127,12 +127,16 @@ const Watch: React.FC = () => {
 
   return (
     <section>
-      <Filtered
-        handleGetAllMatch={handleGetAllMatch}
-        selectFiltered={selectFiltered}
-        setSelectFiltered={setSelectFiltered}
-        skills={skills}
-      />
+      {isLoading && skills?.length === 0 ? (
+        <VideoItemSkeleton section="filteredWatch" />
+      ) : (
+        <Filtered
+          handleGetAllMatch={handleGetAllMatch}
+          selectFiltered={selectFiltered}
+          setSelectFiltered={setSelectFiltered}
+          skills={skills}
+        />
+      )}
       <MainTitle title="Tournament" />
       <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px]">
         {isLoading && data.length === 0
@@ -151,7 +155,7 @@ const Watch: React.FC = () => {
               );
             })}
       </div>
-      <LoadingChild ref={loadingRef} isLoading={isLoading} />
+      <LoadingChild ref={loadingRef} isLoading={true} />
     </section>
   );
 };
