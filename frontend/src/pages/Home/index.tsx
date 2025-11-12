@@ -49,15 +49,14 @@ const Home: React.FC = () => {
         take: paginationRef.current.take,
         userIdLogin,
       });
-
+      
       const newData = res?.data || [];
-
       dispatch(RsetHomeMatch(newData));
       dispatch(
         setPaginationHomeMatch({
-          take: paginationRef.current.take,
-          skip: paginationRef.current.skip + paginationRef.current.take,
-          hasMore: newData.length !== paginationRef.current.take,
+          take: paginationRef.current.take, // take ثابت می‌ماند
+          skip: paginationRef.current.skip + paginationRef.current.take, // skip افزایش می‌یابد
+          hasMore: newData.length === paginationRef.current.take, // اگر تعداد داده‌ها برابر take بود، داده بیشتری داریم
         })
       );
     } catch (error) {
@@ -74,13 +73,16 @@ const Home: React.FC = () => {
       position: 0,
     });
 
-    if (
-      realIndex % 3 === 0 &&
+    // منطق جدید: هر ۳ اسلاید داده جدید لود شود
+    const currentDataLength = data.length;
+    const shouldLoadMore = 
+      realIndex >= currentDataLength - 3 && // وقتی به ۳ اسلاید مانده به انتهای داده فعلی رسیدیم
       paginationRef.current.hasMore &&
-      !isLoadingRef.current
-    ) {
-    } else {
-      console.log("No more data or still loading...");
+      !isLoadingRef.current;
+
+    if (shouldLoadMore) {
+      console.log(`Loading more data... Current index: ${realIndex}, Data length: ${currentDataLength}`);
+      fetchNextPage();
     }
   };
 
@@ -157,10 +159,19 @@ const Home: React.FC = () => {
   }, [data.length, isLoading]);
 
   useEffect(() => {
+    // مقداردهی اولیه: skip=0, take=6
     if (userIdLogin && data.length === 0 && !isLoadingRef.current) {
+      // اگر داده‌ای نداریم، با skip=0 شروع کنیم
+      dispatch(
+        setPaginationHomeMatch({
+          take: 6,
+          skip: 0,
+          hasMore: true,
+        })
+      );
       fetchNextPage();
     }
-  }, [userIdLogin, data.length, fetchNextPage]);
+  }, [userIdLogin, data.length, fetchNextPage, dispatch]);
 
   return (
     <div

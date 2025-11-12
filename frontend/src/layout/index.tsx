@@ -210,13 +210,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         </div>
         <PhoneFooter />
       </div>
-      {openMessage && (
-        <Messages
-          socket={socket}
-          setOpenMessage={setOpenMessage}
-          openMessage={openMessage}
-        />
-      )}
     </main>
   );
 };
