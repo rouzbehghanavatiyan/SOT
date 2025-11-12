@@ -30,7 +30,7 @@ const Followers: React.FC<any> = () => {
   // }, [userId]);
 
   return (
-    <div>
+    <div className="w-full" >
       {isLoading && <Loading isLoading={isLoading} />}
 
       <MainTitle title="Follower" />

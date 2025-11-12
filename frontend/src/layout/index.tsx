@@ -112,40 +112,42 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     }
   });
 
-  const handleAllFollowing = asyncWrapper(async () => {
+  const handleAllFollowingAndFollower = asyncWrapper(async () => {
     if (!token) return;
 
     try {
       const targetUserId = userIdFromLocation || main?.userLogin?.user?.id;
       if (!targetUserId) return;
 
-      const res = await followingList(targetUserId);
-      const { status, data } = res?.data;
+      // استفاده از Promise.all برای صدا زدن همزمان دو سرویس
+      const [followingResponse, followerResponse] = await Promise.all([
+        followingList(targetUserId),
+        followerList(userId)
+      ]);
 
-      if (status === 0) {
-        const followingIds = data?.map(
+      // پردازش نتیجه سرویس following
+      const { status: followingStatus, data: followingData } = followingResponse?.data;
+      if (followingStatus === 0) {
+        const followingIds = followingData?.map(
           (item: any) => item?.attachment?.attachmentId
         );
         dispatch(
           RsetAllFollingList({
             getMapFollowingId: followingIds,
-            allFollowing: data,
+            allFollowing: followingData,
           })
         );
       }
+
+      // پردازش نتیجه سرویس follower
+      const { status: followerStatus, data: followerData } = followerResponse?.data;
+      console.log("handleAllFollower handleAllFollower handleAllFollower", followerData);
+
+      if (followerStatus === 0) {
+        dispatch(RsetAllFollowerList(followerData));
+      }
     } catch (error) {
-      console.error("Failed to fetch following list:", error);
-    }
-  });
-
-  const handleAllFollower = asyncWrapper(async () => {
-    if (!token) return;
-    const res = await followerList(userId);
-    const { status, data } = res?.data;
-    console.log("handleAllFollower handleAllFollower handleAllFollower", data);
-
-    if (status === 0) {
-      dispatch(RsetAllFollowerList(data));
+      console.error("Failed to fetch following or follower list:", error);
     }
   });
 
@@ -171,8 +173,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     if (!main?.userLogin?.user?.id || !token) return;
 
     handleSocketConfig();
-    handleAllFollowing();
-    handleAllFollower();
+    handleAllFollowingAndFollower(); // فراخوانی تابع جدید
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);

@@ -57,7 +57,7 @@ const Skill: React.FC<any> = ({
   }, {});
 
   return (
-    <div className="lg:shadow-card">
+    <div className=" lg:shadow-card">
       <MainTitle title="Skill" />
       <SoftLink
         iconMap={arenaIconMap}

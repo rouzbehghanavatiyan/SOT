@@ -145,7 +145,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
                   className="mx-2 border border-gray-150 flex flex-col py-1 px-2 rounded-2xl"
                 >
                   <span className="font-bold text-gray-800">
-                    {followersCount}
+                    {followersCount || 0}
                   </span>
                   <span className="font-bold text-gray-800 py-1 rounded text-xs">
                     Followers
@@ -156,7 +156,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
                   className="mx-2 border border-gray-150 flex flex-col py-1 px-2 rounded-2xl"
                 >
                   <span className="font-bold text-gray-800">
-                    {followingCount}
+                    {followingCount || 0}
                   </span>
                   <span className="font-bold text-gray-800 py-1 rounded text-xs">
                     Following

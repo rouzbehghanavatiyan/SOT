@@ -194,7 +194,7 @@ const Sot: React.FC = () => {
   }, []);
 
   return (
-    <div className="" >
+    <div className="w-full" >
       <section className="mt-3  mb-1  w-full gap-10 flex flex-col items-center">
         <div className="flex gap-4  overflow-auto">
           {stepsData.map((step, index) => {
