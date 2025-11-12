@@ -3,12 +3,11 @@ import Messages from "../Messages";
 import { useAppSelector } from "../../../hooks/reduxHookType";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChatHeader from "./ChatHeader";
-import MessageInput from "./MessageInput";
 import StringHelpers from "../../../utils/helpers/StringHelper";
-import { sendUserNotif } from "../../../services/dotNet";
 import { handleTabVisibilityChange } from "../../../utils/helpers/NotificationHelper";
 import LoadingChild from "../../../components/Loading/LoadingChild";
 import { userMessages } from "../../../services/nest";
+import MessageInput from "./MessageInput";
 
 interface MessageType {
   id?: number;
@@ -69,7 +68,7 @@ const PrivateChat: React.FC = () => {
     e.preventDefault();
     const date = new Date().toString();
     const timeString = date.split(" ")[4];
-    
+
     if (title.trim() !== "") {
       const message: MessageType = {
         userProfile: findImg,
@@ -79,7 +78,7 @@ const PrivateChat: React.FC = () => {
         time: timeString,
         userNameSender: main?.userLogin?.userName,
       };
-      
+
       socket?.emit("send_message", message);
       setTitle("");
     }
@@ -110,18 +109,17 @@ const PrivateChat: React.FC = () => {
         pagination.skip,
         pagination.take
       );
-      
+
       setIsLoadingChild(false);
-      
+
       if (isLoadMore) {
         setMessages((prev) => [...res?.data?.data, ...prev]);
       } else {
         setMessages(res?.data?.data || []);
       }
-      
+
       // بررسی آیا پیام بیشتری برای لود کردن وجود دارد
       setHasMore(res?.data?.data?.length === pagination.take);
-      
     } catch (error) {
       console.error("Error fetching messages:", error);
       setIsLoadingChild(false);
@@ -130,7 +128,7 @@ const PrivateChat: React.FC = () => {
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoadingChild) return;
-    
+
     setPagination((prev) => ({
       ...prev,
       skip: prev.skip + prev.take,
@@ -150,9 +148,9 @@ const PrivateChat: React.FC = () => {
 
   useEffect(() => {
     if (!socket) return;
-    
+
     socket.on("receive_message", handleReciveMessage);
-    
+
     return () => {
       socket.off("receive_message", handleReciveMessage);
     };
@@ -164,7 +162,10 @@ const PrivateChat: React.FC = () => {
       setHasScrolled(true);
     } else if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
-      if (lastMessage.sender === userIdLogin || lastMessage.recieveId === userIdLogin) {
+      if (
+        lastMessage.sender === userIdLogin ||
+        lastMessage.recieveId === userIdLogin
+      ) {
         scrollToBottom();
       }
     }
@@ -227,7 +228,7 @@ const PrivateChat: React.FC = () => {
   }, [hasMore, isLoadingChild, handleLoadMore]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-50px)] md:h-[calc(100vh-100px)] lg:mt-10 mt-0 pb-12 bg-white">
+    <div className="w-full lg:mt-10 mt-0 bg-white flex-1 flex-col">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
         userProfile={
@@ -237,24 +238,21 @@ const PrivateChat: React.FC = () => {
         }
         score={location?.state?.userInfo?.score || 20}
       />
-      
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto p-2 bg-gray-100"
+        className="p-2 bg-gray-100 flex-1 h-screen"
       >
         {hasMore && (
           <div ref={loadingRef} className="flex justify-center py-4">
             <LoadingChild isLoading={isLoadingChild} />
           </div>
         )}
-        
         <Messages
           messages={messages}
           messagesEndRef={messagesEndRef}
           userIdLogin={userIdLogin}
         />
       </div>
-      
       <MessageInput
         title={title}
         setTitle={setTitle}

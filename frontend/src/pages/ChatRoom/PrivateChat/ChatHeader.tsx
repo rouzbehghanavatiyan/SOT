@@ -15,7 +15,7 @@ const ChatHeader: React.FC<{
   };
 
   return (
-    <div className="w-full grid grid-cols-12 justify-between shadow-card bg-white  py-2 px-4 sticky top-0 z-10">
+    <div className="w-full grid grid-cols-12 justify-between shadow-card bg-white  py-2 px-4 top-0 z-10">
       <div className="col-span-1 flex items-center">
         <ArrowBackIcon
           onClick={handleBack}

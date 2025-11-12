@@ -7,7 +7,7 @@ interface LoadingProps {
 const Loading: React.FC<LoadingProps> = ({ isLoading }) => {
   return (
     <div
-      className={`bg-red inset-0 flex justify-center items-center transition-opacity z-50 ${
+      className={`inset-0 flex justify-center items-center transition-opacity z-50 ${
         isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >

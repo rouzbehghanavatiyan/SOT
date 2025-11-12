@@ -15,17 +15,17 @@ export const handleTabVisibilityChange = (message: string, userId: number) => {
   };
 
   const sendNotification = async (message: string) => {
-    const postData = {
-      userId,
-      message,
-    };
+    // const postData = {
+    //   userId,
+    //   message,
+    // };
 
-    try {
-      const resNotif = await sendUserNotif(postData);
-      console.log("Notification sent:", resNotif);
-    } catch (error) {
-      console.error("Error sending notification:", error);
-    }
+    // try {
+    //   const resNotif = await sendUserNotif(postData);
+    //   console.log("Notification sent:", resNotif);
+    // } catch (error) {
+    //   console.error("Error sending notification:", error);
+    // }
   };
 
   // اضافه کردن event listeners
