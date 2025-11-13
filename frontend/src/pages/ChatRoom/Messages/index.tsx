@@ -48,14 +48,14 @@ const Messages: React.FC<MessagesProps> = ({
         return (
           <div
             key={`${msg.id || index}_${msg.time}`}
-            className={`flex  w-full items-center mt-2 ${
+            className={`flex  w-full items-start ${
               isOwnMessage ? "justify-end" : "justify-start"
             }`}
           >
             {!isOwnMessage && (
               <img
                 src={msg?.userProfile}
-                className="w-8 h-8  rounded-full me-2 flex-shrink-0"
+                className="w-8 h-8 bg-red mt-2 rounded-full me-2 flex-shrink-0"
                 alt="profile"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "/default-avatar.png";
@@ -63,13 +63,13 @@ const Messages: React.FC<MessagesProps> = ({
               />
             )}
             <div
-              className={`rounded-b-lg  my-2 relative p-3 pb-6 max-w-[70%] min-w-[60px] ${
+              className={`rounded-b-lg my-2  relative p-3 pb-6 max-w-[70%] min-w-[60px] ${
                 isOwnMessage
-                  ? "rounded-s-xl bg-white border text-gray-900 me-2"
-                  : "rounded-e-xl border   text-gray-900 bg-orange-disabled  ms-2"
+                  ? "rounded-s-xl bg-white border text-gray-900"
+                  : "rounded-e-xl border text-gray-900 bg-orange-disabled"
               }`}
             >
-              <div className="flex flex-col">
+              <div className="flex  flex-col">
                 <span className="break-words whitespace-pre-wrap overflow-wrap">
                   {msg?.title}
                 </span>
@@ -82,11 +82,10 @@ const Messages: React.FC<MessagesProps> = ({
                 </span>
               </div>
             </div>
-
             {isOwnMessage && (
               <img
                 src={msg?.userProfile}
-                className="w-8 h-8 rounded-full  ms-2 flex-shrink-0"
+                className="w-8 h-8 mt-2 rounded-full  ms-2 flex-shrink-0"
                 alt="profile"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "/default-avatar.png";

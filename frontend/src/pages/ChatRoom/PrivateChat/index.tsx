@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Messages from "../Messages";
 import { useAppSelector } from "../../../hooks/reduxHookType";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ChatHeader from "./ChatHeader";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import { handleTabVisibilityChange } from "../../../utils/helpers/NotificationHelper";
@@ -72,35 +72,42 @@ const PrivateChat: React.FC = () => {
     if (title.trim() !== "") {
       const message: MessageType = {
         userProfile: findImg,
-        sender: main?.userLogin?.user?.id,
+        sender: userIdLogin,
         recieveId: reciveUserId,
         title: title.trim(),
         time: timeString,
         userNameSender: main?.userLogin?.userName,
       };
-
       socket?.emit("send_message", message);
       setTitle("");
     }
     titleInputRef.current?.focus();
   };
 
-  const handleReciveMessage = useCallback((data: MessageType) => {
-    console.log("Received message:", data);
-    setMessages((prev: MessageType[]) => [
-      ...prev,
-      {
-        userProfile: data?.userProfile,
-        sender: data.sender,
-        title: data?.title,
-        time: data?.time,
-        recieveId: data?.recieveId,
-        id: data?.id,
-      },
-    ]);
-  }, []);
+  const handleReciveMessage = (data: MessageType) => {
+    const shouldShowMessage =
+      data.sender === userIdLogin && data.recieveId === reciveUserId;
+    const giveReciver =
+      data.recieveId === userIdLogin && data.sender === reciveUserId;
+
+    if (shouldShowMessage || giveReciver) {
+      setMessages((prev: MessageType[]) => [
+        ...prev,
+        {
+          userProfile: data?.userProfile,
+          sender: data.sender,
+          title: data?.title,
+          time: data?.time,
+          recieveId: data?.recieveId,
+          id: data?.id,
+        },
+      ]);
+    }
+  };
 
   const handleGetMessages = async (isLoadMore: boolean = false) => {
+    console.log(userIdLogin);
+
     try {
       setIsLoadingChild(true);
       const res = await userMessages(
@@ -109,17 +116,15 @@ const PrivateChat: React.FC = () => {
         pagination.skip,
         pagination.take
       );
+      console.log(res?.data);
 
       setIsLoadingChild(false);
-
       if (isLoadMore) {
-        setMessages((prev) => [...res?.data?.data, ...prev]);
+        setMessages((prev) => [...res?.data, ...prev]);
       } else {
-        setMessages(res?.data?.data || []);
+        setMessages(res?.data || []);
       }
-
-      // بررسی آیا پیام بیشتری برای لود کردن وجود دارد
-      setHasMore(res?.data?.data?.length === pagination.take);
+      setHasMore(res?.data?.length === pagination.take);
     } catch (error) {
       console.error("Error fetching messages:", error);
       setIsLoadingChild(false);
@@ -154,7 +159,7 @@ const PrivateChat: React.FC = () => {
     return () => {
       socket.off("receive_message", handleReciveMessage);
     };
-  }, [socket, handleReciveMessage]);
+  }, [socket, handleReciveMessage, userIdLogin]);
 
   useEffect(() => {
     if (messages.length > 0 && !hasScrolled) {
@@ -190,7 +195,9 @@ const PrivateChat: React.FC = () => {
   }, [reciveUserId, socket, userIdLogin, messages]);
 
   useEffect(() => {
-    handleGetMessages(false);
+    if (!!userIdLogin) {
+      handleGetMessages(false);
+    }
   }, [userReciver, userIdLogin]);
 
   useEffect(() => {
@@ -228,7 +235,7 @@ const PrivateChat: React.FC = () => {
   }, [hasMore, isLoadingChild, handleLoadMore]);
 
   return (
-    <div className="w-full lg:mt-10 mt-0 bg-white flex-1 flex-col">
+    <div className="w-full lg:mt-10 mt-0 bg-white flex flex-col h-screen max-h-[88vh]">
       <ChatHeader
         userName={location?.state?.userInfo?.userNameSender || "Unknown User"}
         userProfile={
@@ -240,7 +247,7 @@ const PrivateChat: React.FC = () => {
       />
       <div
         ref={messagesContainerRef}
-        className="p-2 bg-gray-100 flex-1 h-screen"
+        className="p-2 bg-gray-100 overflow-y-auto flex-1 min-h-0"
       >
         {hasMore && (
           <div ref={loadingRef} className="flex justify-center py-4">
