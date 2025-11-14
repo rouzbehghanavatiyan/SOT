@@ -79,7 +79,7 @@ axios.interceptors.response.use(
       sessionStorage.clear();
 
       setTimeout(() => {
-        window.location.href = "/login";
+        // window.location.href = "/login";
       }, 2000);
 
       return Promise.reject(error);

@@ -16,6 +16,7 @@ interface ModeProps {
 const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
+  const arenaId = Number(localStorage.getItem("arenaId"));
 
   const {
     videoRef,
@@ -36,10 +37,18 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
     }
   }, [videoError]);
 
+  console.log(arenaId);
+
   const handleModeSelection = (data: any) => {
-    if (data.id === 3 || data.id === 4) {
+    if (
+      (data.id === 3 && arenaId !== 1002) ||
+      (data.id === 4 && arenaId !== 1002)
+    ) {
       setMode({ show: true, typeMode: data.id });
       triggerVideoUpload();
+    }
+    if (arenaId === 1002) {
+      navigate("/cup")
     }
     handleCategoryClick(data, updateStepData, setCurrentStep);
   };
@@ -84,7 +93,7 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
         isLoading={isLoading}
         handleAcceptCategory={handleModeSelection}
       />
-      {showEditMovie && (
+      {/* {showEditMovie && (
         <EditVideo
           mode={mode}
           allFormData={allFormData}
@@ -92,7 +101,7 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
           setShowEditMovie={setShowEditMovie}
           coverImage={coverImage}
         />
-      )}
+      )} */}
     </div>
   );
 };

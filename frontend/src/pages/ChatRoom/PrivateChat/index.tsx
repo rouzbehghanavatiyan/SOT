@@ -91,17 +91,21 @@ const PrivateChat: React.FC = () => {
       data.recieveId === userIdLogin && data.sender === reciveUserId;
 
     if (shouldShowMessage || giveReciver) {
-      setMessages((prev: MessageType[]) => [
-        ...prev,
-        {
-          userProfile: data?.userProfile,
-          sender: data.sender,
-          title: data?.title,
-          time: data?.time,
-          recieveId: data?.recieveId,
-          id: data?.id,
-        },
-      ]);
+      setMessages((prev) => {
+        const previousMessages = Array.isArray(prev) ? prev : [];
+
+        return [
+          ...previousMessages,
+          {
+            userProfile: data?.userProfile || "",
+            sender: data.sender,
+            title: data?.title || "",
+            time: data?.time || "",
+            recieveId: data?.recieveId,
+            id: data?.id,
+          },
+        ];
+      });
     }
   };
 

@@ -24,7 +24,10 @@ const Messages: React.FC<MessagesProps> = ({
   userIdLogin,
   isLoading = false,
 }) => {
-  if (isLoading && messages.length === 0) {
+  // Ensure messages is always an array
+  const safeMessages = Array.isArray(messages) ? messages : [];
+
+  if (isLoading && safeMessages.length === 0) {
     return (
       <div className="flex justify-center items-center h-32">
         <LoadingChild isLoading={true} />
@@ -32,7 +35,7 @@ const Messages: React.FC<MessagesProps> = ({
     );
   }
 
-  if (messages.length === 0 && !isLoading) {
+  if (safeMessages.length === 0 && !isLoading) {
     return (
       <div className="flex justify-center items-center h-32 text-gray-500">
         There are no messages
@@ -42,7 +45,7 @@ const Messages: React.FC<MessagesProps> = ({
 
   return (
     <>
-      {messages?.map((msg: Message, index: number) => {
+      {safeMessages.map((msg: Message, index: number) => {
         const displayTime = msg?.time?.slice(0, 5) || "";
         const isOwnMessage = userIdLogin === msg.sender;
         return (
