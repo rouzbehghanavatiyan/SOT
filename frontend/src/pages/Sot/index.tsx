@@ -195,43 +195,41 @@ const Sot: React.FC = () => {
 
   return (
     <div className="w-full">
-      <section className="mt-3  mb-1  w-full gap-10 grid grid-cols-5">
-        <div className="col-span-1">
-          <div className="ms-2 flex  items-center justify-center">
-            <label className="font9" >save talent</label>
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-blue-600 focus:text-soft_blue border-gray-300 rounded"
-            />
-          </div>
+      <div className="mt-3">
+        <div className="ms-2 flex  gap-3 items-center justify-center">
+          <input
+            id="remember-me"
+            name="remember-me"
+            type="checkbox"
+            className="h-4 w-4 text-blue-600 focus:text-soft_blue border-gray-300 rounded"
+          />
+          <label className="font12 font-bold">Remember talent</label>
         </div>
-        <div className="col-span-4">
-          <div className="flex gap-4  overflow-auto">
-            {stepsData.map((step, index) => {
-              return (
-                <div key={index} className=" flex flex-col items-center">
-                  <div
-                    className={`w-14 h-14 rounded-full cursor-pointer ${
-                      index < currentStep.number ? "bg-green" : "bg-gray-200"
-                    }`}
-                    onClick={() =>
-                      setCurrentStep({ ...currentStep, number: index + 1 })
-                    }
-                  >
-                    <div className="h-full flex font8 text-white flex-col items-center justify-center">
-                      <Icon name={step.icon} className="font20" />
-                      <span className="font10 font-bold">{step.title}</span>
-                    </div>
+      </div>
+      <section className="mt-3 gap-10 flex flex-col justify-center items-center">
+        <div className="flex gap-4  overflow-auto">
+          {stepsData.map((step, index) => {
+            return (
+              <div key={index} className="flex flex-col items-center">
+                <div
+                  className={`w-14 h-14 rounded-full cursor-pointer ${
+                    index < currentStep.number ? "bg-green" : "bg-gray-200"
+                  }`}
+                  onClick={() =>
+                    setCurrentStep({ ...currentStep, number: index + 1 })
+                  }
+                >
+                  <div className="h-full flex font8 text-white flex-col items-center justify-center">
+                    <Icon name={step.icon} className="font20" />
+                    <span className="font10 font-bold">{step.title}</span>
                   </div>
-                  <span className="text-xs font11 text-gray-600">
-                    {["Arena", "Skill", "Gear", "Mode"][index]}
-                  </span>
                 </div>
-              );
-            })}
-          </div>
+                <span className="text-xs font11 text-gray-600">
+                  {["Arena", "Skill", "Gear", "Mode"][index]}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </section>
       <span>{renderCurrentStep()}</span>

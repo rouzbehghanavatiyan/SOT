@@ -24,7 +24,6 @@ const Messages: React.FC<MessagesProps> = ({
   userIdLogin,
   isLoading = false,
 }) => {
-  // Ensure messages is always an array
   const safeMessages = Array.isArray(messages) ? messages : [];
 
   if (isLoading && safeMessages.length === 0) {

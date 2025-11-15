@@ -19,6 +19,7 @@ const Gear: React.FC<any> = ({
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState<boolean>();
   const [allSubSubCategory, setAllSubSubCategory] = useState<any>();
+  const arenaId = Number(localStorage.getItem("arenaId"));
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
@@ -35,12 +36,16 @@ const Gear: React.FC<any> = ({
   }, []);
 
   const handleAcceptCategory = (data: any) => {
-    dispatch(RsetCreateTalent({ gear: data }));
-    setCurrentStep(4);
-    updateStepData(3, { name: data.name, icon: data.icon });
-    localStorage.setItem("gearId", data.id);
-    localStorage.setItem("gearIconName", data.icon);
-    localStorage.setItem("gearName", data.name);
+    if (arenaId !== 1002) {
+      dispatch(RsetCreateTalent({ gear: data }));
+      setCurrentStep(4);
+      updateStepData(3, { name: data.name, icon: data.icon });
+      localStorage.setItem("gearId", data.id);
+      localStorage.setItem("gearIconName", data.icon);
+      localStorage.setItem("gearName", data.name);
+    } else if (arenaId === 1002) {
+      navigate("/cup");
+    }
   };
 
   const categoriesWithIcons = allSubSubCategory?.map((category: any) => ({

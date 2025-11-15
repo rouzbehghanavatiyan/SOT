@@ -93,7 +93,7 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
         isLoading={isLoading}
         handleAcceptCategory={handleModeSelection}
       />
-      {/* {showEditMovie && (
+      {showEditMovie && (
         <EditVideo
           mode={mode}
           allFormData={allFormData}
@@ -101,7 +101,7 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
           setShowEditMovie={setShowEditMovie}
           coverImage={coverImage}
         />
-      )} */}
+      )}
     </div>
   );
 };

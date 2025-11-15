@@ -19,6 +19,7 @@ import Notification from "../pages/Notification";
 import Following from "../pages/Following";
 import Pay from "../pages/Pay";
 import Sot from "../pages/Sot";
+import GroupCup from "../pages/Cup/GroupCups";
 
 const PublicRoutes: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const PublicRoutes: React.FC = () => {
         <Route path="/watch/show" element={<ShowWatch />} />
         <Route path="/friendly" element={<Friendly />} />
         <Route path="/cup" element={<Cup />} />
+        <Route path="/cup/group" element={<GroupCup />} />
         <Route path="/watch" element={<Watch />} />
         <Route path="/learn" element={<LearningSot />} />
         <Route path="/live" element={<Live />} />
