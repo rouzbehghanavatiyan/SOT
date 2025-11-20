@@ -26,6 +26,7 @@ const ShowWatch: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const { pagination, data } = main.showWatchMatch;
 
   const paginationRef = useRef(pagination);
@@ -100,17 +101,6 @@ const ShowWatch: React.FC = () => {
 
       const newData = res?.data || [];
       const hasMore = newData.length > 0;
-      // const temp: any = [];
-      // const getLikeFollow = newData?.map((item: any) => {
-      //   return {
-      //     isLikedInserted: item?.isLikedInserted,
-      //     isLikedMatched: item?.isLikedMatched,
-      //     movieTopId: item?.attachmentInserted?.attachmentId,
-      //     movieBottId: item?.attachmentMatched?.attachmentId,
-      //   };
-      // });
-      // temp.push(...getLikeFollow);
-      // dispatch(RsetLikeFollow(temp));
       dispatch(RsetShowWatch(newData));
       dispatch(
         setPaginationShowWatch({
@@ -128,7 +118,15 @@ const ShowWatch: React.FC = () => {
 
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
-    setCurrentlyPlayingId(false);
+    setActiveSlideIndex(realIndex);
+    
+    // پلی کردن خودکار ویدیوی بالا در اسلاید جدید
+    if (data[realIndex]?.attachmentInserted?.attachmentId) {
+      setCurrentlyPlayingId(data[realIndex].attachmentInserted.attachmentId);
+    }
+    
+    setOpenDropdowns({});
+    
     if (
       realIndex % 3 === 0 &&
       paginationRef.current.hasMore &&
@@ -137,6 +135,13 @@ const ShowWatch: React.FC = () => {
       fetchNextPage();
     }
   };
+
+  // پلی کردن خودکار ویدیوی بالا هنگام لود اولیه
+  useEffect(() => {
+    if (data?.length > 0 && activeSlideIndex === 0) {
+      setCurrentlyPlayingId(data[0]?.attachmentInserted?.attachmentId);
+    }
+  }, [data, activeSlideIndex]);
 
   useEffect(() => {
     if (inviteId && !isLoadingRef.current) {
@@ -159,7 +164,8 @@ const ShowWatch: React.FC = () => {
           mousewheel={true}
           onSlideChange={handleSlideChange}
           modules={[Mousewheel]}
-          onInit={() => {
+          onInit={(swiper) => {
+            setActiveSlideIndex(swiper.realIndex);
             if (data?.length > 0) {
               setCurrentlyPlayingId(
                 data?.[0]?.attachmentInserted?.attachmentId

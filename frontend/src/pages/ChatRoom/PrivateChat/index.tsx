@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Messages from "../Messages";
 import { useAppSelector } from "../../../hooks/reduxHookType";
 import { useLocation } from "react-router-dom";
@@ -30,32 +30,29 @@ const PrivateChat: React.FC = () => {
   const getProfileImage = main?.userLogin?.profile || {};
   const findImg = StringHelpers?.getProfile(getProfileImage);
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
+
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoadingChild, setIsLoadingChild] = useState<boolean>(false);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const [pagination, setPagination] = useState({
+  const loadingRef = useRef<HTMLDivElement>(null);
+
+  const paginationRef = useRef({
     skip: 0,
     take: 10,
   });
-  const [hasMore, setHasMore] = useState(true);
-  const loadingRef = useRef<HTMLDivElement>(null);
 
+  // اسکرول به پایین
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
-      if (messagesContainerRef.current) {
-        const container = messagesContainerRef.current;
-        container.scrollTop = container.scrollHeight;
-      }
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({
-          behavior: "auto",
-          block: "end",
-        });
-      }
+      messagesContainerRef.current?.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "auto",
+      });
     }, 100);
   }, []);
 
@@ -66,10 +63,9 @@ const PrivateChat: React.FC = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    const date = new Date().toString();
-    const timeString = date.split(" ")[4];
 
     if (title.trim() !== "") {
+      const timeString = new Date().toTimeString().slice(0, 5);
       const message: MessageType = {
         userProfile: findImg,
         sender: userIdLogin,
@@ -78,24 +74,37 @@ const PrivateChat: React.FC = () => {
         time: timeString,
         userNameSender: main?.userLogin?.userName,
       };
+
       socket?.emit("send_message", message);
       setTitle("");
+      titleInputRef.current?.focus();
+
+      setMessages((prev) => {
+        try {
+          if (Array.isArray(prev)) {
+            return [...prev, message];
+          }
+          return [message];
+        } catch (error) {
+          console.error("Error in setMessages:", error);
+          return [message];
+        }
+      });
+
+      scrollToBottom();
     }
-    titleInputRef.current?.focus();
   };
 
-  const handleReciveMessage = (data: MessageType) => {
-    const shouldShowMessage =
-      data.sender === userIdLogin && data.recieveId === reciveUserId;
-    const giveReciver =
-      data.recieveId === userIdLogin && data.sender === reciveUserId;
+  const handleReciveMessage = useCallback(
+    (data: MessageType) => {
+      const shouldShowMessage =
+        data.sender === userIdLogin && data.recieveId === reciveUserId;
+      const giveReciver =
+        data.recieveId === userIdLogin && data.sender === reciveUserId;
 
-    if (shouldShowMessage || giveReciver) {
-      setMessages((prev) => {
-        const previousMessages = Array.isArray(prev) ? prev : [];
-
-        return [
-          ...previousMessages,
+      if (shouldShowMessage || giveReciver) {
+        setMessages((prev) => [
+          ...prev,
           {
             userProfile: data?.userProfile || "",
             sender: data.sender,
@@ -104,139 +113,94 @@ const PrivateChat: React.FC = () => {
             recieveId: data?.recieveId,
             id: data?.id,
           },
-        ];
-      });
-    }
-  };
-
-  const handleGetMessages = async (isLoadMore: boolean = false) => {
-    console.log(userIdLogin);
-
-    try {
-      setIsLoadingChild(true);
-      const res = await userMessages(
-        userIdLogin,
-        userReciver,
-        pagination.skip,
-        pagination.take
-      );
-      console.log(res?.data);
-
-      setIsLoadingChild(false);
-      if (isLoadMore) {
-        setMessages((prev) => [...res?.data, ...prev]);
-      } else {
-        setMessages(res?.data || []);
+        ]);
+        scrollToBottom();
       }
-      setHasMore(res?.data?.length === pagination.take);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-      setIsLoadingChild(false);
-    }
-  };
+    },
+    [userIdLogin, reciveUserId, scrollToBottom]
+  );
+
+  const handleGetMessages = useCallback(
+    async (isLoadMore: boolean = false) => {
+      try {
+        setIsLoadingChild(true);
+        const res = await userMessages(
+          userIdLogin,
+          userReciver,
+          paginationRef.current.skip,
+          paginationRef.current.take
+        );
+
+        // if (isLoadMore) {
+          setMessages((prev) => {
+            const previousMessages = Array.isArray(prev) ? prev : [];
+            return [...(res?.data || []), ...previousMessages];
+          });
+        // } else {
+        //   setMessages(res?.data || []);
+        //   scrollToBottom();
+        // }
+        // setHasMore(res?.data?.length === paginationRef.current.take);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      } finally {
+        setIsLoadingChild(false);
+      }
+    },
+    [userIdLogin, userReciver, scrollToBottom]
+  );
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoadingChild) return;
 
-    setPagination((prev) => ({
-      ...prev,
-      skip: prev.skip + prev.take,
-    }));
-  }, [hasMore, isLoadingChild]);
-
-  const handleTabVisibilityChangeWrapper = useCallback(() => {
-    return handleTabVisibilityChange(title, reciveUserId);
-  }, [title, reciveUserId]);
+    paginationRef.current.skip += paginationRef.current.take;
+    handleGetMessages(true);
+  }, [hasMore, isLoadingChild, handleGetMessages]);
 
   useEffect(() => {
-    const cleanup = handleTabVisibilityChangeWrapper();
-    return () => {
-      cleanup();
-    };
-  }, [handleTabVisibilityChangeWrapper]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("receive_message", handleReciveMessage);
-
+    if (!socket || !userIdLogin) return;
+    handleGetMessages(false);
+    // socket.on("receive_message", handleReciveMessage);
+    // const observer = new IntersectionObserver(
+    //   (entries) => {
+    //     if (entries[0].isIntersecting && !isLoadingChild && hasMore) {
+    //       handleLoadMore();
+    //     }
+    //   },
+    //   { threshold: 0.1 }
+    // );
+    // if (loadingRef.current) {
+    //   observer.observe(loadingRef.current);
+    // }
     return () => {
       socket.off("receive_message", handleReciveMessage);
-    };
-  }, [socket, handleReciveMessage, userIdLogin]);
-
-  useEffect(() => {
-    if (messages.length > 0 && !hasScrolled) {
-      scrollToBottom();
-      setHasScrolled(true);
-    } else if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1];
-      if (
-        lastMessage.sender === userIdLogin ||
-        lastMessage.recieveId === userIdLogin
-      ) {
-        scrollToBottom();
-      }
-    }
-  }, [messages, scrollToBottom, hasScrolled, userIdLogin]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      scrollToBottom();
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [scrollToBottom]);
-
-  useEffect(() => {
-    if (reciveUserId && messages.length > 0) {
-      localStorage.setItem(`message_read_${reciveUserId}`, "true");
-      socket?.emit("mark_messages_as_read", {
-        sender: reciveUserId,
-        receiver: userIdLogin,
-      });
-    }
-  }, [reciveUserId, socket, userIdLogin, messages]);
-
-  useEffect(() => {
-    if (!!userIdLogin) {
-      handleGetMessages(false);
-    }
-  }, [userReciver, userIdLogin]);
-
-  useEffect(() => {
-    if (pagination.skip > 0) {
-      handleGetMessages(true);
-    }
-  }, [pagination.skip]);
-
-  useEffect(() => {
-    if (!hasMore || !loadingRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting && !isLoadingChild) {
-          handleLoadMore();
-        }
-      },
-      {
-        root: null,
-        rootMargin: "100px",
-        threshold: 0.1,
-      }
-    );
-
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
-    }
-
-    return () => {
-      if (loadingRef.current) {
-        observer.unobserve(loadingRef.current);
+      // observer.disconnect();
+      if (reciveUserId && messages.length > 0) {
+        localStorage.setItem(`message_read_${reciveUserId}`, "true");
+        socket.emit("mark_messages_as_read", {
+          sender: reciveUserId,
+          receiver: userIdLogin,
+        });
       }
     };
-  }, [hasMore, isLoadingChild, handleLoadMore]);
+  }, [
+    socket,
+    userIdLogin,
+    handleReciveMessage,
+    handleGetMessages,
+    handleLoadMore,
+    isLoadingChild,
+    hasMore,
+    reciveUserId,
+    messages.length,
+  ]);
+
+  useEffect(() => {
+    const cleanup = handleTabVisibilityChange(title, reciveUserId);
+    return cleanup;
+  }, [title, reciveUserId]);
+
+  console.log(messages);
 
   return (
     <div className="w-full lg:mt-10 mt-0 bg-white flex flex-col h-screen max-h-[88vh]">
@@ -259,7 +223,7 @@ const PrivateChat: React.FC = () => {
           </div>
         )}
         <Messages
-          messages={messages}
+          messages={messages?.messages}
           messagesEndRef={messagesEndRef}
           userIdLogin={userIdLogin}
         />

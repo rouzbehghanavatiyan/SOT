@@ -1,4 +1,3 @@
-import GroupCup from "./GroupCups";
 import MainCup from "./MainCup";
 
 const Cup = () => {

@@ -14,11 +14,8 @@ import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
-import VideoItemSkeleton from "../../components/VideoLoading";
 import { followerAttachmentList } from "../../services/dotNet";
 import LoadingChild from "../../components/Loading/LoadingChild";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -28,7 +25,6 @@ const Home: React.FC = () => {
   const [openDropdowns, setOpenDropdowns] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
-
   const [currentlyPlaying, setCurrentlyPlaying] = useState<{
     slideIndex: number | null;
     position: number | null;
@@ -49,14 +45,14 @@ const Home: React.FC = () => {
         take: paginationRef.current.take,
         userIdLogin,
       });
-      
+
       const newData = res?.data || [];
       dispatch(RsetHomeMatch(newData));
       dispatch(
         setPaginationHomeMatch({
-          take: paginationRef.current.take, // take ثابت می‌ماند
-          skip: paginationRef.current.skip + paginationRef.current.take, // skip افزایش می‌یابد
-          hasMore: newData.length === paginationRef.current.take, // اگر تعداد داده‌ها برابر take بود، داده بیشتری داریم
+          take: paginationRef.current.take, 
+          skip: paginationRef.current.skip + paginationRef.current.take, 
+          hasMore: newData.length === paginationRef.current.take,
         })
       );
     } catch (error) {
@@ -73,15 +69,16 @@ const Home: React.FC = () => {
       position: 0,
     });
 
-    // منطق جدید: هر ۳ اسلاید داده جدید لود شود
     const currentDataLength = data.length;
-    const shouldLoadMore = 
-      realIndex >= currentDataLength - 3 && // وقتی به ۳ اسلاید مانده به انتهای داده فعلی رسیدیم
+    const shouldLoadMore =
+      realIndex >= currentDataLength - 3 && 
       paginationRef.current.hasMore &&
       !isLoadingRef.current;
 
     if (shouldLoadMore) {
-      console.log(`Loading more data... Current index: ${realIndex}, Data length: ${currentDataLength}`);
+      console.log(
+        `Loading more data... Current index: ${realIndex}, Data length: ${currentDataLength}`
+      );
       fetchNextPage();
     }
   };
@@ -159,9 +156,7 @@ const Home: React.FC = () => {
   }, [data.length, isLoading]);
 
   useEffect(() => {
-    // مقداردهی اولیه: skip=0, take=6
     if (userIdLogin && data.length === 0 && !isLoadingRef.current) {
-      // اگر داده‌ای نداریم، با skip=0 شروع کنیم
       dispatch(
         setPaginationHomeMatch({
           take: 6,
@@ -193,7 +188,7 @@ const Home: React.FC = () => {
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         initialSlide={0}
       >
-        {isLoading &&
+        {/* {isLoading &&
           data.length === 0 &&
           [...Array(12)].map((_, index) => (
             <SwiperSlide
@@ -202,8 +197,8 @@ const Home: React.FC = () => {
             >
               <VideoItemSkeleton section="itsHome" />
             </SwiperSlide>
-          ))}
-        {!data ||
+          ))} */}
+        {/* {!data ||
           (data.length === 0 && (
             <SwiperSlide className="h-full w-full bg-black flex flex-col">
               <div className="flex-1 flex items-center justify-center">
@@ -227,7 +222,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </SwiperSlide>
-          ))}
+          ))} */}
         {!isLoading &&
           data?.map((video: any, index: number) => {
             const resultInserted =

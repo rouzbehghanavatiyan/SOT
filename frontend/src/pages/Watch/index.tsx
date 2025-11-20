@@ -75,9 +75,7 @@ const Watch: React.FC = () => {
         subCatId: skillId,
       });
       const newData = res?.data || [];
-
       dispatch(RsetWatchVideo(newData));
-
       dispatch(
         setPaginationWatch({
           take: 6,
