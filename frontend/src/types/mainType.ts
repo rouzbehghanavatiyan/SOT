@@ -16,3 +16,27 @@ export interface Video {
   };
   // سایر فیلدهای مورد نیاز
 }
+
+export interface ShowWatchState {
+  pagination: Pagination;
+  data: Video[];
+}
+
+export interface Pagination {
+  skip: number;
+  take: number;
+  hasMore: boolean;
+}
+
+export interface DropdownItem {
+  label?: string;
+  icon?: any;
+  onClick?: () => void;
+  divider?: boolean;
+}
+
+export interface DropdownConfig {
+  sender: string;
+  userProfile: any;
+  userNameSender: string;
+}

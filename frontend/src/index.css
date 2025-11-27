@@ -1029,3 +1029,11 @@ body.comments-open {
   border-radius: 4px;
   line-height: 1;
 }
+
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}

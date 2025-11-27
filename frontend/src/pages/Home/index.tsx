@@ -9,13 +9,16 @@ import {
   RsetHomeMatch,
   setPaginationHomeMatch,
 } from "../../common/Slices/main";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import StringHelpers from "../../utils/helpers/StringHelper";
 import TurnedInNotIcon from "@mui/icons-material/TurnedInNot";
 import { followerAttachmentList } from "../../services/dotNet";
 import LoadingChild from "../../components/Loading/LoadingChild";
+import VideoItemSkeleton from "../../components/VideoLoading";
 
 const Home: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -50,8 +53,8 @@ const Home: React.FC = () => {
       dispatch(RsetHomeMatch(newData));
       dispatch(
         setPaginationHomeMatch({
-          take: paginationRef.current.take, 
-          skip: paginationRef.current.skip + paginationRef.current.take, 
+          take: paginationRef.current.take,
+          skip: paginationRef.current.skip + paginationRef.current.take,
           hasMore: newData.length === paginationRef.current.take,
         })
       );
@@ -71,7 +74,7 @@ const Home: React.FC = () => {
 
     const currentDataLength = data.length;
     const shouldLoadMore =
-      realIndex >= currentDataLength - 3 && 
+      realIndex >= currentDataLength - 3 &&
       paginationRef.current.hasMore &&
       !isLoadingRef.current;
 
@@ -169,26 +172,17 @@ const Home: React.FC = () => {
   }, [userIdLogin, data.length, fetchNextPage, dispatch]);
 
   return (
-    <div
-      className="relative lg:mt-1 mt-0 w-full bg-black 
-    h-[calc(100dvh-100px)] 
-    md:h-[calc(100dvh-100px)] 
-    lg:h-[calc(100dvh-75px)] 
-     "
-    >
+    <div className="relative w-full h-dvh bg-black mt-0 flex flex-col">
       <Swiper
-        direction={"vertical"}
+        direction="vertical"
         slidesPerView={1}
         modules={[Mousewheel]}
-        className="mySwiper 
-        h-[calc(100dvh-100px)]
-        md:h-[calc(100dvh-100px)]
-        lg:h-[calc(100dvh-75px)]"
+        className="mySwiper w-full h-full"
         onSlideChange={handleSlideChange}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         initialSlide={0}
       >
-        {/* {isLoading &&
+        {isLoading &&
           data.length === 0 &&
           [...Array(12)].map((_, index) => (
             <SwiperSlide
@@ -197,8 +191,8 @@ const Home: React.FC = () => {
             >
               <VideoItemSkeleton section="itsHome" />
             </SwiperSlide>
-          ))} */}
-        {/* {!data ||
+          ))}
+        {!data ||
           (data.length === 0 && (
             <SwiperSlide className="h-full w-full bg-black flex flex-col">
               <div className="flex-1 flex items-center justify-center">
@@ -222,7 +216,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </SwiperSlide>
-          ))} */}
+          ))}
         {!isLoading &&
           data?.map((video: any, index: number) => {
             const resultInserted =
@@ -238,71 +232,71 @@ const Home: React.FC = () => {
                 : video?.likeInserted > video?.likeMatched
                   ? "Loss"
                   : "Draw";
+
             return (
               <SwiperSlide
                 key={`video-${video.id || index}`}
-                className="h-full w-full bg-black flex flex-col"
+                className="flex flex-col h-dvh w-full bg-black"
               >
-                <section className="flex flex-col h-full min-h-0">
-                  <div className="flex-1 min-h-0 relative">
-                    <VideoSection
-                      score={video?.scoreInserted}
-                      countLiked={video?.likeInserted || 0}
-                      result={resultInserted}
-                      video={video}
-                      isPlaying={shouldVideoPlay(index, 0)}
-                      onVideoPlay={() =>
-                        handleVideoPlay(
-                          video?.attachmentInserted?.attachmentId,
-                          index,
-                          0
-                        )
-                      }
-                      dropdownItems={() =>
-                        dropdownItems(video, 0, video?.userInserted)
-                      }
-                      setOpenDropdowns={setOpenDropdowns}
-                      openDropdowns={openDropdowns}
-                      baseURL={baseURL}
-                      positionVideo={0}
-                      isFollowed={
-                        video.follows?.[video?.userInserted?.id]?.isFollowed ||
-                        false
-                      }
-                    />
-                  </div>
-                  <div className="flex-1 min-h-0 relative">
-                    <VideoSection
-                      isFollowed={
-                        video.follows?.[video?.userMatched?.id]?.isFollowed ||
-                        false
-                      }
-                      score={video?.scoreMatched}
-                      video={video}
-                      result={resultMatched}
-                      isPlaying={shouldVideoPlay(index, 1)}
-                      onVideoPlay={() =>
-                        handleVideoPlay(
-                          video?.attachmentMatched?.attachmentId,
-                          index,
-                          1
-                        )
-                      }
-                      dropdownItems={() =>
-                        dropdownItems(video, 1, video?.userMatched)
-                      }
-                      countLiked={video?.likeMatched || 0}
-                      openDropdowns={openDropdowns}
-                      setOpenDropdowns={setOpenDropdowns}
-                      baseURL={baseURL}
-                      positionVideo={1}
-                    />
-                  </div>
-                </section>
+                <div className="h-1/2 relative">
+                  <VideoSection
+                    score={video?.scoreInserted}
+                    countLiked={video?.likeInserted || 0}
+                    result={resultInserted}
+                    video={video}
+                    isPlaying={shouldVideoPlay(index, 0)}
+                    onVideoPlay={() =>
+                      handleVideoPlay(
+                        video?.attachmentInserted?.attachmentId,
+                        index,
+                        0
+                      )
+                    }
+                    dropdownItems={() =>
+                      dropdownItems(video, 0, video?.userInserted)
+                    }
+                    setOpenDropdowns={setOpenDropdowns}
+                    openDropdowns={openDropdowns}
+                    baseURL={baseURL}
+                    positionVideo={0}
+                    isFollowed={
+                      video.follows?.[video?.userInserted?.id]?.isFollowed ||
+                      false
+                    }
+                  />
+                </div>
+                <div className="h-1/2 relative">
+                  <VideoSection
+                    score={video?.scoreMatched}
+                    countLiked={video?.likeMatched || 0}
+                    result={resultMatched}
+                    video={video}
+                    isPlaying={shouldVideoPlay(index, 1)}
+                    onVideoPlay={() =>
+                      handleVideoPlay(
+                        video?.attachmentMatched?.attachmentId,
+                        index,
+                        1
+                      )
+                    }
+                    dropdownItems={() =>
+                      dropdownItems(video, 1, video?.userMatched)
+                    }
+                    setOpenDropdowns={setOpenDropdowns}
+                    openDropdowns={openDropdowns}
+                    baseURL={baseURL}
+                    positionVideo={1}
+                    isFollowed={
+                      video.follows?.[video?.userMatched?.id]?.isFollowed ||
+                      false
+                    }
+                  />
+                </div>
               </SwiperSlide>
             );
           })}
       </Swiper>
+
       <LoadingChild ref={loadingRef} isLoading={isLoading} />
     </div>
   );

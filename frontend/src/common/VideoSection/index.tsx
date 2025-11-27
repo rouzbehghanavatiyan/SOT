@@ -53,7 +53,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
         toggleDropdown={toggleDropdown}
         dropdownItems={dropdownItems}
       />
-      <div className="flex-1 min-h-0 relative  flex items-center justify-center">
+      <div className="flex-1 bg-red min-h-0 relative  flex items-center justify-center">
         <div className="relative w-full h-full flex items-center  justify-center bg-black overflow-hidden">
           <Video
             videoId={video?.id}

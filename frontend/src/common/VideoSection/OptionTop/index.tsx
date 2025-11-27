@@ -89,6 +89,9 @@ const OptionTop: React.FC<any> = ({
     }
   };
 
+  console.log(profile);
+  
+
   return (
     <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">
       <div className="grid grid-cols-9 items-center w-full">

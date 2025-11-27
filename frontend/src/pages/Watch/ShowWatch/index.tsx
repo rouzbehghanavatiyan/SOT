@@ -136,7 +136,6 @@ const ShowWatch: React.FC = () => {
     }
   };
 
-  // پلی کردن خودکار ویدیوی بالا هنگام لود اولیه
   useEffect(() => {
     if (data?.length > 0 && activeSlideIndex === 0) {
       setCurrentlyPlayingId(data[0]?.attachmentInserted?.attachmentId);
@@ -247,3 +246,63 @@ const ShowWatch: React.FC = () => {
 };
 
 export default ShowWatch;
+
+
+
+
+// import React from "react";
+// import { Swiper } from "swiper/react";
+// import "swiper/css";
+// import { Mousewheel } from "swiper/modules";
+// import { useShowWatch } from "../../../hooks/useShowWatch";
+// import { LoadingSkeletons } from "../../../components/LoadingSkeletons";
+// import { VideoSlide } from "../../../components/VideoSlide";
+
+// const ShowWatch: React.FC = () => {
+//   const {
+//     data,
+//     isLoading,
+//     openDropdowns,
+//     setOpenDropdowns,
+//     currentlyPlayingId,
+//     handleVideoPlay,
+//     toggleDropdown,
+//     dropdownItems,
+//     handleSlideChange,
+//     initializeSwiper,
+//   } = useShowWatch();
+
+//   return (
+//     <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
+//       <Swiper
+//         direction={"vertical"}
+//         slidesPerView={1}
+//         mousewheel={true}
+//         onSlideChange={handleSlideChange}
+//         modules={[Mousewheel]}
+//         onInit={initializeSwiper}
+//         className="h-full"
+//       >
+//         {isLoading && data.length === 0 ? (
+//           <LoadingSkeletons />
+//         ) : (
+//           data?.map((video: any, index: number) => (
+//             <VideoSlide
+//               key={index}
+//               video={video}
+//               index={index}
+//               currentlyPlayingId={currentlyPlayingId}
+//               openDropdowns={openDropdowns}
+//               onVideoPlay={handleVideoPlay}
+//               toggleDropdown={toggleDropdown}
+//               dropdownItems={dropdownItems}
+//               setOpenDropdowns={setOpenDropdowns}
+//             />
+//           ))
+//         )}
+//       </Swiper>
+//     </div>
+//   );
+// };
+
+// export default ShowWatch;
