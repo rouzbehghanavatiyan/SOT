@@ -94,8 +94,10 @@ const ChatRoom: React.FC = () => {
       {userSender.length > 0 ? (
         userSender?.map((user: any) => {
           const fixImage = StringHelpers.getProfile(user);
+          const uniqueKey = `${user?.id}-${user?.sender}`;
           return (
             <div
+              key={uniqueKey}
               onClick={() => handleRedirect(user)}
               className="relative border-b-[1px]  flex items-center px-2 py-1 border-gray-150 bg-gray-100"
             >

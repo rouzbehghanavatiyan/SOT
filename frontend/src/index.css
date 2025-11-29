@@ -24,7 +24,29 @@
   src: url("./assets/fonts/static/PlusJakartaSans-Regular.ttf") format("truetype");
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE & Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* مخفی کردن اسکرول‌بار برای مرورگرهای Chrome, Safari و Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* مخفی کردن اسکرول‌بار برای IE, Edge و Firefox */
+* {
+  -ms-overflow-style: none;  /* برای اینترنت اکسپلورر و اج */
+  scrollbar-width: none;  /* برای فایرفاکس */
+}
 body * {
+  
   font-family: PlusJakartaSans, IRANSans;
   /* اولویت فونت‌ها */
   font-size: 14px !important;
@@ -33,6 +55,17 @@ body * {
   padding: 0;
   user-select: none;
 }
+
+main {
+  overflow-y: scroll;        /* allow scroll but no scrollbar space */
+  -ms-overflow-style: none;  /* IE & Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+main::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari */
+}
+
 
 p {
   color: #5252523a;

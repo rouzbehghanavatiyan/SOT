@@ -47,9 +47,7 @@ const Setting: React.FC = () => {
 
   return (
     <div className="">
-      <ResponsiveMaker>
-        <MainTitle title="Settings" />
-      </ResponsiveMaker>
+      <MainTitle title="Settings" />
       <SoftLink
         handleAcceptCategory={handleCategoryClick}
         categories={[
@@ -57,6 +55,7 @@ const Setting: React.FC = () => {
           { name: "Profile", id: 2 },
           { name: "Support", id: 3 },
           { name: "About us", id: 4 },
+          { name: "Mark", id: 5 },
         ]}
         isLoading={false}
       />

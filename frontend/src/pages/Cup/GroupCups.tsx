@@ -24,7 +24,7 @@ const GroupCup = () => {
   ];
 
   return (
-    <div className="w-full bg-white my-5">
+    <div className="w-full bg-white mb-5">
       <div className="max-w-6xl mx-auto">
         {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
           <div className="flex flex-col items-center order-1 lg:order-2">

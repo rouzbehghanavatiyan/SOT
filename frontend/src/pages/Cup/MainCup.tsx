@@ -11,7 +11,7 @@ const MainCup = () => {
   };
 
   return (
-    <div className="w-full bg-white my-5">
+    <div className="w-full bg-white mb-5">
       <MainTitle title="Cup city" />
       <div className="max-w-6xl mx-auto">
         <div className="relative ">

@@ -120,8 +120,10 @@ const PrivateChat: React.FC = () => {
     [userIdLogin, reciveUserId, scrollToBottom]
   );
 
-  const handleGetMessages = useCallback(
-    async (isLoadMore: boolean = false) => {
+  const handleGetMessagesRef = useRef<((isLoadMore?: boolean) => Promise<void>) | null>(null);
+
+  useEffect(() => {
+    handleGetMessagesRef.current = async (isLoadMore: boolean = false) => {
       try {
         setIsLoadingChild(true);
         const res = await userMessages(
@@ -130,51 +132,40 @@ const PrivateChat: React.FC = () => {
           paginationRef.current.skip,
           paginationRef.current.take
         );
+        console.log(res);
 
-        // if (isLoadMore) {
-          setMessages((prev) => {
-            const previousMessages = Array.isArray(prev) ? prev : [];
-            return [...(res?.data || []), ...previousMessages];
-          });
-        // } else {
-        //   setMessages(res?.data || []);
-        //   scrollToBottom();
-        // }
-        // setHasMore(res?.data?.length === paginationRef.current.take);
+        setMessages((prev) => {
+          const previousMessages = Array.isArray(prev) ? prev : [];
+          return [...(res?.data?.messages || []), ...previousMessages];
+        });
       } catch (error) {
         console.error("Error fetching messages:", error);
       } finally {
         setIsLoadingChild(false);
       }
-    },
-    [userIdLogin, userReciver, scrollToBottom]
-  );
+    };
+  }, [userIdLogin, userReciver]); 
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoadingChild) return;
 
     paginationRef.current.skip += paginationRef.current.take;
-    handleGetMessages(true);
-  }, [hasMore, isLoadingChild, handleGetMessages]);
+    if (handleGetMessagesRef.current) {
+      handleGetMessagesRef.current(true);
+    }
+  }, [hasMore, isLoadingChild]);
 
   useEffect(() => {
     if (!socket || !userIdLogin) return;
-    handleGetMessages(false);
-    // socket.on("receive_message", handleReciveMessage);
-    // const observer = new IntersectionObserver(
-    //   (entries) => {
-    //     if (entries[0].isIntersecting && !isLoadingChild && hasMore) {
-    //       handleLoadMore();
-    //     }
-    //   },
-    //   { threshold: 0.1 }
-    // );
-    // if (loadingRef.current) {
-    //   observer.observe(loadingRef.current);
-    // }
+
+    if (handleGetMessagesRef.current) {
+      handleGetMessagesRef.current(false);
+    }
+
+    socket.on("receive_message", handleReciveMessage);
+
     return () => {
       socket.off("receive_message", handleReciveMessage);
-      // observer.disconnect();
       if (reciveUserId && messages.length > 0) {
         localStorage.setItem(`message_read_${reciveUserId}`, "true");
         socket.emit("mark_messages_as_read", {
@@ -183,24 +174,12 @@ const PrivateChat: React.FC = () => {
         });
       }
     };
-  }, [
-    socket,
-    userIdLogin,
-    handleReciveMessage,
-    handleGetMessages,
-    handleLoadMore,
-    isLoadingChild,
-    hasMore,
-    reciveUserId,
-    messages.length,
-  ]);
+  }, [socket, userIdLogin, handleReciveMessage, reciveUserId]); 
 
   useEffect(() => {
     const cleanup = handleTabVisibilityChange(title, reciveUserId);
     return cleanup;
   }, [title, reciveUserId]);
-
-  console.log(messages);
 
   return (
     <div className="w-full lg:mt-10 mt-0 bg-white flex flex-col h-screen max-h-[88vh]">
@@ -223,7 +202,7 @@ const PrivateChat: React.FC = () => {
           </div>
         )}
         <Messages
-          messages={messages?.messages}
+          messages={messages}
           messagesEndRef={messagesEndRef}
           userIdLogin={userIdLogin}
         />

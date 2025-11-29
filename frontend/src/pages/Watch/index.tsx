@@ -124,7 +124,7 @@ const Watch: React.FC = () => {
   };
 
   return (
-    <section>
+    <section className="hide-scrollbar">
       {isLoading && skills?.length === 0 ? (
         <VideoItemSkeleton section="filteredWatch" />
       ) : (
@@ -136,7 +136,7 @@ const Watch: React.FC = () => {
         />
       )}
       <MainTitle title="Tournament" />
-      <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px]">
+      <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px] ">
         {isLoading && data.length === 0
           ? [...Array(12)].map((_, index) => (
               <VideoItemSkeleton key={index} section="justPic" />

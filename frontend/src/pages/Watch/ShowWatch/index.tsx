@@ -119,14 +119,14 @@ const ShowWatch: React.FC = () => {
   const handleSlideChange = (swiper: any) => {
     const realIndex = swiper.realIndex;
     setActiveSlideIndex(realIndex);
-    
+
     // پلی کردن خودکار ویدیوی بالا در اسلاید جدید
     if (data[realIndex]?.attachmentInserted?.attachmentId) {
       setCurrentlyPlayingId(data[realIndex].attachmentInserted.attachmentId);
     }
-    
+
     setOpenDropdowns({});
-    
+
     if (
       realIndex % 3 === 0 &&
       paginationRef.current.hasMore &&
@@ -153,6 +153,7 @@ const ShowWatch: React.FC = () => {
       dispatch(resetShowWatchState());
     };
   }, [dispatch]);
+
 
   return (
     <>
@@ -246,9 +247,6 @@ const ShowWatch: React.FC = () => {
 };
 
 export default ShowWatch;
-
-
-
 
 // import React from "react";
 // import { Swiper } from "swiper/react";

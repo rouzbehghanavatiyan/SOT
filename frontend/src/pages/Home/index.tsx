@@ -172,12 +172,12 @@ const Home: React.FC = () => {
   }, [userIdLogin, data.length, fetchNextPage, dispatch]);
 
   return (
-    <div className="relative w-full h-dvh bg-black mt-0 flex flex-col">
+    <div className="relative w-full bg-black mt-0 flex flex-col h-[calc(100svh-99px)] md:h-[calc(100vh-65px)] ">
       <Swiper
         direction="vertical"
         slidesPerView={1}
         modules={[Mousewheel]}
-        className="mySwiper w-full h-full"
+        className="mySwiper w-full "
         onSlideChange={handleSlideChange}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         initialSlide={0}
