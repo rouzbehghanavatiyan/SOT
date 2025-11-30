@@ -1,12 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 import mainSlice from "../common/Slices/main";
 import paginationSlice from "../common/Slices/pagination";
+import notificationReducer from "../common/Slices/notificationSlice";
+import alertSlice from "../common/Slices/alertSlice";
+
 import { apiSlice } from "../common/Slices/apiSlice";
 
 const rootReducer = {
-  [apiSlice.reducerPath]: apiSlice.reducer, // اضافه کردن ردیوسر مربوط به RTK Query
+  [apiSlice.reducerPath]: apiSlice.reducer,
   main: mainSlice,
   pagination: paginationSlice,
+  notification: notificationReducer,
+  alert: alertSlice,
 };
 
 export const store = configureStore({
@@ -14,7 +19,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(apiSlice.middleware), // اضافه کردن Middleware مربوط به RTK Query
+    }).concat(apiSlice.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

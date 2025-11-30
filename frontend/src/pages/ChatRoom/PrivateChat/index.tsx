@@ -20,6 +20,8 @@ interface MessageType {
 }
 
 const PrivateChat: React.FC = () => {
+  console.log("HHHHHHHHHHHHHHHHHHHHHhello chat");
+  
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
   const socket = main?.socketConfig;
@@ -30,13 +32,11 @@ const PrivateChat: React.FC = () => {
   const getProfileImage = main?.userLogin?.profile || {};
   const findImg = StringHelpers?.getProfile(getProfileImage);
   const fixImage = StringHelpers.getProfile(location?.state?.userInfo);
-
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoadingChild, setIsLoadingChild] = useState<boolean>(false);
   const [title, setTitle] = useState("");
   const [showStickers, setShowStickers] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef<HTMLDivElement>(null);

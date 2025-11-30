@@ -124,7 +124,7 @@ const Watch: React.FC = () => {
   };
 
   return (
-    <section className="hide-scrollbar">
+    <section className="">
       {isLoading && skills?.length === 0 ? (
         <VideoItemSkeleton section="filteredWatch" />
       ) : (

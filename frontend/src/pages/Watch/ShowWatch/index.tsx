@@ -16,6 +16,7 @@ import {
   RsetShowWatch,
   setPaginationShowWatch,
 } from "../../../common/Slices/main";
+import { Icon } from "../../../components/Icon";
 
 const ShowWatch: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +29,6 @@ const ShowWatch: React.FC = () => {
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const { pagination, data } = main.showWatchMatch;
-
   const paginationRef = useRef(pagination);
   const isLoadingRef = useRef(isLoading);
 
@@ -154,7 +154,6 @@ const ShowWatch: React.FC = () => {
     };
   }, [dispatch]);
 
-
   return (
     <>
       <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
@@ -180,66 +179,82 @@ const ShowWatch: React.FC = () => {
                   className="h-full w-full bg-black flex flex-col"
                   key={index}
                 >
-                  <VideoItemSkeleton section="itsShowWatch" />
+                  <VideoItemSkeleton section="itsShowWaicontch" />
                 </SwiperSlide>
               ))
-            : data?.map((video: any, index: number) => (
-                <SwiperSlide
-                  className="h-full w-full bg-black flex flex-col"
-                  key={index}
-                >
-                  <div className="h-1/2 w-full relative flex flex-col">
-                    <VideoSection
-                      showLiked
-                      endTime={true}
-                      video={video}
-                      isPlaying={
-                        currentlyPlayingId ===
-                        video?.attachmentInserted?.attachmentId
-                      }
-                      onVideoPlay={() =>
-                        handleVideoPlay(video?.attachmentInserted?.attachmentId)
-                      }
-                      toggleDropdown={() => toggleDropdown(video, 0)}
-                      dropdownItems={() =>
-                        dropdownItems(video, 0, video?.userInserted)
-                      }
-                      setOpenDropdowns={setOpenDropdowns}
-                      openDropdowns={openDropdowns}
-                      positionVideo={0}
-                      isLiked={
-                        video.likes?.[video?.attachmentInserted?.attachmentId]
-                          ?.isLiked || false
-                      }
-                    />
-                  </div>
-                  <div className="h-1/2 w-full relative flex flex-col">
-                    <VideoSection
-                      isLiked={
-                        video.likes?.[video?.attachmentMatched?.attachmentId]
-                          ?.isLiked || false
-                      }
-                      showLiked
-                      endTime={true}
-                      video={video}
-                      isPlaying={
-                        currentlyPlayingId ===
-                        video?.attachmentMatched?.attachmentId
-                      }
-                      onVideoPlay={() =>
-                        handleVideoPlay(video?.attachmentMatched?.attachmentId)
-                      }
-                      toggleDropdown={() => toggleDropdown(video, 1)}
-                      dropdownItems={() =>
-                        dropdownItems(video, 1, video?.userMatched)
-                      }
-                      openDropdowns={openDropdowns}
-                      setOpenDropdowns={setOpenDropdowns}
-                      positionVideo={1}
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
+            : data?.map((video: any, index: number) => {
+                console.log(video);
+
+                return (
+                  <SwiperSlide
+                    className="h-full w-full bg-black flex flex-col"
+                    key={index}
+                  >
+                    <div className="h-1/2 relative w-full relative flex flex-col">
+                      <VideoSection
+                        showLiked
+                        endTime={true}
+                        video={video}
+                        isPlaying={
+                          currentlyPlayingId ===
+                          video?.attachmentInserted?.attachmentId
+                        }
+                        onVideoPlay={() =>
+                          handleVideoPlay(
+                            video?.attachmentInserted?.attachmentId
+                          )
+                        }
+                        toggleDropdown={() => toggleDropdown(video, 0)}
+                        dropdownItems={() =>
+                          dropdownItems(video, 0, video?.userInserted)
+                        }
+                        setOpenDropdowns={setOpenDropdowns}
+                        openDropdowns={openDropdowns}
+                        positionVideo={0}
+                        isLiked={
+                          video.likes?.[video?.attachmentInserted?.attachmentId]
+                            ?.isLiked || false
+                        }
+                      />
+                    </div>
+                    {video?.icon && (
+                      <span className="rounded-full" >
+                        <Icon
+                          name={video?.icon}
+                          className={`fixed top-1/2 left-1/2 border rounded-full my-3 mx-3 font25 z-50 text-gray-200`}
+                        />
+                      </span>
+                    )}
+                    <div className="h-1/2 w-full relative flex flex-col">
+                      <VideoSection
+                        isLiked={
+                          video.likes?.[video?.attachmentMatched?.attachmentId]
+                            ?.isLiked || false
+                        }
+                        showLiked
+                        endTime={true}
+                        video={video}
+                        isPlaying={
+                          currentlyPlayingId ===
+                          video?.attachmentMatched?.attachmentId
+                        }
+                        onVideoPlay={() =>
+                          handleVideoPlay(
+                            video?.attachmentMatched?.attachmentId
+                          )
+                        }
+                        toggleDropdown={() => toggleDropdown(video, 1)}
+                        dropdownItems={() =>
+                          dropdownItems(video, 1, video?.userMatched)
+                        }
+                        openDropdowns={openDropdowns}
+                        setOpenDropdowns={setOpenDropdowns}
+                        positionVideo={1}
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
         </Swiper>
       </div>
     </>

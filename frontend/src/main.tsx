@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import { store } from "./hooks/store.ts";
+import NotificationAlert from "./components/NotificationAlert.tsx";
+import ChatAlert from "./components/ChatAlert.tsx";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,6 +15,8 @@ root.render(
   <BrowserRouter basename={process.env.VITE_URL}>
     <Provider store={store}>
       <App />
+      <NotificationAlert />
+      <ChatAlert />
     </Provider>
   </BrowserRouter>
 ),
@@ -20,7 +24,7 @@ root.render(
     FORCE_BODY: true,
     SANITIZE_NAMED_PROPS: true,
   };
- 
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker

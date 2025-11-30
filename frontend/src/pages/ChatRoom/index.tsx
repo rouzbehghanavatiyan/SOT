@@ -99,7 +99,7 @@ const ChatRoom: React.FC = () => {
             <div
               key={uniqueKey}
               onClick={() => handleRedirect(user)}
-              className="relative border-b-[1px]  flex items-center px-2 py-1 border-gray-150 bg-gray-100"
+              className="relative border-b-[1px] flex items-center px-2 py-1 border-gray-150 bg-gray-100"
             >
               <div className="">
                 <ImageRank

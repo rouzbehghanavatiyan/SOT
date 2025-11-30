@@ -26,6 +26,7 @@ import asyncWrapper from "../common/AsyncWrapper";
 import { io } from "socket.io-client";
 import { useServiceWorker } from "../hooks/useServiceWorker";
 import Prompt from "./Prompt";
+import { addNotification } from "../common/Slices/notificationSlice";
 
 interface PropsType {
   children: React.ReactNode;
@@ -44,7 +45,14 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
   const token = sessionStorage.getItem("token");
-  const userIdFromLocation = location.state?.userInfo?.id;
+  
+  const [currentChatInfo, setCurrentChatInfo] = useState<{
+    userIdLogin: number | null;
+    reciveUserId: number | null;
+  }>({
+    userIdLogin: null,
+    reciveUserId: null
+  });
 
   useEffect(() => {
     if (!token) {
@@ -66,6 +74,96 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       navigate("/");
     }
   }, [token, navigate, dispatch]);
+
+  // مدیریت سوکت برای نوتیفیکیشن‌ها
+  useEffect(() => {
+    if (!socket || !currentChatInfo.userIdLogin) return;
+
+    socket.emit("register_user", currentChatInfo.userIdLogin);
+
+    // اگر در چت هستیم، اطلاع دهیم
+    if (currentChatInfo.reciveUserId) {
+      socket.emit("user_entered_chat", {
+        userId: currentChatInfo.userIdLogin,
+        chatWith: currentChatInfo.reciveUserId,
+      });
+    }
+
+    // گوش دادن به نوتیفیکیشن‌های پیام
+    socket.on("notification_message", (data: any) => {
+      if (data.receiverId === currentChatInfo.userIdLogin) {
+        const isInRelevantChat = currentChatInfo.reciveUserId === data.senderId;
+        if (!isInRelevantChat) {
+          dispatch(
+            addNotification({
+              type: "message",
+              title: "پیام جدید",
+              message: `${data.senderName}: ${data.chatData.title}`,
+              senderId: data.senderId,
+              senderName: data.senderName,
+            })
+          );
+        }
+      }
+    });
+
+    // گوش دادن به سایر نوتیفیکیشن‌ها
+    socket.on("add_invite_optional_target", (data: any) => {
+      dispatch(
+        addNotification({
+          type: "invite",
+          title: "دعوت جدید",
+          message: `دعوت جدید از ${data.userNameSender}`,
+          senderId: data.userIdSender,
+          senderName: data.userNameSender,
+        })
+      );
+    });
+
+    socket.on("add_liked_response", (data: any) => {
+      dispatch(
+        addNotification({
+          type: "like",
+          title: "لایک جدید",
+          message: `کاربری پست شما را لایک کرد`,
+          senderId: data.userId,
+        })
+      );
+    });
+
+    return () => {
+      if (currentChatInfo.reciveUserId) {
+        socket.emit("user_left_chat", {
+          userId: currentChatInfo.userIdLogin,
+          chatWith: currentChatInfo.reciveUserId,
+        });
+      }
+      socket.off("notification_message");
+      socket.off("add_invite_optional_target");
+      socket.off("add_liked_response");
+    };
+  }, [socket, currentChatInfo, dispatch]);
+
+  useEffect(() => {
+    const updateChatInfo = () => {
+      const userIdLogin = main?.userLogin?.user?.id;
+      const isInChatPage = location.pathname.includes("/chat");
+      let reciveUserId = null;
+      if (isInChatPage) {
+        const searchParams = new URLSearchParams(location.search);
+        reciveUserId = Number(searchParams.get("user")) || 
+                      location.state?.userInfo?.id || 
+                      location.state?.reciveUserId;
+      }
+
+      setCurrentChatInfo({
+        userIdLogin: userIdLogin || null,
+        reciveUserId
+      });
+    };
+
+    updateChatInfo();
+  }, [location, main?.userLogin?.user?.id]);
 
   const userData = useMemo(() => {
     if (!token) return null;
@@ -100,7 +198,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const handleProfileAttachment = asyncWrapper(async () => {
     if (!token || !user) return;
     try {
-      const targetUserId = userIdFromLocation || user.id;
+      const targetUserId = location.state?.userInfo?.id || user.id;
       const resImageProfile = await profileAttachment(targetUserId);
       const { status, data } = resImageProfile?.data;
 
@@ -116,17 +214,16 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     if (!token) return;
 
     try {
-      const targetUserId = userIdFromLocation || main?.userLogin?.user?.id;
+      const targetUserId = location.state?.userInfo?.id || main?.userLogin?.user?.id;
       if (!targetUserId) return;
 
-      // استفاده از Promise.all برای صدا زدن همزمان دو سرویس
       const [followingResponse, followerResponse] = await Promise.all([
         followingList(targetUserId),
-        followerList(userId)
+        followerList(userId),
       ]);
 
-      // پردازش نتیجه سرویس following
-      const { status: followingStatus, data: followingData } = followingResponse?.data;
+      const { status: followingStatus, data: followingData } =
+        followingResponse?.data;
       if (followingStatus === 0) {
         const followingIds = followingData?.map(
           (item: any) => item?.attachment?.attachmentId
@@ -139,9 +236,8 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         );
       }
 
-      // پردازش نتیجه سرویس follower
-      const { status: followerStatus, data: followerData } = followerResponse?.data;
-      console.log("handleAllFollower handleAllFollower handleAllFollower", followerData);
+      const { status: followerStatus, data: followerData } =
+        followerResponse?.data;
 
       if (followerStatus === 0) {
         dispatch(RsetAllFollowerList(followerData));
@@ -173,7 +269,8 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     if (!main?.userLogin?.user?.id || !token) return;
 
     handleSocketConfig();
-    handleAllFollowingAndFollower(); // فراخوانی تابع جدید
+    handleAllFollowingAndFollower();
+    
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);
@@ -196,7 +293,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   }
 
   return (
-    <main className="relative  ">
+    <main className="relative">
       <ResponsiveMaker visibleWidth={1024}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
