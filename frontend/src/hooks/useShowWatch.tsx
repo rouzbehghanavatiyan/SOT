@@ -1,150 +1,233 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import EmailIcon from "@mui/icons-material/Email";
 import ReportIcon from "@mui/icons-material/Report";
-import { useAppDispatch, useAppSelector } from "./reduxHookType";
+import { useAppDispatch } from "./reduxHookType";
 import {
   resetShowWatchState,
   RsetShowWatch,
   setPaginationShowWatch,
 } from "../common/Slices/main";
-import { attachmentListByInviteId } from "../services/dotNet";
 import { DropdownItem } from "../types/mainType";
 
-export const useShowWatch = () => {
+interface UseShowWatchProps {
+  inviteId: string | undefined;
+  data: any[];
+  pagination: {
+    skip: number;
+    take: number;
+    hasMore: boolean;
+  };
+  customFetchNextPage?: (params: {
+    skip: number;
+    take: number;
+    inviteId: string | undefined;
+  }) => Promise<any[]>;
+  customCleanup?: () => void;
+  useRedux?: boolean;
+}
+
+export const useShowWatch = ({
+  inviteId,
+  data: externalData,
+  pagination,
+  customFetchNextPage,
+  customCleanup,
+  useRedux = true,
+}: UseShowWatchProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const inviteId = location?.search?.split("id=")?.[1];
-  const main = useAppSelector((state) => state.main);
-  
   const [isLoading, setIsLoading] = useState(false);
-  const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({});
-  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  
-  const { pagination, data } = main.showWatchMatch;
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
+    null
+  );
+  const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>(
+    {}
+  );
+
+  const [internalData, setInternalData] = useState<any[]>(externalData);
+
   const paginationRef = useRef(pagination);
   const isLoadingRef = useRef(isLoading);
+  const dataRef = useRef(internalData);
 
   useEffect(() => {
     isLoadingRef.current = isLoading;
     paginationRef.current = pagination;
-  }, [isLoading, pagination]);
+    dataRef.current = internalData;
+  }, [isLoading, pagination, internalData]);
 
-  const handleVideoPlay = (videoId: string) => {
-    setOpenDropdowns({});
-    setCurrentlyPlayingId((prevId) => (prevId === videoId ? null : videoId));
-  };
+  useEffect(() => {
+    setInternalData(externalData);
+  }, [externalData]);
 
-  const toggleDropdown = (index: number) => {
-    setOpenDropdowns((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
+  const defaultFetchNextPage = useCallback(
+    async (params: {
+      skip: number;
+      take: number;
+      inviteId: string | undefined;
+    }) => {
+      if (!params.inviteId) return [];
 
-  const getDropdownConfig = (data: any, position: number) => ({
-    sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
-    userProfile: position === 0 ? data?.profileInserted : data?.profileMatched,
-    userNameSender: position === 0 
-      ? data?.userInserted?.userName 
-      : data?.userMatched?.userName,
-  });
-
-  const dropdownItems = (data: any, position: number, userSenderId: any): DropdownItem[] => {
-    const config = getDropdownConfig(data, position);
-    
-    return [
-      {
-        label: "Send message",
-        icon: <EmailIcon className="text-gray-800 font20" />,
-        onClick: () => navigate(`/privateMessage?id=${userSenderId?.id}`, {
-          state: { userInfo: config },
-        }),
-      },
-      {
-        label: "Report",
-        icon: <ReportIcon className="text-gray-800 font20" />,
-        onClick: () => alert("اعلان‌ها"),
-      },
-      { divider: true },
-    ];
-  };
+      try {
+        const { default: api } = await import("../services/dotNet");
+        const res = await api.attachmentListByInviteId(params);
+        return res?.data || [];
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
+      }
+    },
+    []
+  );
 
   const fetchNextPage = useCallback(async () => {
-    if (isLoadingRef.current || !paginationRef.current.hasMore) return;
+    if (isLoadingRef.current || !paginationRef.current.hasMore || !inviteId)
+      return;
 
     try {
       setIsLoading(true);
-      const res = await attachmentListByInviteId({
+      const fetchFunction = customFetchNextPage || defaultFetchNextPage;
+      const newData = await fetchFunction({
         skip: paginationRef.current.skip,
         take: paginationRef.current.take,
         inviteId,
       });
 
-      const newData = res?.data || [];
-      const hasMore = newData.length > 0;
-      
-      dispatch(RsetShowWatch(newData));
-      dispatch(
-        setPaginationShowWatch({
-          take: paginationRef.current.take,
-          skip: paginationRef.current.skip + paginationRef.current.take,
-          hasMore,
-        })
-      );
+      if (newData.length > 0) {
+        setInternalData((prev) => [...prev, ...newData]);
+        if (useRedux) {
+          dispatch(RsetShowWatch(newData));
+          dispatch(
+            setPaginationShowWatch({
+              take: paginationRef.current.take,
+              skip: paginationRef.current.skip + paginationRef.current.take,
+              hasMore: newData.length > 0,
+            })
+          );
+        }
+      }
+
+      return newData;
     } catch (error) {
       console.error("Error fetching data:", error);
+      return [];
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, inviteId]);
+  }, [dispatch, inviteId, customFetchNextPage, defaultFetchNextPage, useRedux]);
 
-  const handleSlideChange = (swiper: any) => {
-    const realIndex = swiper.realIndex;
-    setActiveSlideIndex(realIndex);
-    
-    // Auto-play top video in new slide
-    if (data[realIndex]?.attachmentInserted?.attachmentId) {
-      setCurrentlyPlayingId(data[realIndex].attachmentInserted.attachmentId);
-    }
-    
+  const handleVideoPlay = useCallback((videoId: string) => {
     setOpenDropdowns({});
-    
-    if (realIndex % 3 === 0 && paginationRef.current.hasMore && !isLoadingRef.current) {
-      fetchNextPage();
-    }
-  };
+    setCurrentlyPlayingId((prev) => (prev === videoId ? null : videoId));
+  }, []);
 
-  const initializeSwiper = (swiper: any) => {
+  const toggleDropdown = useCallback((index: number) => {
+    setOpenDropdowns((prev) => ({ ...prev, [index]: !prev[index] }));
+  }, []);
+
+  const dropdownItems = useCallback(
+    (data: any, position: number, userSenderId: any): DropdownItem[] => {
+      const isSender = position === 0;
+      const config = {
+        sender: isSender ? data?.userInserted?.id : data?.userMatched?.id,
+        userProfile: isSender ? data?.profileInserted : data?.profileMatched,
+        userNameSender: isSender
+          ? data?.userInserted?.userName
+          : data?.userMatched?.userName,
+      };
+
+      return [
+        {
+          label: "Send message",
+          icon: <EmailIcon className="text-gray-800 font20" />,
+          onClick: () =>
+            navigate(`/privateMessage?id=${userSenderId?.id}`, {
+              state: { userInfo: config },
+            }),
+        },
+        {
+          label: "Report",
+          icon: <ReportIcon className="text-gray-800 font20" />,
+          onClick: () => alert("اعلان‌ها"),
+        },
+        { divider: true },
+      ];
+    },
+    [navigate]
+  );
+
+  const handleSlideChange = useCallback(
+    (swiper: any) => {
+      const realIndex = swiper.realIndex;
+      setActiveSlideIndex(realIndex);
+      setOpenDropdowns({});
+
+      // استفاده از dataRef برای دسترسی به آخرین داده
+      const topVideoId =
+        dataRef.current[realIndex]?.attachmentInserted?.attachmentId;
+      if (topVideoId) setCurrentlyPlayingId(topVideoId);
+      if (
+        realIndex % 3 === 0 &&
+        paginationRef.current.hasMore &&
+        !isLoadingRef.current
+      ) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage]
+  );
+
+  const initializeSwiper = useCallback((swiper: any) => {
     setActiveSlideIndex(swiper.realIndex);
-    if (data?.length > 0) {
-      setCurrentlyPlayingId(data?.[0]?.attachmentInserted?.attachmentId);
+    if (dataRef.current?.length > 0) {
+      setCurrentlyPlayingId(
+        dataRef.current[0]?.attachmentInserted?.attachmentId
+      );
     }
-  };
+  }, []);
 
-  // Auto-play top video on initial load
-  useEffect(() => {
-    if (data?.length > 0 && activeSlideIndex === 0) {
-      setCurrentlyPlayingId(data[0]?.attachmentInserted?.attachmentId);
-    }
-  }, [data, activeSlideIndex]);
+  // تابع fetch را export می‌کنیم تا کامپوننت parent بتواند مستقیماً صدا بزند
+  const exposedFetchNextPage = useCallback(async () => {
+    return await fetchNextPage();
+  }, [fetchNextPage]);
 
+  // useEffect برای لود اولیه
   useEffect(() => {
-    if (inviteId && !isLoadingRef.current) {
+    if (inviteId && !isLoadingRef.current && internalData.length === 0) {
       fetchNextPage();
     }
-  }, [inviteId, fetchNextPage]);
+  }, [inviteId, fetchNextPage, internalData.length]);
 
+  // useEffect برای cleanup
   useEffect(() => {
     return () => {
-      dispatch(resetShowWatchState());
+      if (customCleanup) {
+        // اگر تابع cleanup سفارشی داشتیم، اجرا می‌کنیم
+        customCleanup();
+      } else if (useRedux) {
+        // در غیر این صورت، cleanup پیش‌فرض Redux
+        dispatch(resetShowWatchState());
+      }
+      // اگر نه Redux نه customCleanup، کاری نمی‌کنیم
     };
-  }, [dispatch]);
+  }, [dispatch, customCleanup, useRedux]);
+
+  useEffect(() => {
+    if (
+      dataRef.current?.length > 0 &&
+      activeSlideIndex === 0 &&
+      !currentlyPlayingId
+    ) {
+      setCurrentlyPlayingId(
+        dataRef.current[0]?.attachmentInserted?.attachmentId
+      );
+    }
+  }, [internalData, activeSlideIndex, currentlyPlayingId]);
 
   return {
-    data,
+    data: internalData,
     isLoading,
     openDropdowns,
     currentlyPlayingId,
@@ -154,7 +237,13 @@ export const useShowWatch = () => {
     dropdownItems,
     handleSlideChange,
     initializeSwiper,
-    fetchNextPage,
+    fetchNextPage: exposedFetchNextPage,
     setOpenDropdowns,
+    resetData: useCallback(() => {
+      setInternalData([]);
+      setActiveSlideIndex(0);
+      setCurrentlyPlayingId(null);
+      setOpenDropdowns({});
+    }, []),
   };
 };

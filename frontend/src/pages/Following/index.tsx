@@ -14,7 +14,6 @@ import MainTitle from "../../components/MainTitle";
 import Follows from "../../components/Fallows";
 import {
   RsetAllFollingList,
-  updateFollowStatus,
 } from "../../common/Slices/main";
 import asyncWrapper from "../../common/AsyncWrapper";
 
@@ -53,24 +52,12 @@ const Following = () => {
         console.log("Follow successful");
       }
 
-      // اگر API موفق بود، state را به روز کن
       setLocalIsFollowed(newFollowStatus);
-      dispatch(
-        updateFollowStatus({
-          userId: userIdFollow,
-          isFollowed: newFollowStatus,
-        })
-      );
+      
     } catch (error) {
       console.error("Error in follow operation:", error);
-      // اگر API خطا داد، state را به حالت قبلی برگردان
       setLocalIsFollowed(localIsFollowed);
-      dispatch(
-        updateFollowStatus({
-          userId: userIdFollow,
-          isFollowed: localIsFollowed,
-        })
-      );
+      
     } finally {
       setIsLoadingFollow(false);
     }

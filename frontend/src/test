@@ -1,0 +1,50 @@
+
+const resultInserted =
+  video?.likeInserted > video?.likeMatched
+    ? "Win"
+    : video?.likeInserted < video?.likeMatched
+      ? "Loss"
+      : "Draw";
+
+const resultMatched =
+  video?.likeInserted < video?.likeMatched
+    ? "Win"
+    : video?.likeInserted > video?.likeMatched
+      ? "Loss"
+      : "Draw";
+
+{isLoading &&
+  data.length === 0 &&
+  [...Array(12)].map((_, index) => (
+    <SwiperSlide
+      className="h-full w-full bg-black flex flex-col"
+      key={`skeleton-${index}`}
+    >
+      <VideoItemSkeleton section="itsHome" />
+    </SwiperSlide>
+  ))}
+{!data ||
+  (data.length === 0 && (
+    <SwiperSlide className="h-full w-full bg-black flex flex-col">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center text-white">
+          <div className="font20 font-semibold mb-2">
+            " Nothing to watch yet "
+          </div>
+          <div className="text-gray-150">
+            There's no content available at the moment
+          </div>
+          <div className="text-gray-150">
+            <span>Find some artist:</span>
+            <Link
+              className="text-green font-bold flex justify-center mt-10"
+              to={"/watch"}
+            >
+              Watch redirect
+              <ArrowForwardIcon className="text-green font-bold font25" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </SwiperSlide>
+  ))}

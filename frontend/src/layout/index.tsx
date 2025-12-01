@@ -8,7 +8,6 @@ import PhoneFooter from "./PhoneFooter";
 import PhoneHeader from "./PhoneHeader";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHookType";
 import {
-  RsestAllFollowers,
   RsetAllFollingList,
   RsetAllFollowerList,
   RsetCategory,
@@ -45,13 +44,13 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
   const token = sessionStorage.getItem("token");
-  
+
   const [currentChatInfo, setCurrentChatInfo] = useState<{
     userIdLogin: number | null;
     reciveUserId: number | null;
   }>({
     userIdLogin: null,
-    reciveUserId: null
+    reciveUserId: null,
   });
 
   useEffect(() => {
@@ -151,14 +150,15 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       let reciveUserId = null;
       if (isInChatPage) {
         const searchParams = new URLSearchParams(location.search);
-        reciveUserId = Number(searchParams.get("user")) || 
-                      location.state?.userInfo?.id || 
-                      location.state?.reciveUserId;
+        reciveUserId =
+          Number(searchParams.get("user")) ||
+          location.state?.userInfo?.id ||
+          location.state?.reciveUserId;
       }
 
       setCurrentChatInfo({
         userIdLogin: userIdLogin || null,
-        reciveUserId
+        reciveUserId,
       });
     };
 
@@ -214,7 +214,8 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     if (!token) return;
 
     try {
-      const targetUserId = location.state?.userInfo?.id || main?.userLogin?.user?.id;
+      const targetUserId =
+        location.state?.userInfo?.id || main?.userLogin?.user?.id;
       if (!targetUserId) return;
 
       const [followingResponse, followerResponse] = await Promise.all([
@@ -270,7 +271,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
 
     handleSocketConfig();
     handleAllFollowingAndFollower();
-    
+
     const handleConnect = () => {
       socket.emit("send_user_online", main.userLogin.userId);
       socket.on("all_user_online", handleGiveUsersOnline);

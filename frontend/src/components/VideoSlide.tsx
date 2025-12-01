@@ -1,5 +1,4 @@
 import React from "react";
-import { SwiperSlide } from "swiper/react";
 import VideoSection from "../common/VideoSection";
 
 interface VideoSlideProps {
@@ -17,7 +16,6 @@ interface VideoSlideProps {
 
 export const VideoSlide: React.FC<VideoSlideProps> = ({
   video,
-  index,
   currentlyPlayingId,
   openDropdowns,
   onVideoPlay,
@@ -43,7 +41,7 @@ export const VideoSlide: React.FC<VideoSlideProps> = ({
   ];
 
   return (
-    <SwiperSlide className="h-full w-full bg-black flex flex-col">
+    <>
       {videoSections.map((section, sectionIndex) => {
         return (
           <div
@@ -70,6 +68,6 @@ export const VideoSlide: React.FC<VideoSlideProps> = ({
           </div>
         );
       })}
-    </SwiperSlide>
+    </>
   );
 };

@@ -4,7 +4,6 @@ import Dropdown from "../../../components/Dropdown";
 import React, { useState, useEffect } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StringHelpers from "../../../utils/helpers/StringHelper";
-import { updateFollowStatus } from "../../Slices/main";
 import { useAppDispatch } from "../../../hooks/reduxHookType";
 import { addFollower, removeFollower } from "../../../services/dotNet";
 
@@ -19,7 +18,6 @@ const OptionTop: React.FC<any> = ({
   userIdLogin,
   main,
 }) => {
-  const dispatch = useAppDispatch();
   const profile =
     positionVideo === 0
       ? StringHelpers?.getProfile(video?.profileInserted)
@@ -44,20 +42,19 @@ const OptionTop: React.FC<any> = ({
   }, [video, positionVideo]);
 
   const handleFallowClick = async (video: any, position: number) => {
-    if (isLoadingFollow) return; // جلوگیری از کلیک چندباره
-    
+    if (isLoadingFollow) return;
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
     const postData = {
       userId: userIdLogin || null,
       followerId: userIdFollow || null,
     };
-    
+
     const newFollowStatus = !localIsFollowed;
-    
+
     try {
       setIsLoadingFollow(true);
-      
+
       if (localIsFollowed) {
         await removeFollower(postData);
         console.log("Unfollow successful");
@@ -65,32 +62,15 @@ const OptionTop: React.FC<any> = ({
         await addFollower(postData);
         console.log("Follow successful");
       }
-      
+
       setLocalIsFollowed(newFollowStatus);
-      dispatch(
-        updateFollowStatus({
-          userId: userIdFollow,
-          isFollowed: newFollowStatus,
-        })
-      );
-      
     } catch (error) {
       console.error("Error in follow operation:", error);
-      // اگر API خطا داد، state را به حالت قبلی برگردان
       setLocalIsFollowed(localIsFollowed);
-      dispatch(
-        updateFollowStatus({
-          userId: userIdFollow,
-          isFollowed: localIsFollowed,
-        })
-      );
     } finally {
       setIsLoadingFollow(false);
     }
   };
-
-  console.log(profile);
-  
 
   return (
     <div className="flex-shrink-0 p-2 z-10 absolute top-0 left-0 right-0 bg_profile_watch">

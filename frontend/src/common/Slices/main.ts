@@ -102,17 +102,6 @@ const initialState: MainType = {
   },
 };
 
-export const extendedApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getMainAttachments: builder.query({
-      query: (inviteId) => `/main/attachments/${inviteId}`,
-      providesTags: (result, error, inviteId) => [
-        { type: "Attachments", id: inviteId },
-      ],
-    }),
-  }),
-});
-
 export const handleAttachmentListByInviteId = createAsyncThunk(
   "main/handleAttachmentListByInviteId",
   async (data: any, { rejectWithValue, getState, dispatch }) => {
@@ -122,11 +111,7 @@ export const handleAttachmentListByInviteId = createAsyncThunk(
       inviteId: data?.inviteId,
     };
     try {
-      const response = await attachmentListByInviteId(postData);
-      return {
-        getData: response,
-        state: getState(),
-      };
+      return await attachmentListByInviteId(postData);
     } catch (error: any) {
       if (error.response) {
         return rejectWithValue(error.response.data);
@@ -138,15 +123,17 @@ export const handleAttachmentListByInviteId = createAsyncThunk(
 
 export const handleFollowerAttachmentList = createAsyncThunk(
   "main/handleFollowerAttachmentList",
-  async (userIdLogin: number, { rejectWithValue, getState, dispatch }) => {
+  async (data: any, { rejectWithValue, getState, dispatch }) => {
+    const postData = {
+      skip: data?.skip,
+      take: data?.take,
+      inviteId: data?.inviteId,
+    };
     try {
       dispatch(RsetLoading({ value: true }));
-      const response = await followerAttachmentList(userIdLogin, 0, 6);
+      const response = await followerAttachmentList(postData);
       dispatch(RsetLoading({ value: false }));
-      return {
-        getData: response,
-        state: getState(),
-      };
+      return response;
     } catch (error: any) {
       if (error.response) {
         return rejectWithValue(error.response.data);
@@ -173,18 +160,14 @@ const mainSlice = createSlice({
     ) => {
       state.showLoading = action.payload;
     },
-    RsetTornoment: (state, action: PayloadAction<(videos: any[]) => any[]>) => {
-      state.tornoment = action.payload(state.tornoment);
-    },
+
     RsetCreateTalent: (state, action: PayloadAction<any>) => {
       state.createTalent = action.payload;
     },
     RsetCategory: (state, action: PayloadAction<any[]>) => {
       state.category = action.payload;
     },
-    RsetProgress: (state, action: PayloadAction<any>) => {
-      state.progress = action.payload;
-    },
+
     RsetSocketConfig: (state, action: PayloadAction<any>) => {
       state.socketConfig = action.payload;
     },
@@ -203,12 +186,7 @@ const mainSlice = createSlice({
     RsetLastMatch: (state, action: PayloadAction<any[]>) => {
       state.lastMatch = action.payload;
     },
-    setVideos(state, action: PayloadAction<any[]>) {
-      state.videos = action.payload;
-    },
-    RsetAppendVideos(state, action: PayloadAction<any[]>) {
-      state.videos = [...state.videos, ...action.payload];
-    },
+
     RsetWatchVideo: (state, action: PayloadAction<any[]>) => {
       state.watchVideo.data = [...state.watchVideo.data, ...action.payload];
     },
@@ -219,7 +197,9 @@ const mainSlice = createSlice({
       state.watchVideo.pagination = action.payload;
     },
     RsetHomeMatch: (state, action: PayloadAction<any[]>) => {
-      state.homeMatch.data = [...state.homeMatch.data, ...action.payload];
+      if (Array.isArray(action.payload)) {
+        state.homeMatch.data = [...state.homeMatch.data, ...action.payload];
+      }
     },
     setPaginationHomeMatch: (
       state,
@@ -231,51 +211,12 @@ const mainSlice = createSlice({
       state.likeFollow = [...state.likeFollow, ...action.payload];
     },
     RsetShowWatch: (state: any, action: PayloadAction<any>) => {
-      const videos = Array.isArray(action?.payload) ? action.payload : [];
-
-      const processedVideos = videos.map((video: any) => {
-        const isFollowedFromMeTop =
-          state?.allFollingList?.getMapFollowingId?.some(
-            (following: any) => following === video?.userInserted?.id
-          );
-        const isFollowedFromMeBott =
-          state?.allFollingList?.getMapFollowingId?.some(
-            (following: any) => following === video?.userMatched?.id
-          );
-        return {
-          ...video,
-          urlTop: video?.attachmentInserted?.url,
-          urlBott: video?.attachmentMatched?.url,
-          profileTop: video?.profileInserted?.profileImage,
-          profileBott: video?.profileMatched?.profileImage,
-          isFollowedFromMeTop: isFollowedFromMeTop || false,
-          isFollowedFromMeBott: isFollowedFromMeBott || false,
-          likes: {
-            [video?.attachmentInserted?.attachmentId]: {
-              isLiked: video.isLikedInserted || false,
-              count: video.likeInserted || 0,
-            },
-            [video?.attachmentMatched?.attachmentId]: {
-              isLiked: video.isLikedMatched || false,
-              count: video.likeMatched || 0,
-            },
-          },
-          follows: {
-            [video?.userInserted?.id]: {
-              isFollowed: isFollowedFromMeTop || false,
-            },
-            [video?.userMatched?.id]: {
-              isFollowed: isFollowedFromMeBott || false,
-            },
-          },
-        };
-      });
-      console.log(processedVideos);
-
-      state.showWatchMatch.data = [
-        ...state.showWatchMatch.data,
-        ...processedVideos,
-      ];
+      if (Array.isArray(action.payload)) {
+        state.showWatchMatch.data = [
+          ...state.showWatchMatch.data,
+          ...action.payload,
+        ];
+      }
     },
     setPaginationShowWatch: (
       state,
@@ -330,106 +271,16 @@ const mainSlice = createSlice({
         }
       );
     },
-    // در slice
-    updateFollowStatus: (
-      state,
-      action: PayloadAction<{ userId: string; isFollowed: boolean }>
-    ) => {
-      const { userId, isFollowed } = action.payload;
-
-      state.showWatchMatch.data = state.showWatchMatch.data.map(
-        (video: any) => {
-          // به روزرسانی برای userInserted
-          if (video.userInserted?.id === userId) {
-            return {
-              ...video,
-              isFollowedMeInserted: isFollowed,
-              follows: {
-                ...video.follows,
-                [userId]: {
-                  isFollowed: isFollowed,
-                },
-              },
-            };
-          }
-
-          // به روزرسانی برای userMatched
-          if (video.userMatched?.id === userId) {
-            return {
-              ...video,
-              isFollowedMeMatched: isFollowed,
-              follows: {
-                ...video.follows,
-                [userId]: {
-                  isFollowed: isFollowed,
-                },
-              },
-            };
-          }
-
-          return video;
-        }
-      );
-    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(handleAttachmentListByInviteId.pending, (state) => {
         state.loading = true;
       })
-      // در extraReducers
       .addCase(
         handleAttachmentListByInviteId.fulfilled,
         (state, action: PayloadAction<any>) => {
-          const { status, data } = action?.payload.getData?.data;
-          const hasMore = data.length > 0;
-          const getAllStateMain = action?.payload?.state?.main;
-
-          if (status === 0) {
-            const processedVideos = data.map((video: any) => {
-              const isFollowedFromMeTop =
-                getAllStateMain?.allFollingList?.getMapFollowingId?.some(
-                  (following: any) => following === video?.userInserted?.id
-                );
-
-              const isFollowedFromMeBott =
-                getAllStateMain?.allFollingList?.getMapFollowingId?.some(
-                  (following: any) => following === video?.userMatched?.id
-                );
-
-              return {
-                ...video,
-                urlTop: video?.attachmentInserted?.url,
-                urlBott: video?.attachmentMatched?.url,
-                profileTop: video?.profileInserted?.profileImage,
-                profileBott: video?.profileMatched?.profileImage,
-                isFollowedMeInserted: isFollowedFromMeTop || false, // اضافه شد
-                isFollowedMeMatched: isFollowedFromMeBott || false, // اضافه شد
-                isFollowedFromMeTop: isFollowedFromMeTop || false,
-                isFollowedFromMeBott: isFollowedFromMeBott || false,
-                likes: {
-                  [video?.attachmentInserted?.attachmentId]: {
-                    isLiked: video.isLikedInserted || false,
-                    count: video.likeInserted || 0,
-                  },
-                  [video?.attachmentMatched?.attachmentId]: {
-                    isLiked: video.isLikedMatched || false,
-                    count: video.likeMatched || 0,
-                  },
-                },
-                follows: {
-                  [video?.userInserted?.id]: {
-                    isFollowed: isFollowedFromMeTop || false,
-                  },
-                  [video?.userMatched?.id]: {
-                    isFollowed: isFollowedFromMeBott || false,
-                  },
-                },
-              };
-            });
-
-            state.allLoginMatch = processedVideos;
-          }
+          state.allLoginMatch = action.payload;
         }
       )
       .addCase(handleAttachmentListByInviteId.rejected, (state, action) => {
@@ -442,36 +293,7 @@ const mainSlice = createSlice({
       .addCase(
         handleFollowerAttachmentList.fulfilled,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          const { status, data } = action?.payload?.getData?.data;
-          const getAllStateMain = action?.payload?.state?.main;
-          const processedVideos = data?.map((video: any) => {
-            const isFollowedFromMeTop =
-              getAllStateMain?.allFollingList?.getMapFollowingId?.some(
-                (following: any) => following === video?.userInserted?.id
-              );
-            const isFollowedFromMeBott =
-              getAllStateMain?.allFollingList?.getMapFollowingId?.some(
-                (following: any) => following === video?.userMatched?.id
-              );
-            return {
-              ...video,
-              isFollowedFromMeTop: isFollowedFromMeTop || false,
-              isFollowedFromMeBott: isFollowedFromMeBott || false,
-              follows: {
-                [video?.userInserted?.id]: {
-                  isFollowed: isFollowedFromMeTop || false,
-                },
-                [video?.userMatched?.id]: {
-                  isFollowed: isFollowedFromMeBott || false,
-                },
-              },
-            };
-          });
-
-          if (status === 0) {
-            state.allLoginMatch = processedVideos;
-          }
+          state.allLoginMatch = action.payload;
         }
       )
       .addCase(handleFollowerAttachmentList.rejected, (state, action) => {
@@ -483,14 +305,10 @@ const mainSlice = createSlice({
 
 export const {
   RsetMessageModal,
-  RsestAllFollowers,
   RsetCreateTalent,
-  updateFollowStatus,
   RsetLoading,
-  RsetTornoment,
   RsetCategory,
   RsetSocketConfig,
-  RsetProgress,
   RsetUserLogin,
   RsetAllFollowerList,
   RsetAllFollingList,
@@ -506,9 +324,7 @@ export const {
   RsetHomeMatch,
   setPaginationHomeMatch,
   RsetLastMatch,
-  RsetAppendVideos,
   updateLikeStatus,
 } = mainSlice.actions;
 
-export const { useGetMainAttachmentsQuery } = extendedApiSlice;
 export default mainSlice.reducer;

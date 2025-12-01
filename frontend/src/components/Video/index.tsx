@@ -10,7 +10,7 @@ const Video: React.FC<VideoProps> = ({
   url,
   onEnded,
   className,
-  handleVideo, 
+  handleVideo,
   style,
   width = "100%",
   height = "100%",
@@ -83,20 +83,7 @@ const Video: React.FC<VideoProps> = ({
           url={url}
         />
       </span>
-      <div
-        className="controls pb-3 fade-in"
-        style={{
-          position: "absolute",
-          bottom: "0",
-          left: "0",
-          right: "0",
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          zIndex: 10,
-        }}
-      >
+      <div className="flex items-center gap-10 z-10 bottom-0 right-0 left-0 w-full absolute controls pb-6 fade-in">
         <input
           type="range"
           min={0}

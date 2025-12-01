@@ -1,321 +1,118 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import ReportIcon from "@mui/icons-material/Report";
+import React, { useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { useLocation, useNavigate } from "react-router-dom";
-import VideoSection from "../../../common/VideoSection";
 import { Mousewheel } from "swiper/modules";
-import EmailIcon from "@mui/icons-material/Email";
-import { Video } from "../../../types/mainType";
-import StringHelpers from "../../../utils/helpers/StringHelper";
-import VideoItemSkeleton from "../../../components/VideoLoading";
+import { useShowWatch } from "../../../hooks/useShowWatch";
+import { LoadingSkeletons } from "../../../components/LoadingSkeletons";
+import { VideoSlide } from "../../../components/VideoSlide";
+import { Icon } from "../../../components/Icon";
+import { useAppSelector, useAppDispatch } from "../../../hooks/reduxHookType";
 import { attachmentListByInviteId } from "../../../services/dotNet";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHookType";
 import {
-  resetShowWatchState,
   RsetShowWatch,
   setPaginationShowWatch,
 } from "../../../common/Slices/main";
-import { Icon } from "../../../components/Icon";
 
 const ShowWatch: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const location = useLocation();
   const inviteId = location?.search?.split("id=")?.[1];
   const main = useAppSelector((state) => state.main);
-  const [isLoading, setIsLoading] = useState(false);
-  const [openDropdowns, setOpenDropdowns] = useState<any>({});
-  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<any>(null);
-  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const { pagination, data } = main.showWatchMatch;
-  const paginationRef = useRef(pagination);
-  const isLoadingRef = useRef(isLoading);
+  const dispatch = useAppDispatch();
 
-  const handleVideoPlay = (videoId: string) => {
-    setOpenDropdowns({});
-    setCurrentlyPlayingId((prevId: any) => {
-      if (prevId === videoId) {
-        return null;
+  const { data: reduxData, pagination } = main.showWatchMatch;
+
+  const customFetchNextPage = useCallback(
+    async (params: {
+      skip: number;
+      take: number;
+      inviteId: string | undefined;
+    }) => {
+      if (!params.inviteId) return [];
+      try {
+        const res = await attachmentListByInviteId({
+          skip: params.skip,
+          take: params.take,
+          inviteId: params.inviteId,
+        });
+
+        dispatch(RsetShowWatch(res?.data || []));
+        dispatch(
+          setPaginationShowWatch({
+            take: params.take,
+            skip: params.skip + params.take,
+            hasMore: (res?.data || []).length > 0,
+          })
+        );
+
+        return res?.data || [];
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
       }
-      return videoId;
-    });
-  };
+    },
+    [dispatch]
+  );
 
-  const toggleDropdown = (video: Video, index: number) => {
-    setOpenDropdowns((prev: any) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
-
-  const dropdownItems = (data: any, position: number, userSenderId: any) => {
-    const temp = {
-      sender: position === 0 ? data?.userInserted?.id : data?.userMatched?.id,
-      userProfile:
-        position === 0
-          ? StringHelpers.getProfile(data?.profileInserted)
-          : StringHelpers.getProfile(data?.profileMatched),
-      userNameSender:
-        position === 0
-          ? data?.userInserted?.userName
-          : data?.userMatched?.userName,
-    };
-
-    return [
-      {
-        label: "Send message",
-        icon: <EmailIcon className="text-gray-800 font20" />,
-        onClick: () =>
-          navigate(`/privateMessage?id=${userSenderId?.id}`, {
-            state: {
-              userInfo: temp,
-            },
-          }),
-      },
-      {
-        label: "Report",
-        icon: <ReportIcon className="text-gray-800 font20" />,
-        onClick: () => alert("اعلان‌ها"),
-      },
-      { divider: true },
-    ];
-  };
-
-  useEffect(() => {
-    isLoadingRef.current = isLoading;
-    paginationRef.current = pagination;
-  }, [isLoading, pagination]);
-
-  const fetchNextPage = useCallback(async () => {
-    if (isLoadingRef.current || !paginationRef.current.hasMore) return;
-
-    try {
-      setIsLoading(true);
-      const res = await attachmentListByInviteId({
-        skip: paginationRef.current.skip,
-        take: paginationRef.current.take,
-        inviteId,
-      });
-      console.log(res);
-
-      const newData = res?.data || [];
-      const hasMore = newData.length > 0;
-      dispatch(RsetShowWatch(newData));
-      dispatch(
-        setPaginationShowWatch({
-          take: paginationRef.current.take,
-          skip: paginationRef.current.skip + paginationRef.current.take,
-          hasMore: hasMore,
-        })
-      );
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dispatch, inviteId]);
-
-  const handleSlideChange = (swiper: any) => {
-    const realIndex = swiper.realIndex;
-    setActiveSlideIndex(realIndex);
-
-    // پلی کردن خودکار ویدیوی بالا در اسلاید جدید
-    if (data[realIndex]?.attachmentInserted?.attachmentId) {
-      setCurrentlyPlayingId(data[realIndex].attachmentInserted.attachmentId);
-    }
-
-    setOpenDropdowns({});
-
-    if (
-      realIndex % 3 === 0 &&
-      paginationRef.current.hasMore &&
-      !isLoadingRef.current
-    ) {
-      fetchNextPage();
-    }
-  };
-
-  useEffect(() => {
-    if (data?.length > 0 && activeSlideIndex === 0) {
-      setCurrentlyPlayingId(data[0]?.attachmentInserted?.attachmentId);
-    }
-  }, [data, activeSlideIndex]);
-
-  useEffect(() => {
-    if (inviteId && !isLoadingRef.current) {
-      fetchNextPage();
-    }
-  }, [inviteId, fetchNextPage]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetShowWatchState());
-    };
-  }, [dispatch]);
+  const {
+    data,
+    isLoading,
+    openDropdowns,
+    setOpenDropdowns,
+    currentlyPlayingId,
+    handleVideoPlay,
+    toggleDropdown,
+    dropdownItems,
+    handleSlideChange,
+    initializeSwiper,
+  } = useShowWatch({
+    inviteId,
+    data: reduxData,
+    pagination,
+    customFetchNextPage,
+  });
 
   return (
-    <>
-      <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
-        <Swiper
-          direction={"vertical"}
-          slidesPerView={1}
-          mousewheel={true}
-          onSlideChange={handleSlideChange}
-          modules={[Mousewheel]}
-          onInit={(swiper) => {
-            setActiveSlideIndex(swiper.realIndex);
-            if (data?.length > 0) {
-              setCurrentlyPlayingId(
-                data?.[0]?.attachmentInserted?.attachmentId
-              );
-            }
-          }}
-          className="h-full"
-        >
-          {isLoading && data.length === 0
-            ? [...Array(12)].map((_, index) => (
-                <SwiperSlide
-                  className="h-full w-full bg-black flex flex-col"
+    <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
+      <Swiper
+        direction={"vertical"}
+        slidesPerView={1}
+        mousewheel={true}
+        onSlideChange={handleSlideChange}
+        modules={[Mousewheel]}
+        onInit={initializeSwiper}
+        className="h-full"
+      >
+        {isLoading && data.length === 0 ? (
+          <LoadingSkeletons />
+        ) : (
+          data?.map((video: any, index: number) => {
+            return (
+              <SwiperSlide
+                key={index}
+                className="h-full w-full bg-red flex flex-col"
+              >
+                {video?.icon && (
+                  <span className="text-white z-40 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 rounded-full border-white shadow-card ">
+                    <Icon name={video?.icon} className={`font20 m-1`} />
+                  </span>
+                )}
+                <VideoSlide
                   key={index}
-                >
-                  <VideoItemSkeleton section="itsShowWaicontch" />
-                </SwiperSlide>
-              ))
-            : data?.map((video: any, index: number) => {
-                console.log(video);
-
-                return (
-                  <SwiperSlide
-                    className="h-full w-full bg-black flex flex-col"
-                    key={index}
-                  >
-                    <div className="h-1/2 relative w-full relative flex flex-col">
-                      <VideoSection
-                        showLiked
-                        endTime={true}
-                        video={video}
-                        isPlaying={
-                          currentlyPlayingId ===
-                          video?.attachmentInserted?.attachmentId
-                        }
-                        onVideoPlay={() =>
-                          handleVideoPlay(
-                            video?.attachmentInserted?.attachmentId
-                          )
-                        }
-                        toggleDropdown={() => toggleDropdown(video, 0)}
-                        dropdownItems={() =>
-                          dropdownItems(video, 0, video?.userInserted)
-                        }
-                        setOpenDropdowns={setOpenDropdowns}
-                        openDropdowns={openDropdowns}
-                        positionVideo={0}
-                        isLiked={
-                          video.likes?.[video?.attachmentInserted?.attachmentId]
-                            ?.isLiked || false
-                        }
-                      />
-                    </div>
-                    {video?.icon && (
-                      <span className="rounded-full" >
-                        <Icon
-                          name={video?.icon}
-                          className={`fixed top-1/2 left-1/2 border rounded-full my-3 mx-3 font25 z-50 text-gray-200`}
-                        />
-                      </span>
-                    )}
-                    <div className="h-1/2 w-full relative flex flex-col">
-                      <VideoSection
-                        isLiked={
-                          video.likes?.[video?.attachmentMatched?.attachmentId]
-                            ?.isLiked || false
-                        }
-                        showLiked
-                        endTime={true}
-                        video={video}
-                        isPlaying={
-                          currentlyPlayingId ===
-                          video?.attachmentMatched?.attachmentId
-                        }
-                        onVideoPlay={() =>
-                          handleVideoPlay(
-                            video?.attachmentMatched?.attachmentId
-                          )
-                        }
-                        toggleDropdown={() => toggleDropdown(video, 1)}
-                        dropdownItems={() =>
-                          dropdownItems(video, 1, video?.userMatched)
-                        }
-                        openDropdowns={openDropdowns}
-                        setOpenDropdowns={setOpenDropdowns}
-                        positionVideo={1}
-                      />
-                    </div>
-                  </SwiperSlide>
-                );
-              })}
-        </Swiper>
-      </div>
-    </>
+                  video={video}
+                  index={index}
+                  currentlyPlayingId={currentlyPlayingId}
+                  openDropdowns={openDropdowns}
+                  onVideoPlay={handleVideoPlay}
+                  toggleDropdown={toggleDropdown}
+                  dropdownItems={dropdownItems}
+                  setOpenDropdowns={setOpenDropdowns}
+                />
+              </SwiperSlide>
+            );
+          })
+        )}
+      </Swiper>
+    </div>
   );
 };
 
 export default ShowWatch;
-
-// import React from "react";
-// import { Swiper } from "swiper/react";
-// import "swiper/css";
-// import { Mousewheel } from "swiper/modules";
-// import { useShowWatch } from "../../../hooks/useShowWatch";
-// import { LoadingSkeletons } from "../../../components/LoadingSkeletons";
-// import { VideoSlide } from "../../../components/VideoSlide";
-
-// const ShowWatch: React.FC = () => {
-//   const {
-//     data,
-//     isLoading,
-//     openDropdowns,
-//     setOpenDropdowns,
-//     currentlyPlayingId,
-//     handleVideoPlay,
-//     toggleDropdown,
-//     dropdownItems,
-//     handleSlideChange,
-//     initializeSwiper,
-//   } = useShowWatch();
-
-//   return (
-//     <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
-//       <Swiper
-//         direction={"vertical"}
-//         slidesPerView={1}
-//         mousewheel={true}
-//         onSlideChange={handleSlideChange}
-//         modules={[Mousewheel]}
-//         onInit={initializeSwiper}
-//         className="h-full"
-//       >
-//         {isLoading && data.length === 0 ? (
-//           <LoadingSkeletons />
-//         ) : (
-//           data?.map((video: any, index: number) => (
-//             <VideoSlide
-//               key={index}
-//               video={video}
-//               index={index}
-//               currentlyPlayingId={currentlyPlayingId}
-//               openDropdowns={openDropdowns}
-//               onVideoPlay={handleVideoPlay}
-//               toggleDropdown={toggleDropdown}
-//               dropdownItems={dropdownItems}
-//               setOpenDropdowns={setOpenDropdowns}
-//             />
-//           ))
-//         )}
-//       </Swiper>
-//     </div>
-//   );
-// };
-
-// export default ShowWatch;

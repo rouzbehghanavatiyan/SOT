@@ -55,7 +55,7 @@ const OptionBottom: React.FC<any> = ({
 
   return (
     <div className="absolute w-full bottom-5 z-10">
-      <div className="flex mb-4 justify-between mx-2">
+      <div className="flex mb-8 justify-between mx-2">
         <div className="col-span-1  flex items-end justify-start">
           <ChatBubbleOutlineIcon
             onClick={() => handleToggleComments(video)}
