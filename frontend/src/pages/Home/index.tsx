@@ -375,9 +375,8 @@ const Home: React.FC = () => {
     customFetchNextPage,
   });
 
-  console.log(data);
   return (
-    <div className="relative w-full bg-black mt-0 flex flex-col h-[calc(100svh-99px)] md:h-[calc(100vh-65px)] ">
+    <div className="relative w-full bg-black mt-0 flex flex-col h-[calc(100svh-98px)] md:h-[calc(100vh-65px)]">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
@@ -385,16 +384,17 @@ const Home: React.FC = () => {
         onSlideChange={handleSlideChange}
         modules={[Mousewheel]}
         onInit={initializeSwiper}
-        className="mySwiper w-full "
       >
         {!isLoading &&
           data?.map((video: any, index: number) => {
             return (
-              <SwiperSlide
-                key={`video-${video.id || index}`}
-                className="flex flex-col h-dvh w-full bg-black"
-              >
+              <SwiperSlide key={`video-${video.id || index}`}>
                 <VideoSlide
+                  showLiked={false}
+                  endTime={false}
+                  showScore={true}
+                  showResult={true}
+                  showCountLiked={true}
                   key={index}
                   video={video}
                   index={index}

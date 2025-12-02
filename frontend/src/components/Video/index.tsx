@@ -83,7 +83,7 @@ const Video: React.FC<VideoProps> = ({
           url={url}
         />
       </span>
-      <div className="flex items-center gap-10 z-10 bottom-0 right-0 left-0 w-full absolute controls pb-6 fade-in">
+      <div className="flex items-center gap-10 z-10 bottom-0 right-0 left-0  absolute controls fade-in">
         <input
           type="range"
           min={0}
@@ -91,11 +91,8 @@ const Video: React.FC<VideoProps> = ({
           step="any"
           value={played}
           onChange={handleSeek}
-          className="seek-bar"
-          style={{
-            width: "100%",
-            margin: "0 10px",
-          }}
+          className="seek-bar mb-4"
+          style={{ ["--played" as any]: played }}
         />
       </div>
     </div>

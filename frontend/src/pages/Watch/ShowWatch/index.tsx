@@ -33,7 +33,6 @@ const ShowWatch: React.FC = () => {
           take: params.take,
           inviteId: params.inviteId,
         });
-
         dispatch(RsetShowWatch(res?.data || []));
         dispatch(
           setPaginationShowWatch({
@@ -91,11 +90,16 @@ const ShowWatch: React.FC = () => {
                 className="h-full w-full bg-red flex flex-col"
               >
                 {video?.icon && (
-                  <span className="text-white z-40 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 rounded-full border-white shadow-card ">
-                    <Icon name={video?.icon} className={`font20 m-1`} />
+                  <span className="text-white opacity-50 z-40 absolute top-1/2 mt-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 rounded-full border-white shadow-card">
+                    <Icon name={video?.icon} className="font20 m-1" />
                   </span>
                 )}
                 <VideoSlide
+                  endTime={true}
+                  showScore={false}
+                  showResult={false}
+                  showLiked
+                  showCountLiked={false}
                   key={index}
                   video={video}
                   index={index}

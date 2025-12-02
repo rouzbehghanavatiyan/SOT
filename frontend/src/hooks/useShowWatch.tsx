@@ -164,7 +164,6 @@ export const useShowWatch = ({
       setActiveSlideIndex(realIndex);
       setOpenDropdowns({});
 
-      // استفاده از dataRef برای دسترسی به آخرین داده
       const topVideoId =
         dataRef.current[realIndex]?.attachmentInserted?.attachmentId;
       if (topVideoId) setCurrentlyPlayingId(topVideoId);

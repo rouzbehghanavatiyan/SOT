@@ -246,28 +246,31 @@ const mainSlice = createSlice({
     },
     updateLikeStatus: (
       state,
-      action: PayloadAction<{ movieId: string; isLiked: boolean }>
+      action: PayloadAction<{
+        movieId: string;
+        isLiked: boolean;
+        positionVideo?: number;
+      }>
     ) => {
-      const { movieId, isLiked } = action.payload;
+      const { movieId, isLiked, positionVideo } = action.payload;
 
       state.showWatchMatch.data = state.showWatchMatch.data.map(
         (video: any) => {
-          if (video.likes && video.likes[movieId]) {
-            return {
-              ...video,
-              likes: {
-                ...video.likes,
-                [movieId]: {
-                  ...video.likes[movieId],
-                  isLiked: isLiked,
-                  count: isLiked
-                    ? video.likes[movieId].count + 1
-                    : Math.max(0, video.likes[movieId].count - 1),
-                },
-              },
-            };
+          const videoCopy = { ...video };
+
+          if (!videoCopy.likes) {
+            videoCopy.likes = {};
           }
-          return video;
+
+          if (!videoCopy.likes[movieId]) {
+            videoCopy.likes[movieId] = { isLiked: false, count: 0 };
+          }
+          videoCopy.likes[movieId] = {
+            ...videoCopy.likes[movieId],
+            isLiked: isLiked,
+          };
+
+          return videoCopy;
         }
       );
     },

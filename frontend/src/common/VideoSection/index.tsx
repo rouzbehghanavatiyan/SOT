@@ -63,7 +63,6 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             handleVideo={() => onVideoPlay(video)}
             url={videoUrl}
           />
-
           <OptionBottom
             socket={socket}
             userIdLogin={userIdLogin}
@@ -74,7 +73,9 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             showLiked={showLiked}
             externalIsLiked={externalIsLiked}
             positionVideo={positionVideo}
-            countLiked={countLiked}
+            countLiked={
+              positionVideo === 0 ? video?.likeInserted : video?.likeMatched
+            }
           />
         </div>
       </div>
