@@ -25,6 +25,7 @@ interface ProfileWithRankProps {
   userNameStyle?: string;
   positionVideo?: number;
   showProfile?: boolean;
+  iconClass?: string;
 }
 
 const rankPositionSettings = {
@@ -42,6 +43,7 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
   userNameStyle,
   positionVideo,
   userName,
+  iconClass = "text-gray-200 font40 w-full h-full rounded-full",
   score = -1,
   imgSize = 40,
   userInfo,
@@ -50,10 +52,11 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
     base: string;
     stars: number;
     starType: "bronse" | "silver" | "gold" | "gem" | "ruby" | "word" | "";
-    displayNumber?: number; // عددی که زیر رنک نمایش داده می‌شود
+    displayNumber?: number;
   }>({ base: Started, stars: 0, starType: "" });
   const rankSize = Math.floor(imgSize * 0.6);
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
 
   const determineRank = () => {
     if (score === 0) {
@@ -188,6 +191,8 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
     });
   };
 
+  const userImg = typeof imgSrc === "string" ? imgSrc : "";
+
   return (
     <div
       onClick={handleClick}
@@ -198,27 +203,18 @@ const ImageRank: React.FC<ProfileWithRankProps> = ({
         className="relative"
         style={{ width: `${imgSize}px`, height: `${imgSize}px` }}
       >
-        {!imgSrc ||
-        imgSrc?.includes("undefined") ||
+        {!userImg ||
+        userImg?.includes("undefined") ||
         imgSrc === "" ||
+        imageError ||
         imgSrc === null ? (
-          <AccountCircleIcon
-            className="text-gray-200 w-full h-full"
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-            }}
-          />
+          <AccountCircleIcon className={iconClass} />
         ) : (
           <img
-            className="rounded-full object-cover"
+            className="w-full h-full rounded-full object-cover"
             src={imgSrc}
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
             alt="Profile"
+            onError={() => setImageError(true)}
           />
         )}
         {score >= 0 && rankData.starType && (

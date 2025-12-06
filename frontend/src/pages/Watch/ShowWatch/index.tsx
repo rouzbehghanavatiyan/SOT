@@ -14,10 +14,9 @@ import {
 } from "../../../common/Slices/main";
 
 const ShowWatch: React.FC = () => {
-  const inviteId = location?.search?.split("id=")?.[1];
-  const main = useAppSelector((state) => state.main);
   const dispatch = useAppDispatch();
-
+  const main = useAppSelector((state) => state.main);
+  const inviteId = location?.search?.split("id=")?.[1];
   const { data: reduxData, pagination } = main.showWatchMatch;
 
   const customFetchNextPage = useCallback(
@@ -41,7 +40,6 @@ const ShowWatch: React.FC = () => {
             hasMore: (res?.data || []).length > 0,
           })
         );
-
         return res?.data || [];
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -70,7 +68,7 @@ const ShowWatch: React.FC = () => {
   });
 
   return (
-    <div className="w-full bg-black absolute top-0 bottom-12 left-0 right-0">
+    <div className="w-full h-[calc(100svh-53px)] md:h-[calc(100vh-65px)] bg-black">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}

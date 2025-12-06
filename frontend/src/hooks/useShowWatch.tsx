@@ -85,9 +85,7 @@ export const useShowWatch = ({
   const fetchNextPage = useCallback(async () => {
     if (isLoadingRef.current || !paginationRef.current.hasMore || !inviteId)
       return;
-
     try {
-      setIsLoading(true);
       const fetchFunction = customFetchNextPage || defaultFetchNextPage;
       const newData = await fetchFunction({
         skip: paginationRef.current.skip,
@@ -187,29 +185,23 @@ export const useShowWatch = ({
     }
   }, []);
 
-  // تابع fetch را export می‌کنیم تا کامپوننت parent بتواند مستقیماً صدا بزند
   const exposedFetchNextPage = useCallback(async () => {
     return await fetchNextPage();
   }, [fetchNextPage]);
 
-  // useEffect برای لود اولیه
   useEffect(() => {
     if (inviteId && !isLoadingRef.current && internalData.length === 0) {
       fetchNextPage();
     }
   }, [inviteId, fetchNextPage, internalData.length]);
 
-  // useEffect برای cleanup
   useEffect(() => {
     return () => {
       if (customCleanup) {
-        // اگر تابع cleanup سفارشی داشتیم، اجرا می‌کنیم
         customCleanup();
       } else if (useRedux) {
-        // در غیر این صورت، cleanup پیش‌فرض Redux
         dispatch(resetShowWatchState());
       }
-      // اگر نه Redux نه customCleanup، کاری نمی‌کنیم
     };
   }, [dispatch, customCleanup, useRedux]);
 

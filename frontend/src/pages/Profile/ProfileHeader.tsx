@@ -12,7 +12,7 @@ interface ProfileHeaderProps {
   followersCount?: number;
   followingCount?: number;
   score?: number;
-  setProfileImage?: (image: string) => void; // نوع را اصلاح کردم
+  setProfileImage?: (image: string) => void;
 }
 
 const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
@@ -38,10 +38,10 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
       async (croppedImage: string) => {
         try {
           // بررسی وجود تابع قبل از فراخوانی
-          if (setProfileImage && typeof setProfileImage === 'function') {
+          if (setProfileImage && typeof setProfileImage === "function") {
             setProfileImage(croppedImage);
           }
-          
+
           setEditingImage(false);
           const base64Data = croppedImage.split(",")[1];
           const byteCharacters = atob(base64Data);
@@ -89,18 +89,18 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
           if (e.target?.result) {
             const imageData = e.target.result as string;
             console.log(imageData);
-            
+
             // بررسی وجود تابع قبل از فراخوانی
-            if (setProfileImage && typeof setProfileImage === 'function') {
+            if (setProfileImage && typeof setProfileImage === "function") {
               setProfileImage(imageData);
             }
-            
+
             setSelectedImage(imageData);
             setEditingImage(true);
           }
         };
         reader.readAsDataURL(file);
-        
+
         if (event.target) {
           event.target.value = "";
         }
@@ -135,14 +135,19 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
         <div className="grid grid-cols-6 relative">
           <div className="col-span-5 flex h-32">
             <span ref={ref} onClick={handleProfile} className="cursor-pointer">
-              <ImageRank score={score} imgSrc={userImage} imgSize={100} />
+              <ImageRank
+                iconClass="font100 text-gray-200"
+                score={score}
+                imgSrc={userImage}
+                imgSize={100}
+              />
             </span>
             <div className="flex flex-col gap-2 ms-2">
               <span className="font20 font-bold">{userName}</span>
               <div className="flex">
                 <Link
                   to="/followers"
-                  className="mx-2 border border-gray-150 flex flex-col py-1 px-2 rounded-2xl"
+                  className="mx-2  flex flex-col py-1 px-2 rounded-2xl"
                 >
                   <span className="font-bold text-gray-800">
                     {followersCount || 0}
@@ -153,7 +158,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
                 </Link>
                 <Link
                   to="/following"
-                  className="mx-2 border border-gray-150 flex flex-col py-1 px-2 rounded-2xl"
+                  className="mx-2  flex flex-col py-1 px-2 rounded-2xl"
                 >
                   <span className="font-bold text-gray-800">
                     {followingCount || 0}

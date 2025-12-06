@@ -1,6 +1,9 @@
 // Messages.tsx
 import React from "react";
 import LoadingChild from "../../../components/Loading/LoadingChild";
+import ImageRank from "../../../components/ImageRank";
+import { useAppSelector } from "../../../hooks/reduxHookType";
+import StringHelpers from "../../../utils/helpers/StringHelper";
 
 interface Message {
   id?: number;
@@ -26,14 +29,9 @@ const Messages: React.FC<MessagesProps> = ({
   isLoading = false,
 }) => {
   const safeMessages = Array.isArray(messages) ? messages : [];
-  
-  // تعریف مسیر کامل برای آواتار پیش‌فرض
-  const getDefaultAvatarPath = () => {
-    // اگر از Create React App استفاده می‌کنید
-    return `${process.env.PUBLIC_URL}/default-avatar.png`;
-    // یا اگر از Vite استفاده می‌کنید:
-    // return new URL('/src/assets/default-avatar.png', import.meta.url).href;
-  };
+  const main = useAppSelector((state) => state.main);
+  const getProfileImage = main?.userLogin?.profile;
+  const findImg = StringHelpers.getProfile(getProfileImage);
 
   if (isLoading && safeMessages.length === 0) {
     return (
@@ -56,8 +54,6 @@ const Messages: React.FC<MessagesProps> = ({
       {safeMessages.map((msg: Message, index: number) => {
         const displayTime = msg?.time?.slice(0, 5) || "";
         const isOwnMessage = userIdLogin === msg.sender;
-        const defaultAvatar = getDefaultAvatarPath();
-
         return (
           <div
             key={`${msg.id || index}_${msg.time}`}
@@ -66,14 +62,7 @@ const Messages: React.FC<MessagesProps> = ({
             }`}
           >
             {!isOwnMessage && (
-              <img
-                src={msg?.userProfile}
-                className="w-8 h-8 bg-red mt-2 rounded-full me-2 flex-shrink-0"
-                alt="profile"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = defaultAvatar;
-                }}
-              />
+              <ImageRank imgSrc={msg?.userProfile} imgSize={35} />
             )}
             <div
               className={`rounded-b-lg my-2 relative p-3 pb-6 max-w-[70%] min-w-[60px] ${
@@ -96,14 +85,7 @@ const Messages: React.FC<MessagesProps> = ({
               </div>
             </div>
             {isOwnMessage && (
-              <img
-                src={msg?.userProfile}
-                className="w-8 h-8 mt-2 rounded-full ms-2 flex-shrink-0"
-                alt="profile"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = defaultAvatar;
-                }}
-              />
+              <ImageRank imgSrc={msg?.userProfile || findImg} imgSize={35} />
             )}
           </div>
         );

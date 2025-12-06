@@ -124,7 +124,7 @@ const Watch: React.FC = () => {
   };
 
   return (
-    <section className="">
+    <section className="h-[calc(100svh-98px)] md:h-[calc(100vh-65px)]">
       {isLoading && skills?.length === 0 ? (
         <VideoItemSkeleton section="filteredWatch" />
       ) : (

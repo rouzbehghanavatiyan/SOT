@@ -1,5 +1,4 @@
 import React from "react";
-import Input from "../Input";
 import Modal from "../Modal";
 import { Button } from "../Button";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
@@ -28,7 +27,7 @@ const MessageModal: React.FC = () => {
             )}
           </div>
           <div className="flex my-10 justify-center">
-            <span className=" ">{main?.messageModal?.title}</span>
+            <span>{main?.messageModal?.title}</span>
           </div>
           <span className="flex mt-10 justify-center">
             <Button

@@ -70,12 +70,10 @@ export const VideoSlide: React.FC<VideoSlideProps> = ({
     },
   ];
 
-  console.log(video);
 
   return (
     <>
       {videoSections.map((section, sectionIndex) => {
-        console.log(section);
 
         return (
           <div key={sectionIndex} className="h-1/2 relative">

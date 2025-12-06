@@ -194,7 +194,7 @@ const Sot: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="h-[calc(100svh-100px)] md:h-[calc(100vh-65px)]">
       <div className="mt-3">
         <div className="ms-2 flex  gap-3 items-center justify-center">
           <input

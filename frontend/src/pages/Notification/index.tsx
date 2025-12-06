@@ -61,7 +61,7 @@ const Notification: React.FC = () => {
   console.log(main?.lastMatch);
 
   return (
-    <section className="w-full min-h-[90vh] justify-center">
+    <section className="w-full h-[calc(100svh-98px)] md:h-[calc(100vh-65px)]">
       <div className="flex flex-col h-full">
         <header className="">
           <MainTitle title="News" />
@@ -101,7 +101,7 @@ const Notification: React.FC = () => {
           {categories?.map((category) => (
             <div key={category.id} className="mb-6">
               <div className="flex items-center mb-3">
-                <div className="bg-gray-100 p-2 rounded-full mr-3">
+                <div className="bg-gray-200 p-2 px-3 rounded-full mr-3">
                   {category.icon}
                 </div>
                 <h2 className="font-bold">{category.title}</h2>

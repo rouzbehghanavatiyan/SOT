@@ -298,7 +298,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
       <ResponsiveMaker visibleWidth={1024}>
         <Header openMessage={openMessage} setOpenMessage={setOpenMessage} />
       </ResponsiveMaker>
-      <div className="flex flex-col h-screen md:h-full">
+      <div className="flex flex-col">
         <PhoneHeader />
         <div className="flex-1 overflow-auto">
           <div className="flex justify-center items-start min-h-full">

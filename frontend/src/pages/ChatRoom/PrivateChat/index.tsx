@@ -20,8 +20,6 @@ interface MessageType {
 }
 
 const PrivateChat: React.FC = () => {
-  console.log("HHHHHHHHHHHHHHHHHHHHHhello chat");
-  
   const main = useAppSelector((state) => state?.main);
   const location = useLocation();
   const socket = main?.socketConfig;
@@ -40,13 +38,11 @@ const PrivateChat: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
-
   const paginationRef = useRef({
     skip: 0,
     take: 10,
   });
 
-  // اسکرول به پایین
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
       messagesContainerRef.current?.scrollTo({
@@ -120,7 +116,9 @@ const PrivateChat: React.FC = () => {
     [userIdLogin, reciveUserId, scrollToBottom]
   );
 
-  const handleGetMessagesRef = useRef<((isLoadMore?: boolean) => Promise<void>) | null>(null);
+  const handleGetMessagesRef = useRef<
+    ((isLoadMore?: boolean) => Promise<void>) | null
+  >(null);
 
   useEffect(() => {
     handleGetMessagesRef.current = async (isLoadMore: boolean = false) => {
@@ -132,28 +130,20 @@ const PrivateChat: React.FC = () => {
           paginationRef.current.skip,
           paginationRef.current.take
         );
-        console.log(res);
-
         setMessages((prev) => {
           const previousMessages = Array.isArray(prev) ? prev : [];
           return [...(res?.data?.messages || []), ...previousMessages];
         });
+        if (paginationRef.current.skip === 0) {
+          scrollToBottom();
+        }
       } catch (error) {
         console.error("Error fetching messages:", error);
       } finally {
         setIsLoadingChild(false);
       }
     };
-  }, [userIdLogin, userReciver]); 
-
-  const handleLoadMore = useCallback(() => {
-    if (!hasMore || isLoadingChild) return;
-
-    paginationRef.current.skip += paginationRef.current.take;
-    if (handleGetMessagesRef.current) {
-      handleGetMessagesRef.current(true);
-    }
-  }, [hasMore, isLoadingChild]);
+  }, [userIdLogin, userReciver]);
 
   useEffect(() => {
     if (!socket || !userIdLogin) return;
@@ -174,7 +164,7 @@ const PrivateChat: React.FC = () => {
         });
       }
     };
-  }, [socket, userIdLogin, handleReciveMessage, reciveUserId]); 
+  }, [socket, userIdLogin, handleReciveMessage, reciveUserId]);
 
   useEffect(() => {
     const cleanup = handleTabVisibilityChange(title, reciveUserId);
@@ -188,7 +178,7 @@ const PrivateChat: React.FC = () => {
         userProfile={
           !fixImage?.includes("undefined")
             ? fixImage
-            : location?.state?.userInfo?.userProfile
+            : StringHelpers.getProfile(location?.state?.userInfo?.userProfile)
         }
         score={location?.state?.userInfo?.score || 20}
       />

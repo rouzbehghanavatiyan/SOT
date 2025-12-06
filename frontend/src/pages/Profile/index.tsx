@@ -11,7 +11,6 @@ import { followerList, userAttachmentList } from "../../services/dotNet";
 import EditProfile from "./EditProfile";
 import { Link, useLocation } from "react-router-dom";
 import StringHelpers from "../../utils/helpers/StringHelper";
-import Loading from "../../components/Loading";
 import ProfileHeader from "./ProfileHeader";
 import ProfileAchievements from "./ProfileAchievements";
 import ProfileBio from "./ProfileBio";
@@ -156,7 +155,7 @@ const Profile: React.FC = () => {
 
   return (
     <>
-      <section className="lg:mt-3">
+      <section className="lg:mt-3 h-[calc(100svh-98px)] md:h-[calc(100vh-65px)]">
         <div className="w-screen pt-2 px-5 md:w-full md:h-full ">
           <div className="border-b-[1px] ">
             <ProfileHeader

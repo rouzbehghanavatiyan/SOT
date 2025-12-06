@@ -24,14 +24,12 @@ const ChatHeader: React.FC<{
       </div>
       <span className="col-span-5">
         <ImageRank
+          iconClass="text-gray-200 font60 w-full h-full rounded-full"
           userNameStyle="text-gray-800"
           imgSize={60}
-          rankStyle="w-10 h-10"
           score={score}
-          iconProfileStyle="font60 text-gray-800"
-          classUserName="text-black"
           userName={userName || "Unknown User"}
-          imgSrc={userProfile || "default-profile-image.png"}
+          imgSrc={userProfile}
         />
       </span>
       <div className="col-span-5 flex items-center">

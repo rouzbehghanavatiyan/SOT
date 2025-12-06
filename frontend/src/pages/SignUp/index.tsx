@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import { Link, redirect, useNavigate } from "react-router-dom";
-import { isMobile, isTablet, osName } from "react-device-detect";
 import { Button } from "../../components/Button";
 import Input from "../../components/Input";
 import logo from "../../assets/img/1724181984017.jpg";
@@ -11,6 +10,8 @@ import { RsetMessageModal } from "../../common/Slices/main";
 import MessageModal from "../../components/MessageModal";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import EmailModal from "./EmailModal";
+
 interface FormErrors {
   username?: string;
   email?: string;
@@ -98,14 +99,14 @@ const SignUpForm: FC = () => {
       const { status, message } = res?.data;
 
       if (status === 0 || status === 2) {
-        // dispatch(
-        //   RsetMessageModal({
-        //     title: "Dear user, please check your email to verify your account.",
-        //     show: true,
-        //     icon: "email",
-        //   })
-        // );
-        navigate("/home");
+        dispatch(
+          RsetMessageModal({
+            title: "Dear user, please check your email to verify your account.",
+            show: true,
+            icon: "email",
+          })
+        );
+        // navigate("/home");
         setIsLoading(true);
       } else {
         setErrors({
@@ -154,7 +155,6 @@ const SignUpForm: FC = () => {
             </div>
           )}
 
-          {/* Username Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Username
@@ -173,7 +173,6 @@ const SignUpForm: FC = () => {
             )}
           </div>
 
-          {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -192,8 +191,6 @@ const SignUpForm: FC = () => {
               <p className="text-red font12 mt-1">*{errors.email}</p>
             )}
           </div>
-
-          {/* Password Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -224,7 +221,6 @@ const SignUpForm: FC = () => {
               <p className="text-red font12 mt-1">*{errors.password}</p>
             )}
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
@@ -268,7 +264,7 @@ const SignUpForm: FC = () => {
             className="w-full py-2 px-4 bg-blue hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           />
           <div className="text-center text-sm text-gray-600">
-            Already have an account?{" "}
+            Already have an account?
             <Link
               to="/"
               className="text-soft_blue hover:text-blue-800 hover:underline font-medium"
@@ -278,7 +274,7 @@ const SignUpForm: FC = () => {
           </div>
         </form>
       </div>
-      {main?.messageModal?.show && <MessageModal />}
+      {main?.messageModal?.show && <EmailModal />}
     </div>
   );
 };

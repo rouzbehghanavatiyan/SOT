@@ -3,7 +3,6 @@ import {
   attachmentListByInviteId,
   followerAttachmentList,
 } from "../../services/dotNet";
-import { apiSlice } from "./apiSlice";
 
 type MessageModal = {
   title?: string;
