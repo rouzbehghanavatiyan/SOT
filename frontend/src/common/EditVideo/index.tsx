@@ -13,13 +13,14 @@ const EditVideo: React.FC<EditVideoProps> = ({
   allFormData,
   mode,
 }) => {
+  
   const {
     videoSrc,
     isLoadingBtn,
     resMovieData,
     currentStep,
     movieData,
-    setMovieData,
+    updateMovieMeta, 
     handleUploadVideo,
     handleBack,
     handleNextStep,
@@ -30,10 +31,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
     allFormData,
     mode,
   });
-
-  const handleMovieDataChange = (updates: any) => {
-    setMovieData((prev: any) => ({ ...prev, ...updates }));
-  };
 
   const getModalTitle = () => {
     switch (mode?.typeMode) {
@@ -57,7 +54,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
           <VideoPreviewStep
             videoSrc={videoSrc}
             movieData={movieData}
-            onMovieDataChange={handleMovieDataChange}
+            onMovieDataChange={updateMovieMeta}
             onCancel={() => setShowEditMovie(false)}
             onNext={handleNextStep}
           />
@@ -71,33 +68,31 @@ const EditVideo: React.FC<EditVideoProps> = ({
             isLoading={isLoadingBtn}
           />
         );
-
       default:
         return null;
     }
   };
 
   return (
-    <>
-      <Modal
-        title={getModalTitle()}
-        className="rounded-2xl"
-        padding={0}
-        isOpen={showEditMovie}
-      >
-        <div className="flex flex-col">{renderStepContent()}</div>
-        {currentStep === 3 && (
-          <Optional
-            setMovieData={setMovieData}
-            movieData={movieData}
-            userIdLogin={movieData.userId}
-            allFormData={allFormData}
-            resMovieData={resMovieData}
-            setShowEditMovie={setShowEditMovie}
-          />
-        )}
-      </Modal>
-    </>
+    <Modal
+      title={getModalTitle()}
+      className="rounded-2xl"
+      padding={0}
+      isOpen={showEditMovie}
+    >
+      <div className="flex flex-col">{renderStepContent()}</div>
+
+      {currentStep === 3 && (
+        <Optional
+          setMovieData={updateMovieMeta}
+          movieData={movieData}
+          userIdLogin={movieData.userId}
+          allFormData={allFormData}
+          resMovieData={resMovieData}
+          setShowEditMovie={setShowEditMovie}
+        />
+      )}
+    </Modal>
   );
 };
 

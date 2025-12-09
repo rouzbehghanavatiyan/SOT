@@ -38,7 +38,6 @@ const VideoPreviewStep: React.FC<VideoPreviewStepProps> = ({
           />
         </div>
       </div>
-
       <div>
         <span className="mb-4 mt-4">Title</span>
         <Input
@@ -46,7 +45,6 @@ const VideoPreviewStep: React.FC<VideoPreviewStepProps> = ({
           onChange={(e: any) => onMovieDataChange({ title: e.target.value })}
         />
       </div>
-
       <div className="">
         <span className="flex my-4">Description</span>
         <textarea

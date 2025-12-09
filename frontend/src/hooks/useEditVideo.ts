@@ -1,21 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "./reduxHookType";
 import {
-  addAttachment,
-  addInvite,
-  addMovie,
-  removeInvite,
-} from "../services/dotNet";
-import { useAppSelector } from "./reduxHookType";
-import { AddMovieType, MovieDataType } from "../common/EditVideo/type";
-import asyncWrapper from "../common/AsyncWrapper";
+  goToStep,
+  prepareVideoFileThunk,
+  removeInviteThunk,
+  uploadFullProcessThunk,
+  setMovieMeta,
+  resetVideoState,
+  setMovieData,
+} from "../common/Slices/videoSlice";
 
 interface UseEditVideoProps {
   showEditMovie: boolean;
   setShowEditMovie: (show: boolean) => void;
-  coverImage: string;
   allFormData: any;
   mode: any;
+  coverImage: any;
 }
 
 export const useEditVideo = ({
@@ -25,34 +26,72 @@ export const useEditVideo = ({
   mode,
 }: UseEditVideoProps) => {
   const navigate = useNavigate();
-  const main = useAppSelector((state) => state?.main);
+  const dispatch = useAppDispatch();
+
+  // سلکتورها
+  const {
+    videoSrc,
+    isLoading,
+    currentStep,
+    movieData,
+    resMovieData,
+    uploadStatus,
+  } = useAppSelector((state) => state.video);
+
+  const main = useAppSelector((state) => state.main);
   const socket = main?.socketConfig;
   const userIdLogin = main?.userLogin?.user?.id;
   const gearId = main?.createTalent?.gear?.id;
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
-  const [findingMatch, setFindingMatch] = useState(false);
-  const [resMovieData, setResMovieData] = useState(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [movieData, setMovieData] = useState<MovieDataType>({
-    parentId: null,
-    userId: null,
-    movieId: null,
-    status: null,
-  });
 
-  const videoSrc = allFormData?.video
-    ? URL.createObjectURL(allFormData.video)
-    : "";
+  useEffect(() => {
+    if (showEditMovie && allFormData?.video) {
+      dispatch(prepareVideoFileThunk(allFormData.video));
+      dispatch(setMovieMeta({ userId: userIdLogin }));
+    }
+    return () => {
+      if (!showEditMovie) {
+      }
+    };
+  }, [allFormData, showEditMovie, dispatch, userIdLogin]);
 
+  const handleUploadVideo = useCallback(() => {
+    dispatch(
+      uploadFullProcessThunk({
+        userId: userIdLogin,
+        gearId,
+        mode,
+        allFormData,
+        socket,
+        movieMeta: movieData,
+      })
+    );
+  }, [dispatch, userIdLogin, gearId, mode, allFormData, socket, movieData]);
+
+  // 3. هندل دکمه بازگشت
+  const handleBack = useCallback(() => {
+    if (currentStep > 1) {
+      dispatch(goToStep(currentStep - 1));
+    }
+    // اگر Invite ساخته شده بود و برگشت زد، حذفش کن
+    if (movieData?.inviteId) {
+      dispatch(removeInviteThunk(movieData.inviteId));
+    }
+  }, [dispatch, currentStep, movieData]);
+
+  // 4. هندل استپ بعدی (فقط در UI)
+  const handleNextStep = useCallback(() => {
+    dispatch(goToStep(2));
+  }, [dispatch]);
+
+  // 5. لیسنر سوکت برای مود آفلاین (TypeMode 3)
   useEffect(() => {
     if (!socket || !showEditMovie) return;
 
     const handleInviteResponse = (data: any) => {
-      console.log("handleInviteResponse", data);
-      setIsLoadingBtn(false);
+      console.log("Socket response received:", data);
       setShowEditMovie(false);
       navigate(`/profile`);
+      dispatch(resetVideoState()); // پاکسازی استیت بعد از اتمام موفق
     };
 
     socket.on("add_invite_offline_response", handleInviteResponse);
@@ -60,149 +99,25 @@ export const useEditVideo = ({
     return () => {
       socket.off("add_invite_offline_response", handleInviteResponse);
     };
-  }, [socket, navigate, setShowEditMovie, showEditMovie]);
+  }, [socket, showEditMovie, navigate, setShowEditMovie, dispatch]);
 
-  // Attachment handler
-  const handleAttachment = useCallback(
-    asyncWrapper(async (movieData: any) => {
-      const formData = new FormData();
-      if (allFormData?.video) {
-        formData.append("formFile", allFormData.video);
-      }
-      if (allFormData?.imageCover) {
-        formData.append("formFile", allFormData.imageCover);
-      }
-      formData.append("attachmentId", movieData?.id);
-      formData.append("attachmentType", "mo");
-      formData.append("attachmentName", "movies");
-
-      const resAttachment = await addAttachment(formData);
-      const { status: attachmentStatus, data: attachmentData } =
-        resAttachment?.data;
-      return { attachmentStatus, attachmentData };
-    }),
-    [allFormData]
-  );
-
-  // Matched mode handler
-  const handleMatched = useCallback(
-    asyncWrapper(async (movieData: any) => {
-      const { attachmentStatus } = await handleAttachment(movieData);
-
-      if (attachmentStatus === -1) {
-        console.log("Invalid video dimensions.");
-        return;
-      }
-
-      if (attachmentStatus === 0) {
-        const postInvite = {
-          parentId: null,
-          userId: userIdLogin || null,
-          movieId: movieData?.id || null,
-          status: 0,
-        };
-
-        setFindingMatch(true);
-        const resInvite = await addInvite(postInvite);
-        const { status: inviteStatus, data: inviteData } = resInvite?.data;
-
-        setMovieData((prev: any) => ({
-          ...prev,
-          userId: userIdLogin || null,
-          movieId: Number(movieData?.id),
-          inviteId: inviteData,
-        }));
-
-        if (inviteData?.userId !== 0) {
-          socket?.emit("add_invite_offline", inviteData);
-          setShowEditMovie(false);
-          navigate(`/profile`);
-        } else {
-          setIsLoadingBtn(true);
-        }
-      }
-    }),
-    [handleAttachment, userIdLogin, socket, navigate, setShowEditMovie]
-  );
-
-  // Optional mode handler
-  const handleAcceptOptional = useCallback(
-    asyncWrapper(async (movieData: any) => {
-      setMovieData((prev: any) => ({
-        ...prev,
-        userId: userIdLogin || null,
-        movieId: Number(movieData?.modeId),
-      }));
-      setCurrentStep(3);
-    }),
-    [userIdLogin]
-  );
-
-  const handleUploadVideo = useCallback(
-    asyncWrapper(async () => {
-      setIsLoadingBtn(true);
-
-      const postData: AddMovieType = {
-        userId: userIdLogin || null,
-        description: movieData?.desc ?? "",
-        title: movieData?.title ?? "",
-        subSubCategoryId: gearId || null,
-        modeId: mode?.typeMode || 0,
-        // cropData: null,
-        // fixedDimensions: {
-        //   width: "400px",
-        //   height: "300px",
-        //   objectFit: "contain" as const,
-        //   backgroundColor: "#000",
-        // },
-      };
-      console.log(postData);
-      
-      const res = await addMovie(postData);
-      const { status: movieStatus, data: resMovieData } = res?.data;
-      setResMovieData(resMovieData);
-
-      if (movieStatus === 0) {
-        if (mode?.typeMode === 3) {
-          await handleMatched(resMovieData);
-        } else if (mode?.typeMode === 4) {
-          await handleAcceptOptional(resMovieData);
-        }
-      } else {
-        alert("Movie does not exist");
-      }
-    }),
-    [movieData, mode, userIdLogin, handleMatched, handleAcceptOptional]
-  );
-
-  const handleBack = useCallback(async () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+  useEffect(() => {
+    if (uploadStatus === "success" && mode?.typeMode === 3 && !socket) {
+      setShowEditMovie(false);
+      navigate(`/profile`);
     }
-
-    setIsLoadingBtn(false);
-
-    if (movieData?.inviteId) {
-      await removeInvite(movieData?.inviteId?.id);
-    }
-  }, [currentStep, movieData]);
-
-  const handleNextStep = useCallback(() => {
-    setCurrentStep(2);
-  }, []);
+  }, [uploadStatus, mode, socket, navigate, setShowEditMovie]);
 
   return {
-    videoRef,
     videoSrc,
-    isLoadingBtn,
-    findingMatch,
+    isLoadingBtn: isLoading,
     resMovieData,
     currentStep,
     movieData,
-    setCurrentStep,
-    setMovieData,
+    setMovieData: (data: any) => dispatch(setMovieData(data)),
     handleUploadVideo,
     handleBack,
     handleNextStep,
+    updateMovieMeta: (updates: any) => dispatch(setMovieMeta(updates)),
   };
 };
