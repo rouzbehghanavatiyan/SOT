@@ -28,7 +28,6 @@ export const useEditVideo = ({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // سلکتورها
   const {
     videoSrc,
     isLoading,
@@ -67,23 +66,19 @@ export const useEditVideo = ({
     );
   }, [dispatch, userIdLogin, gearId, mode, allFormData, socket, movieData]);
 
-  // 3. هندل دکمه بازگشت
   const handleBack = useCallback(() => {
     if (currentStep > 1) {
       dispatch(goToStep(currentStep - 1));
     }
-    // اگر Invite ساخته شده بود و برگشت زد، حذفش کن
     if (movieData?.inviteId) {
       dispatch(removeInviteThunk(movieData.inviteId));
     }
   }, [dispatch, currentStep, movieData]);
 
-  // 4. هندل استپ بعدی (فقط در UI)
   const handleNextStep = useCallback(() => {
     dispatch(goToStep(2));
   }, [dispatch]);
 
-  // 5. لیسنر سوکت برای مود آفلاین (TypeMode 3)
   useEffect(() => {
     if (!socket || !showEditMovie) return;
 

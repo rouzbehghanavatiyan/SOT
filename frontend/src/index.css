@@ -66,11 +66,6 @@ main::-webkit-scrollbar {
   display: none;             /* Chrome, Safari */
 }
 
-
-p {
-  color: #5252523a;
-}
-
 .logoFont {
   font-family: logoFont;
 }
