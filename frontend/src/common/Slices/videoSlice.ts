@@ -23,12 +23,14 @@ interface VideoState {
     title: string;
     desc: string;
   };
+  showTimeout: boolean;
   resMovieData: any;
 }
 
 const initialState: VideoState = {
   videoSrc: null,
   videoFile: null,
+  showTimeout: false,
   isLoading: false,
   error: null,
   currentStep: 1,
@@ -157,9 +159,8 @@ const videoSlice = createSlice({
       })
       .addCase(uploadFullProcessThunk.fulfilled, (state, action) => {
         state.uploadStatus = "success";
-        console.log("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVd");
         const { movieData, inviteData, modeType } = action.payload;
-        
+
         state.resMovieData = movieData;
         state.movieData.movieId = movieData?.id;
 

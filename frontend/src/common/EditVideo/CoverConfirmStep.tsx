@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../components/Button";
 
 interface CoverConfirmStepProps {
@@ -21,6 +21,27 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
   onAccept,
   isLoading,
 }) => {
+  const [timer, setTimer] = useState(60);
+
+  useEffect(() => {
+    let interval: any;
+
+    if (isLoading) {
+      setTimer(60);
+      interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
   return (
     <div className="p-5">
       {coverImage && (
@@ -34,7 +55,7 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
           />
         </>
       )}
-      
+
       <div className="mt-4 flex justify-between">
         <Button
           className="border"
@@ -45,7 +66,7 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
         <Button
           className="border"
           variant={"green"}
-          label="Accept"
+          label={timer}
           onClick={onAccept}
           loading={isLoading}
         />

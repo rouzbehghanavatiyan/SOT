@@ -85,6 +85,7 @@ const Timer: React.FC<TimerProps> = ({
   }, [startTime]);
 
   const progressPercent = (remainingSeconds / duration) * 100;
+
   return (
     <div className="flex items-center ">
       <span className="font20 ">{formatTime(remainingSeconds)}</span>
