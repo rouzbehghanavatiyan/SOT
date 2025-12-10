@@ -24,11 +24,11 @@ const VideoGroup: React.FC<{
         </span>
       )}
       <div className="flex-1">
-        <span className=" relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
+        <span className="relative block w-[calc(50vw - 2px)] h-[calc(35vw - 2px)]">
           <img
             src={fixImg1}
             alt={parent?.alt || "Parent Image"}
-            className="w-full rounded-tr-lg min-h-44 max-h-44 object-cover"
+            className="w-full rounded-tr-lg min-h-44 md:min-h-72 lg:min-h-80 max-h-44 sm:max-h-48 md:max-h-72 lg:max-h-80 object-cover"
           />
         </span>
       </div>
@@ -38,7 +38,7 @@ const VideoGroup: React.FC<{
             <img
               src={fixImg2}
               alt={child?.alt || "Profile image"}
-              className="w-full rounded-bl-xl  min-h-44 max-h-44 object-cover"
+              className="w-full rounded-bl-xl  min-h-44 md:min-h-72 lg:min-h-80 max-h-44 sm:max-h-48 md:max-h-72 lg:max-h-80 object-cover"
             />
           </figure>
         </div>

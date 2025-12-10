@@ -85,7 +85,7 @@ const ShowWatch: React.FC = () => {
             return (
               <SwiperSlide
                 key={index}
-                className="h-full w-full bg-red flex flex-col"
+                className="h-full w-full flex flex-col"
               >
                 {video?.icon && (
                   <span className="text-white opacity-50 z-40 absolute top-1/2 mt-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 rounded-full border-white shadow-card">

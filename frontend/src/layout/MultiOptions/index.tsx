@@ -49,9 +49,9 @@ const MultiOptions: React.FC = () => {
     <div className="flex justify-end pe-5 gap-6 items-center">
       <div className="flex gap-4">
         <ResponsiveMaker visibleWidth={1390}>
-          <span>
+          {/* <span>
             <SupportAgentIcon className="text-gray-800 mx-1 font25" />
-          </span>
+          </span> */}
           <Link to={"/messages"}>
             <MailIcon className="text-white mx-1 font25" />
           </Link>
