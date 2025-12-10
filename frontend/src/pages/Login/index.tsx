@@ -65,19 +65,18 @@ const LogInForm: FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    if (loginAttempts >= 3) {
-      setErrors({
-        general: "Too many failed attempts. Please try again later.",
-      });
-      return;
-    }
+    // if (loginAttempts >= 3) {
+    //   setErrors({
+    //     general: "Too many failed attempts. Please try again later.",
+    //   });
+    //   return;
+    // }
     setIsLoading(true);
     try {
       const response = await login({
         userName: formState.username,
         password: formState.password,
       });
-
       const { status, data } = response.data;
       if (status === 0) {
         const userData = jwtDecode(data.token);
@@ -85,13 +84,13 @@ const LogInForm: FC = () => {
         const userId = Vals?.[1];
         sessionStorage.setItem("token", data.token);
         dispatch(RsetUserLogin({ token: data.token, userId }));
-        setLoginAttempts(0);
+        // setLoginAttempts(0);
         navigate("/home");
       } else {
         throw new Error("Invalid credentials");
       }
     } catch (error) {
-      setLoginAttempts((prev) => prev + 1);
+      // setLoginAttempts((prev) => prev + 1);
       setErrors({
         general: "Invalid username or password.",
       });

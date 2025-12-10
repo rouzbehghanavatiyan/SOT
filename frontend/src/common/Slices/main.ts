@@ -50,10 +50,12 @@ interface MainType {
   videos: any;
   likeFollow: any;
   showWatchPagination: any;
+  unreadMessagesCount: number;
 }
 
 const initialState: MainType = {
   lastMatch: [],
+  unreadMessagesCount: 0,
   createTalent: {},
   videos: [],
   messageModal: { title: "", show: false, icon: "" },
@@ -146,6 +148,16 @@ const mainSlice = createSlice({
   name: "main",
   initialState,
   reducers: {
+    setUnreadCount: (state, action: PayloadAction<number>) => {
+      state.unreadMessagesCount = action.payload;
+    },
+    incrementUnreadCount: (state) => {
+      state.unreadMessagesCount += 1;
+    },
+    // متدی برای صفر کردن یا کم کردن
+    clearUnreadCount: (state) => {
+      state.unreadMessagesCount = 0;
+    },
     RsetMessageModal: (state, action: PayloadAction<MessageModal>) => {
       state.messageModal = action.payload;
     },
@@ -345,6 +357,9 @@ export const {
   setPaginationHomeMatch,
   RsetLastMatch,
   updateLikeStatus,
+  setUnreadCount,
+  incrementUnreadCount,
+  clearUnreadCount,
 } = mainSlice.actions;
 
 export default mainSlice.reducer;
