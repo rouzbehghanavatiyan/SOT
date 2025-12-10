@@ -194,8 +194,8 @@ const Sot: React.FC = () => {
   }, []);
 
   return (
-    <div className="h-[calc(100svh-100px)] md:h-[calc(100vh-65px)]">
-      <div className="mt-3">
+    <div className="h-[calc(100svh-100px)] sm:w-full lg:w-3/4">
+      <div className="mt-3 lg:my-5">
         <div className="ms-2 flex  gap-3 items-center justify-center">
           <input
             id="remember-me"
@@ -206,7 +206,7 @@ const Sot: React.FC = () => {
           <label className="font12 font-bold">Remember talent</label>
         </div>
       </div>
-      <section className="mt-3 gap-10 flex flex-col justify-center items-center">
+      <section className="mt-3 lg:mb-5 gap-10 flex flex-col justify-center items-center">
         <div className="flex gap-4  overflow-auto">
           {stepsData.map((step, index) => {
             return (

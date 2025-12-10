@@ -36,7 +36,7 @@ const Arena: React.FC<any> = ({ updateStepData }) => {
   }));
 
   return (
-    <div className="lg:shadow-card">
+    <div className="md:shadow-card">
       <MainTitle title="Arena" />
       <SoftLink
         iconMap={arenaIconMap} 

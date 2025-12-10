@@ -211,9 +211,28 @@ const mainSlice = createSlice({
     },
     RsetShowWatch: (state: any, action: PayloadAction<any>) => {
       if (Array.isArray(action.payload)) {
+        const processedData = action.payload.map((item) => {
+          const likes: any = {};
+          if (item.attachmentInserted?.attachmentId) {
+            likes[item.attachmentInserted.attachmentId] = {
+              isLiked: item.isLikedInserted || false,
+              count: item.likeInserted || 0,
+            };
+          }
+          if (item.attachmentMatched?.attachmentId) {
+            likes[item.attachmentMatched.attachmentId] = {
+              isLiked: item.isLikedMatched || false,
+              count: item.likeMatched || 0,
+            };
+          }
+
+          // بازگرداندن آیتم به همراه آبجکت likes ساخته شده
+          return { ...item, likes };
+        });
+
         state.showWatchMatch.data = [
           ...state.showWatchMatch.data,
-          ...action.payload,
+          ...processedData,
         ];
       }
     },
@@ -246,32 +265,31 @@ const mainSlice = createSlice({
     updateLikeStatus: (
       state,
       action: PayloadAction<{
-        movieId: string;
+        movieId: string | number;
         isLiked: boolean;
         positionVideo?: number;
       }>
     ) => {
-      const { movieId, isLiked, positionVideo } = action.payload;
+      const { movieId, isLiked } = action.payload;
 
-      state.showWatchMatch.data = state.showWatchMatch.data.map(
-        (video: any) => {
-          const videoCopy = { ...video };
-
-          if (!videoCopy.likes) {
-            videoCopy.likes = {};
-          }
-
-          if (!videoCopy.likes[movieId]) {
-            videoCopy.likes[movieId] = { isLiked: false, count: 0 };
-          }
-          videoCopy.likes[movieId] = {
-            ...videoCopy.likes[movieId],
-            isLiked: isLiked,
-          };
-
-          return videoCopy;
-        }
+      // پیدا کردن ایندکس آیتمی که این movieId را دارد
+      // (این روش بهینه تر از map کل آرایه است اگر فقط میخواهیم یکی را تغییر دهیم)
+      const dataIndex = state.showWatchMatch.data.findIndex(
+        (video: any) => video.likes && video.likes[movieId]
       );
+
+      if (dataIndex !== -1) {
+        const video = state.showWatchMatch.data[dataIndex];
+        const currentLikeData = video.likes[movieId];
+
+        // آپدیت وضعیت و تعداد لایک
+        video.likes[movieId] = {
+          isLiked: isLiked,
+          count: isLiked
+            ? currentLikeData.count + 1 // اگر لایک شد، یکی اضافه کن
+            : Math.max(0, currentLikeData.count - 1), // اگر آنلایک شد، یکی کم کن
+        };
+      }
     },
   },
   extraReducers: (builder) => {

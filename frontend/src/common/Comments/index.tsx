@@ -116,7 +116,7 @@ const Comments: React.FC<any> = ({
         isOpen={showComments}
       >
         <div className="flex flex-col h-[80vh] overflow-hidden">
-          <div className="font15 bg-primary w-full z-20 p-2">
+          <div className="font15 bg-primary w-full z-20 px-4">
             <div className="grid grid-cols-5 items-center">
               <div className="col-span-1 flex justify-start">
                 <ImageRank
@@ -149,13 +149,13 @@ const Comments: React.FC<any> = ({
               </div>
             </div>
           </div>
-          <div className={`relative w-full h-full overflow-y-auto`}>
-            <div className=" px-2">
+          <div className={` relative w-full h-full overflow-y-auto`}>
+            <div className="">
               {isLoading && <Loading isLoading={isLoading} />}
               {allComments.length > 0 ? (
                 allComments.map((item: any) => (
-                  <div key={item?.id}>
-                    <div className="flex justify-between items-start py-1 p-2">
+                  <div className="bg-gray-600" key={item?.id}>
+                    <div className="flex justify-between items-start px-2">
                       <ImageRank
                         userNameStyle="text-black"
                         imgSize={35}
@@ -176,7 +176,7 @@ const Comments: React.FC<any> = ({
                         </div>
                       </div>
                     </div>
-                    <p className="col-span-6 m-2 container_message text-gray-800">
+                    <p className="col-span-6 m-1 container_message text-gray-800">
                       {item.desc}
                     </p>
                     {answerInfo?.id === item?.id && (

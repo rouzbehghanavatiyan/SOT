@@ -69,7 +69,7 @@ const Home: React.FC = () => {
   });
 
   return (
-    <div className="relative w-full bg-black mt-0 flex flex-col h-[calc(100svh-98px)] md:h-[calc(100vh-65px)]">
+    <div className="relative w-full bg-black mt-0 flex flex-col h-[calc(100svh-98px)] md:h-[calc(100vh-95px)] lg:h-[calc(100vh-65px)]">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
