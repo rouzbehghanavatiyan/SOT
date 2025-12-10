@@ -91,7 +91,7 @@ const Video: React.FC<VideoProps> = ({
           step="any"
           value={played}
           onChange={handleSeek}
-          className="seek-bar mb-4"
+          className="seek-bar mb-4 mx-2"
           style={{ ["--played" as any]: played }}
         />
       </div>

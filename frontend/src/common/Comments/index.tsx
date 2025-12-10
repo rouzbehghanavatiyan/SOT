@@ -116,7 +116,7 @@ const Comments: React.FC<any> = ({
         isOpen={showComments}
       >
         <div className="flex flex-col h-[80vh] overflow-hidden">
-          <div className="font15 bg-primary w-full z-20 px-4">
+          <div className="font15 py-2 bg-primary w-full z-20 px-2">
             <div className="grid grid-cols-5 items-center">
               <div className="col-span-1 flex justify-start">
                 <ImageRank
@@ -154,7 +154,7 @@ const Comments: React.FC<any> = ({
               {isLoading && <Loading isLoading={isLoading} />}
               {allComments.length > 0 ? (
                 allComments.map((item: any) => (
-                  <div className="bg-gray-600" key={item?.id}>
+                  <div className="bg-gray-100 mb-1 py-2" key={item?.id}>
                     <div className="flex justify-between items-start px-2">
                       <ImageRank
                         userNameStyle="text-black"
@@ -176,7 +176,7 @@ const Comments: React.FC<any> = ({
                         </div>
                       </div>
                     </div>
-                    <p className="col-span-6 m-1 container_message text-gray-800">
+                    <p className="col-span-6 ms-3 container_message text-gray-900">
                       {item.desc}
                     </p>
                     {answerInfo?.id === item?.id && (
@@ -203,7 +203,7 @@ const Comments: React.FC<any> = ({
                             imgSrc={StringHelpers.getProfile(reply.profile)}
                           />
                           <div className="flex justify-between">
-                            <p className="text-sm container_message text-gray-800">
+                            <p className="text-sm container_message text-gray-900">
                               {reply.desc}
                             </p>
                             <DeleteOutlineIcon

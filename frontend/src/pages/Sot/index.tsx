@@ -17,6 +17,8 @@ const Sot: React.FC = () => {
     { title: "", icon: "", session: "Gear" },
     { title: "", icon: "", session: "Mode" },
   ]);
+
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [allSubCategory, setAllSubCategory] = useState<any>();
   const [currentStep, setCurrentStep] = useState({
     number: 1,
@@ -109,7 +111,6 @@ const Sot: React.FC = () => {
       const arenaName = localStorage.getItem("arenaName");
       const skillName = localStorage.getItem("skillName");
       const gearName = localStorage.getItem("gearName");
-      console.log(arenaName);
 
       if (arenaId) {
         const res = await subCategoryList(arenaId);
@@ -198,6 +199,8 @@ const Sot: React.FC = () => {
       <div className="mt-3 lg:my-5">
         <div className="ms-2 flex  gap-3 items-center justify-center">
           <input
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
             id="remember-me"
             name="remember-me"
             type="checkbox"

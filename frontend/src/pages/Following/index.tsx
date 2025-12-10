@@ -15,7 +15,6 @@ import Follows from "../../components/Fallows";
 import {
   RsetAllFollingList,
 } from "../../common/Slices/main";
-import asyncWrapper from "../../common/AsyncWrapper";
 
 const Following = () => {
   const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
@@ -29,8 +28,7 @@ const Following = () => {
   const userIdFromLocation = location.state?.userInfo?.id;
 
   const handleFallowClick = async (video: any, position: number) => {
-    if (isLoadingFollow) return; // جلوگیری از کلیک چندباره
-
+    if (isLoadingFollow) return; 
     const userIdFollow =
       position === 0 ? video?.userInserted?.id : video?.userMatched?.id;
     const postData = {

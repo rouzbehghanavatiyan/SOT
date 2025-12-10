@@ -126,7 +126,11 @@ const Watch: React.FC = () => {
   return (
     <section className="md:w-3/4 h-[calc(100svh-98px)] lg:h-[calc(100vh-65px)]">
       {isLoading && skills?.length === 0 ? (
-        <VideoItemSkeleton section="filteredWatch" />
+        <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full overflow-hidden">
+          {[...Array(skills.length)].map((_, index) => (
+            <VideoItemSkeleton key={index} section="singleCircle" />
+          ))}
+        </div>
       ) : (
         <Filtered
           handleGetAllMatch={handleGetAllMatch}
@@ -138,7 +142,7 @@ const Watch: React.FC = () => {
       <MainTitle title="Tournament" />
       <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px] ">
         {isLoading && data.length === 0
-          ? [...Array(12)].map((_, index) => (
+          ? [...Array(data.length)].map((_, index) => (
               <VideoItemSkeleton key={index} section="justPic" />
             ))
           : data.map((group, index) => {
@@ -159,3 +163,4 @@ const Watch: React.FC = () => {
 };
 
 export default Watch;
+

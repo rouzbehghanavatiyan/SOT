@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Loading from "../../components/Loading";
 import { topScoreList } from "../../services/dotNet";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
@@ -66,10 +65,10 @@ const Notification: React.FC = () => {
         <header className="">
           <MainTitle title="News" />
           <div className="m-2 bg-white p-4 rounded-xl">
-            <span className="flex items-center justify-center">
+            <span className="flex items-center justify-start">
               Last match:
             </span>
-            <div className="flex justify-center my-4">
+            <div className="flex justify-center mb-10">
               <ImageRank
                 imgSize={60}
                 imgSrc={StringHelpers.getProfile(

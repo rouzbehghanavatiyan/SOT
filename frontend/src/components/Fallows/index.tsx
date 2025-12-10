@@ -15,7 +15,7 @@ const Follows: React.FC<PropTypes> = ({
     <div className="flex  justify-center items-center">
       <span
         onClick={onFollowClick}
-        className={`p-1 border-b-2 px-3 ${bgColor}  font-bold font12 rounded-lg cursor-pointer `}
+        className={`p-1 border-b-[1px] px-3 ${bgColor} border-gray-200 rounded-lg font-bold font12 cursor-pointer `}
       >
         {title}
       </span>

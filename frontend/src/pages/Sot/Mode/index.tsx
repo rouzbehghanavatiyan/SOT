@@ -37,8 +37,6 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
     }
   }, [videoError]);
 
-  console.log(arenaId);
-
   const handleModeSelection = (data: any) => {
     if (
       (data.id === 3 && arenaId !== 1002) ||

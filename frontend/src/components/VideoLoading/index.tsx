@@ -2,118 +2,43 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 interface PropsType {
-  section?: string;
+  section?: "itsShowWatch" | "itsHome" | "itsProfile" | "justPic" | "filteredWatch" | "singleCircle";
 }
 
 const VideoItemSkeleton: React.FC<PropsType> = ({ section }) => {
-  return (
-    <div className="video-skeleton">
-      {section === "itsShowWatch" && (
-        <div className="mx-1">
-          <Skeleton
-            className="w-full"
-            height="6vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full"
-            height="40vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full"
-            height="6vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full"
-            height="40vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-        </div>
-      )}
-      {section === "itsHome" && (
+  const commonProps = {
+    baseColor: "#5252523a",
+    borderRadius: 10,
+    className: "w-full",
+  };
+
+  switch (section) {
+    case "itsShowWatch":
+    case "itsHome":
+    case "itsProfile":
+      const heights = ["6vh", "37vh", "6vh", "37vh"];
+      return (
         <div className="mx-1 mt-2">
-          <Skeleton
-            className="w-full "
-            height="6vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full "
-            height="37vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full "
-            height="6vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full "
-            height="36vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
+          {heights.map((h, i) => (
+            <Skeleton key={i} {...commonProps} height={h} />
+          ))}
         </div>
-      )}
-      {section === "itsProfile" && (
-        <div className="m-1">
-          <Skeleton
-            className="w-full "
-            height="6vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full "
-            height="37vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full "
-            height="6vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
-          <Skeleton
-            className="w-full "
-            height="37vh"
-            borderRadius={10}
-            baseColor="#5252523a"
-          />
+      );
+
+    case "justPic":
+      return (
+        <div className="flex flex-col gap-1 w-full">
+          <Skeleton height={175} className="rounded-tr-lg" />
+          <Skeleton height={175} className="rounded-bl-xl" />
         </div>
-      )}
-      {section === "justPic" && (
-        <div className="mb-1">
-          <Skeleton className="rounded-tr-lg" height={175} />
-          <Skeleton className="rounded-bl-xl" height={175} />
-        </div>
-      )}
-      {section === "filteredWatch" && (
-        <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full">
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-          <Skeleton className="rounded-full" width={60} height={60} />
-        </div>
-      )}
-    </div>
-  );
+      );
+
+    case "singleCircle": 
+      return <Skeleton circle width={60} height={60} />;
+
+    default:
+      return null;
+  }
 };
 
 export default VideoItemSkeleton;
