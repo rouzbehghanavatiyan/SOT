@@ -65,11 +65,10 @@ const Notification: React.FC = () => {
         <header className="">
           <MainTitle title="News" />
           <div className="m-2 bg-white p-4 rounded-xl">
-            <span className="flex items-center justify-start">
-              Last match:
-            </span>
+            <span className="flex items-center justify-start">Last match:</span>
             <div className="flex justify-center mb-10">
               <ImageRank
+                iconClass="font60 text-gray-200"
                 imgSize={60}
                 imgSrc={StringHelpers.getProfile(
                   main?.lastMatch?.profileInserted
@@ -82,6 +81,7 @@ const Notification: React.FC = () => {
                 </span>
               </div>
               <ImageRank
+                iconClass="font60 text-gray-200"
                 imgSize={60}
                 imgSrc={StringHelpers.getProfile(
                   main?.lastMatch?.profileMatched
