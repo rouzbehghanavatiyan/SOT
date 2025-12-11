@@ -90,7 +90,7 @@ const ChatRoom: React.FC = () => {
   }, [userSender]);
 
   return (
-    <div className="md:mt-10 mt-0 w-full ">
+    <div className="md:mt-10 mt-0 w-full h-[calc(100svh-98px)] lg:h-[calc(100vh-65px)]">
       {userSender.length > 0 ? (
         userSender?.map((user: any) => {
           const fixImage = StringHelpers.getProfile(user);

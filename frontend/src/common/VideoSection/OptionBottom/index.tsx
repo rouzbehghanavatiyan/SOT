@@ -123,13 +123,13 @@ const OptionBottom: React.FC<any> = ({
         </div>
         {endTime ? null : result === "Win" ? (
           <div className="text-green col-span-1 flex items-center justify-center">
-            <span className="font15 border-green px-2 rounded-lg border font-bold">
+            <span className=" font15 border-green px-2 rounded-lg border font-bold">
               Win
             </span>
           </div>
         ) : result === "Loss" ? (
           <div className="text-red col-span-1 flex items-center justify-center">
-            <span className="font15 border-red px-2 rounded-lg border font-bold">
+            <span className="font15  border-red px-2 rounded-lg border font-bold">
               Loss
             </span>
           </div>

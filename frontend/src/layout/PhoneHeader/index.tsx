@@ -5,18 +5,23 @@ import EmailIcon from "@mui/icons-material/Email";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import { useAppSelector } from "../../hooks/reduxHookType";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import Input from "../../components/Input";
+import {
+  clearUnreadCount,
+  incrementUnreadCount,
+} from "../../common/Slices/main";
 
 const PhoneHeader = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const currentPath = location.pathname.toLowerCase();
   const socket = useAppSelector((state) => state.main.socketConfig);
   const currentUser = useAppSelector((state) => state.main.userLogin?.user);
   const [alertMsg, setAlertMsg] = useState<any[]>([]);
-
+  const unreadCount = useAppSelector((state) => state.main.unreadMessagesCount);
   const routes = useMemo(
     () => ({
       isWatch: currentPath === "/watch",
@@ -28,23 +33,31 @@ const PhoneHeader = () => {
     [currentPath]
   );
 
-  // --- Handlers ---
-  const handleGetAlert = useCallback(
-    (data: any) => {
-      if (currentUser?.id === data?.recieveId) {
-        setAlertMsg((prev) => [...prev, data]);
-      }
-    },
-    [currentUser?.id]
-  );
+  console.log("unreadCountunreadCountunreadCount", unreadCount);
+
+  const handleReadConfirmation = (data: any) => {
+    // اگر پیامی که ما دریافت کرده بودیم خوانده شد
+    if (currentUser.id === data.receiver) {
+      dispatch(clearUnreadCount());
+    }
+  };
+  const handleReceiveMessage = (data: any) => {
+    if (currentUser.id === data?.recieveId) {
+      dispatch(incrementUnreadCount());
+    }
+  };
 
   useEffect(() => {
-    if (!socket) return;
-    socket.on("receive_message", handleGetAlert);
+    if (!socket || !currentUser) return;
+
+    socket.on("receive_message", handleReceiveMessage);
+    socket.on("messages_read_confirmation", handleReadConfirmation);
+
     return () => {
-      socket.off("receive_message", handleGetAlert);
+      socket.off("receive_message", handleReceiveMessage);
+      socket.off("messages_read_confirmation", handleReadConfirmation);
     };
-  }, [socket, handleGetAlert]);
+  }, [socket, currentUser, dispatch]);
 
   const handleBack = () => navigate(-1);
 
