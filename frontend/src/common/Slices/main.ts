@@ -51,9 +51,11 @@ interface MainType {
   likeFollow: any;
   showWatchPagination: any;
   unreadMessagesCount: number;
+  showTimerButtn: boolean;
 }
 
 const initialState: MainType = {
+  showTimerButtn: false,
   lastMatch: [],
   unreadMessagesCount: 0,
   createTalent: {},
@@ -175,6 +177,10 @@ const mainSlice = createSlice({
     RsetCreateTalent: (state, action: PayloadAction<any>) => {
       state.createTalent = action.payload;
     },
+    RsetShowTimerButtn: (state, action: PayloadAction<boolean>) => {
+      state.showTimerButtn = action.payload;
+    },
+
     RsetCategory: (state, action: PayloadAction<any[]>) => {
       state.category = action.payload;
     },

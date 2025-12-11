@@ -1,6 +1,5 @@
 self.addEventListener("install", (event) => {
   console.log("Service Worker installing...");
-  // کش کردن فایل‌ها
   event.waitUntil(
     caches.open("my-cache").then((cache) => {
       return cache.addAll(["/index.html", "/styles.css", "/script.js"]);
@@ -19,4 +18,14 @@ self.addEventListener("fetch", (event) => {
       return response || fetch(event.request);
     })
   );
+});
+
+self.addEventListener("push", function (event) {
+  const data = event.data.json();
+  console.log("Seeeeeeeeeeeeeeeeeeeeeerive worker push notification");
+  
+  self.registration.showNotification(data.title, {
+    body: data.body,
+    icon: "/notification-icon.png",
+  });
 });

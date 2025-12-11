@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "../../components/Button";
+import { ButtonTimer } from "../../components/Timer/ButtonTimer";
+import { useAppSelector } from "../../hooks/reduxHookType";
 
 interface CoverConfirmStepProps {
   coverImage: string;
@@ -21,26 +23,7 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
   onAccept,
   isLoading,
 }) => {
-  const [timer, setTimer] = useState(60);
-
-  useEffect(() => {
-    let interval: any;
-
-    if (isLoading) {
-      setTimer(60);
-      interval = setInterval(() => {
-        setTimer((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
-  }, [isLoading]);
+  const showTimerButtn = useAppSelector((state) => state.main.showTimerButtn);
 
   return (
     <div className="p-5">
@@ -63,10 +46,11 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
           label="Back"
           onClick={onBack}
         />
+
         <Button
           className="border"
           variant={"green"}
-          label={timer}
+          label={showTimer ? <ButtonTimer show={showTimer} /> : "Start"}
           onClick={onAccept}
           loading={isLoading}
         />

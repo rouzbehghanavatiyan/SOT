@@ -33,8 +33,6 @@ const PhoneHeader = () => {
     [currentPath]
   );
 
-  console.log("unreadCountunreadCountunreadCount", unreadCount);
-
   const handleReadConfirmation = (data: any) => {
     // اگر پیامی که ما دریافت کرده بودیم خوانده شد
     if (currentUser.id === data.receiver) {

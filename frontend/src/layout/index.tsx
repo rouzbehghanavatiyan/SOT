@@ -44,7 +44,6 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
   const { showPrompt, setShowPrompt, handleAllow } = useServiceWorker();
   const socket = useMemo(() => io(import.meta.env.VITE_NODE_SOCKET), []);
   const token = sessionStorage.getItem("token");
-
   const [currentChatInfo, setCurrentChatInfo] = useState<{
     userIdLogin: number | null;
     reciveUserId: number | null;
@@ -303,7 +302,13 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
         <div className="flex-1 overflow-auto">
           <div className="flex justify-center items-start min-h-full">
             {children}
-            {/* {showPrompt && <Prompt />} */}
+            {showPrompt && (
+              <Prompt
+                setShowPrompt={setShowPrompt}
+                handleAllow={handleAllow}
+                showPrompt={showPrompt}
+              />
+            )}
           </div>
         </div>
         <PhoneFooter />

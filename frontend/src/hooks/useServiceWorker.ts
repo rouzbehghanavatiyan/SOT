@@ -16,7 +16,6 @@ export const useServiceWorker = () => {
       Notification.permission as NotificationPermission
     );
 
-  // Get user ID from token
   const userId = useMemo(() => {
     if (!sessionStorage.getItem("token")) {
       navigate("/");
@@ -26,7 +25,7 @@ export const useServiceWorker = () => {
     const userData = jwtDecode(token);
     return Object.values(userData)?.[1];
   }, [navigate]);
-
+  
   // Utility functions
   // const urlBase64ToUint8Array = useCallback((base64String: string) => {
   //   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -81,7 +80,6 @@ export const useServiceWorker = () => {
           scope: "/",
           updateViaCache: "none",
         });
-
         return registration;
       } catch (error) {
         console.error("Service Worker registration failed:", error);
@@ -151,6 +149,7 @@ export const useServiceWorker = () => {
 
   const handleAllow = useCallback(async () => {
     try {
+
       const permission = await Notification.requestPermission();
       setNotificationStatus(permission);
 

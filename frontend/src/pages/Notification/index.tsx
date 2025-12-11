@@ -57,7 +57,6 @@ const Notification: React.FC = () => {
   useEffect(() => {
     handleGetAllScore();
   }, []);
-  console.log(main?.lastMatch);
 
   return (
     <section className="w-full h-[calc(100svh-98px)] md:h-[calc(100vh-65px)]">

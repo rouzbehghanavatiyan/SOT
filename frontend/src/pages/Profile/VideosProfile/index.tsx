@@ -145,7 +145,7 @@ const VideosProfile = forwardRef<
             return (
               <section
                 ref={index === 0 ? firstVideoRef : null}
-                className={`flex px-1 pt-1 bg-green-dark flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[50px]" : ""}`}
+                className={`flex px-1 pt-1 bg-white flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[60px]" : ""}`}
               >
                 <div className="flex-1 min-h-0 ">
                   <VideoSection
