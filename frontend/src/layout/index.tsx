@@ -277,6 +277,7 @@ const Sidebar: React.FC<PropsType> = ({ children }) => {
     };
 
     socket.on("connect", handleConnect);
+    console.log(Notification.permission);
 
     if (Notification.permission === "default") {
       setShowPrompt(true);

@@ -152,22 +152,22 @@ export const commentList = async (movieId: number) => {
 
 // -> notif
 export const createSubscription = async () => {
-  const url = `${urlNotif}/api/notifications/public-key`;
+  const url = `${urlNotif}/public-key`;
   return await axios.get(url);
 };
 
 export const saveSubscription = async (postData: any) => {
-  const url = `${urlNotif}/api/notifications/subscribe`;
+  const url = `${urlNotif}/subscribe`;
   return await axios.post(url, postData);
 };
 
 export const sendAllNotif = async (postData: any) => {
-  const url = `${urlNotif}/api/Notifications/send-all`;
+  const url = `${urlNotif}/send-all`;
   return await axios.post(url, postData);
 };
 
 export const sendUserNotif = async (postData: any) => {
-  const url = `${urlNotif}/api/Notifications/send`;
+  const url = `${urlNotif}/send`;
   return await axios.post(url, postData);
 };
 

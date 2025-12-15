@@ -13,6 +13,7 @@ import {
 } from "../../common/Slices/main";
 import asyncWrapper from "../../common/AsyncWrapper";
 import MainTitle from "../../components/MainTitle";
+import Loading from "../../components/Loading";
 
 const Watch: React.FC = () => {
   const loadingRef = useRef<HTMLDivElement>(null);
@@ -124,41 +125,43 @@ const Watch: React.FC = () => {
   };
 
   return (
-    <section className="md:w-3/4 h-[calc(100svh-98px)] lg:h-[calc(100vh-65px)]">
-      {isLoading && skills?.length === 0 ? (
-        <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full overflow-hidden">
-          {[...Array(skills.length)].map((_, index) => (
-            <VideoItemSkeleton key={index} section="singleCircle" />
-          ))}
+    <>
+      <section className="md:w-3/4 w-full h-[calc(100svh-98px)] lg:h-[calc(100vh-65px)]">
+        {isLoading && skills?.length === 0 ? (
+          <div className="flex flex-row flex-wrap gap-4 px-2 pt-3 bg-white mb-2 max-w-full overflow-hidden">
+            {[...Array(skills.length)].map((_, index) => (
+              <VideoItemSkeleton key={index} section="singleCircle" />
+            ))}
+          </div>
+        ) : (
+          <Filtered
+            handleGetAllMatch={handleGetAllMatch}
+            selectFiltered={selectFiltered}
+            setSelectFiltered={setSelectFiltered}
+            skills={skills}
+          />
+        )}
+        <MainTitle title="Tournament" />
+        <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px] ">
+          {isLoading && data.length === 0
+            ? [...Array(data.length)].map((_, index) => (
+                <VideoItemSkeleton key={index} section="justPic" />
+              ))
+            : data.map((group, index) => {
+                return (
+                  <VideoGroup
+                    iconFiltered={group?.icon}
+                    key={index}
+                    group={group}
+                    index={index}
+                    onClick={() => handleShowMatch({ group, index })}
+                  />
+                );
+              })}
         </div>
-      ) : (
-        <Filtered
-          handleGetAllMatch={handleGetAllMatch}
-          selectFiltered={selectFiltered}
-          setSelectFiltered={setSelectFiltered}
-          skills={skills}
-        />
-      )}
-      <MainTitle title="Tournament" />
-      <div className="grid grid-cols-2 mt-1 md:mt-2 gap-[5px] p-[2px] ">
-        {isLoading && data.length === 0
-          ? [...Array(data.length)].map((_, index) => (
-              <VideoItemSkeleton key={index} section="justPic" />
-            ))
-          : data.map((group, index) => {
-              return (
-                <VideoGroup
-                  iconFiltered={group?.icon}
-                  key={index}
-                  group={group}
-                  index={index}
-                  onClick={() => handleShowMatch({ group, index })}
-                />
-              );
-            })}
-      </div>
-      <LoadingChild ref={loadingRef} isLoading={true} />
-    </section>
+        <LoadingChild ref={loadingRef} isLoading={true} />
+      </section>
+    </>
   );
 };
 
