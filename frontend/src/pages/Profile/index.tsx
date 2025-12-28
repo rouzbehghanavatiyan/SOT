@@ -41,7 +41,7 @@ const Profile: React.FC = () => {
     }
   );
 
-  console.log(userId);
+  console.log(data, isLoading, hasMore);
 
   const handleGetAddLike = (data: { userId: number; movieId: number }) => {
     setVideoLikes((prev) => ({
@@ -98,6 +98,28 @@ const Profile: React.FC = () => {
     );
   }, [data]);
 
+  const initializeVideoLikes = () => {
+    setVideoLikes((prev) => ({
+      ...prev,
+      ...calculateInitialLikes(data),
+    }));
+  };
+
+  const shouldFetchInitialPage = () => {
+    return data.length === 0 && !isLoading;
+  };
+
+  const createIntersectionObserver = () => {
+    return new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !isLoading) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.5 }
+    );
+  };
+
   useEffect(() => {
     if (itsMatchingWithTimer) {
       scrollToFirstVideo();
@@ -129,29 +151,21 @@ const Profile: React.FC = () => {
   }, [userId, main?.userLogin?.score, userIdWhantToShow?.user?.id]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && hasMore && !isLoading) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.5 }
-    );
+    initializeVideoLikes();
 
+    if (shouldFetchInitialPage()) {
+      fetchNextPage();
+    }
+
+    const observer = createIntersectionObserver();
     const refCurrent = loadingRef.current;
+
     if (refCurrent) observer.observe(refCurrent);
 
     return () => {
       if (refCurrent) observer.unobserve(refCurrent);
     };
-  }, [fetchNextPage, hasMore, isLoading]);
-
-  useEffect(() => {
-    setVideoLikes((prev) => ({ ...prev, ...calculateInitialLikes(data) }));
-    if (data.length === 0 && !isLoading) {
-      fetchNextPage();
-    }
-  }, [data, isLoading, fetchNextPage]);
+  }, [data, hasMore, isLoading, fetchNextPage]);
 
   return (
     <>

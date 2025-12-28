@@ -67,6 +67,9 @@ const ShowWatch: React.FC = () => {
     customFetchNextPage,
   });
 
+  console.log(data);
+  
+
   return (
     <div className="w-full h-[calc(100svh-53px)] md:h-[calc(100vh-65px)] bg-black">
       <Swiper
