@@ -106,112 +106,180 @@ const VideosProfile = forwardRef<
   }, [videoGroupsWithLikes]);
 
   return (
-    <div className="col-span-12 justify-center flex  md:col-span-12 lg:col-span-12">
-      <div className="grid grid-cols-1 w-full ">
-        {isLoading ? (
-          [...Array(12)].map((_, index) => (
-            <div key={index} className="bg-black">
-              <VideoItemSkeleton section="itsProfile" />
+    <>
+      <div className="col-span-12 justify-center flex  md:col-span-12 lg:col-span-12">
+        <div className="grid grid-cols-1 w-full ">
+          {isLoading ? (
+            [...Array(videoGroupsWithLikes?.length)].map((_, index) => (
+              <div key={index} className="bg-black">
+                <VideoItemSkeleton section="itsProfile" />
+              </div>
+            ))
+          ) : videoGroupsWithLikes?.length === 0 ? (
+            <div className="flex h-[calc(50vh-100px)] justify-center items-center ">
+              <span className="font-bold">Empty videos</span>
             </div>
-          ))
-        ) : videoGroupsWithLikes?.length === 0 ? (
-          <div className="flex h-[calc(50vh-100px)] justify-center items-center ">
-            <span className="font-bold">Empty videos</span>
-          </div>
-        ) : (
-          videoGroupsWithLikes?.map((video: any, index: number) => {
-            const parentLikes =
-              (videoLikes[video?.parentMovieId] || 0) +
-              (video?.likeInserted || 0);
-            const childLikes =
-              (videoLikes[video?.childMovieId] || 0) +
-              (video?.likeMatched || 0);
-            const endTime =
-              video?.inviteMatched?.insertDate !== -1 ||
-              video?.inviteInserted?.insertDate !== -1;
-            const startTime = video?.inviteMatched?.insertDate;
-            const resultInserted =
-              video?.likeInserted > video?.likeMatched
-                ? "Win"
-                : video?.likeInserted < video?.likeMatched
-                  ? "Loss"
-                  : "Draw";
-            const resultMatched =
-              video?.likeInserted < video?.likeMatched
-                ? "Win"
-                : video?.likeInserted > video?.likeMatched
-                  ? "Loss"
-                  : "Draw";
-            return (
-              <section
-                ref={index === 0 ? firstVideoRef : null}
-                className={`flex px-1 pt-1 bg-white flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[60px]" : ""}`}
-              >
-                <div className="flex-1 min-h-0 ">
-                  <VideoSection
-                    endTime={endTime}
-                    score={video?.scoreInserted}
-                    result={resultInserted}
-                    toggleDropdown={() => toggleDropdown(video, 0)}
-                    countLiked={parentLikes}
-                    video={video}
-                    dropdownItems={() =>
-                      dropdown(video, 0, video?.userInserted)
-                    }
-                    setOpenDropdowns={setOpenDropdowns}
-                    openDropdowns={openDropdowns}
-                    positionVideo={0}
-                  />
-                </div>
-                {endTime && (
-                  <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
-                    {parentLikes}
-                    <ThumbUpIcon className="font25 text-white" />
+          ) : (
+            videoGroupsWithLikes?.map((video: any, index: number) => {
+              const parentLikes =
+                (videoLikes[video?.parentMovieId] || 0) +
+                (video?.likeInserted || 0);
+              const childLikes =
+                (videoLikes[video?.childMovieId] || 0) +
+                (video?.likeMatched || 0);
+              const endTime =
+                video?.inviteMatched?.insertDate !== -1 ||
+                video?.inviteInserted?.insertDate !== -1;
+              const startTime = video?.inviteMatched?.insertDate;
+              const resultInserted =
+                video?.likeInserted > video?.likeMatched
+                  ? "Win"
+                  : video?.likeInserted < video?.likeMatched
+                    ? "Loss"
+                    : "Draw";
+              const resultMatched =
+                video?.likeInserted < video?.likeMatched
+                  ? "Win"
+                  : video?.likeInserted > video?.likeMatched
+                    ? "Loss"
+                    : "Draw";
+              return (
+                <section
+                  ref={index === 0 ? firstVideoRef : null}
+                  className={`flex px-1 pt-1 bg-white flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[60px]" : ""}`}
+                >
+                  <div className="flex-1 min-h-0 ">
+                    <VideoSection
+                      endTime={endTime}
+                      score={video?.scoreInserted}
+                      result={resultInserted}
+                      toggleDropdown={() => toggleDropdown(video, 0)}
+                      countLiked={parentLikes}
+                      video={video}
+                      dropdownItems={() =>
+                        dropdown(video, 0, video?.userInserted)
+                      }
+                      setOpenDropdowns={setOpenDropdowns}
+                      openDropdowns={openDropdowns}
+                      positionVideo={0}
+                    />
                   </div>
-                )}
-                <div className="flex-1 min-h-0 relative">
-                  <VideoSection
-                    endTime={endTime}
-                    score={video?.scoreMatched}
-                    result={resultMatched}
-                    toggleDropdown={() => toggleDropdown(video, 1)}
-                    countLiked={childLikes}
-                    video={video}
-                    dropdownItems={() => dropdown(video, 1, video?.userMatched)}
-                    openDropdowns={openDropdowns}
-                    setOpenDropdowns={setOpenDropdowns}
-                    positionVideo={1}
-                  />
+
                   {endTime && (
                     <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
-                      {childLikes}
+                      {parentLikes}
                       <ThumbUpIcon className="font25 text-white" />
                     </div>
                   )}
-                  {endTime && (
-                    <div className="w-full absolute bottom-7">
-                      <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
-                        <HourglassTopIcon className="font20" />
-                        <Timer
-                          video={video}
-                          startTime={startTime}
-                          duration={3600}
-                          active={true}
-                          className="text-white font20 ml-2"
-                          onComplete={() => {}}
-                        />
+                  <div className="flex-1 min-h-0 relative">
+                    <VideoSection
+                      endTime={endTime}
+                      score={video?.scoreMatched}
+                      result={resultMatched}
+                      toggleDropdown={() => toggleDropdown(video, 1)}
+                      countLiked={childLikes}
+                      video={video}
+                      dropdownItems={() =>
+                        dropdown(video, 1, video?.userMatched)
+                      }
+                      openDropdowns={openDropdowns}
+                      setOpenDropdowns={setOpenDropdowns}
+                      positionVideo={1}
+                    />
+                    {endTime && (
+                      <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
+                        {childLikes}
+                        <ThumbUpIcon className="font25 text-white" />
                       </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-            );
-          })
-        )}
-        <LoadingChild ref={loadingRef} isLoading={isLoading} />
+                    )}
+                    {endTime && (
+                      <div className="w-full absolute bottom-7">
+                        <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
+                          <HourglassTopIcon className="font20" />
+                          <Timer
+                            video={video}
+                            startTime={startTime}
+                            duration={3600}
+                            active={true}
+                            className="text-white font20 ml-2"
+                            onComplete={() => {}}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              );
+            })
+          )}
+        </div>
       </div>
-    </div>
+      <LoadingChild ref={loadingRef} isLoading={isLoading} />
+    </>
   );
 });
 
 export default VideosProfile;
+
+// <section
+//   ref={index === 0 ? firstVideoRef : null}
+//   className={`flex px-1 pt-1 bg-white flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[60px]" : ""}`}
+// >
+//   <div className="flex-1 min-h-0 ">
+//     <VideoSection
+//       endTime={endTime}
+//       score={video?.scoreInserted}
+//       result={resultInserted}
+//       toggleDropdown={() => toggleDropdown(video, 0)}
+//       countLiked={parentLikes}
+//       video={video}
+//       dropdownItems={() =>
+//         dropdown(video, 0, video?.userInserted)
+//       }
+//       setOpenDropdowns={setOpenDropdowns}
+//       openDropdowns={openDropdowns}
+//       positionVideo={0}
+//     />
+//   </div>
+//   {endTime && (
+//     <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
+//       {parentLikes}
+//       <ThumbUpIcon className="font25 text-white" />
+//     </div>
+//   )}
+//   <div className="flex-1 min-h-0 relative">
+//     <VideoSection
+//       endTime={endTime}
+//       score={video?.scoreMatched}
+//       result={resultMatched}
+//       toggleDropdown={() => toggleDropdown(video, 1)}
+//       countLiked={childLikes}
+//       video={video}
+//       dropdownItems={() => dropdown(video, 1, video?.userMatched)}
+//       openDropdowns={openDropdowns}
+//       setOpenDropdowns={setOpenDropdowns}
+//       positionVideo={1}
+//     />
+//     {endTime && (
+//       <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
+//         {childLikes}
+//         <ThumbUpIcon className="font25 text-white" />
+//       </div>
+//     )}
+//     {endTime && (
+//       <div className="w-full absolute bottom-7">
+//         <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
+//           <HourglassTopIcon className="font20" />
+//           <Timer
+//             video={video}
+//             startTime={startTime}
+//             duration={3600}
+//             active={true}
+//             className="text-white font20 ml-2"
+//             onComplete={() => {}}
+//           />
+//         </div>
+//       </div>
+//     )}
+//   </div>
+// </section>

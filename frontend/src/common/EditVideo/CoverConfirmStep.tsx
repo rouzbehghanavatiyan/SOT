@@ -50,7 +50,9 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
         <Button
           className="border"
           variant={"green"}
-          label={showTimerButtn ? <ButtonTimer show={showTimerButtn} /> : "Start"}
+          label={
+            showTimerButtn ? <ButtonTimer show={showTimerButtn} /> : "Start"
+          }
           onClick={onAccept}
           loading={isLoading}
         />

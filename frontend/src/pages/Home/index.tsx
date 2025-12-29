@@ -39,9 +39,7 @@ const Home: React.FC = () => {
           take: params.take,
           userIdLogin,
         });
-
-        hasFetchedOnce.current = true; // ✅ اولین fetch واقعی
-
+        hasFetchedOnce.current = true;
         dispatch(RsetHomeMatch(res?.data || []));
         dispatch(
           setPaginationHomeMatch({
