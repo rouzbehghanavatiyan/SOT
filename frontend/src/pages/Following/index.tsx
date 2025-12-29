@@ -17,7 +17,6 @@ import {
 } from "../../common/Slices/main";
 
 const Following = () => {
-  const baseURL: string | undefined = import.meta.env.VITE_SERVERTEST;
   const main = useAppSelector((state) => state.main);
   const [isLoading, setIsLoading] = useState(false);
   const userIdLogin = main?.userLogin?.user?.id;

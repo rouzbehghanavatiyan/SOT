@@ -11,8 +11,8 @@ const MainCup = () => {
   };
 
   return (
-    <div className="w-full bg-white mb-5">
-      <MainTitle title="Cup city" />
+    <div className="w-full bg-white mb-5 h-[calc(100svh-120px)] md:h-[calc(100vh-95px)] lg:h-[calc(100vh-65px)]">
+      <MainTitle title="City cup" />
       <div className="max-w-6xl mx-auto">
         <div className="relative ">
           <span className=" relative grid grid-cols-6">

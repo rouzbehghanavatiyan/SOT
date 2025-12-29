@@ -79,7 +79,6 @@ const Home: React.FC = () => {
     customFetchNextPage,
   });
 
-  // ✅ EmptyState فقط بعد از اولین fetch
   const showEmptyState = hasFetchedOnce.current && (!data || data.length === 0);
 
   return (

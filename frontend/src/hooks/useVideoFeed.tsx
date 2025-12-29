@@ -43,8 +43,10 @@ export const useVideoFeed = ({
 
   // --- States ---
   const [isLoading, setIsLoading] = useState(false);
-  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
-  
+  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(
+    {}
+  );
+
   // مدیریت پخش ویدیو بر اساس ایندکس اسلاید و پوزیشن (0=بالا/تک، 1=پایین)
   const [playingState, setPlayingState] = useState<{
     slideIndex: number | null;
@@ -66,8 +68,11 @@ export const useVideoFeed = ({
   // --- Fetching Logic ---
   const fetchNextPage = useCallback(async () => {
     // اگر پارامترها هنوز آماده نیستند (مثلا آیدی لاگین نرسیده) یا دیتای بیشتر نیست، اجرا نکن
-    const paramsValid = Object.values(fetchParams).every(v => v !== undefined && v !== null);
-    if (isLoadingRef.current || !paginationRef.current.hasMore || !paramsValid) return;
+    const paramsValid = Object.values(fetchParams).every(
+      (v) => v !== undefined && v !== null
+    );
+    if (isLoadingRef.current || !paginationRef.current.hasMore || !paramsValid)
+      return;
 
     try {
       setIsLoading(true);
@@ -78,7 +83,8 @@ export const useVideoFeed = ({
       });
 
       const newData = res?.data || [];
-      const hasMore = newData.length > 0 && newData.length === paginationRef.current.take;
+      const hasMore =
+        newData.length > 0 && newData.length === paginationRef.current.take;
 
       dispatch(actions.setData(newData));
       dispatch(
@@ -138,16 +144,24 @@ export const useVideoFeed = ({
   };
 
   // --- Dropdown Generation ---
-  const getDropdownItems = (videoData: any, position: number): DropdownItem[] => {
+  const getDropdownItems = (
+    videoData: any,
+    position: number
+  ): DropdownItem[] => {
     const isSender = position === 0;
-    
+
     // Normalize user data (Handles difference between Inserted/Matched)
-    const targetUser = isSender ? videoData?.userInserted : videoData?.userMatched;
-    const targetProfile = isSender ? videoData?.profileInserted : videoData?.profileMatched;
+    const targetUser = isSender
+      ? videoData?.userInserted
+      : videoData?.userMatched;
+    const targetProfile = isSender
+      ? videoData?.profileInserted
+      : videoData?.profileMatched;
 
     // Helper Safe Check
-    const userProfileStr = StringHelpers && StringHelpers.getProfile 
-        ? StringHelpers.getProfile(targetProfile) 
+    const userProfileStr =
+      StringHelpers && StringHelpers.getProfile
+        ? StringHelpers.getProfile(targetProfile)
         : targetProfile;
 
     const userInfo = {
@@ -155,6 +169,8 @@ export const useVideoFeed = ({
       userProfile: userProfileStr,
       userNameSender: targetUser?.userName,
     };
+
+    console.log("userInfo userInfo userInfo userInfo", userInfo);
 
     const items: DropdownItem[] = [
       {
@@ -190,16 +206,20 @@ export const useVideoFeed = ({
   // Initial Fetch
   useEffect(() => {
     // If params exist and list is empty, fetch
-    if (Object.keys(fetchParams).length > 0 && data.length === 0 && !isLoadingRef.current) {
-        // Reset pagination specifically for Home if needed, or rely on Redux initial state
-        fetchNextPage();
+    if (
+      Object.keys(fetchParams).length > 0 &&
+      data.length === 0 &&
+      !isLoadingRef.current
+    ) {
+      // Reset pagination specifically for Home if needed, or rely on Redux initial state
+      fetchNextPage();
     }
   }, [fetchNextPage, data.length]);
 
   // Reset Playing on Mount/Data Load
   useEffect(() => {
     if (data.length > 0 && activeSlideIndex === 0 && !isLoading) {
-       setPlayingState({ slideIndex: 0, position: 0 });
+      setPlayingState({ slideIndex: 0, position: 0 });
     }
   }, [data.length, isLoading]);
 
@@ -224,6 +244,6 @@ export const useVideoFeed = ({
     toggleDropdown,
     setOpenDropdowns,
     getDropdownItems,
-    fetchNextPage
+    fetchNextPage,
   };
 };

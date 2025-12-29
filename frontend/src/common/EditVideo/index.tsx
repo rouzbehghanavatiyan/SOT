@@ -41,7 +41,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
       case 3:
         return "Offline";
       case 4:
-        return "Optional";
+        return "Duel";
       default:
         return "";
     }

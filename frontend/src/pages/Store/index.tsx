@@ -25,7 +25,7 @@ const Store: React.FC<any> = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center mt-5 mb-12">
+    <div className="flex flex-col justify-center mt-5 mb-12 h-[calc(100svh-165px)] md:h-[calc(100vh-95px)] lg:h-[calc(100vh-65px)]">
       {allStoreList?.map((store: any) => (
         <div
           onClick={handleShowMod}

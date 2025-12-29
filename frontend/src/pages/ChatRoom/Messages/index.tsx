@@ -49,6 +49,8 @@ const Messages: React.FC<MessagesProps> = ({
     );
   }
 
+  console.log(safeMessages);
+
   return (
     <>
       {safeMessages.map((msg: Message, index: number) => {
