@@ -90,14 +90,14 @@ const Timer: React.FC<TimerProps> = ({
   return (
     <div className="grid grid-cols-4 items-center">
       <div className="col-span-1 me-1 flex items-center justify-end">
-        <HourglassTopIcon className="font14" />
-        <span className="font12 font-bold flex items-center">
+        <HourglassTopIcon className="font14 text-gray-600" />
+        <span className="font12 font-bold flex items-center text-gray-600">
           {formatTime(remainingSeconds)}
         </span>
       </div>
       <div className="w-48 h-1 bg-gray-700 rounded-full relative bg-gray-900">
         <div
-          className="flex h-1 bg-white rounded-full transition-all  items-center duration-1000 text-gray"
+          className="flex h-1 bg-gray-600 rounded-full transition-all  items-center duration-1000 text-gray"
           style={{
             width: `${progressPercent}%`,
           }}

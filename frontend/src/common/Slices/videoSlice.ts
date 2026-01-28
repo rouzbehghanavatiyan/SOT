@@ -5,6 +5,7 @@ import {
   addMovie,
   removeInvite,
 } from "../../services/dotNet";
+import { RsetMessageModal, RsetShowTimerButtn } from "./main";
 
 // --- Interfaces ---
 interface VideoState {
@@ -67,8 +68,9 @@ export const uploadFullProcessThunk = createAsyncThunk(
   "video/uploadFullProcess",
   async (
     { userId, gearId, mode, allFormData, socket, movieMeta }: any,
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
+    let timeoutId: NodeJS.Timeout | null = null;
     try {
       const postData = {
         userId,
@@ -108,11 +110,25 @@ export const uploadFullProcessThunk = createAsyncThunk(
         };
 
         const inviteRes = await addInvite(postInvite);
+        dispatch(RsetIsLoading(false));
+        dispatch(RsetShowTimerButtn(true));
         inviteData = inviteRes?.data?.data;
-        console.log(inviteData);
-
         if (inviteData?.userId !== 0 && socket) {
+          // اگر قبل از ۶۰ ثانیه user پیدا شد
+          if (timeoutId) clearTimeout(timeoutId);
+
+          dispatch(RsetShowTimerButtn(false));
           socket.emit("add_invite_offline", inviteData);
+        } else {
+          timeoutId = setTimeout(() => {
+            dispatch(
+              RsetMessageModal({
+                show: true,
+                title: "An unexpected error occurred. Please try again.",
+                icon: "danger",
+              })
+            );
+          }, 60000); // 60 seconds
         }
       }
 
@@ -122,6 +138,8 @@ export const uploadFullProcessThunk = createAsyncThunk(
         inviteData: inviteData,
       };
     } catch (error: any) {
+      if (timeoutId) clearTimeout(timeoutId);
+      dispatch(RsetShowTimerButtn(false));
       return rejectWithValue(error.message || "Upload failed");
     }
   }
@@ -131,6 +149,9 @@ const videoSlice = createSlice({
   name: "video",
   initialState,
   reducers: {
+    RsetIsLoading: (state, action: PayloadAction<any>) => {
+      state.isLoading = action.payload;
+    },
     resetVideoState: () => initialState,
     setMovieData: (state, action) => {
       state.movieData = { ...state.movieData, ...action.payload };
@@ -159,6 +180,9 @@ const videoSlice = createSlice({
       .addCase(uploadFullProcessThunk.fulfilled, (state, action) => {
         state.uploadStatus = "success";
         const { movieData, inviteData, modeType } = action.payload;
+        console.log(
+          "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVv"
+        );
 
         state.resMovieData = movieData;
         state.movieData.movieId = movieData?.id;
@@ -183,8 +207,13 @@ const videoSlice = createSlice({
   },
 });
 
-export const { resetVideoState, setMovieData, setMovieMeta, goToStep } =
-  videoSlice.actions;
+export const {
+  resetVideoState,
+  setMovieData,
+  setMovieMeta,
+  goToStep,
+  RsetIsLoading,
+} = videoSlice.actions;
 export default videoSlice.reducer;
 
 // import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";

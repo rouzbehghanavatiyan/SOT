@@ -25,8 +25,6 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
 }) => {
   const showTimerButtn = useAppSelector((state) => state.main.showTimerButtn);
 
-  console.log("showTimerButtnshowTimerButtnshowTimerButtn", showTimerButtn);
-
   return (
     <div className="p-5">
       {coverImage && (
@@ -40,23 +38,23 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
           />
         </>
       )}
-
       <div className="mt-4 flex justify-between">
         <Button
           className="border"
           variant={"outLine_secondary"}
-          label="Back"
           onClick={onBack}
+          label=" Back"
         />
         <Button
-          className="border"
-          variant={"green"}
-          label={
-            true ? <ButtonTimer show={showTimerButtn} /> : "Start"
-          }
-          onClick={onAccept}
+          variant="green"
+          label="Start"
+          className="w-44"
           loading={isLoading}
-        />
+          btnTimer={showTimerButtn}
+          onClick={onAccept}
+        >
+          <ButtonTimer show={showTimerButtn} />
+        </Button>
       </div>
     </div>
   );

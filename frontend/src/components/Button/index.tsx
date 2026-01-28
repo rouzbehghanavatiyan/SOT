@@ -9,6 +9,7 @@ export interface ButtonProps
   asChild?: boolean;
   icon?: any;
   loading?: boolean;
+  btnTimer?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -16,37 +17,37 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     {
       type = "button",
       label,
+      children,
       icon,
       className,
       variant,
       size,
-      asChild = false,
       loading = false,
+      btnTimer = false,
       ...props
     },
     ref
   ) => {
-    const Comp = "button";
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+      <button
         ref={ref}
         type={type}
-        {...props}
+        className={cn(buttonVariants({ variant, size, className }))}
         disabled={loading}
+        {...props}
       >
         {loading ? (
           <div className="loader_btn mx-1" />
         ) : (
-          <>
-            <span className="mx-1">{icon}</span>
-            {label}
-          </>
+          <div className="flex items-center gap-1">
+            {btnTimer ? children : label}
+          </div>
         )}
-      </Comp>
+      </button>
     );
   }
 );
+
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
@@ -74,7 +75,7 @@ const buttonVariants = cva(
         gray: "bg-mainGray",
       },
       size: {
-        default: "text-sm px-[38px] py-1 min-w-[100px] min-h-[40px]", // اضافه کردن min-width و min-height
+        default: "text-sm py-1 min-w-[100px] min-h-[40px]", // اضافه کردن min-width و min-height
         full: "border-none text-base py-1.5 lg:py-3 w-full lg:text-lg",
         md: "text-base w-[136px] py-1 px-[45.5px] min-w-[136px]", // اضافه کردن min-width
         sm: "lg:text-md lg:py-2 lg:px-8 px-8 py-1 text-mdd min-w-[80px] min-h-[30px]",

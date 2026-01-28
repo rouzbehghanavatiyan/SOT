@@ -366,6 +366,7 @@ export const {
   setUnreadCount,
   incrementUnreadCount,
   clearUnreadCount,
+  RsetShowTimerButtn,
 } = mainSlice.actions;
 
 export default mainSlice.reducer;

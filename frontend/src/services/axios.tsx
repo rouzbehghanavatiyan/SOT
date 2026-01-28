@@ -57,9 +57,16 @@ axios.interceptors.response.use(
           message: "Network or CORS error occurred",
         })
       );
+      store.dispatch(
+        RsetMessageModal({
+          show: true,
+          title: error?.message || "Client error occurred",
+          icon: "danger",
+        })
+      );
       localStorage.clear();
       sessionStorage.removeItem("token");
-      // window.location.href = "/server-error";
+      window.location.href = "/server-error";
 
       return Promise.reject(error);
     }
