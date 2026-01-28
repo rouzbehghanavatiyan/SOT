@@ -11,7 +11,7 @@ export const ButtonTimer: React.FC<TimerProps> = ({ show }) => {
     let interval: any;
 
     if (show) {
-      setSeconds(0); 
+      setSeconds(0);
       interval = setInterval(() => {
         setSeconds((prev) => prev + 1);
       }, 1000);
@@ -19,6 +19,8 @@ export const ButtonTimer: React.FC<TimerProps> = ({ show }) => {
 
     return () => clearInterval(interval);
   }, [show]);
+
+  console.log(seconds);
 
   const formatTime = (total: number) => {
     const m = String(Math.floor(total / 60)).padStart(2, "0");

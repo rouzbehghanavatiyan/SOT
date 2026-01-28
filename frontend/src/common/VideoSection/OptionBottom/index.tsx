@@ -113,7 +113,7 @@ const OptionBottom: React.FC<any> = ({
   }, [countLiked, video, positionVideo, isLiked, movieId]);
 
   return (
-    <div className="absolute w-full bottom-5 z-10">
+    <div className="absolute w-full bottom-5 z-10 ">
       <div className="flex mb-4 justify-between mx-2">
         <div className="col-span-1  flex items-end justify-start">
           <ChatBubbleOutlineIcon

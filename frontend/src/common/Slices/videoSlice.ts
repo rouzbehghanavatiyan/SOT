@@ -92,7 +92,6 @@ export const uploadFullProcessThunk = createAsyncThunk(
         if (allFormData?.video) formData.append("formFile", allFormData.video);
         if (allFormData?.imageCover)
           formData.append("formFile", allFormData.imageCover);
-
         formData.append("attachmentId", movieDataRes?.id);
         formData.append("attachmentType", "mo");
         formData.append("attachmentName", "movies");

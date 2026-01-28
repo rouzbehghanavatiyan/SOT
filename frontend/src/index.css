@@ -9,19 +9,14 @@
 
 @font-face {
   font-family: "playFair";
-  src: url("./assets/fonts/Playfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "IRANSans";
-  src: url("./assets/fonts/IRANSans_Medium.ttf") format("truetype");
-  unicode-range: U+0600-06FF;
-  /* محدوده یونیکد برای کاراکترهای فارسی */
+  src: url("./assets/fonts/Playfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf")
+    format("truetype");
 }
 
 @font-face {
   font-family: "PlusJakartaSans";
-  src: url("./assets/fonts/static/PlusJakartaSans-Regular.ttf") format("truetype");
+  src: url("./assets/fonts/static/PlusJakartaSans-Regular.ttf")
+    format("truetype");
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -31,8 +26,8 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE & Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* مخفی کردن اسکرول‌بار برای مرورگرهای Chrome, Safari و Opera */
@@ -42,12 +37,11 @@
 
 /* مخفی کردن اسکرول‌بار برای IE, Edge و Firefox */
 * {
-  -ms-overflow-style: none;  /* برای اینترنت اکسپلورر و اج */
-  scrollbar-width: none;  /* برای فایرفاکس */
+  -ms-overflow-style: none; /* برای اینترنت اکسپلورر و اج */
+  scrollbar-width: none; /* برای فایرفاکس */
 }
 body * {
-  
-  font-family: PlusJakartaSans, IRANSans;
+  font-family: PlusJakartaSans;
   /* اولویت فونت‌ها */
   font-size: 14px !important;
   box-sizing: border-box;
@@ -57,13 +51,13 @@ body * {
 }
 
 main {
-  overflow-y: scroll;        /* allow scroll but no scrollbar space */
-  -ms-overflow-style: none;  /* IE & Edge */
-  scrollbar-width: none;     /* Firefox */
+  overflow-y: scroll; /* allow scroll but no scrollbar space */
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 main::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari */
+  display: none; /* Chrome, Safari */
 }
 
 .logoFont {
@@ -88,9 +82,6 @@ br {
 .css-1u9des2-indicatorSeparator {
   display: none !important;
 }
-
-
-
 
 br {
   user-select: none;
@@ -195,7 +186,6 @@ br {
 .font250 {
   font-size: 250px !important;
 }
-
 
 /* collapsible animation */
 .CollapsibleContent {
@@ -466,7 +456,6 @@ br {
   }
 }
 
-
 .balo {
   position: relative;
   display: inline-block;
@@ -506,7 +495,6 @@ br {
   }
 }
 
-
 .image-container {
   display: inline-block;
   position: relative;
@@ -518,7 +506,7 @@ br {
 }
 
 .image-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -5px;
   left: -5px;
@@ -530,7 +518,6 @@ br {
   z-index: 0;
   animation: rotateGradient 5s linear infinite;
 }
-
 
 /* like */
 @keyframes rotateGradient {
@@ -567,7 +554,6 @@ br {
   animation: thumbUpAnimation 0.6s ease forwards;
   /* افزودن انیمیشن */
 }
-
 
 /* cmt کامنت */
 
@@ -617,7 +603,12 @@ br {
 
 .bg_logo {
   background: rgb(58, 180, 99);
-  background: linear-gradient(90deg, rgb(58, 180, 99) 0%, rgb(31, 111, 120) 50%, rgb(69, 182, 252) 100%);
+  background: linear-gradient(
+    90deg,
+    rgb(58, 180, 99) 0%,
+    rgb(31, 111, 120) 50%,
+    rgb(69, 182, 252) 100%
+  );
 }
 
 .bg_phone_header {
@@ -626,7 +617,12 @@ br {
 
 .bg_logo_circle {
   background: rgba(255, 255, 255, 0.164);
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 0%, rgba(18, 68, 31, 0) 100%, rgba(223, 233, 235, 0) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.61) 0%,
+    rgba(18, 68, 31, 0) 100%,
+    rgba(223, 233, 235, 0) 100%
+  );
 }
 
 .loader_btn {
@@ -641,7 +637,7 @@ br {
 }
 
 .loader_btn::after {
-  content: '';
+  content: "";
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -663,21 +659,19 @@ br {
   }
 }
 
-
-
 .lds-dual-ring {
   display: inline-block;
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  border-top: 3px solid #10153D;
+  border-top: 3px solid #10153d;
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: lds-dual-ring 1s linear infinite;
 }
 
 .lds-dual-ring:after {
-  content: '';
+  content: "";
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -685,7 +679,7 @@ br {
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  border-bottom: 3px solid #10153D;
+  border-bottom: 3px solid #10153d;
   border-left: 3px solid transparent;
 }
 
@@ -704,14 +698,14 @@ br {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border-top: 3px solid #10153D;
+  border-top: 3px solid #10153d;
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: userFinding 1s linear infinite;
 }
 
 .loader-userFinding::after {
-  content: '';
+  content: "";
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -719,7 +713,7 @@ br {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border-bottom: 3px solid #10153D;
+  border-bottom: 3px solid #10153d;
   border-left: 3px solid transparent;
 }
 
@@ -750,7 +744,11 @@ br {
 
 .bg_options {
   background: rgb(255, 255, 255);
-  background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
 }
 
 .bg_cover {
@@ -760,8 +758,14 @@ br {
 
 .bg_profile_watch {
   background: rgb(168, 168, 168);
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000a9 100%);
 }
+
+.bg_bottom_setting {
+  background: rgb(168, 168, 168);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000a9 100%);
+}
+
 
 .bg_timer {
   background: rgb(168, 168, 168);
@@ -786,10 +790,8 @@ br {
   opacity: 0;
 }
 
- 
-
 .border_phone_footer {
-  border-top: 1px solid #10153D
+  border-top: 1px solid #10153d;
 }
 
 .seek-bar {
@@ -818,7 +820,7 @@ br {
 }
 
 /* Thumb (دکمه) */
- .seek-bar::-webkit-slider-thumb {
+.seek-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 0;
@@ -846,7 +848,6 @@ br {
   border: none;
 }
 
-
 /* video */
 .video_container {
   max-height: 200px;
@@ -856,7 +857,6 @@ br {
   align-items: center;
   justify-content: center;
 }
-
 
 /* like */
 .like_animation {
@@ -900,8 +900,6 @@ br {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #6e6e6e 100%);
 }
 
-
-
 /* stickers */
 .sticker-container {
   position: absolute;
@@ -929,43 +927,44 @@ br {
   }
 }
 
-
 .bg_sormei {
-  background: #10153D;
+  background: #10153d;
 }
 
 .text_sormei {
-  color: #10153D !important;
+  color: #10153d !important;
 }
-
 
 .bg_sormei_hover {
   background: #010205;
 }
 
-
 .bg_tusi {
-  background-color: #F8F9FD
+  background-color: #f8f9fd;
 }
 
 .text_gray_200 {
-  color: #BCBBBE
+  color: #bcbbbe;
 }
 
 .text_gray_300 {
-  background-color: #6D6B84
+  background-color: #6d6b84;
 }
 
 .text_logo {
   background: #2c399c;
-  background: linear-gradient(90deg, rgba(44, 57, 156, 1) 0%, rgba(110, 199, 255, 1) 50%, rgba(43, 36, 143, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(44, 57, 156, 1) 0%,
+    rgba(110, 199, 255, 1) 50%,
+    rgba(43, 36, 143, 1) 100%
+  );
 }
 
 .container_message {
   max-width: 70%;
   word-wrap: break-word;
 }
-
 
 .video-wrapper {
   position: relative;
@@ -1027,7 +1026,6 @@ br {
   }
 }
 
-
 body.comments-open {
   overflow: hidden;
   position: fixed;
@@ -1064,7 +1062,6 @@ body.comments-open {
   /* اسکرول عمودی فقط برای این بخش */
 }
 
-
 .breakWords {
   display: block;
   max-width: 50%;
@@ -1079,14 +1076,13 @@ body.comments-open {
   left: 50%;
   font-weight: bold !important;
   transform: translateX(-50%);
-  font-size:  9px !important;
+  font-size: 9px !important;
   color: #005c08;
   text-align: center;
   width: 100%;
   border-radius: 4px;
   line-height: 1;
 }
-
 
 .pt-safe {
   padding-top: env(safe-area-inset-top);

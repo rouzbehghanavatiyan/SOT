@@ -41,7 +41,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       : StringHelpers?.getProfile(video?.attachmentMatched);
 
   return (
-    <div className="h-full w-full relative flex flex-col border-b border-gray-800 min-h-0">
+    <div className="h-full w-full relative flex flex-col min-h-0">
       <OptionTop
         main={main}
         video={video}

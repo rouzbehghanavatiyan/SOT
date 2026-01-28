@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { addScoure } from "../../services/dotNet";
 import { useAppSelector } from "../../hooks/reduxHookType";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 
 interface TimerProps {
   startTime: number;
@@ -87,11 +88,16 @@ const Timer: React.FC<TimerProps> = ({
   const progressPercent = (remainingSeconds / duration) * 100;
 
   return (
-    <div className="flex items-center ">
-      <span className="font20 ">{formatTime(remainingSeconds)}</span>
-      <div className="w-48 h-1 bg-gray-700 rounded-full ml-4 relative bg-gray-900">
+    <div className="grid grid-cols-4 items-center">
+      <div className="col-span-1 me-1 flex items-center justify-end">
+        <HourglassTopIcon className="font14" />
+        <span className="font12 font-bold flex items-center">
+          {formatTime(remainingSeconds)}
+        </span>
+      </div>
+      <div className="w-48 h-1 bg-gray-700 rounded-full relative bg-gray-900">
         <div
-          className="flex h-1 bg-white rounded-full transition-all duration-1000 text-gray"
+          className="flex h-1 bg-white rounded-full transition-all  items-center duration-1000 text-gray"
           style={{
             width: `${progressPercent}%`,
           }}

@@ -83,7 +83,7 @@ const Video: React.FC<VideoProps> = ({
           url={url}
         />
       </span>
-      <div className="flex items-center gap-10 z-10 bottom-0 right-0 left-0  absolute controls fade-in">
+      <div className="bg_bottom_setting flex items-center gap-10 z-10 bottom-0 right-0 left-0  absolute controls fade-in">
         <input
           type="range"
           min={0}

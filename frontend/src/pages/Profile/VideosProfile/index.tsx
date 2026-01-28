@@ -2,7 +2,6 @@ import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import Timer from "../../../components/Timer";
 import StringHelpers from "../../../utils/helpers/StringHelper";
 import VideoSection from "../../../common/VideoSection";
-import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReportIcon from "@mui/icons-material/Report";
 import EmailIcon from "@mui/icons-material/Email";
@@ -163,12 +162,24 @@ const VideosProfile = forwardRef<
                       openDropdowns={openDropdowns}
                       positionVideo={0}
                     />
+                    {endTime && (
+                      <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
+                        {parentLikes}
+                        <ThumbUpIcon className="font25 text-white" />
+                      </div>
+                    )}
                   </div>
-
                   {endTime && (
-                    <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
-                      {parentLikes}
-                      <ThumbUpIcon className="font25 text-white" />
+                    <div className="w-full absolute top-2/4 z-50">
+                      <div className="w-5/6 ms-8 flex  rounded-full items-center justify-center text-white ">
+                        <Timer
+                          video={video}
+                          startTime={startTime}
+                          duration={3600}
+                          active={true}
+                          onComplete={() => {}}
+                        />
+                      </div>
                     </div>
                   )}
                   <div className="flex-1 min-h-0 relative">
@@ -190,21 +201,6 @@ const VideosProfile = forwardRef<
                       <div className="absolute top-28 right-5 z-50 flex gap-1 text-white justify-center items-end">
                         {childLikes}
                         <ThumbUpIcon className="font25 text-white" />
-                      </div>
-                    )}
-                    {endTime && (
-                      <div className="w-full absolute bottom-7">
-                        <div className="w-5/6 mb-1 ms-8 flex items-center justify-center text-white">
-                          <HourglassTopIcon className="font20" />
-                          <Timer
-                            video={video}
-                            startTime={startTime}
-                            duration={3600}
-                            active={true}
-                            className="text-white font20 ml-2"
-                            onComplete={() => {}}
-                          />
-                        </div>
                       </div>
                     )}
                   </div>

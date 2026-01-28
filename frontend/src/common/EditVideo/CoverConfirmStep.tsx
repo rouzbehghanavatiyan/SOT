@@ -25,16 +25,18 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
 }) => {
   const showTimerButtn = useAppSelector((state) => state.main.showTimerButtn);
 
+  console.log("showTimerButtnshowTimerButtnshowTimerButtn", showTimerButtn);
+
   return (
     <div className="p-5">
       {coverImage && (
         <>
-          <span className="my-4 font-bold">Your cover: </span>
+          <span className=" font-bold">Your cover: </span>
           <img
             src={coverImage}
             alt="Video Cover"
             style={VIDEO_CONTAINER_STYLE}
-            className="rounded-sm mx-auto"
+            className="rounded-sm mx-auto mt-2"
           />
         </>
       )}
@@ -46,12 +48,11 @@ export const CoverConfirmStep: React.FC<CoverConfirmStepProps> = ({
           label="Back"
           onClick={onBack}
         />
-
         <Button
           className="border"
           variant={"green"}
           label={
-            showTimerButtn ? <ButtonTimer show={showTimerButtn} /> : "Start"
+            true ? <ButtonTimer show={showTimerButtn} /> : "Start"
           }
           onClick={onAccept}
           loading={isLoading}
