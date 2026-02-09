@@ -66,8 +66,8 @@ const Gear: React.FC<any> = ({
   };
 
   return (
-    <div className="lg:shadow-card">
-      <MainTitle handleBack={handleBack} title="Gear" />
+    <div className="md:shadow-card">
+      <MainTitle title="Gear" />
       <SoftLink
         iconMap={arenaIconMap}
         handleAcceptCategory={handleAcceptCategory}

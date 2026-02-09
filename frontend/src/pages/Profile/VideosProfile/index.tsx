@@ -106,7 +106,7 @@ const VideosProfile = forwardRef<
 
   return (
     <>
-      <div className="col-span-12 justify-center flex  md:col-span-12 lg:col-span-12">
+      <div className="col-span-12 justify-center flex md:col-span-12 lg:col-span-12 border-t-[1px]">
         <div className="grid grid-cols-1 w-full ">
           {isLoading ? (
             [...Array(videoGroupsWithLikes?.length)].map((_, index) => (
@@ -145,7 +145,7 @@ const VideosProfile = forwardRef<
               return (
                 <section
                   ref={index === 0 ? firstVideoRef : null}
-                  className={`flex px-1 pt-1 bg-white flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[60px]" : ""}`}
+                  className={`flex pt-1 bg-white flex-col relative h-[calc(100vh-105px)] ${index === 0 ? "first-video scroll-mt-[60px]" : ""}`}
                 >
                   <div className="flex-1 min-h-0 ">
                     <VideoSection

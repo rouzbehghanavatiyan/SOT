@@ -11,8 +11,8 @@ const ProfileAchievements: React.FC = () => (
       { img: cup4, label: "Region" },
     ].map((cup, index) => (
       <div key={index} className="flex flex-col items-center justify-end">
-        <img className="w-14" src={cup.img} alt={`Cup ${cup.label}`} />
-        <span className="font-bold text-gray-800">{cup.label}</span>
+        <img className="w-11" src={cup.img} alt={`Cup ${cup.label}`} />
+        <span className="font-thin font8 text-gray-800">{cup.label}</span>
       </div>
     ))}
   </div>

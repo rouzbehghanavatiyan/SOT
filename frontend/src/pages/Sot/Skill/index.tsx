@@ -4,6 +4,7 @@ import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
 import { Icon } from "../../../components/Icon";
+import { useNavigate } from "react-router-dom";
 
 const Skill: React.FC<any> = ({
   setAllSubCategory,
@@ -12,6 +13,7 @@ const Skill: React.FC<any> = ({
   updateStepData,
 }) => {
   const [isLoading, setIsLoading] = useState<any>(false);
+  const navigate = useNavigate();
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
@@ -55,10 +57,12 @@ const Skill: React.FC<any> = ({
     }
     return acc;
   }, {});
-
+  const handleBack = () => {
+    navigate(-1);
+  };
   return (
     <div className=" lg:shadow-card">
-      <MainTitle title="Skill" />
+      <MainTitle   title="Skill" />
       <SoftLink
         iconMap={arenaIconMap}
         handleAcceptCategory={handleAcceptCategory}

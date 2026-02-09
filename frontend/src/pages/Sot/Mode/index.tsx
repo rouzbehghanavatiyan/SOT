@@ -74,8 +74,8 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
   }, {});
 
   return (
-    <div className="lg:shadow-card">
-      <MainTitle handleBack={handleBack} title="Mode" />
+    <div className="md:shadow-card">
+      <MainTitle title="Mode" />
       <BaseToast
         show={showToast}
         onClose={handleCloseToast}
@@ -83,7 +83,6 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
         type="error"
         duration={5000}
       />
-
       <video ref={videoRef} style={{ display: "none" }} />
       <SoftLink
         iconMap={arenaIconMap}

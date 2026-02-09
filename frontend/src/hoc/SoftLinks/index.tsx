@@ -22,7 +22,7 @@ const SoftLink: FC<TalentModeProps> = ({
   return (
     <>
       {isLoading && <Loading isLoading={isLoading} />}
-      <div className="grid  justify-start min-h-[76vh]">
+      <div className="grid justify-start min-h-[76vh]">
         <div className={containerClass}>
           {categories.map((category) => (
             <span

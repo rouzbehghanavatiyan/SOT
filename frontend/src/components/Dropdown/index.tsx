@@ -71,7 +71,6 @@ const Dropdown: React.FC<DropdownProps> = ({
     };
   }, [isOpenOptions]);
 
-  // جدا کردن آیتم رنک اسکور از بقیه آیتم‌ها
   const rankScoreItem = items.find(item => item.label === "rankScore");
   const rankItems = items.filter(item => item.label !== "rankScore");
 
@@ -111,7 +110,6 @@ const Dropdown: React.FC<DropdownProps> = ({
         >
           <div className="py-1" role="none">
             {!showRank ? (
-              // حالت عادی dropdown
               items.map((item, index) => (
                 <div key={index}>
                   {item.divider ? (
@@ -162,7 +160,6 @@ const Dropdown: React.FC<DropdownProps> = ({
                   </div>
                 )}
                 
-                {/* بخش گرید رنک‌ها */}
                 <div className="grid grid-cols-3 gap-3">
                   {rankItems.map((item, index) => (
                     <div
