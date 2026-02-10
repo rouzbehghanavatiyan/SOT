@@ -82,8 +82,8 @@ const Home: React.FC = () => {
   return (
     <div className="relative w-full bg-white mt-0 flex flex-col h-[calc(100svh-98px)] md:h-[calc(100vh-95px)] lg:h-[calc(100vh-65px)]">
       {showEmptyState ? (
-        <div className="flex flex-col items-center justify-center h-full text-center text-black p-4">
-          <div className="max-w-md">
+        <div className="flex  flex-col items-center justify-center h-full text-center text-black p-4">
+          <div className="max-w-md border p-5 rounded-lg shadow">
             <h3 className="font20 font-bold mb-3">"No Content Available"</h3>
             <p className="text-gray-300">
               Dear user, there are no followers available to view at the moment.
