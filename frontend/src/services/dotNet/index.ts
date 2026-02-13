@@ -45,13 +45,15 @@ export const categoryList = async () => {
   return await axios.get(url);
 };
 
-export const subCategoryList = async (catId: number) => {
+export const subCategoryList = async (
+  catId: number | string | null | undefined,
+) => {
   const url = `${baseURL}/subCategoryList?categoryId=${catId}`;
   return await axios.get(url);
 };
 
 export const subSubCategoryList = async (
-  subCatId: number | null | undefined
+  subCatId: number | string | null | undefined,
 ) => {
   const url = `${baseURL}/subSubCategoryList?subCategoryId=${subCatId}`;
   return await axios.get(url);

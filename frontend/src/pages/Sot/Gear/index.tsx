@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { subSubCategoryList } from "../../../services/dotNet";
-import AudiotrackIcon from "@mui/icons-material/Audiotrack";
-import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
@@ -23,6 +21,11 @@ const Gear: React.FC<any> = ({
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
+    console.log(
+      "currentStepcurrentStepcurrentStepcurrentStepcurrentStep",
+      currentStep,
+    );
+
     const res = await subSubCategoryList(currentStep?.skill?.id);
     setIsLoading(false);
     const { data, status } = res?.data;

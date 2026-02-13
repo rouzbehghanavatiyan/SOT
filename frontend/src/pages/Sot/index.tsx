@@ -29,8 +29,8 @@ const Sot: React.FC = () => {
   });
 
   const updateStepData = (stepNumber: number, data: any) => {
-    const updatedSteps = stepsData?.map((step, index) =>
-      index === stepNumber - 1 ? { title: data.name, icon: data.icon } : step
+    const updatedSteps: any = stepsData?.map((step, index) =>
+      index === stepNumber - 1 ? { title: data.name, icon: data.icon } : step,
     );
     setStepsData(updatedSteps);
 
@@ -118,7 +118,7 @@ const Sot: React.FC = () => {
         if (status === 0) {
           setAllSubCategory(data || []);
           const arenaData = data.find(
-            (item: any) => item.id === parseInt(arenaId)
+            (item: any) => item.id === parseInt(arenaId),
           );
           setCurrentStep((prev: any) => ({
             ...prev,
@@ -136,13 +136,16 @@ const Sot: React.FC = () => {
           ]);
         }
       }
+
       if (arenaId && skillId) {
         const res = await subSubCategoryList(skillId);
         const { data, status } = res?.data;
         if (status === 0) {
           setAllSubCategory(data || []);
+          console.log("datadatadatadatadata", data);
+          
           const skillData = data.find(
-            (item: any) => item.id === parseInt(skillId)
+            (item: any) => item.subCategoryId === parseInt(skillId),
           );
           setCurrentStep((prev: any) => ({
             ...prev,
@@ -167,7 +170,7 @@ const Sot: React.FC = () => {
         if (status === 0) {
           setAllSubCategory(data || []);
           const gearData = data.find(
-            (item: any) => item.id === parseInt(gearId)
+            (item: any) => item.id === parseInt(gearId),
           );
           setCurrentStep((prev: any) => ({
             ...prev,
@@ -186,7 +189,7 @@ const Sot: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error("خطا در بررسی ذخیره‌سازی:", error);
+      console.error("server error:", error);
     }
   };
 

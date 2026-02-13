@@ -11,9 +11,14 @@ import BaseToast from "../../../components/Toastify";
 interface ModeProps {
   updateStepData: (step: number, data: any) => void;
   setCurrentStep: (step: any) => void;
+  currentStep: any;
 }
 
-const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
+const Mode: React.FC<ModeProps> = ({
+  updateStepData,
+  setCurrentStep,
+  currentStep,
+}) => {
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
   const arenaId = Number(localStorage.getItem("arenaId"));
@@ -46,7 +51,7 @@ const Mode: React.FC<ModeProps> = ({ updateStepData, setCurrentStep }) => {
       triggerVideoUpload();
     }
     if (arenaId === 1002) {
-      navigate("/cup")
+      navigate("/cup");
     }
     handleCategoryClick(data, updateStepData, setCurrentStep);
   };

@@ -64,9 +64,9 @@ axios.interceptors.response.use(
           icon: "danger",
         })
       );
-      localStorage.clear();
-      sessionStorage.removeItem("token");
-      window.location.href = "/server-error";
+      // localStorage.clear();
+      // sessionStorage.removeItem("token");
+      // window.location.href = "/server-error";
 
       return Promise.reject(error);
     }
