@@ -10,7 +10,7 @@ import gold1 from "../../assets/ranks/gold-1.png";
 import gold2 from "../../assets/ranks/gold-2.png";
 import gold3 from "../../assets/ranks/gold-3.png";
 import ruby from "../../assets/ranks/ruby.png";
-// import word from "../../assets/ranks/wordOne.png";
+import gem from "../../assets/ranks/gem.png";
 import word from "../../assets/ranks/worldMain.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";

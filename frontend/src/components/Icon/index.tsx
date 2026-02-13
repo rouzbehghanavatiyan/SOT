@@ -4,7 +4,6 @@ interface IconProps {
   name: keyof typeof MuiIcons | any;
   className?: string;
   onClick?: () => void;
-  // سایر props...
 }
 
 export const Icon = ({ name, ...props }: IconProps) => {
