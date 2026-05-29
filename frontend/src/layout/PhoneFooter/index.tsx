@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
- import LogoTC from "../../assets/img/1724181984017.jpg";
+ import LogoTC from "../../assets/img/logocircle.png";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../utils/tw-utils";
 import { useAppSelector } from "../../hooks/reduxHookType";

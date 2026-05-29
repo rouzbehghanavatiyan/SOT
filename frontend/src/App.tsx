@@ -18,7 +18,7 @@ function App() {
         const registration = await navigator.serviceWorker.ready;
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: publicKey, // کلید عمومی VAPID خود را اینجا قرار دهید
+          applicationServerKey: publicKey,
         });
         console.log("Push subscription:", subscription);
       }
@@ -36,8 +36,9 @@ function App() {
       </div> */}
       <Routes>
         <Route path="/*" element={<PublicRoutes />} />
-        <Route path="/" element={<Landing />} />
-        {/* <Route path="/" element={<Login />} /> */}
+        <Route path="/" element={<Login />} />
+        {/* <Route path="/" element={<Landing />} /> */}
+        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/learningSot" element={<LearningSot />} />
         <Route path="/server-error" element={<ServerError />} />
         <Route path="/signUp" element={<SignUpForm />} />

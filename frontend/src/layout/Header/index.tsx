@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ResponsiveMaker from "../../utils/helpers/ResponsiveMaker";
 import MultiOptions from "../MultiOptions";
 import { NavLink } from "react-router-dom";
-import LogoTC from "../../assets/img/1724181984017.jpg";
+import LogoTC from "../../assets/img/logocircle.png";
 
 interface PropsType {
   openMessage: boolean;

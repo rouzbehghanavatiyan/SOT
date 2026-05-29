@@ -77,6 +77,7 @@ const OptionTop: React.FC<any> = ({
       <div className="grid grid-cols-9 items-center w-full">
         <div className="flex col-span-5 justify-start">
           <ImageRank
+            iconClass="text-gray-200 font50"
             userInfo={video}
             positionVideo={positionVideo}
             userNameStyle="text-gray-150"
@@ -86,7 +87,7 @@ const OptionTop: React.FC<any> = ({
             score={score}
           />
         </div>
-        <div className="flex col-span-3 justify-center">
+        <div className="flex  col-span-3 justify-center">
           {checkMyVideo && (
             <Follows
               title={localIsFollowed ? "Unfollow" : "Follow"}

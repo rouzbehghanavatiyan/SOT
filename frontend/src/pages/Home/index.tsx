@@ -5,7 +5,6 @@ import "swiper/css/pagination";
 import { Mousewheel } from "swiper/modules";
 import { Link } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";
 import { useShowWatch } from "../../hooks/useShowWatch";
 import { VideoSlide } from "../../components/VideoSlide";
@@ -21,7 +20,6 @@ const Home: React.FC = () => {
   const hasFetchedOnce = useRef(false);
   const main = useAppSelector((state) => state.main);
   const dispatch = useAppDispatch();
-
   const { pagination, data: reduxData } = main.homeMatch;
   const userIdLogin = main?.userLogin?.user?.id;
 
@@ -46,7 +44,7 @@ const Home: React.FC = () => {
             take: params.take,
             skip: params.skip + params.take,
             hasMore: (res?.data || []).length > 0,
-          })
+          }),
         );
 
         return res?.data || [];
@@ -56,7 +54,7 @@ const Home: React.FC = () => {
         return [];
       }
     },
-    [dispatch, userIdLogin]
+    [dispatch, userIdLogin],
   );
 
   const {
@@ -129,7 +127,6 @@ const Home: React.FC = () => {
           ))}
         </Swiper>
       )}
-
       {isLoading && <LoadingChild ref={loadingRef} isLoading />}
     </div>
   );

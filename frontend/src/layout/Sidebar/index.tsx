@@ -2,7 +2,7 @@ import { PropTypes } from "./Types";
 import React from "react";
 import { Link } from "react-router-dom";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import LogoTC from "../../assets/img/1724181984017.jpg";
+import LogoTC from "../../assets/img/logocircle.png";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 import { NavLink } from "react-router-dom";

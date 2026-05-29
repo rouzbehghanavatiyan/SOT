@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
 import Input from "../../components/Input";
-import logo from "../../assets/img/1724181984017.jpg";
+import logo from "../../assets/img/logocircle.png";
 import asyncWrapper from "../../common/AsyncWrapper";
 import { registerUser } from "../../services/dotNet";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHookType";

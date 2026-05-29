@@ -121,7 +121,7 @@ export const handleAttachmentListByInviteId = createAsyncThunk(
       }
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 export const handleFollowerAttachmentList = createAsyncThunk(
@@ -143,7 +143,7 @@ export const handleFollowerAttachmentList = createAsyncThunk(
       }
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const mainSlice = createSlice({
@@ -163,13 +163,9 @@ const mainSlice = createSlice({
     RsetMessageModal: (state, action: PayloadAction<MessageModal>) => {
       state.messageModal = action.payload;
     },
-    RsetUserLogin: (state, action: PayloadAction<any>) => {
-      // state.userLogin = { ...state.userLogin, ...action.payload };
-      state.userLogin = action.payload;
-    },
     RsetLoading: (
       state,
-      action: PayloadAction<{ btnName?: string | number; value?: boolean }>
+      action: PayloadAction<{ btnName?: string | number; value?: boolean }>,
     ) => {
       state.showLoading = action.payload;
     },
@@ -181,16 +177,6 @@ const mainSlice = createSlice({
       state.showTimerButtn = action.payload;
     },
 
-    RsetCategory: (state, action: PayloadAction<any[]>) => {
-      state.category = action.payload;
-    },
-
-    RsetSocketConfig: (state, action: PayloadAction<any>) => {
-      state.socketConfig = action.payload;
-    },
-    RsetGiveUserOnlines: (state, action: PayloadAction<any>) => {
-      state.userOnlines = action.payload;
-    },
     RsetGetImageProfile: (state, action: PayloadAction<any>) => {
       state.profileImage = action.payload;
     },
@@ -203,13 +189,25 @@ const mainSlice = createSlice({
     RsetLastMatch: (state, action: PayloadAction<any[]>) => {
       state.lastMatch = action.payload;
     },
-
+    RsetCategory: (state, action: PayloadAction<any[]>) => {
+      state.category = action.payload;
+    },
+    RsetUserLogin: (state, action: PayloadAction<any>) => {
+      // state.userLogin = { ...state.userLogin, ...action.payload };
+      state.userLogin = action.payload;
+    },
+    RsetSocketConfig: (state, action: PayloadAction<any>) => {
+      state.socketConfig = action.payload;
+    },
+    RsetGiveUserOnlines: (state, action: PayloadAction<any>) => {
+      state.userOnlines = action.payload;
+    },
     RsetWatchVideo: (state, action: PayloadAction<any[]>) => {
       state.watchVideo.data = [...state.watchVideo.data, ...action.payload];
     },
     setPaginationWatch: (
       state,
-      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>
+      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>,
     ) => {
       state.watchVideo.pagination = action.payload;
     },
@@ -220,7 +218,7 @@ const mainSlice = createSlice({
     },
     setPaginationHomeMatch: (
       state,
-      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>
+      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>,
     ) => {
       state.homeMatch.pagination = action.payload;
     },
@@ -256,7 +254,7 @@ const mainSlice = createSlice({
     },
     setPaginationShowWatch: (
       state,
-      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>
+      action: PayloadAction<{ take: number; skip: number; hasMore: boolean }>,
     ) => {
       state.showWatchMatch.pagination = action.payload;
     },
@@ -286,14 +284,14 @@ const mainSlice = createSlice({
         movieId: string | number;
         isLiked: boolean;
         positionVideo?: number;
-      }>
+      }>,
     ) => {
       const { movieId, isLiked } = action.payload;
 
       // پیدا کردن ایندکس آیتمی که این movieId را دارد
       // (این روش بهینه تر از map کل آرایه است اگر فقط میخواهیم یکی را تغییر دهیم)
       const dataIndex = state.showWatchMatch.data.findIndex(
-        (video: any) => video.likes && video.likes[movieId]
+        (video: any) => video.likes && video.likes[movieId],
       );
 
       if (dataIndex !== -1) {
@@ -319,7 +317,7 @@ const mainSlice = createSlice({
         handleAttachmentListByInviteId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.allLoginMatch = action.payload;
-        }
+        },
       )
       .addCase(handleAttachmentListByInviteId.rejected, (state, action) => {
         state.loading = false;
@@ -332,7 +330,7 @@ const mainSlice = createSlice({
         handleFollowerAttachmentList.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.allLoginMatch = action.payload;
-        }
+        },
       )
       .addCase(handleFollowerAttachmentList.rejected, (state, action) => {
         state.loading = false;

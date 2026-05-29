@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../../assets/img/1724181984017.jpg";
+import logo from "../../../assets/img/logocircle.png";
 
 const LearningStepOne: React.FC = () => {
   return (

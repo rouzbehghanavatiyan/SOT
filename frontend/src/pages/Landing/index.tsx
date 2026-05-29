@@ -2,16 +2,21 @@ import Logo from "../../assets/img/logocircle.png";
 import SingersImage from "../../assets/img/SingersImage.png";
 import FootballImage from "../../assets/img/football.png";
 import React from "react";
-import bronseBase1 from "../../assets/ranks/bronze-1.png";
-import silver1 from "../../assets/ranks/silver-1.png";
-import gold1 from "../../assets/ranks/gold-1.png";
+import bronseBase1 from "../../assets/ranks/bronseMain.png";
+import silver1 from "../../assets/ranks/silverMain.png";
+import gold1 from "../../assets/ranks/goldMain.png";
 import ruby from "../../assets/ranks/ruby.png";
 import world from "../../assets/ranks/worldMain.png";
 import gem from "../../assets/ranks/gem.png";
 import { Icon } from "../../components/Icon";
+import Watch from "../Watch";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
   const ranks = [bronseBase1, silver1, gold1, gem, ruby, world];
+
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-vazir">
       <div className="lg:w-1/2 w-full bg-gray-100 text-white flex flex-col">
@@ -23,7 +28,10 @@ const Landing = () => {
             </span>
           </div>
 
-          <button className="px-6 py-2 bg-main_blue hover:bg-soft_blue rounded-xl transition duration-300">
+          <button
+            onClick={() => navigate("/login")}
+            className="px-6 py-2 bg-main_blue hover:bg-soft_blue rounded-xl transition duration-300"
+          >
             Get Started
           </button>
         </nav>
@@ -82,7 +90,7 @@ const Landing = () => {
 
       {/* RIGHT SIDE */}
       <div className="lg:w-1/2 w-full bg-black flex items-center justify-center p-16">
-        <div className="max-w-md animate-slideInRight">
+        {/* <div className="max-w-md animate-slideInRight">
           <h2 className="text-3xl text-main_blue font-bold mb-8">
             Compete. Improve. Dominate.
           </h2>
@@ -98,7 +106,8 @@ const Landing = () => {
               This is where champions are built.
             </p>
           </div>
-        </div>
+        </div> */}
+        {/* <Watch /> */}
       </div>
     </div>
   );

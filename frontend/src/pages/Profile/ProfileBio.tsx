@@ -5,15 +5,15 @@ import Dropdown from "../../components/Dropdown";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 // import images
-import bronseBase1 from "../../assets/ranks/bronze-1.png";
-import bronseBase2 from "../../assets/ranks/bronze-2.png";
-import bronseBase3 from "../../assets/ranks/bronze-3.png";
-import silver1 from "../../assets/ranks/silver-1.png";
-import silver2 from "../../assets/ranks/silver-2.png";
-import silver3 from "../../assets/ranks/silver-3.png";
-import gold1 from "../../assets/ranks/gold-1.png";
-import gold2 from "../../assets/ranks/gold-2.png";
-import gold3 from "../../assets/ranks/gold-3.png";
+import bronseBase1 from "../../assets/ranks/bronseMain.png";
+import bronseBase2 from "../../assets/ranks/bronseMain.png";
+import bronseBase3 from "../../assets/ranks/bronseMain.png";
+import silver1 from "../../assets/ranks/silverMain.png";
+import silver2 from "../../assets/ranks/silverMain.png";
+import silver3 from "../../assets/ranks/silverMain.png";
+import gold1 from "../../assets/ranks/goldMain.png";
+import gold2 from "../../assets/ranks/goldMain.png";
+import gold3 from "../../assets/ranks/goldMain.png";
 
 interface ProfileBioProps {
   bio: string;

@@ -136,7 +136,7 @@ const ProfileHeader = forwardRef<HTMLSpanElement, ProfileHeaderProps>(
           <div className="col-span-5 flex h-32">
             <span ref={ref} onClick={handleProfile} className="cursor-pointer">
               <ImageRank
-                iconClass="font100 text-gray-200"
+                iconClass="font100 bg-red text-gray-200"
                 score={score}
                 imgSrc={userImage}
                 imgSize={100}

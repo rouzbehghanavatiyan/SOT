@@ -28,7 +28,7 @@ const MultiOptions: React.FC = () => {
   const score = main?.userLogin?.score;
 
   const [isVisible, setIsVisible] = useState<boolean>(
-    window.innerWidth <= 1390
+    window.innerWidth <= 1390,
   );
 
   const handleResize = () => {
@@ -73,7 +73,12 @@ const MultiOptions: React.FC = () => {
       </div>
       <Link to={"/profile"}>
         <span className="">
-          <ImageRank score={score} imgSize={60} imgSrc={findImg} />
+          <ImageRank
+            iconClass="font60 text-gray-200"
+            score={score}
+            imgSize={60}
+            imgSrc={findImg}
+          />
         </span>
       </Link>
     </div>

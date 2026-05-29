@@ -30,10 +30,10 @@ export const addLike = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
-export const removeLike = async (postData: any) => {
-  const url = `${baseURL}/removeLike`;
-  return await axios.delete(url, { data: postData });
-};
+  export const removeLike = async (postData: any) => {
+    const url = `${baseURL}/removeLike`;
+    return await axios.delete(url, { data: postData });
+  };
 
 export const removeFollower = async (postData: any) => {
   const url = `${baseURL}/removeFollower`;
@@ -59,15 +59,7 @@ export const subSubCategoryList = async (
   return await axios.get(url);
 };
 
-export const addMovie = async (data: AddMovieType) => {
-  const url = `${baseURL}/addMovie`;
-  return await axios.post(url, data);
-};
 
-export const addAttachment = async (data: FormData) => {
-  const url = `${baseURL}/addAttachment`;
-  return await axios.post(url, data);
-};
 
 // نمایش فیلم
 export const attachmentListByInviteId = async (postData: any) => {
@@ -83,16 +75,9 @@ export const attachmentPlay = async (path: string) => {
 };
 
 // درخواست
-export const addInvite = async (postData: any) => {
-  const url = `${baseURL}/addInvite`;
-  return await axios.post(url, postData);
-};
+
 
 // remove attachment video
-export const removeInvite = async (invId: number) => {
-  const url = `${baseURL}/removeInvite?inviteId=${invId}`;
-  return await axios.delete(url);
-};
 
 export const userList = async () => {
   const url = `${baseURL}/userList`;
@@ -188,4 +173,27 @@ export const topScoreList = async () => {
 export const modeList = async () => {
   const url = `${baseURL}/modeList`;
   return await axios.get(url);
+};
+
+ 
+
+export const removeInvite = async (invId: number) => {
+  const url = `${baseURL}/removeInvite?inviteId=${invId}`;
+  return await axios.delete(url);
+};
+
+export const addInvite = async (postData: any) => {
+  const url = `${baseURL}/addInvite`;
+  return await axios.post(url, postData);
+};
+
+export const addAttachment = async (data: FormData) => {
+  const url = `${baseURL}/addAttachment`;
+  return await axios.post(url, data);
+};
+
+
+export const addMovie = async (data: AddMovieType) => {
+  const url = `${baseURL}/addMovie`;
+  return await axios.post(url, data);
 };
