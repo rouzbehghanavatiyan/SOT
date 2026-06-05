@@ -97,7 +97,7 @@ const Mode: React.FC<ModeProps> = ({
       />
       {showEditMovie && (
         <EditVideo
-          mode={mode}
+          mode={mode} 
           allFormData={allFormData}
           showEditMovie={showEditMovie}
           setShowEditMovie={setShowEditMovie}

@@ -5,14 +5,23 @@ import { store } from "../hooks/store";
 axios.interceptors.request.use(
   function (config: any) {
     const token = sessionStorage.getItem("token");
+    const url = config.url?.toLowerCase?.() || "";
 
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+      return config;
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
-    if (config.url.toLowerCase().includes("/attachmentplay")) {
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    } else if (
+      url.includes("/attachmentplay") ||
+      url.includes("/uploadvideo")
+    ) {
       config.headers["Content-Type"] = "video/mp4";
-    } else if (config.url.toLowerCase().includes("/addattachment")) {
+    } else if (url.includes("/addattachment") || url.includes("/uploadchunk")) {
       config.headers["Content-Type"] = "multipart/form-data";
     } else {
       config.headers["Content-Type"] = "application/json";
@@ -22,7 +31,7 @@ axios.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  }
+  },
 );
 
 axios.interceptors.response.use(
@@ -34,7 +43,7 @@ axios.interceptors.response.use(
           show: true,
           title: "Internal server error",
           icon: "danger",
-        })
+        }),
       );
     }
     return response;
@@ -55,14 +64,14 @@ axios.interceptors.response.use(
           type: "server",
           timestamp: new Date().toISOString(),
           message: "Network or CORS error occurred",
-        })
+        }),
       );
       store.dispatch(
         RsetMessageModal({
           show: true,
           title: error?.message || "Client error occurred",
           icon: "danger",
-        })
+        }),
       );
       // localStorage.clear();
       // sessionStorage.removeItem("token");
@@ -79,7 +88,7 @@ axios.interceptors.response.use(
             error.response?.data?.message ||
             "Your session has expired. Please login again.",
           icon: "danger",
-        })
+        }),
       );
 
       localStorage.clear();
@@ -98,7 +107,7 @@ axios.interceptors.response.use(
           show: true,
           title: error.response?.data?.message || "Client error occurred",
           icon: "danger",
-        })
+        }),
       );
       return Promise.reject(error);
     }
@@ -110,7 +119,7 @@ axios.interceptors.response.use(
           type: "server",
           timestamp: new Date().toISOString(),
           message: "Server error occurred",
-        })
+        }),
       );
 
       // window.location.href = "/server-error";
@@ -122,9 +131,9 @@ axios.interceptors.response.use(
         show: true,
         title: "An unexpected error occurred. Please try again.",
         icon: "danger",
-      })
+      }),
     );
 
     return Promise.reject(error);
-  }
+  },
 );

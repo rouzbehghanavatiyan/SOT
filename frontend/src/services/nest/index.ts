@@ -6,7 +6,7 @@ export const userMessages = async (
   userIdLogin: number,
   userIdSender: number,
   skip: number,
-  take: number
+  take: number,
 ): Promise<any> => {
   try {
     const url = `${baseURL}/chat/userMessages?userIdLogin=${userIdLogin}&userIdSender=${userIdSender}&skip=${skip}&take=${take}`;
@@ -17,7 +17,7 @@ export const userMessages = async (
     console.error("Error fetching user messages:", error);
 
     throw new Error(
-      error?.response?.data?.message || "Failed to fetch user messages"
+      error?.response?.data?.message || "Failed to fetch user messages",
     );
   }
 };
@@ -39,4 +39,29 @@ export const createPayment = async (postData: any) => {
 export const confirmPayment = async (paymentId: number) => {
   const url = `${baseURL}/api/store/confirmPayment/${paymentId}`;
   return await axios.patch(url);
+};
+
+export const uploadVideo = async (postData: any, config?: any) => {
+  const url = `${baseURL}/api/file/uploadVideo`;
+  return await axios.post(url, postData, config);
+};
+
+export const uploadStartFileDraft = async (postData: any, config?: any) => {
+  const url = `${baseURL}/api/file/uploadChunk`;
+  return await axios.post(url, postData, config);
+};
+
+// export const uploadFileChunk = async (postData: any, config?: any) => {
+//   const url = `${baseURL}/api/file/uploadChunk`;
+//   return await axios.post(url, postData, config);
+// };
+
+export const completeDraftUpload = async (postData: any, config?: any) => {
+  const url = `${baseURL}/api/file/draft/complete`;
+  return await axios.post(url, postData, config);
+};
+
+export const deleteDraftUpload = async (uploadId: string, config?: any) => {
+  const url = `${baseURL}/api/file/draft/${uploadId}`;
+  return await axios.delete(url, config);
 };

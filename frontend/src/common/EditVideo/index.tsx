@@ -4,7 +4,6 @@ import { useEditVideo } from "../../hooks/useEditVideo";
 import { EditVideoProps } from "./type";
 import VideoPreviewStep from "./VideoPreviewStep";
 import { CoverConfirmStep } from "./CoverConfirmStep";
-import Optional from "../../pages/Sot/Mode/Optional";
 
 const EditVideo: React.FC<EditVideoProps> = ({
   showEditMovie,
@@ -13,14 +12,12 @@ const EditVideo: React.FC<EditVideoProps> = ({
   allFormData,
   mode,
 }) => {
-  
   const {
     videoSrc,
     isLoadingBtn,
-    resMovieData,
     currentStep,
     movieData,
-    updateMovieMeta, 
+    updateMovieMeta,
     handleUploadVideo,
     handleBack,
     handleNextStep,
@@ -34,16 +31,8 @@ const EditVideo: React.FC<EditVideoProps> = ({
 
   const getModalTitle = () => {
     switch (mode?.typeMode) {
-      case 1:
-        return "Turbo";
-      case 2:
-        return "Live";
       case 3:
         return "Offline";
-      case 4:
-        return "Duel";
-      default:
-        return "";
     }
   };
 
@@ -71,7 +60,7 @@ const EditVideo: React.FC<EditVideoProps> = ({
       default:
         return null;
     }
-  };
+  };  
 
   return (
     <Modal
@@ -81,17 +70,6 @@ const EditVideo: React.FC<EditVideoProps> = ({
       isOpen={showEditMovie}
     >
       <div className="flex flex-col">{renderStepContent()}</div>
-
-      {currentStep === 3 && (
-        <Optional
-          setMovieData={updateMovieMeta}
-          movieData={movieData}
-          userIdLogin={movieData.userId}
-          allFormData={allFormData}
-          resMovieData={resMovieData}
-          setShowEditMovie={setShowEditMovie}
-        />
-      )}
     </Modal>
   );
 };

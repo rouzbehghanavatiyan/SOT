@@ -25,10 +25,13 @@ const Arena: React.FC<any> = ({ updateStepData }) => {
 
   const arenaIconMap = main?.category?.reduce((acc: any, category: any) => {
     if (category.icon) {
-      acc[category.name.toLowerCase()] = <Icon name={category.icon} className="font25 mx-3" />;
+      acc[category.name.toLowerCase()] = (
+        <Icon name={category.icon} className="font25 mx-3" />
+      );
     }
     return acc;
   }, {});
+
 
   const categoriesWithIcons = main?.category?.map((category: any) => ({
     ...category,
@@ -39,7 +42,7 @@ const Arena: React.FC<any> = ({ updateStepData }) => {
     <div className="md:shadow-card">
       <MainTitle title="Arena" />
       <SoftLink
-        iconMap={arenaIconMap} 
+        iconMap={arenaIconMap}
         handleAcceptCategory={handleAcceptCategory}
         categories={categoriesWithIcons || []}
       />

@@ -15,7 +15,7 @@ interface UseModeHandlerReturn {
   handleCategoryClick: (
     data: any,
     updateStepData: any,
-    setCurrentStep: any
+    setCurrentStep: any,
   ) => void;
 }
 
@@ -27,23 +27,14 @@ export const useModeHandler = (): UseModeHandlerReturn => {
   const handleCategoryClick = (
     data: any,
     updateStepData: any,
-    setCurrentStep: any
+    setCurrentStep: any,
   ) => {
-    if (data.id === 3 || data.id === 4) {
-      setMode({ show: true, typeMode: data.id });
-      updateStepData(4, {
-        name: data.name,
-        id: data.id,
-        icon: data.icon,
-      });
-    } else {
-      updateStepData(4, {
-        name: data.name,
-        id: data.id,
-        icon: data.icon,
-      });
-      setCurrentStep((prev: any) => ({ ...prev, number: 5 }));
-    }
+    updateStepData(4, {
+      name: data.name,
+      id: data.id,
+      icon: data.icon,
+    });
+    setCurrentStep((prev: any) => ({ ...prev, number: 5 }));
   };
 
   const fetchModes = asyncWrapper(async () => {
@@ -65,6 +56,7 @@ export const useModeHandler = (): UseModeHandlerReturn => {
 
   return {
     mode,
+    // videoRef,
     allMode,
     isLoading,
     setMode,

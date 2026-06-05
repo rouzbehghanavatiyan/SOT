@@ -53,7 +53,7 @@ export const prepareVideoFileThunk = createAsyncThunk(
   async (file: File) => {
     const src = URL.createObjectURL(file);
     return { file, src };
-  }
+  },
 );
 
 export const removeInviteThunk = createAsyncThunk(
@@ -61,14 +61,14 @@ export const removeInviteThunk = createAsyncThunk(
   async (inviteId: number) => {
     await removeInvite(inviteId);
     return inviteId;
-  }
+  },
 );
 
 export const uploadFullProcessThunk = createAsyncThunk(
   "video/uploadFullProcess",
   async (
     { userId, gearId, mode, allFormData, socket, movieMeta }: any,
-    { rejectWithValue, dispatch }
+    { rejectWithValue, dispatch },
   ) => {
     let timeoutId: NodeJS.Timeout | null = null;
     try {
@@ -87,13 +87,13 @@ export const uploadFullProcessThunk = createAsyncThunk(
       if (movieRes?.data?.status !== 0) {
         throw new Error("Error in recording initial movie information");
       }
-
+      
       let inviteData = null;
       if (mode?.typeMode === 3) {
         const formData = new FormData();
         if (allFormData?.video) formData.append("formFile", allFormData.video);
         if (allFormData?.imageCover)
-          formData.append("formFile", allFormData.imageCover);
+        formData.append("formFile", allFormData.imageCover);
         formData.append("attachmentId", movieDataRes?.id);
         formData.append("attachmentType", "mo");
         formData.append("attachmentName", "movies");
@@ -126,7 +126,7 @@ export const uploadFullProcessThunk = createAsyncThunk(
                 show: true,
                 title: "An unexpected error occurred. Please try again.",
                 icon: "danger",
-              })
+              }),
             );
           }, 60000); // 60 seconds
         }
@@ -142,7 +142,7 @@ export const uploadFullProcessThunk = createAsyncThunk(
       dispatch(RsetShowTimerButtn(false));
       return rejectWithValue(error.message || "Upload failed");
     }
-  }
+  },
 );
 
 const videoSlice = createSlice({
@@ -181,7 +181,7 @@ const videoSlice = createSlice({
         state.uploadStatus = "success";
         const { movieData, inviteData, modeType } = action.payload;
         console.log(
-          "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVv"
+          "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVv",
         );
 
         state.resMovieData = movieData;

@@ -40,8 +40,9 @@ export const useEditVideo = ({
   const main = useAppSelector((state) => state.main);
   const socket = main?.socketConfig;
   const userIdLogin = main?.userLogin?.user?.id;
-  const gearId = main?.createTalent?.gear?.id;
-
+  // const gearId = main?.createTalent?.gear?.id;
+  const gearId = 3;
+  
   useEffect(() => {
     if (showEditMovie && allFormData?.video) {
       dispatch(prepareVideoFileThunk(allFormData.video));

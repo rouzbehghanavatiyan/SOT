@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { subSubCategoryList } from "../../../services/dotNet";
 import SoftLink from "../../../hoc/SoftLinks";
 import MainTitle from "../../../components/MainTitle";
 import asyncWrapper from "../../../common/AsyncWrapper";
 import { Icon } from "../../../components/Icon";
-import { useAppDispatch } from "../../../hooks/reduxHookType";
-import { RsetCreateTalent } from "../../../common/Slices/main";
+import EditVideo from "../../../common/EditVideo";
+import { useVideoHandler } from "../../../hooks/useVideoHandler";
+import { useModeHandler } from "../../../hooks/useModeHandler";
 
 const Gear: React.FC<any> = ({
   currentStep,
@@ -14,17 +15,25 @@ const Gear: React.FC<any> = ({
   updateStepData,
 }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState<boolean>();
   const [allSubSubCategory, setAllSubSubCategory] = useState<any>();
   const arenaId = Number(localStorage.getItem("arenaId"));
+  const [selectedGear, setSelectedGear] = useState<any>(null);
+
+  const {
+    coverImage,
+    showEditMovie,
+    allFormData,
+    setAllFormData,
+    setShowEditMovie,
+    videoRef,
+    triggerVideoUpload,
+  } = useVideoHandler();
+
+  const { mode, setMode, handleCategoryClick } = useModeHandler();
 
   const handleGetCategory = asyncWrapper(async () => {
     setIsLoading(true);
-    console.log(
-      "currentStepcurrentStepcurrentStepcurrentStepcurrentStep",
-      currentStep,
-    );
 
     const res = await subSubCategoryList(currentStep?.skill?.id);
     setIsLoading(false);
@@ -36,19 +45,23 @@ const Gear: React.FC<any> = ({
 
   useEffect(() => {
     handleGetCategory();
-  }, []);
+    if (allFormData && selectedGear) {
+      setAllFormData({
+        ...allFormData,
+        gearData: selectedGear,
+      });
+    }
+  }, [allFormData?.video]);
 
   const handleAcceptCategory = (data: any) => {
-    if (arenaId !== 1002) {
-      dispatch(RsetCreateTalent({ gear: data }));
-      setCurrentStep(4);
-      updateStepData(3, { name: data.name, icon: data.icon });
-      localStorage.setItem("gearId", data.id);
-      localStorage.setItem("gearIconName", data.icon);
-      localStorage.setItem("gearName", data.name);
-    } else if (arenaId === 1002) {
+    setSelectedGear(data);
+    setMode({ show: true, typeMode: data.id });
+    triggerVideoUpload(); // باز کردن گالری
+
+    if (arenaId === 1002) {
       navigate("/cup");
     }
+    handleCategoryClick(data, updateStepData, setCurrentStep);
   };
 
   const categoriesWithIcons = allSubSubCategory?.map((category: any) => ({
@@ -64,12 +77,10 @@ const Gear: React.FC<any> = ({
     }
     return acc;
   }, {});
-  const handleBack = () => {
-    navigate(-1);
-  };
 
   return (
     <div className="md:shadow-card">
+      <video ref={videoRef} style={{ display: "none" }} />
       <MainTitle title="Gear" />
       <SoftLink
         iconMap={arenaIconMap}
@@ -77,6 +88,15 @@ const Gear: React.FC<any> = ({
         categories={categoriesWithIcons || []}
         isLoading={false}
       />
+      {showEditMovie && (
+        <EditVideo
+          allFormData={{ ...allFormData, gearData: selectedGear }} // ارسال مستقیم دیتای انتخاب شده
+          showEditMovie={showEditMovie}
+          setShowEditMovie={setShowEditMovie}
+          coverImage={coverImage}
+          mode={mode} // پراپ mode را اینجا اضافه کنید 👇
+        />
+      )}
     </div>
   );
 };

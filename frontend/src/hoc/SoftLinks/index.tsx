@@ -32,7 +32,7 @@ const SoftLink: FC<TalentModeProps> = ({
             >
               <div className="min-w-8 flex justify-center mx-3">
                 {category.icon && (
-                  <Icon name={category.icon} className="font25" />
+                  <Icon name={category.icon} className="font35 text-gray-900" />
                 )}
               </div>
               <span className={textClass}>

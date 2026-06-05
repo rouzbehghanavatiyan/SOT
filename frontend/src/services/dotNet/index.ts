@@ -30,10 +30,10 @@ export const addLike = async (postData: any) => {
   return await axios.post(url, postData);
 };
 
-  export const removeLike = async (postData: any) => {
-    const url = `${baseURL}/removeLike`;
-    return await axios.delete(url, { data: postData });
-  };
+export const removeLike = async (postData: any) => {
+  const url = `${baseURL}/removeLike`;
+  return await axios.delete(url, { data: postData });
+};
 
 export const removeFollower = async (postData: any) => {
   const url = `${baseURL}/removeFollower`;
@@ -59,8 +59,6 @@ export const subSubCategoryList = async (
   return await axios.get(url);
 };
 
-
-
 // نمایش فیلم
 export const attachmentListByInviteId = async (postData: any) => {
   const url = `${baseURL}/attachmentListByInviteId?skip=${postData?.skip}&take=${postData?.take}&inviteId=${postData?.inviteId}`;
@@ -75,7 +73,6 @@ export const attachmentPlay = async (path: string) => {
 };
 
 // درخواست
-
 
 // remove attachment video
 
@@ -175,8 +172,6 @@ export const modeList = async () => {
   return await axios.get(url);
 };
 
- 
-
 export const removeInvite = async (invId: number) => {
   const url = `${baseURL}/removeInvite?inviteId=${invId}`;
   return await axios.delete(url);
@@ -192,6 +187,7 @@ export const addAttachment = async (data: FormData) => {
   return await axios.post(url, data);
 };
 
+//localhost:4005/api/file/uploadVideo
 
 export const addMovie = async (data: AddMovieType) => {
   const url = `${baseURL}/addMovie`;
